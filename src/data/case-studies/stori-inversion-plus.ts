@@ -3,18 +3,20 @@ import { storiImages, requireImage } from "~/lib/image-map";
 
 const img = (filename: string) => requireImage(storiImages, filename);
 
+// Phone-on-green (product screen) — hero
 const heroImage: ContentImage = {
-  kind: "image",
-  image: img("Stori-Inversion-App-1536x1020.webp"),
-  mobileImage: img("Stori-Inversion-App-Mobile-768x836.webp"),
-  alt: "Stori Inversión+ — app in-hand hero",
-};
-
-const challengeImage: ContentImage = {
   kind: "image",
   image: img("stori-inverstion-easy-finance-1536x1020.webp"),
   mobileImage: img("stori-inverstion-easy-finance-mobile-768x836.webp"),
-  alt: "Stori Inversión+ — product screen showing time-locked savings",
+  alt: "Stori Inversión+ — product screen with time-locked savings",
+};
+
+// Phone-in-hand (real photo) — challenge
+const challengeImage: ContentImage = {
+  kind: "image",
+  image: img("Stori-Inversion-App-1536x1020.webp"),
+  mobileImage: img("Stori-Inversion-App-Mobile-768x836.webp"),
+  alt: "Stori Inversión+ — app in-hand, real context",
 };
 
 const userInterviewImage: ContentImage = {
@@ -73,7 +75,7 @@ export const storiInversionPlus: CaseStudyContent = {
     kind: "public",
     src: "/images/logo-stori.png",
     alt: "Stori",
-    height: 28,
+    height: 44,
   },
   hero: {
     image: heroImage,
@@ -163,18 +165,19 @@ export const storiInversionPlus: CaseStudyContent = {
         body: "We deployed the MVP version with events in Amplitude, guaranteeing not only its launch, but also the measurement of conversion and impact.",
         image: iteration02Image,
       },
-      { kind: "divider" },
-      { kind: "chip", icon: "making-top", label: "Making top" },
     ],
   },
   worth: {
     blocks: [
+      { kind: "divider" },
+      { kind: "chip", icon: "making-top", label: "Making top" },
       {
         kind: "intro",
         heading: "Iterations according to metrics: 477% conversion rate",
         body: "By quickly identifying the conversion problem and talking to users, we iterated the flow and improved 477% versus the first week of launch.",
       },
       { kind: "image", image: deleteStepImage },
+      { kind: "divider" },
       {
         kind: "intro",
         label: "Customer Love",
@@ -182,6 +185,7 @@ export const storiInversionPlus: CaseStudyContent = {
         body: "The impact on our users was greater than expected. Content creators talked about our significant improvements.",
       },
       { kind: "image", image: contentCreatorsImage },
+      { kind: "divider" },
       {
         kind: "intro",
         label: "Awesome Evolution",

@@ -29,35 +29,35 @@ const builtInIcon = (icon: Extract<StatIcon, string>): string => {
     </h2>
 
     <dl class="mt-12 grid gap-10 md:grid-cols-3">
-    {
-      content.stats.map((s) => (
-        <div class="flex flex-col items-start">
-          <div class="h-12 w-12 rounded-full bg-[color:var(--color-paper-warm)] flex items-center justify-center overflow-hidden">
+      {
+        content.stats.map((s) => (
+          <div class="flex flex-col items-start">
             {typeof s.icon === "string" ? (
-              <span aria-hidden="true" class="text-lg">{builtInIcon(s.icon)}</span>
+              <div class="h-14 w-14 rounded-full bg-[color:var(--color-paper-warm)] flex items-center justify-center text-xl">
+                <span aria-hidden="true">{builtInIcon(s.icon)}</span>
+              </div>
             ) : (
               <Image
                 src={s.icon.image}
                 alt={s.icon.alt ?? ""}
-                width={28}
-                height={28}
+                width={56}
+                height={56}
                 loading="lazy"
                 decoding="async"
-                class="h-7 w-7 object-contain"
+                class="h-14 w-14 object-contain"
               />
             )}
+            <dt class="mt-4 text-[1.125rem] font-bold leading-tight">
+              {s.value} {s.label}
+            </dt>
+            {s.caption && (
+              <dd class="mt-2 text-sm text-[color:var(--color-muted)]">
+                {s.caption}
+              </dd>
+            )}
           </div>
-          <dt class="mt-4 text-[1.125rem] font-bold leading-tight">
-            {s.value} {s.label}
-          </dt>
-          {s.caption && (
-            <dd class="mt-2 text-sm text-[color:var(--color-muted)]">
-              {s.caption}
-            </dd>
-          )}
-        </div>
-      ))
-    }
+        ))
+      }
     </dl>
   </div>
 </section>

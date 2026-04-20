@@ -5,24 +5,28 @@ const sections = [
   { id: "worth", label: "Worth" },
   { id: "result", label: "Result" },
 ] as const;
+
+// Phosphor Icons — "Link" (regular weight), inlined as SVG to avoid adding a dep.
+const linkIconPath =
+  "M137.54,186.36a8,8,0,0,1,0,11.31l-9.94,10A56,56,0,0,1,48.38,128.4L72.5,104.28A56,56,0,0,1,149.31,102a8,8,0,1,1-10.64,12,40,40,0,0,0-54.85,1.63L59.7,139.72a40,40,0,0,0,56.57,56.56l9.94-9.94A8,8,0,0,1,137.54,186.36Zm70.08-138a56.08,56.08,0,0,0-79.22,0l-9.94,9.95a8,8,0,0,0,11.32,11.31l9.94-9.94a40,40,0,0,1,56.57,56.56L172.17,140.4A40,40,0,0,1,117.32,142,8,8,0,1,0,106.68,154a56,56,0,0,0,76.81-2.26l24.13-24.12A56.08,56.08,0,0,0,207.62,48.38Z";
 ---
 
-<aside aria-label="Case study sections" class="cs-nav">
+<aside
+  aria-label="Case study sections"
+  class="cs-nav"
+  data-visible="false"
+  data-theme="light"
+>
   <button type="button" class="cs-copy" data-copy>
     <svg
-      width="14"
-      height="14"
-      viewBox="0 0 16 16"
-      fill="none"
+      width="15"
+      height="15"
+      viewBox="0 0 256 256"
+      fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      <path
-        d="M6.5 9.5 9 7M9.5 6.5 7 9m-2.5-.5-.5.5a2 2 0 0 0 2.83 2.83l1.5-1.5M11.17 7.17l1.5-1.5A2 2 0 0 0 9.83 2.83L9.33 3.33"
-        stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-      />
+      <path d={linkIconPath} />
     </svg>
     <span data-copy-label>Copy Link</span>
   </button>
@@ -31,11 +35,7 @@ const sections = [
     {
       sections.map((s) => (
         <li>
-          <a
-            href={`#${s.id}`}
-            class="cs-anchor"
-            data-section={s.id}
-          >
+          <a href={`#${s.id}`} class="cs-anchor" data-section={s.id}>
             {s.label}
           </a>
         </li>
@@ -44,22 +44,21 @@ const sections = [
   </ul>
 </aside>
 
-<nav aria-label="Case study sections (mobile)" class="cs-nav-mobile">
+<nav
+  aria-label="Case study sections (mobile)"
+  class="cs-nav-mobile"
+  data-visible="false"
+>
   <button type="button" class="cs-pill cs-pill-primary" data-copy>
     <svg
-      width="12"
-      height="12"
-      viewBox="0 0 16 16"
-      fill="none"
+      width="14"
+      height="14"
+      viewBox="0 0 256 256"
+      fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      <path
-        d="M6.5 9.5 9 7M9.5 6.5 7 9m-2.5-.5-.5.5a2 2 0 0 0 2.83 2.83l1.5-1.5M11.17 7.17l1.5-1.5A2 2 0 0 0 9.83 2.83L9.33 3.33"
-        stroke="currentColor"
-        stroke-width="1.6"
-        stroke-linecap="round"
-      />
+      <path d={linkIconPath} />
     </svg>
     <span data-copy-label>Copy</span>
   </button>
@@ -87,13 +86,22 @@ const sections = [
       left: max(1.75rem, calc((100vw - 786px) / 2 - 180px));
       width: 150px;
       z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        opacity 0.25s ease,
+        color 0.3s ease;
+    }
+    .cs-nav[data-visible="true"] {
+      opacity: 1;
+      pointer-events: auto;
     }
   }
 
   .cs-copy {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
     font-size: 0.8125rem;
     font-weight: 500;
     color: var(--color-ink);
@@ -103,10 +111,11 @@ const sections = [
     cursor: pointer;
     border-bottom: 1px solid transparent;
     margin-bottom: 1.25rem;
+    transition: color 0.25s ease;
   }
   .cs-copy:hover,
   .cs-copy:focus-visible {
-    border-bottom-color: var(--color-ink);
+    border-bottom-color: currentColor;
   }
 
   .cs-list {
@@ -114,6 +123,7 @@ const sections = [
     padding: 0;
     margin: 0;
     border-left: 1px solid var(--color-border);
+    transition: border-color 0.25s ease;
   }
   .cs-list li {
     margin: 0;
@@ -140,6 +150,22 @@ const sections = [
     border-left-color: var(--color-ink);
   }
 
+  /* Dark theme (when sidebar sits over the Challenge section) */
+  .cs-nav[data-theme="dark"] .cs-copy,
+  .cs-nav[data-theme="dark"] .cs-anchor:hover {
+    color: #ffffff;
+  }
+  .cs-nav[data-theme="dark"] .cs-anchor {
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .cs-nav[data-theme="dark"] .cs-anchor[data-active="true"] {
+    color: #ffffff;
+    border-left-color: #ffffff;
+  }
+  .cs-nav[data-theme="dark"] .cs-list {
+    border-left-color: rgba(255, 255, 255, 0.25);
+  }
+
   /* ——— Mobile bottom action bar ——— */
   .cs-nav-mobile {
     position: fixed;
@@ -152,13 +178,23 @@ const sections = [
     gap: 0.5rem;
     max-width: calc(100vw - 1.5rem);
     padding: 0.45rem 0.55rem;
-    background-color: var(--color-paper);
     border: 1px solid var(--color-border);
     border-radius: 999px;
     box-shadow: 0 10px 28px -12px rgba(0, 0, 0, 0.2);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     background-color: color-mix(in srgb, var(--color-paper) 92%, transparent);
+    opacity: 0;
+    transform: translate(-50%, 16px);
+    pointer-events: none;
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+  }
+  .cs-nav-mobile[data-visible="true"] {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
   }
   @media (min-width: 1100px) {
     .cs-nav-mobile {
@@ -211,8 +247,8 @@ const sections = [
 </style>
 
 <script>
-  // Copy-link behaviour (desktop + mobile button, label reverts after 1.6s)
-  const copyButtons = document.querySelectorAll<HTMLButtonElement>("[data-copy]");
+  // Copy-link behaviour (both bars share the [data-copy] hook).
+  const copyButtons = document.querySelectorAll<HTMLElement>("[data-copy]");
   copyButtons.forEach((btn) => {
     const label = btn.querySelector<HTMLSpanElement>("[data-copy-label]");
     if (!label) return;
@@ -230,39 +266,69 @@ const sections = [
     });
   });
 
-  // Scroll-spy — mark the anchor matching the most-visible section.
+  // Scroll-spy for active section + show/hide + dark theme over Challenge.
   const anchors = document.querySelectorAll<HTMLElement>("[data-section]");
-  const sectionIds = ["challenge", "adventure", "worth", "result"];
-  const sectionEls = sectionIds
+  const sectionIds = ["challenge", "adventure", "worth", "result"] as const;
+  const sections = sectionIds
     .map((id) => document.getElementById(id))
     .filter((el): el is HTMLElement => el !== null);
 
-  if (anchors.length > 0 && sectionEls.length > 0) {
-    const visibility = new Map<string, number>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          visibility.set(entry.target.id, entry.intersectionRatio);
+  const navs = document.querySelectorAll<HTMLElement>(
+    ".cs-nav, .cs-nav-mobile",
+  );
+
+  // The fixed desktop sidebar sits at top: 140px — use that as the probe row.
+  const PROBE_Y = 160;
+
+  const update = () => {
+    const vh = window.innerHeight;
+    const challenge = document.getElementById("challenge");
+    const result = document.getElementById("result");
+    if (!challenge || !result) return;
+
+    const chRect = challenge.getBoundingClientRect();
+    const resRect = result.getBoundingClientRect();
+
+    // Visible between: challenge has reached the probe row …
+    // … and until result is about to reach it.
+    const show = chRect.top <= PROBE_Y && resRect.top > PROBE_Y;
+    const onDark = chRect.top <= PROBE_Y && chRect.bottom > PROBE_Y;
+
+    navs.forEach((n) => {
+      n.setAttribute("data-visible", show ? "true" : "false");
+      n.setAttribute("data-theme", onDark ? "dark" : "light");
+    });
+
+    // Active section — whichever section contains the probe row.
+    let activeId = "";
+    for (const s of sections) {
+      const r = s.getBoundingClientRect();
+      if (r.top <= PROBE_Y && r.bottom > PROBE_Y) {
+        activeId = s.id;
+        break;
+      }
+    }
+    if (!activeId) {
+      // Fall back to whichever is closest above.
+      let closestTop = -Infinity;
+      for (const s of sections) {
+        const top = s.getBoundingClientRect().top;
+        if (top <= PROBE_Y && top > closestTop) {
+          closestTop = top;
+          activeId = s.id;
         }
-        let topId = "";
-        let topRatio = 0;
-        for (const [id, ratio] of visibility) {
-          if (ratio > topRatio) {
-            topRatio = ratio;
-            topId = id;
-          }
-        }
-        if (topRatio <= 0) return;
-        anchors.forEach((a) => {
-          if (a.dataset.section === topId) {
-            a.setAttribute("data-active", "true");
-          } else {
-            a.removeAttribute("data-active");
-          }
-        });
-      },
-      { threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] },
-    );
-    sectionEls.forEach((el) => observer.observe(el));
-  }
+      }
+    }
+    anchors.forEach((a) => {
+      if (a.dataset.section === activeId) {
+        a.setAttribute("data-active", "true");
+      } else {
+        a.removeAttribute("data-active");
+      }
+    });
+  };
+
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
 </script>

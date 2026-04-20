@@ -1,19 +1,22 @@
 ---
 import ContentImage from "~/components/case-study/ContentImage.astro";
 import SectionChip from "~/components/case-study/SectionChip.astro";
+import Divider from "~/components/case-study/Divider.astro";
 import type { CaseStudyContent } from "~/data/case-studies/types";
 
 type Props = { content: CaseStudyContent["worth"] };
 const { content } = Astro.props;
 ---
 
-<section id="worth" class="pb-20 md:pb-28">
+<section id="worth" class="pb-24 md:pb-32">
   <div class="cs-body">
-    <SectionChip variant="worth" label="Worth" />
-
-    <div class="mt-10 space-y-10">
+    <div class="space-y-14 md:space-y-16">
       {
         content.blocks.map((block) => {
+          if (block.kind === "divider") return <Divider />;
+          if (block.kind === "chip") {
+            return <SectionChip variant={block.icon} label={block.label} />;
+          }
           if (block.kind === "intro") {
             return (
               <div>

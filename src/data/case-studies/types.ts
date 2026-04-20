@@ -64,7 +64,13 @@ export type WorthBlock =
       before: ContentImage;
       after: ContentImage;
       impact: string; // "↑477%"
-    };
+    }
+  | {
+      kind: "chip";
+      icon: "seeing-mountain" | "making-top" | "worth";
+      label: string;
+    }
+  | { kind: "divider" };
 
 export type CaseStudyContent = {
   slug: string;

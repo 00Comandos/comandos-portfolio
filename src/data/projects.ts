@@ -196,3 +196,14 @@ export const projects: readonly Project[] = [
 export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((p) => p.slug === slug);
 }
+
+export function getRelatedProjects(slug: string, count = 3): Project[] {
+  const ordered = [...projects].sort((a, b) => a.order - b.order);
+  const idx = ordered.findIndex((p) => p.slug === slug);
+  if (idx === -1) return ordered.slice(0, count);
+  const out: Project[] = [];
+  for (let i = 1; i <= count; i++) {
+    out.push(ordered[(idx + i) % ordered.length]);
+  }
+  return out;
+}

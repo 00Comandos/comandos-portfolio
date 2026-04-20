@@ -8,7 +8,8 @@ import Challenge from "~/components/case-study/Challenge.astro";
 import Adventure from "~/components/case-study/Adventure.astro";
 import Worth from "~/components/case-study/Worth.astro";
 import Result from "~/components/case-study/Result.astro";
-import { projects, getProjectBySlug } from "~/data/projects";
+import RelatedCases from "~/components/case-study/RelatedCases.astro";
+import { projects, getProjectBySlug, getRelatedProjects } from "~/data/projects";
 import { getCaseStudy } from "~/data/case-studies";
 import { site } from "~/lib/site";
 
@@ -26,6 +27,7 @@ if (!project) {
 }
 
 const caseStudy = getCaseStudy(project.slug);
+const related = getRelatedProjects(project.slug, 3);
 
 // Generate a 1200-wide OG image from the case study hero when available,
 // falling back to the project thumbnail. Absolute URL for social crawlers.
@@ -109,6 +111,7 @@ const jsonLd = [
         <Adventure content={caseStudy.adventure} />
         <Worth content={caseStudy.worth} />
         <Result content={caseStudy.result} />
+        <RelatedCases cases={related} />
       </>
     ) : (
       <>
