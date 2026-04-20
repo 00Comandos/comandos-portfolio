@@ -1,6 +1,5 @@
 ---
 import ContentImage from "~/components/case-study/ContentImage.astro";
-import Divider from "~/components/case-study/Divider.astro";
 import SectionChip from "~/components/case-study/SectionChip.astro";
 import type { CaseStudyContent } from "~/data/case-studies/types";
 
@@ -8,53 +7,57 @@ type Props = { content: CaseStudyContent["worth"] };
 const { content } = Astro.props;
 ---
 
-<section id="worth" class="container-page pb-20 md:pb-28">
-  <SectionChip variant="worth" label="Worth" />
+<section id="worth" class="pb-20 md:pb-28">
+  <div class="cs-body">
+    <SectionChip variant="worth" label="Worth" />
 
-  <div class="mt-10 space-y-10">
-    {
-      content.blocks.map((block, i) => {
-        if (block.kind === "intro") {
-          return (
-            <div class="max-w-3xl">
-              {block.label && (
-                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--color-muted)]">
-                  {block.label}
-                </p>
-              )}
-              <h3 class="mt-2 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
-                {block.heading}
-              </h3>
-              {block.body && (
-                <p class="mt-3 text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
-                  {block.body}
-                </p>
-              )}
-            </div>
-          );
-        }
-        if (block.kind === "image") return <ContentImage image={block.image} />;
-        if (block.kind === "before-after") {
-          return (
-            <div>
-              <div class="flex items-center justify-between mb-3 text-sm">
-                <span class="inline-flex items-center bg-[color:var(--color-paper-soft)] border border-[color:var(--color-border)] rounded-full px-4 py-1.5 font-semibold">
-                  Before
-                </span>
-                <span class="inline-flex items-center gap-2 bg-[color:var(--color-paper-soft)] border border-[color:var(--color-border)] rounded-full px-4 py-1.5 font-semibold">
-                  New
-                  <span class="text-[color:var(--color-accent-mint)]">{block.impact}</span>
-                </span>
+    <div class="mt-10 space-y-10">
+      {
+        content.blocks.map((block) => {
+          if (block.kind === "intro") {
+            return (
+              <div>
+                {block.label && (
+                  <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--color-muted)]">
+                    {block.label}
+                  </p>
+                )}
+                <h3 class="mt-2 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
+                  {block.heading}
+                </h3>
+                {block.body && (
+                  <p class="mt-3 text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
+                    {block.body}
+                  </p>
+                )}
               </div>
-              <div class="grid md:grid-cols-2 gap-4 md:gap-6">
-                <ContentImage image={block.before} />
-                <ContentImage image={block.after} />
+            );
+          }
+          if (block.kind === "image") {
+            return <ContentImage image={block.image} rounded={block.rounded !== false} />;
+          }
+          if (block.kind === "before-after") {
+            return (
+              <div>
+                <div class="flex items-center justify-between mb-3 text-sm">
+                  <span class="inline-flex items-center bg-[color:var(--color-paper-soft)] border border-[color:var(--color-border)] rounded-full px-4 py-1.5 font-semibold">
+                    Before
+                  </span>
+                  <span class="inline-flex items-center gap-2 bg-[color:var(--color-paper-soft)] border border-[color:var(--color-border)] rounded-full px-4 py-1.5 font-semibold">
+                    New
+                    <span class="text-[color:var(--color-accent-mint)]">{block.impact}</span>
+                  </span>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4 md:gap-6">
+                  <ContentImage image={block.before} />
+                  <ContentImage image={block.after} />
+                </div>
               </div>
-            </div>
-          );
-        }
-        return null;
-      })
-    }
+            );
+          }
+          return null;
+        })
+      }
+    </div>
   </div>
 </section>

@@ -7,103 +7,262 @@ const sections = [
 ] as const;
 ---
 
-<nav aria-label="Case study sections" class="cs-nav">
-  <div class="container-page flex items-center justify-between gap-4 py-3">
-    <button
-      type="button"
-      id="copyCaseStudyLink"
-      class="cs-copy"
-      aria-live="polite"
+<aside aria-label="Case study sections" class="cs-nav">
+  <button type="button" class="cs-copy" data-copy>
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
     >
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 16 16"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <path
-          d="M6.5 9.5 9 7M9.5 6.5 7 9m-2.5-.5-.5.5a2 2 0 0 0 2.83 2.83l1.5-1.5M11.17 7.17l1.5-1.5A2 2 0 0 0 9.83 2.83L9.33 3.33"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-        />
-      </svg>
-      <span data-copy-label>Copy Link</span>
-    </button>
+      <path
+        d="M6.5 9.5 9 7M9.5 6.5 7 9m-2.5-.5-.5.5a2 2 0 0 0 2.83 2.83l1.5-1.5M11.17 7.17l1.5-1.5A2 2 0 0 0 9.83 2.83L9.33 3.33"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+      />
+    </svg>
+    <span data-copy-label>Copy Link</span>
+  </button>
 
-    <ul class="flex items-center gap-5 md:gap-7 text-sm">
-      {
-        sections.map((s) => (
-          <li>
-            <a href={`#${s.id}`} class="cs-anchor">
-              {s.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+  <ul class="cs-list">
+    {
+      sections.map((s) => (
+        <li>
+          <a
+            href={`#${s.id}`}
+            class="cs-anchor"
+            data-section={s.id}
+          >
+            {s.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</aside>
+
+<nav aria-label="Case study sections (mobile)" class="cs-nav-mobile">
+  <button type="button" class="cs-pill cs-pill-primary" data-copy>
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M6.5 9.5 9 7M9.5 6.5 7 9m-2.5-.5-.5.5a2 2 0 0 0 2.83 2.83l1.5-1.5M11.17 7.17l1.5-1.5A2 2 0 0 0 9.83 2.83L9.33 3.33"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+      />
+    </svg>
+    <span data-copy-label>Copy</span>
+  </button>
+  <div class="cs-pill-scroll">
+    {
+      sections.map((s) => (
+        <a href={`#${s.id}`} class="cs-pill" data-section={s.id}>
+          {s.label}
+        </a>
+      ))
+    }
   </div>
 </nav>
 
 <style>
+  /* ——— Desktop floating sidebar ——— */
   .cs-nav {
-    position: sticky;
-    top: 80px;
-    z-index: 30;
-    background-color: color-mix(in srgb, var(--color-paper) 92%, transparent);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
+    display: none;
+  }
+  @media (min-width: 1100px) {
+    .cs-nav {
+      display: block;
+      position: fixed;
+      top: 140px;
+      left: max(1.75rem, calc((100vw - 786px) / 2 - 180px));
+      width: 150px;
+      z-index: 20;
+    }
   }
 
   .cs-copy {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     color: var(--color-ink);
     background: transparent;
     border: none;
-    padding: 0.25rem 0;
+    padding: 0;
     cursor: pointer;
     border-bottom: 1px solid transparent;
+    margin-bottom: 1.25rem;
   }
   .cs-copy:hover,
   .cs-copy:focus-visible {
     border-bottom-color: var(--color-ink);
   }
 
-  .cs-anchor {
-    color: var(--color-ink);
-    font-weight: 500;
-    border-bottom: 1px solid transparent;
-    padding-bottom: 2px;
+  .cs-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-left: 1px solid var(--color-border);
   }
-  .cs-anchor:hover,
-  .cs-anchor:focus-visible {
-    border-bottom-color: var(--color-ink);
+  .cs-list li {
+    margin: 0;
+  }
+  .cs-anchor {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-muted);
+    padding: 0.45rem 0 0.45rem 0.85rem;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    transition:
+      color 0.18s ease,
+      border-color 0.2s ease,
+      font-weight 0.2s ease;
+  }
+  .cs-anchor:hover {
+    color: var(--color-ink);
+  }
+  .cs-anchor[data-active="true"] {
+    color: var(--color-ink);
+    font-weight: 600;
+    border-left-color: var(--color-ink);
+  }
+
+  /* ——— Mobile bottom action bar ——— */
+  .cs-nav-mobile {
+    position: fixed;
+    left: 50%;
+    bottom: 0.85rem;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: calc(100vw - 1.5rem);
+    padding: 0.45rem 0.55rem;
+    background-color: var(--color-paper);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    box-shadow: 0 10px 28px -12px rgba(0, 0, 0, 0.2);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    background-color: color-mix(in srgb, var(--color-paper) 92%, transparent);
+  }
+  @media (min-width: 1100px) {
+    .cs-nav-mobile {
+      display: none;
+    }
+  }
+
+  .cs-pill-scroll {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .cs-pill-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cs-pill {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+      background-color 0.18s ease,
+      color 0.18s ease;
+  }
+  .cs-pill:hover {
+    background-color: var(--color-paper-soft);
+  }
+  .cs-pill[data-active="true"] {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .cs-pill-primary {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .cs-pill-primary:hover {
+    background-color: var(--color-ink-soft);
   }
 </style>
 
 <script>
-  const btn = document.getElementById("copyCaseStudyLink");
-  const label = btn?.querySelector<HTMLSpanElement>("[data-copy-label]");
-  if (btn && label) {
+  // Copy-link behaviour (desktop + mobile button, label reverts after 1.6s)
+  const copyButtons = document.querySelectorAll<HTMLButtonElement>("[data-copy]");
+  copyButtons.forEach((btn) => {
+    const label = btn.querySelector<HTMLSpanElement>("[data-copy-label]");
+    if (!label) return;
+    const original = label.textContent ?? "";
     btn.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(window.location.href);
-        const original = label.textContent;
         label.textContent = "Copied!";
         setTimeout(() => {
-          label.textContent = original ?? "Copy Link";
+          label.textContent = original;
         }, 1600);
       } catch {
         label.textContent = "Press ⌘+C";
       }
     });
+  });
+
+  // Scroll-spy — mark the anchor matching the most-visible section.
+  const anchors = document.querySelectorAll<HTMLElement>("[data-section]");
+  const sectionIds = ["challenge", "adventure", "worth", "result"];
+  const sectionEls = sectionIds
+    .map((id) => document.getElementById(id))
+    .filter((el): el is HTMLElement => el !== null);
+
+  if (anchors.length > 0 && sectionEls.length > 0) {
+    const visibility = new Map<string, number>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          visibility.set(entry.target.id, entry.intersectionRatio);
+        }
+        let topId = "";
+        let topRatio = 0;
+        for (const [id, ratio] of visibility) {
+          if (ratio > topRatio) {
+            topRatio = ratio;
+            topId = id;
+          }
+        }
+        if (topRatio <= 0) return;
+        anchors.forEach((a) => {
+          if (a.dataset.section === topId) {
+            a.setAttribute("data-active", "true");
+          } else {
+            a.removeAttribute("data-active");
+          }
+        });
+      },
+      { threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] },
+    );
+    sectionEls.forEach((el) => observer.observe(el));
   }
 </script>

@@ -9,85 +9,83 @@ type Props = { content: CaseStudyContent["adventure"] };
 const { content } = Astro.props;
 ---
 
-<section id="adventure" class="container-page py-20 md:py-28">
-  <SectionChip variant="adventure" label="Adventure" />
+<section id="adventure" class="py-20 md:py-28">
+  <div class="cs-body">
+    <SectionChip variant="adventure" label="Adventure" />
 
-  <h2 class="mt-6 text-[1.75rem] md:text-[2.25rem] font-extrabold leading-[1.1] tracking-tight max-w-2xl">
-    {content.heading}
-  </h2>
+    <h2 class="mt-6 text-[1.75rem] md:text-[2.25rem] font-extrabold leading-[1.1] tracking-tight">
+      {content.heading}
+    </h2>
 
-  <div class="mt-10 space-y-8">
-    {
-      content.blocks.map((block) => {
-        if (block.kind === "divider") return <Divider />;
-        if (block.kind === "intro") {
-          return (
-            <p class="text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)] max-w-2xl">
-              {block.text}
-            </p>
-          );
-        }
-        if (block.kind === "image") {
-          return <ContentImage image={block.image} />;
-        }
-        if (block.kind === "chip") {
-          return <SectionChip variant={block.icon} label={block.label} />;
-        }
-        if (block.kind === "callout") {
-          return (
-            <div class="max-w-3xl mx-auto text-center">
-              {block.label && (
-                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--color-muted)]">
-                  {block.label}
-                </p>
-              )}
-              <h3 class="mt-2 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
-                {block.heading}
-              </h3>
-              {block.image && (
-                <div class="mt-8">
-                  <ContentImage image={block.image} />
-                </div>
-              )}
-            </div>
-          );
-        }
-        if (block.kind === "checklist") {
-          return <Checklist items={block.items} />;
-        }
-        if (block.kind === "step") {
-          return (
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--color-muted)]">
-                {block.step}
+    <div class="mt-10 space-y-8">
+      {
+        content.blocks.map((block) => {
+          if (block.kind === "divider") return <Divider />;
+          if (block.kind === "intro") {
+            return (
+              <p class="text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
+                {block.text}
               </p>
-              <h3 class="mt-2 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
-                {block.heading}
-              </h3>
-              {block.body && (
-                <p class="mt-3 max-w-2xl text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
-                  {block.body}
+            );
+          }
+          if (block.kind === "image") {
+            return <ContentImage image={block.image} rounded={block.rounded !== false} />;
+          }
+          if (block.kind === "chip") {
+            return <SectionChip variant={block.icon} label={block.label} />;
+          }
+          if (block.kind === "callout") {
+            return (
+              <div class="text-center">
+                {block.label && (
+                  <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--color-muted)]">
+                    {block.label}
+                  </p>
+                )}
+                <h3 class="mt-2 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
+                  {block.heading}
+                </h3>
+                {block.image && (
+                  <div class="mt-8">
+                    <ContentImage image={block.image} />
+                  </div>
+                )}
+              </div>
+            );
+          }
+          if (block.kind === "checklist") {
+            return <Checklist items={block.items} />;
+          }
+          if (block.kind === "step") {
+            return (
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--color-muted)]">
+                  {block.step}
                 </p>
-              )}
-              {block.image && (
-                <div class="mt-6">
-                  <ContentImage image={block.image} />
-                </div>
-              )}
-              {block.tail && (
-                <div class="mt-6">
-                  <Checklist items={block.tail} />
-                </div>
-              )}
-            </div>
-          );
-        }
-        return null;
-      })
-    }
+                <h3 class="mt-2 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
+                  {block.heading}
+                </h3>
+                {block.body && (
+                  <p class="mt-3 text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
+                    {block.body}
+                  </p>
+                )}
+                {block.image && (
+                  <div class="mt-6">
+                    <ContentImage image={block.image} />
+                  </div>
+                )}
+                {block.tail && (
+                  <div class="mt-6">
+                    <Checklist items={block.tail} />
+                  </div>
+                )}
+              </div>
+            );
+          }
+          return null;
+        })
+      }
+    </div>
   </div>
 </section>
-
-<script>
-  // placeholder — keeps file-level script consistent if needed later
-</script>

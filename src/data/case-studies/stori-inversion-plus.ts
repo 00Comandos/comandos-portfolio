@@ -1,4 +1,70 @@
-import type { CaseStudyContent } from "./types";
+import type { CaseStudyContent, ContentImage } from "./types";
+import { storiImages, requireImage } from "~/lib/image-map";
+
+const img = (filename: string) => requireImage(storiImages, filename);
+
+const heroImage: ContentImage = {
+  kind: "image",
+  image: img("Stori-Inversion-App-1536x1020.webp"),
+  mobileImage: img("Stori-Inversion-App-Mobile-768x836.webp"),
+  alt: "Stori Inversión+ — app in-hand hero",
+};
+
+const challengeImage: ContentImage = {
+  kind: "image",
+  image: img("stori-inverstion-easy-finance-1536x1020.webp"),
+  mobileImage: img("stori-inverstion-easy-finance-mobile-768x836.webp"),
+  alt: "Stori Inversión+ — product screen showing time-locked savings",
+};
+
+const userInterviewImage: ContentImage = {
+  kind: "image",
+  image: img("stori-inversion-user-interview.webp"),
+  mobileImage: img("stori-inversion-user-interview-mobile-768x969.webp"),
+  alt: "+40 interviews and usability tests with users",
+};
+
+const firstVersionImage: ContentImage = {
+  kind: "image",
+  image: img("stori-inversion-first-version-1536x622.webp"),
+  mobileImage: img("stori-inversion-first-version-onboarding-768x982.webp"),
+  alt: "First version — three phone mockups tested with users (JTBD framework)",
+};
+
+const designSystemImage: ContentImage = {
+  kind: "image",
+  image: img("stori-inversion-Design-System-1536x984.webp"),
+  mobileImage: img("stori-inversion-Design-System-mobile-733x1024.webp"),
+  alt: "Design System — DeLorean components that did not support a critical JTBD",
+};
+
+const iteration02Image: ContentImage = {
+  kind: "image",
+  image: img("stori-inversion-iteration02-x-1536x843.webp"),
+  mobileImage: img("stori-inversion-iteration02-mobile-567x1024.webp"),
+  alt: "MVP iteration — four phone mockups of the new investment flow",
+};
+
+const deleteStepImage: ContentImage = {
+  kind: "image",
+  image: img("stori-inversion-delete-step-1536x1099.webp"),
+  mobileImage: img("stori-inversion-delete-step-mobile-759x2048.webp"),
+  alt: "Before and after — iterations that removed friction from the invest flow (+477%)",
+};
+
+const contentCreatorsImage: ContentImage = {
+  kind: "image",
+  image: img("stori-inversion-Content-Creators-1536x733.webp"),
+  mobileImage: img("stori-inversion-Content-Creators-mobile-768x1445.webp"),
+  alt: "YouTube content creators reacting to Stori Inversión+ improvements",
+};
+
+const beforeAfterEvolutionImage: ContentImage = {
+  kind: "image",
+  image: img("stori-inversion-beforeAfter-1536x957.webp"),
+  mobileImage: img("stori-inversion-before-768x997.webp"),
+  alt: "Before and after — Stori Investment evolution from first to last version",
+};
 
 export const storiInversionPlus: CaseStudyContent = {
   slug: "stori-inversion-plus",
@@ -10,6 +76,7 @@ export const storiInversionPlus: CaseStudyContent = {
     height: 28,
   },
   hero: {
+    image: heroImage,
     intro:
       "Investment for everyone, grow your money without being an expert.\n\nInvestment for everyone — no expertise needed. Strengthen the value prop with simple, rewarding time-locked savings: longer terms, better rates, and clear early-exit rules. Considering that the Mexican segments of ABC offer frozen money starting at $100mxn (us$5).",
   },
@@ -27,11 +94,7 @@ export const storiInversionPlus: CaseStudyContent = {
       { label: "2 product designers", badge: "by Comandos" },
       { label: "1 Product Lead" },
     ],
-    image: {
-      kind: "placeholder",
-      label: "Stori product screen on green background",
-      aspect: "4 / 3",
-    },
+    image: challengeImage,
   },
   adventure: {
     heading: "Defining top 3 challenges identified by segment.",
@@ -68,25 +131,14 @@ export const storiInversionPlus: CaseStudyContent = {
           },
         ],
       },
-      {
-        kind: "image",
-        image: {
-          kind: "placeholder",
-          label: "Team session — +40 interviews and usability tests",
-          aspect: "16 / 9",
-        },
-      },
+      { kind: "image", image: userInterviewImage, rounded: false },
       { kind: "divider" },
       {
         kind: "step",
         step: "STEP 01",
         heading: "We created a first version to test with users",
         body: "During the design process, we focused on the key user needs, using the JTBD framework.",
-        image: {
-          kind: "placeholder",
-          label: "Three phone mockups — first version prototypes",
-          aspect: "16 / 9",
-        },
+        image: firstVersionImage,
         tail: [
           { label: "First Insights" },
           { label: "10/10 users", body: "without understanding our value proposition." },
@@ -100,11 +152,7 @@ export const storiInversionPlus: CaseStudyContent = {
         label: "Design System",
         heading:
           "The components of our Design System did not collaborate to improve usability and reliability of a critical JTBD.",
-        image: {
-          kind: "placeholder",
-          label: "Design system callout — upgraded components",
-          aspect: "16 / 9",
-        },
+        image: designSystemImage,
       },
       { kind: "divider" },
       { kind: "chip", icon: "seeing-mountain", label: "Seeing the mountain" },
@@ -113,11 +161,7 @@ export const storiInversionPlus: CaseStudyContent = {
         step: "STEP 02",
         heading: "We iterated again and launched the MVP version",
         body: "We deployed the MVP version with events in Amplitude, guaranteeing not only its launch, but also the measurement of conversion and impact.",
-        image: {
-          kind: "placeholder",
-          label: "Four phone mockups — MVP flow",
-          aspect: "16 / 9",
-        },
+        image: iteration02Image,
       },
       { kind: "divider" },
       { kind: "chip", icon: "making-top", label: "Making top" },
@@ -130,54 +174,21 @@ export const storiInversionPlus: CaseStudyContent = {
         heading: "Iterations according to metrics: 477% conversion rate",
         body: "By quickly identifying the conversion problem and talking to users, we iterated the flow and improved 477% versus the first week of launch.",
       },
-      {
-        kind: "before-after",
-        before: {
-          kind: "placeholder",
-          label: "Before — three phone screens",
-          aspect: "4 / 3",
-        },
-        after: {
-          kind: "placeholder",
-          label: "After — three phone screens",
-          aspect: "4 / 3",
-        },
-        impact: "↑477%",
-      },
+      { kind: "image", image: deleteStepImage },
       {
         kind: "intro",
         label: "Customer Love",
         heading: "We improved confidence in Stori with 17%+ in our NPS.",
         body: "The impact on our users was greater than expected. Content creators talked about our significant improvements.",
       },
-      {
-        kind: "image",
-        image: {
-          kind: "placeholder",
-          label: "Three YouTube thumbnails — social proof",
-          aspect: "16 / 7",
-        },
-      },
+      { kind: "image", image: contentCreatorsImage },
       {
         kind: "intro",
         label: "Awesome Evolution",
         heading: "A great evolution with Stori Investment",
         body: "The user can enable a metal or plastic card. All additional cards have digital cards.",
       },
-      {
-        kind: "before-after",
-        before: {
-          kind: "placeholder",
-          label: "First version — product screen on pink",
-          aspect: "4 / 5",
-        },
-        after: {
-          kind: "placeholder",
-          label: "Last version — product screen on green",
-          aspect: "4 / 5",
-        },
-        impact: "Evolved",
-      },
+      { kind: "image", image: beforeAfterEvolutionImage },
     ],
   },
   result: {
@@ -187,19 +198,31 @@ export const storiInversionPlus: CaseStudyContent = {
         value: "477%+",
         label: "Activation explosion",
         caption: "In 3 months vs initial week.",
-        icon: "globe",
+        icon: {
+          kind: "image",
+          image: img("stori-icon-world.webp"),
+          alt: "Global reach",
+        },
       },
       {
         value: "318%+",
         label: "Average balance",
         caption: "From the initial week.",
-        icon: "money",
+        icon: {
+          kind: "image",
+          image: img("stori-icon-cash.webp"),
+          alt: "Higher average balance",
+        },
       },
       {
         value: "-8%",
         label: "Churn",
         caption: "In the first week of Inversión+.",
-        icon: "bell",
+        icon: {
+          kind: "image",
+          image: img("stori-icon-alert.webp"),
+          alt: "Lower churn",
+        },
       },
     ],
   },

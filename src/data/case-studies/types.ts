@@ -7,7 +7,15 @@ export type PlaceholderImage = {
 };
 
 export type ContentImage =
-  | { kind: "image"; image: ImageMetadata; alt: string; aspect?: string; caption?: string }
+  | {
+      kind: "image";
+      image: ImageMetadata;
+      alt: string;
+      /** Optional mobile-optimized variant — rendered via <picture> at < 768px. */
+      mobileImage?: ImageMetadata;
+      aspect?: string;
+      caption?: string;
+    }
   | { kind: "placeholder"; label: string; aspect?: string; caption?: string };
 
 export type ChecklistItem = {
@@ -16,12 +24,17 @@ export type ChecklistItem = {
   sub?: readonly string[];
 };
 
-export type StatIcon = "globe" | "money" | "bell" | "chart";
+export type StatIcon =
+  | "globe"
+  | "money"
+  | "bell"
+  | "chart"
+  | { kind: "image"; image: ImageMetadata; alt?: string };
 
 export type AdventureBlock =
   | { kind: "intro"; text: string }
   | { kind: "checklist"; items: readonly ChecklistItem[] }
-  | { kind: "image"; image: ContentImage }
+  | { kind: "image"; image: ContentImage; rounded?: boolean }
   | { kind: "divider" }
   | {
       kind: "step";
@@ -45,7 +58,7 @@ export type AdventureBlock =
 
 export type WorthBlock =
   | { kind: "intro"; label?: string; heading: string; body?: string }
-  | { kind: "image"; image: ContentImage }
+  | { kind: "image"; image: ContentImage; rounded?: boolean }
   | {
       kind: "before-after";
       before: ContentImage;
