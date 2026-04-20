@@ -5,6 +5,7 @@ export type Project = {
   description: string;
   impact: string;
   timeline: string;
+  image: string;
   order: number;
 };
 
@@ -17,6 +18,7 @@ export const projects: readonly Project[] = [
       "Democratize returns with easy, guided investing and time-locked accounts. Offer tiered yields, goal-based locks.",
     impact: "+477% activation explosion",
     timeline: "90 days",
+    image: "/images/Stori-Inversion.webp",
     order: 1,
   },
   {
@@ -27,6 +29,7 @@ export const projects: readonly Project[] = [
       "Product design for Karta's premium credit card app. WhatsApp concierge integration, investment-backed payments, and 85% lower fees.",
     impact: "1k customers in 12 months",
     timeline: "90 days",
+    image: "/images/Karta-GlobalApp-Thumbnail.webp",
     order: 2,
   },
   {
@@ -37,6 +40,7 @@ export const projects: readonly Project[] = [
       "Industrial and brand design for Karta's physical credit card. 17g metal card with AI features and premium finish.",
     impact: "1k customers in 12 months",
     timeline: "45 days",
+    image: "/images/Karta-GlobalCreditCard.webp",
     order: 3,
   },
   {
@@ -47,6 +51,7 @@ export const projects: readonly Project[] = [
       "Product design for Legalario's electronic signature platform. Achieved 99% completion rate, +24% NPS, 4 biometric models and iBeta.",
     impact: "99% completion rate",
     timeline: "6 months",
+    image: "/images/Legalario-ElectronicSignature-1.webp",
     order: 4,
   },
   {
@@ -57,6 +62,7 @@ export const projects: readonly Project[] = [
       "Email redesign for Legalario's e-signature platform. Previous emails looked like spam. We redesigned invitations, reminders, and confirmation.",
     impact: "+9% in Customer Love",
     timeline: "30 days",
+    image: "/images/Legalario-ElectronicSignature-Emails2.webp",
     order: 5,
   },
   {
@@ -67,6 +73,7 @@ export const projects: readonly Project[] = [
       "Design case study for Truora's background check PDF report. Redesigned for non-technical users. Results: -50% reading time, +85% satisfaction.",
     impact: "-50% reading time",
     timeline: "30 days",
+    image: "/images/truora-background-check-report.webp",
     order: 6,
   },
   {
@@ -77,6 +84,7 @@ export const projects: readonly Project[] = [
       "MVP for Truora TruConnect — a WhatsApp-based onboarding tool with chatbot conversations and biometric verification. Built MVP in 3 months.",
     impact: "+20 pilots",
     timeline: "MVP in 3 months",
+    image: "/images/comandos-truora-truConnect.png",
     order: 7,
   },
   {
@@ -87,6 +95,7 @@ export const projects: readonly Project[] = [
       "Design system for Yaydoo. Organized 6+ products with brand and usability inconsistencies. Built Grill Design System with engineering team.",
     impact: "+40% productivity",
     timeline: "MVP in 30 days",
+    image: "/images/comandos-yaydoo-design-system-grill.png",
     order: 8,
   },
   {
@@ -97,6 +106,7 @@ export const projects: readonly Project[] = [
       "UX redesign for Yaydoo porCobrar, a 2-year-old financial logbook product. Improved user experience drove +40% new user growth in 30 days.",
     impact: "+40% new users",
     timeline: "Product in 4 months",
+    image: "/images/Yaydoo-porCobrar-comandos-project.png",
     order: 9,
   },
   {
@@ -107,6 +117,7 @@ export const projects: readonly Project[] = [
       "UX optimization for Yaydoo Vendorplace during product-market fit phase. More than doubled registered users and improved retention by 15%.",
     impact: "+15% retention",
     timeline: "Product in 4 months",
+    image: "/images/Yaydoo-Vendorplace-comandos-project.png",
     order: 10,
   },
   {
@@ -117,6 +128,7 @@ export const projects: readonly Project[] = [
       "Product design for Stadio, a social running app for Apple Watch. 30% new runner adoption in two weeks during the pandemic.",
     impact: "+8 countries",
     timeline: "MVP in 4 weeks",
+    image: "/images/stadio-app-runners.png",
     order: 11,
   },
   {
@@ -127,6 +139,7 @@ export const projects: readonly Project[] = [
       "PropTech product design for RebajaTusCuentas, a mortgage comparison platform. Full UX redesign drove +300% growth and expansion from Peru.",
     impact: "+300% growth",
     timeline: "Redesign in 6 months",
+    image: "/images/rebajaTusCuentas-Comandos-project.png",
     order: 12,
   },
   {
@@ -137,6 +150,7 @@ export const projects: readonly Project[] = [
       "FoodTech product design for mipOS Dark Kitchen. Consolidated 40+ tablets from Uber Eats, Rappi, and Didi Food into one screen.",
     impact: "+200 clients",
     timeline: "Product in 4 months",
+    image: "/images/comandos-mipOS-DarkKitchen.png",
     order: 13,
   },
   {
@@ -147,6 +161,7 @@ export const projects: readonly Project[] = [
       "POS system design for the next generation of restaurants. Modern point-of-sale supporting legacy operating systems.",
     impact: "50.25% new clients",
     timeline: "Product in 4 months",
+    image: "/images/mipOS-POS-darkversion.png",
     order: 14,
   },
   {
@@ -157,6 +172,7 @@ export const projects: readonly Project[] = [
       "Self-order kiosk design for fast food restaurants. Optimized the ordering and delivery flow by 155%. MVP built in 6 weeks.",
     impact: "+155% growth",
     timeline: "MVP in 6 weeks",
+    image: "/images/mipOS-Kiosko-Demo-comandos-project.png",
     order: 15,
   },
   {
@@ -167,6 +183,7 @@ export const projects: readonly Project[] = [
       "IoT product design for Spotfinder's parking hardware and app. Full redesign of hardware device and mobile application. +52% user activation and brand adoption growth.",
     impact: "+52% activation",
     timeline: "Redesign in 6 months",
+    image: "/images/spotfinder-comandos-studio-detail.png",
     order: 16,
   },
 ];

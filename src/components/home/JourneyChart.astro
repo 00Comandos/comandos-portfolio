@@ -1,100 +1,22 @@
 ---
-const steps = [
-  { label: "Start", caption: "MVP + Pilots", color: "#F59E0B", x: 120 },
-  { label: "Build", caption: "Product Strategy + Design System", color: "#64748B", x: 360 },
-  { label: "Grow", caption: "Fast Testing + Experimentation", color: "#3B82F6", x: 620 },
-  { label: "Scale", caption: "New Markets", color: "#10B981", x: 860 },
-];
 ---
 
-<section aria-labelledby="journey-heading" class="pt-4 pb-24 md:pb-28">
+<section aria-labelledby="journey-heading" class="pt-2 pb-20 md:pb-24">
   <div class="container-page">
     <h2 id="journey-heading" class="sr-only">
       Our design journey: Start, Build, Grow, Scale
     </h2>
 
-    <div class="w-full overflow-x-auto">
-      <svg
-        viewBox="0 0 960 320"
-        class="mx-auto w-full max-w-5xl h-auto min-w-[680px]"
-        xmlns="http://www.w3.org/2000/svg"
-        role="img"
-        aria-label="Growth curve: Start, Build, Grow, Scale"
-      >
-        <path
-          d="M40 240 C 220 230, 380 200, 560 150 S 880 40, 920 20"
-          fill="none"
-          stroke="#10B981"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          opacity="0.9"
-        />
-        <path
-          d="M40 250 C 220 246, 380 220, 560 170 S 880 70, 920 50"
-          fill="none"
-          stroke="#3B82F6"
-          stroke-width="2"
-          stroke-linecap="round"
-          opacity="0.75"
-        />
-        <path
-          d="M40 260 C 220 262, 380 245, 560 210 S 880 130, 920 110"
-          fill="none"
-          stroke="#F59E0B"
-          stroke-width="2"
-          stroke-linecap="round"
-          opacity="0.7"
-        />
-
-        {
-          steps.map((s) => (
-            <g>
-              <line
-                x1={s.x}
-                x2={s.x}
-                y1={Math.max(40, 260 - s.x / 6)}
-                y2={280}
-                stroke="#d4d4d4"
-                stroke-dasharray="2 4"
-              />
-              <circle
-                cx={s.x}
-                cy={Math.max(40, 260 - s.x / 6)}
-                r="7"
-                fill={s.color}
-              />
-            </g>
-          ))
-        }
-
-        {
-          steps.map((s) => (
-            <g>
-              <text
-                x={s.x}
-                y={298}
-                text-anchor="middle"
-                font-family="Fraunces, serif"
-                font-size="20"
-                font-style="italic"
-                fill={s.color}
-              >
-                {s.label}
-              </text>
-              <text
-                x={s.x}
-                y={316}
-                text-anchor="middle"
-                font-family="Inter, sans-serif"
-                font-size="11"
-                fill="#6b6b6b"
-              >
-                {s.caption}
-              </text>
-            </g>
-          ))
-        }
-      </svg>
+    <div class="flex justify-center">
+      <img
+        src="/images/comandos-grow-scale-digital-products.svg"
+        alt="Growth curve: Start (MVP + Pilots) → Build (Product Strategy + Design System) → Grow (Fast Testing + Experimentation) → Scale (New Markets)"
+        class="w-full max-w-5xl h-auto"
+        width="1100"
+        height="324"
+        loading="eager"
+        decoding="async"
+      />
     </div>
   </div>
 </section>

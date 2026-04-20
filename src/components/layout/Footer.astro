@@ -15,7 +15,7 @@ const year = new Date().getFullYear();
       </p>
       <a href="/contact" class="btn-primary mt-6">
         Start a project
-        <ArrowIcon />
+        <span class="arrow"><ArrowIcon /></span>
       </a>
     </div>
 
@@ -27,20 +27,14 @@ const year = new Date().getFullYear();
         {
           site.nav.map((item) => (
             <li>
-              <a
-                href={item.href}
-                class="text-[color:var(--color-ink)] hover:text-[color:var(--color-accent)] transition-colors"
-              >
+              <a href={item.href} class="footer-link">
                 {item.label}
               </a>
             </li>
           ))
         }
         <li>
-          <a
-            href="/north-face-growth"
-            class="text-[color:var(--color-ink)] hover:text-[color:var(--color-accent)] transition-colors"
-          >
+          <a href="/north-face-growth" class="footer-link">
             North Face Growth
           </a>
         </li>
@@ -49,23 +43,15 @@ const year = new Date().getFullYear();
 
     <div>
       <h4 class="text-xs font-semibold tracking-[0.12em] uppercase text-[color:var(--color-muted)]">
-        Contact
+        Social
       </h4>
       <ul class="mt-4 space-y-2 text-sm">
-        <li>
-          <a
-            href={site.social.email}
-            class="text-[color:var(--color-ink)] hover:text-[color:var(--color-accent)] transition-colors"
-          >
-            c@comandos.me
-          </a>
-        </li>
         <li>
           <a
             href={site.social.linkedin}
             rel="noopener noreferrer"
             target="_blank"
-            class="text-[color:var(--color-ink)] hover:text-[color:var(--color-accent)] transition-colors"
+            class="footer-link"
           >
             LinkedIn
           </a>
@@ -75,7 +61,7 @@ const year = new Date().getFullYear();
             href={site.social.twitter}
             rel="noopener noreferrer"
             target="_blank"
-            class="text-[color:var(--color-ink)] hover:text-[color:var(--color-accent)] transition-colors"
+            class="footer-link"
           >
             Twitter
           </a>
@@ -85,9 +71,21 @@ const year = new Date().getFullYear();
   </div>
 
   <div class="border-t border-[color:var(--color-border)]">
-    <div class="container-page py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-[color:var(--color-muted)]">
+    <div class="container-page py-6 text-xs text-[color:var(--color-muted)]">
       <p>© {year} Comandos. All rights reserved.</p>
-      <p>Product design from Mexico City 🇲🇽 to the world.</p>
     </div>
   </div>
 </footer>
+
+<style>
+  .footer-link {
+    color: var(--color-ink);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s ease;
+  }
+  .footer-link:hover,
+  .footer-link:focus-visible {
+    border-bottom-color: var(--color-ink);
+  }
+</style>

@@ -7,7 +7,7 @@ const status = new URL(Astro.request.url).searchParams.get("status");
 const reason = new URL(Astro.request.url).searchParams.get("reason");
 
 const fieldClass =
-  "w-full rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-paper)] px-4 py-3 text-[0.95rem] focus:border-[color:var(--color-ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-accent)]/25 transition-colors";
+  "w-full rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-paper)] px-4 py-3 text-[0.95rem] focus:border-[color:var(--color-ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ink)]/15 transition-colors";
 const labelClass =
   "block text-xs font-semibold tracking-[0.12em] uppercase text-[color:var(--color-muted)]";
 ---
@@ -41,7 +41,7 @@ const labelClass =
   method="POST"
   action="/api/contact"
   novalidate
-  class="grid gap-5 max-w-xl"
+  class="grid gap-5"
 >
   <div class="grid gap-1.5">
     <label class={labelClass} for="name">Name</label>

@@ -18,17 +18,22 @@ const jsonLd = {
   description="Partner with Comandos on your next FinTech or SaaS product. Tell us about your project and we'll be in touch."
   jsonLd={jsonLd}
 >
-  <section class="container-page pt-14 md:pt-20 pb-6">
-    <h1 class="text-3xl md:text-[3rem] font-extrabold leading-[1.05] tracking-tight max-w-2xl">
-      Let's build something <br />
-      millions of people use.
-    </h1>
-    <p class="mt-5 max-w-xl text-[1.0625rem] leading-[1.55] text-[color:var(--color-muted)]">
-      Tell us about your product, team, and stage. We'll reply within one business day.
-    </p>
-  </section>
+  <section class="container-page pt-14 md:pt-20 pb-24">
+    <div class="grid gap-12 md:gap-16 md:grid-cols-2 items-start">
+      <div class="md:sticky md:top-24">
+        <h1 class="text-3xl md:text-[3rem] font-extrabold leading-[1.05] tracking-tight">
+          Let's build something<br />
+          millions of people use.
+        </h1>
+        <p class="mt-5 max-w-md text-[1.0625rem] leading-[1.55] text-[color:var(--color-muted)]">
+          Tell us about your product, team, and stage. We'll reply within one
+          business day.
+        </p>
+      </div>
 
-  <section class="container-page pb-24">
-    <ContactForm />
+      <div>
+        <ContactForm />
+      </div>
+    </div>
   </section>
 </BaseLayout>

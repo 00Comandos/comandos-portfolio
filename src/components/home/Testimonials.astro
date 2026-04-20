@@ -1,42 +1,211 @@
 ---
 import { testimonials } from "~/data/testimonials";
 
-const initials = (name: string) =>
-  name
-    .split(" ")
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join("");
+// Duplicate the list for a seamless marquee loop.
+const marquee = [...testimonials, ...testimonials];
 ---
 
-<section aria-labelledby="testimonials-heading" class="py-20 md:py-24">
+<section aria-labelledby="testimonials-heading" class="py-20 md:py-24 overflow-hidden">
   <div class="container-page">
     <h2 id="testimonials-heading" class="text-3xl md:text-[2.25rem] tracking-tight">
       <span class="font-extrabold">Opinions</span><br />
       <span class="font-medium">Of Our Clients</span>
     </h2>
+  </div>
 
-    <div class="mt-10 -mx-5 px-5 md:mx-0 md:px-0 overflow-x-auto pb-4 snap-x snap-mandatory scroll-px-5">
-      <ul class="flex gap-5 md:gap-6 w-max">
-        {
-          testimonials.map((t) => (
-            <li class="snap-start flex flex-col justify-between w-[320px] md:w-[360px] bg-[color:var(--color-paper)] border border-[color:var(--color-border)] rounded-lg p-6 shadow-[var(--shadow-card)]">
-              <blockquote class="text-[0.92rem] leading-[1.55] text-[color:var(--color-ink-soft)]">
-                “{t.quote}”
-              </blockquote>
-              <figcaption class="mt-6 flex items-center gap-3">
-                <div class="h-10 w-10 rounded-full bg-[color:var(--color-border)] flex items-center justify-center text-xs font-semibold text-[color:var(--color-muted)]">
-                  {initials(t.name)}
-                </div>
-                <div>
-                  <div class="text-sm font-semibold">{t.name}</div>
-                  <div class="text-xs text-[color:var(--color-muted)]">{t.role}</div>
-                </div>
-              </figcaption>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
+  <div
+    class="marquee mt-10"
+    data-marquee
+    role="region"
+    aria-label="Testimonials carousel — drag to explore"
+  >
+    <ul class="marquee-track" data-track role="list">
+      {
+        marquee.map((t, i) => (
+          <li
+            class="marquee-item"
+            aria-hidden={i >= testimonials.length ? "true" : "false"}
+          >
+            <blockquote class="text-[0.95rem] leading-[1.6] text-[color:var(--color-ink-soft)]">
+              “{t.quote}”
+            </blockquote>
+            <figcaption class="mt-6 flex items-center gap-3">
+              {t.avatar ? (
+                <img
+                  src={t.avatar}
+                  alt={t.name}
+                  loading="lazy"
+                  decoding="async"
+                  draggable="false"
+                  width="40"
+                  height="40"
+                  class="h-10 w-10 rounded-full object-cover bg-[color:var(--color-border)] pointer-events-none select-none"
+                />
+              ) : (
+                <div class="h-10 w-10 rounded-full bg-[color:var(--color-border)]" />
+              )}
+              <div>
+                <div class="text-sm font-semibold">{t.name}</div>
+                <div class="text-xs text-[color:var(--color-muted)]">{t.role}</div>
+              </div>
+            </figcaption>
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </section>
+
+<style>
+  .marquee {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    cursor: grab;
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      black 6%,
+      black 94%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      black 6%,
+      black 94%,
+      transparent 100%
+    );
+    touch-action: pan-y;
+    user-select: none;
+  }
+  .marquee[data-dragging="true"] {
+    cursor: grabbing;
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 1.5rem;
+    width: max-content;
+    padding-inline: 1.5rem;
+    will-change: transform;
+  }
+
+  .marquee-item {
+    flex: 0 0 auto;
+    width: 320px;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: var(--color-paper);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  .marquee-item a {
+    pointer-events: auto;
+  }
+
+  @media (min-width: 768px) {
+    .marquee-item {
+      width: 420px;
+    }
+  }
+</style>
+
+<script>
+  type MarqueeState = {
+    position: number;
+    halfWidth: number;
+    hovered: boolean;
+    dragging: boolean;
+    dragStartX: number;
+    dragStartPosition: number;
+    lastTime: number;
+  };
+
+  const SPEED = 0.04; // px per ms (~one full loop per ~70-90s depending on width)
+
+  const marquees = document.querySelectorAll<HTMLElement>("[data-marquee]");
+
+  marquees.forEach((wrapper) => {
+    const track = wrapper.querySelector<HTMLElement>("[data-track]");
+    if (!track) return;
+
+    const state: MarqueeState = {
+      position: 0,
+      halfWidth: 0,
+      hovered: false,
+      dragging: false,
+      dragStartX: 0,
+      dragStartPosition: 0,
+      lastTime: performance.now(),
+    };
+
+    const measure = () => {
+      state.halfWidth = track.scrollWidth / 2;
+    };
+    measure();
+    const resizeObs = new ResizeObserver(measure);
+    resizeObs.observe(track);
+
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const step = (now: number) => {
+      const dt = now - state.lastTime;
+      state.lastTime = now;
+
+      if (!state.dragging && !state.hovered && !prefersReduced) {
+        state.position -= SPEED * dt;
+      }
+
+      if (state.halfWidth > 0) {
+        if (state.position <= -state.halfWidth) {
+          state.position += state.halfWidth;
+        } else if (state.position > 0) {
+          state.position -= state.halfWidth;
+        }
+      }
+
+      track.style.transform = `translate3d(${state.position}px, 0, 0)`;
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+
+    wrapper.addEventListener("pointerenter", () => {
+      state.hovered = true;
+    });
+    wrapper.addEventListener("pointerleave", () => {
+      state.hovered = false;
+      state.dragging = false;
+      wrapper.setAttribute("data-dragging", "false");
+    });
+
+    wrapper.addEventListener("pointerdown", (e) => {
+      state.dragging = true;
+      state.dragStartX = e.clientX;
+      state.dragStartPosition = state.position;
+      wrapper.setAttribute("data-dragging", "true");
+      wrapper.setPointerCapture?.(e.pointerId);
+    });
+
+    wrapper.addEventListener("pointermove", (e) => {
+      if (!state.dragging) return;
+      state.position = state.dragStartPosition + (e.clientX - state.dragStartX);
+    });
+
+    const endDrag = (e: PointerEvent) => {
+      if (!state.dragging) return;
+      state.dragging = false;
+      wrapper.setAttribute("data-dragging", "false");
+      wrapper.releasePointerCapture?.(e.pointerId);
+    };
+    wrapper.addEventListener("pointerup", endDrag);
+    wrapper.addEventListener("pointercancel", endDrag);
+  });
+</script>

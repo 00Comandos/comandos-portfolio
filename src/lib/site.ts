@@ -12,7 +12,7 @@ export const site = {
     worksFor: "Independent",
   },
   social: {
-    linkedin: "https://www.linkedin.com/in/comandos",
+    linkedin: "https://www.linkedin.com/in/01comandos/",
     twitter: "https://twitter.com/comandos",
     email: "mailto:c@comandos.me",
   },

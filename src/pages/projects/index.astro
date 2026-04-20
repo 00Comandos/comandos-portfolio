@@ -29,15 +29,19 @@ const jsonLd = {
   description="Selected product design case studies by Comandos: FinTech, SaaS, IoT, and FoodTech. Real outcomes, real metrics."
   jsonLd={jsonLd}
 >
-  <section class="container-page pt-12 md:pt-16 pb-6">
-    <h1 class="font-serif italic text-3xl md:text-[2.75rem] leading-[1.05] tracking-tight max-w-md">
-      Building exponential growth
-    </h1>
-  </section>
+  <section class="container-page pt-12 md:pt-20 pb-20">
+    <div class="grid gap-10 md:gap-16 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+      <aside class="md:pt-6">
+        <div class="md:sticky md:top-24">
+          <h1 class="italic text-4xl md:text-[3rem] leading-[1.05] tracking-tight max-w-[14ch] text-[color:var(--color-ink)]">
+            Building<br />exponential<br />growth
+          </h1>
+        </div>
+      </aside>
 
-  <section class="container-page pb-20">
-    <div class="divide-y divide-[color:var(--color-border)]">
-      {sorted.map((project) => <ProjectCard project={project} />)}
+      <div class="min-w-0 divide-y divide-[color:var(--color-border)]">
+        {sorted.map((project) => <ProjectCard project={project} />)}
+      </div>
     </div>
   </section>
 </BaseLayout>

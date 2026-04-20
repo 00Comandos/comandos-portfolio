@@ -2,25 +2,44 @@
 import { clients } from "~/data/clients";
 ---
 
-<section aria-labelledby="clients-heading" class="py-16 md:py-20 border-y border-[color:var(--color-border)] bg-[color:var(--color-paper-soft)]">
+<section aria-labelledby="clients-heading" class="py-14 md:py-20 bg-[color:var(--color-paper)]">
   <div class="container-page">
     <p id="clients-heading" class="text-center text-sm font-medium text-[color:var(--color-ink)]">
       We have impacted millions of users with
     </p>
 
-    <ul class="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-6 md:gap-x-14">
+    <ul class="mt-10 flex flex-wrap items-center justify-center gap-x-10 sm:gap-x-12 md:gap-x-16 gap-y-8">
       {
         clients.map((c) => (
-          <li class="flex items-center justify-center">
-            <div class="h-8 min-w-[88px] flex items-center justify-center rounded-sm bg-[color:var(--color-border)]/60 px-4 text-[0.75rem] font-semibold tracking-wider text-[color:var(--color-muted)] uppercase">
-              {c.name}
-            </div>
+          <li class="flex items-center justify-center h-10">
+            {c.website ? (
+              <a
+                href={c.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={c.name}
+                class="flex items-center justify-center h-10 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition duration-200"
+              >
+                <img
+                  src={c.logo}
+                  alt={c.name}
+                  loading="lazy"
+                  decoding="async"
+                  class="max-h-7 md:max-h-8 w-auto object-contain"
+                />
+              </a>
+            ) : (
+              <img
+                src={c.logo}
+                alt={c.name}
+                loading="lazy"
+                decoding="async"
+                class="max-h-7 md:max-h-8 w-auto object-contain grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition duration-200"
+              />
+            )}
           </li>
         ))
       }
     </ul>
-    <p class="mt-4 text-center text-[0.7rem] text-[color:var(--color-muted)]">
-      Logo placeholders — final SVG assets pending brand guide.
-    </p>
   </div>
 </section>

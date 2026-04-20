@@ -1,6 +1,5 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import Placeholder from "~/components/ui/Placeholder.astro";
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 import { projects, getProjectBySlug } from "~/data/projects";
 import { site } from "~/lib/site";
@@ -64,18 +63,21 @@ const jsonLd = {
   </section>
 
   <section class="container-page pb-24">
-    <Placeholder ratio="16 / 9" label="Hero case study image" />
+    <div class="overflow-hidden rounded-xl bg-[color:var(--color-paper-soft)]">
+      <img
+        src={project.image}
+        alt={`${project.brand} — ${project.title}`}
+        loading="eager"
+        decoding="async"
+        class="w-full h-auto object-cover aspect-[16/9]"
+      />
+    </div>
 
     <div class="mt-10 max-w-2xl space-y-6 text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
       <p class="italic text-[color:var(--color-muted)]">
-        Full case study content coming soon — Carlos will publish the detailed write-up
-        with images, process, research, and final designs.
+        Full case study content coming soon — Carlos will publish the detailed
+        write-up with process, research, and final designs.
       </p>
-    </div>
-
-    <div class="mt-12 grid md:grid-cols-2 gap-6">
-      <Placeholder ratio="4 / 3" label="Process / research" />
-      <Placeholder ratio="4 / 3" label="Final designs" />
     </div>
   </section>
 </BaseLayout>
