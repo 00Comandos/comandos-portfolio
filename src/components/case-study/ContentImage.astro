@@ -1,0 +1,48 @@
+---
+import { Image } from "astro:assets";
+import type { ContentImage } from "~/data/case-studies/types";
+
+type Props = { image: ContentImage; rounded?: boolean };
+const { image, rounded = true } = Astro.props;
+const radius = rounded ? "rounded-xl" : "";
+---
+
+{
+  image.kind === "placeholder" ? (
+    <figure class="w-full">
+      <div
+        class={`placeholder-frame w-full ${radius}`}
+        style={`aspect-ratio: ${image.aspect ?? "16 / 9"};`}
+        role="img"
+        aria-label={image.label}
+      >
+        <span>{image.label}</span>
+      </div>
+      {image.caption && (
+        <figcaption class="mt-2 text-xs text-[color:var(--color-muted)]">
+          {image.caption}
+        </figcaption>
+      )}
+    </figure>
+  ) : (
+    <figure class="w-full">
+      <div class={`overflow-hidden ${radius} bg-[color:var(--color-paper-soft)]`}>
+        <Image
+          src={image.image}
+          alt={image.alt}
+          widths={[480, 768, 1024, 1280]}
+          sizes="(min-width: 768px) 720px, 100vw"
+          loading="lazy"
+          decoding="async"
+          class="w-full h-auto object-cover"
+          style={image.aspect ? `aspect-ratio: ${image.aspect};` : undefined}
+        />
+      </div>
+      {image.caption && (
+        <figcaption class="mt-2 text-xs text-[color:var(--color-muted)]">
+          {image.caption}
+        </figcaption>
+      )}
+    </figure>
+  )
+}

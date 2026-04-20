@@ -1,0 +1,109 @@
+---
+const sections = [
+  { id: "challenge", label: "Challenge" },
+  { id: "adventure", label: "Adventure" },
+  { id: "worth", label: "Worth" },
+  { id: "result", label: "Result" },
+] as const;
+---
+
+<nav aria-label="Case study sections" class="cs-nav">
+  <div class="container-page flex items-center justify-between gap-4 py-3">
+    <button
+      type="button"
+      id="copyCaseStudyLink"
+      class="cs-copy"
+      aria-live="polite"
+    >
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path
+          d="M6.5 9.5 9 7M9.5 6.5 7 9m-2.5-.5-.5.5a2 2 0 0 0 2.83 2.83l1.5-1.5M11.17 7.17l1.5-1.5A2 2 0 0 0 9.83 2.83L9.33 3.33"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+      <span data-copy-label>Copy Link</span>
+    </button>
+
+    <ul class="flex items-center gap-5 md:gap-7 text-sm">
+      {
+        sections.map((s) => (
+          <li>
+            <a href={`#${s.id}`} class="cs-anchor">
+              {s.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .cs-nav {
+    position: sticky;
+    top: 80px;
+    z-index: 30;
+    background-color: color-mix(in srgb, var(--color-paper) 92%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .cs-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: transparent;
+    border: none;
+    padding: 0.25rem 0;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+  }
+  .cs-copy:hover,
+  .cs-copy:focus-visible {
+    border-bottom-color: var(--color-ink);
+  }
+
+  .cs-anchor {
+    color: var(--color-ink);
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+  }
+  .cs-anchor:hover,
+  .cs-anchor:focus-visible {
+    border-bottom-color: var(--color-ink);
+  }
+</style>
+
+<script>
+  const btn = document.getElementById("copyCaseStudyLink");
+  const label = btn?.querySelector<HTMLSpanElement>("[data-copy-label]");
+  if (btn && label) {
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        const original = label.textContent;
+        label.textContent = "Copied!";
+        setTimeout(() => {
+          label.textContent = original ?? "Copy Link";
+        }, 1600);
+      } catch {
+        label.textContent = "Press ⌘+C";
+      }
+    });
+  }
+</script>

@@ -1,0 +1,105 @@
+---
+import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+import SectionChip from "~/components/case-study/SectionChip.astro";
+import ContentImage from "~/components/case-study/ContentImage.astro";
+import Divider from "~/components/case-study/Divider.astro";
+import type { CaseStudyContent } from "~/data/case-studies/types";
+
+type Props = { content: CaseStudyContent["challenge"]; brand: string };
+const { content, brand } = Astro.props;
+
+const contactHref = `/contact?project=${encodeURIComponent(`Like ${brand}`)}`;
+---
+
+<section id="challenge" class="bg-[color:var(--color-ink)] text-[color:var(--color-paper)] py-16 md:py-24">
+  <div class="container-page">
+    <SectionChip variant="challenge" label="Challenge" tone="dark" />
+
+    <h2 class="mt-6 text-[1.75rem] md:text-[2.25rem] font-extrabold leading-[1.1] tracking-tight max-w-2xl">
+      {content.heading}
+    </h2>
+    <p class="mt-4 max-w-xl text-[0.95rem] leading-[1.6] text-white/75">
+      {content.body}
+    </p>
+
+    <a href={contactHref} class="btn-dark-outline mt-7">
+      {content.ctaLabel}
+      <ArrowIcon />
+    </a>
+
+    <Divider variant="dark" />
+
+    <div class="grid gap-10 md:grid-cols-2">
+      <div>
+        <h3 class="text-sm font-semibold text-white">Results</h3>
+        <ul class="mt-4 space-y-2">
+          {
+            content.results.map((r) => (
+              <li class="flex gap-2 text-[0.95rem] text-white/85 leading-[1.55]">
+                <span aria-hidden="true" class="mt-[2px]">✓</span>
+                <span set:html={r.replace(/\((.*?)\)/, '(<em class="not-italic text-white/60">$1</em>)')} />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold text-white">The team</h3>
+        <ul class="mt-4 space-y-2">
+          {
+            content.team.map((t) => (
+              <li class="flex flex-wrap items-center gap-2 text-[0.95rem] text-white/85 leading-[1.55]">
+                <span aria-hidden="true">✓</span>
+                <span>{t.label}</span>
+                {t.badge && (
+                  <span class="inline-flex items-center rounded-full bg-[color:var(--color-accent-mint)] text-[color:var(--color-ink)] px-2.5 py-0.5 text-xs font-semibold">
+                    {t.badge}
+                  </span>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    {
+      content.image && (
+        <div class="mt-10">
+          <ContentImage image={content.image} />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .btn-dark-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background-color: transparent;
+    color: var(--color-paper);
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-full);
+    font-weight: 500;
+    font-size: 0.9375rem;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease;
+  }
+  .btn-dark-outline:hover {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    transform: translateY(-1px);
+  }
+  .btn-dark-outline :global(svg) {
+    transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .btn-dark-outline:hover :global(svg) {
+    transform: translateX(4px);
+  }
+</style>

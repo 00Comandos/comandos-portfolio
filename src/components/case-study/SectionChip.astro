@@ -1,0 +1,42 @@
+---
+type ChipVariant =
+  | "challenge"
+  | "adventure"
+  | "worth"
+  | "result"
+  | "seeing-mountain"
+  | "making-top";
+
+type Props = {
+  variant: ChipVariant;
+  label: string;
+  tone?: "light" | "dark";
+};
+
+const { variant, label, tone = "light" } = Astro.props;
+
+const styles: Record<ChipVariant, { bg: string; fg: string; glyph: string }> = {
+  challenge: { bg: "#FF4E88", fg: "#ffffff", glyph: "!" },
+  adventure: { bg: "#1CCB89", fg: "#0b0b0b", glyph: "✦" },
+  worth: { bg: "#1CCB89", fg: "#0b0b0b", glyph: "✓" },
+  result: { bg: "#FFCF40", fg: "#0b0b0b", glyph: "★" },
+  "seeing-mountain": { bg: "#FFD2D2", fg: "#0b0b0b", glyph: "⛰" },
+  "making-top": { bg: "#C9DCFF", fg: "#0b0b0b", glyph: "▲" },
+};
+
+const s = styles[variant];
+const textColor = tone === "dark" ? "#ffffff" : "#0b0b0b";
+---
+
+<div class="flex items-center gap-3">
+  <span
+    aria-hidden="true"
+    class="h-8 w-8 rounded-full flex items-center justify-center text-[0.95rem] font-bold"
+    style={`background-color: ${s.bg}; color: ${s.fg};`}
+  >
+    {s.glyph}
+  </span>
+  <span class="text-sm font-semibold" style={`color: ${textColor};`}>
+    {label}
+  </span>
+</div>

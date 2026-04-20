@@ -1,0 +1,35 @@
+---
+import type { ChecklistItem } from "~/data/case-studies/types";
+
+type Props = { items: readonly ChecklistItem[] };
+const { items } = Astro.props;
+---
+
+<ul class="space-y-4 max-w-2xl">
+  {
+    items.map((item) => (
+      <li class="text-[1rem] leading-[1.6] text-[color:var(--color-ink-soft)]">
+        <div class="flex gap-2">
+          <span aria-hidden="true" class="mt-[2px]">✓</span>
+          <div>
+            <span class="font-semibold text-[color:var(--color-ink)]">
+              {item.label}
+              {item.body ? ":" : ""}
+            </span>
+            {item.body && <span class="ml-1">{item.body}</span>}
+            {item.sub && (
+              <ul class="mt-1 space-y-1 pl-4 text-[color:var(--color-muted)]">
+                {item.sub.map((s) => (
+                  <li class="flex gap-2">
+                    <span aria-hidden="true">–</span>
+                    <span>{s}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </li>
+    ))
+  }
+</ul>

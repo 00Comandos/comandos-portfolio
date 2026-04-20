@@ -1,0 +1,68 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import type { CaseStudyContent } from "~/data/case-studies/types";
+
+type Props = {
+  content: CaseStudyContent;
+  fallbackImage: ImageMetadata;
+  title: string;
+};
+
+const { content, fallbackImage, title } = Astro.props;
+
+const introParagraphs = content.hero.intro.split(/\n\n+/);
+---
+
+<section class="container-page pt-8 md:pt-12 pb-10">
+  <div class="flex flex-col items-center text-center">
+    {
+      content.brandLogo?.kind === "public" && (
+        <img
+          src={content.brandLogo.src}
+          alt={content.brandLogo.alt}
+          height={content.brandLogo.height ?? 28}
+          style={`height: ${content.brandLogo.height ?? 28}px; width: auto;`}
+          class="mb-2"
+          loading="eager"
+          decoding="async"
+        />
+      )
+    }
+    <p class="text-sm text-[color:var(--color-muted)]">{content.kicker}</p>
+
+    <h1 class="mt-6 text-[2rem] md:text-[2.75rem] font-extrabold leading-[1.05] tracking-tight max-w-3xl">
+      {title}
+    </h1>
+  </div>
+
+  <div class="mt-10 overflow-hidden rounded-2xl bg-[color:var(--color-paper-soft)] max-w-4xl mx-auto">
+    {
+      content.hero.image && content.hero.image.kind === "image" ? (
+        <Image
+          src={content.hero.image.image}
+          alt={content.hero.image.alt}
+          widths={[640, 960, 1280, 1600]}
+          sizes="(min-width: 1024px) 960px, 100vw"
+          loading="eager"
+          decoding="async"
+          class="w-full h-auto object-cover"
+        />
+      ) : (
+        <Image
+          src={fallbackImage}
+          alt={title}
+          widths={[640, 960, 1280, 1600]}
+          sizes="(min-width: 1024px) 960px, 100vw"
+          loading="eager"
+          decoding="async"
+          class="w-full h-auto object-cover aspect-[16/10]"
+        />
+      )
+    }
+  </div>
+
+  <div class="mt-8 max-w-2xl mx-auto space-y-4 text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
+    {introParagraphs.map((p) => <p>{p}</p>)}
+  </div>
+</section>

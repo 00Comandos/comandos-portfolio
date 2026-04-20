@@ -1,0 +1,48 @@
+---
+import Divider from "~/components/case-study/Divider.astro";
+import type { CaseStudyContent, StatIcon } from "~/data/case-studies/types";
+
+type Props = { content: CaseStudyContent["result"] };
+const { content } = Astro.props;
+
+const iconFor = (icon: StatIcon): string => {
+  switch (icon) {
+    case "globe":
+      return "🌐";
+    case "money":
+      return "💵";
+    case "bell":
+      return "🔔";
+    case "chart":
+      return "📈";
+  }
+};
+---
+
+<section id="result" class="container-page pb-24">
+  <Divider />
+
+  <h2 class="text-center text-[1.75rem] md:text-[2.25rem] font-extrabold leading-[1.1] tracking-tight">
+    {content.heading}
+  </h2>
+
+  <dl class="mt-12 grid gap-10 md:grid-cols-3 max-w-3xl mx-auto">
+    {
+      content.stats.map((s) => (
+        <div class="flex flex-col items-start">
+          <div class="h-10 w-10 rounded-full bg-[color:var(--color-paper-warm)] flex items-center justify-center text-lg">
+            <span aria-hidden="true">{iconFor(s.icon)}</span>
+          </div>
+          <dt class="mt-4 text-[1.125rem] font-bold leading-tight">
+            {s.value} {s.label}
+          </dt>
+          {s.caption && (
+            <dd class="mt-2 text-sm text-[color:var(--color-muted)]">
+              {s.caption}
+            </dd>
+          )}
+        </div>
+      ))
+    }
+  </dl>
+</section>

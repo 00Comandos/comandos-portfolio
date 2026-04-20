@@ -1,5 +1,9 @@
 ---
+import { Image } from "astro:assets";
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+import { brandImages, requireImage } from "~/lib/image-map";
+
+const mountain = requireImage(brandImages, "mountain-white.jpg");
 ---
 
 <section aria-labelledby="nfg-heading" class="pb-24">
@@ -21,9 +25,11 @@ import ArrowIcon from "~/components/ui/ArrowIcon.astro";
       </div>
 
       <div class="flex items-center justify-center">
-        <img
-          src="/images/mountain-white.jpg"
+        <Image
+          src={mountain}
           alt="North Face Growth — mountain climb illustration"
+          widths={[320, 480, 640]}
+          sizes="(min-width: 768px) 420px, 100vw"
           loading="lazy"
           decoding="async"
           class="w-full max-w-sm h-auto rounded-md mix-blend-multiply"
