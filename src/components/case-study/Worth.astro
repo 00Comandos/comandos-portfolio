@@ -8,14 +8,18 @@ type Props = { content: CaseStudyContent["worth"] };
 const { content } = Astro.props;
 ---
 
-<section id="worth" class="pb-24 md:pb-32">
+<section id="worth" class="pb-10 md:pb-12">
   <div class="cs-body">
-    <div class="space-y-14 md:space-y-16">
+    <div class="worth-blocks space-y-14 md:space-y-16">
       {
         content.blocks.map((block) => {
           if (block.kind === "divider") return <Divider />;
           if (block.kind === "chip") {
-            return <SectionChip variant={block.icon} label={block.label} />;
+            return (
+              <div data-chip="true">
+                <SectionChip variant={block.icon} label={block.label} />
+              </div>
+            );
           }
           if (block.kind === "intro") {
             return (
@@ -64,3 +68,12 @@ const { content } = Astro.props;
     </div>
   </div>
 </section>
+
+<style>
+  /* Tight chip → heading pairing. Tailwind v4 space-y-* applies
+     margin-block-end to :not(:last-child), so we trim the chip's own bottom
+     margin rather than the next sibling's top. */
+  .worth-blocks > [data-chip] {
+    margin-block-end: 0.75rem !important;
+  }
+</style>

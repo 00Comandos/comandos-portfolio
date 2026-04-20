@@ -1,0 +1,264 @@
+---
+type Scene = "launch" | "rise" | "retention";
+
+type Props = { scene: Scene; class?: string };
+const { scene, class: className = "" } = Astro.props;
+---
+
+<div class:list={["stat-art", `stat-art--${scene}`, className]}>
+  <svg
+    viewBox="0 0 120 80"
+    width="120"
+    height="80"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
+    {
+      scene === "launch" && (
+        <>
+          <g class="art-rocket">
+            <path
+              d="M60 18 C66 18 70 24 70 32 L70 46 L50 46 L50 32 C50 24 54 18 60 18 Z"
+              class="stroke"
+              stroke-width="1.5"
+              stroke-linejoin="round"
+            />
+            <circle cx="60" cy="32" r="3.2" class="stroke" stroke-width="1.5" />
+            <path
+              d="M50 42 L44 54 L50 50"
+              class="stroke"
+              stroke-width="1.5"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M70 42 L76 54 L70 50"
+              class="stroke"
+              stroke-width="1.5"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M55 46 L58 58 L60 52 L62 58 L65 46"
+              class="flame stroke-accent"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </g>
+          <circle cx="38" cy="66" r="1.4" class="spark spark-1" />
+          <circle cx="82" cy="68" r="1.1" class="spark spark-2" />
+          <circle cx="30" cy="58" r="0.9" class="spark spark-3" />
+          <circle cx="90" cy="58" r="1.2" class="spark spark-4" />
+        </>
+      )
+    }
+
+    {
+      scene === "rise" && (
+        <>
+          <line
+            x1="28"
+            y1="62"
+            x2="92"
+            y2="62"
+            class="stroke axis"
+            stroke-width="1"
+            stroke-linecap="round"
+          />
+          <rect x="38" y="46" width="10" height="16" class="bar bar-1" rx="1" />
+          <rect x="55" y="36" width="10" height="26" class="bar bar-2" rx="1" />
+          <rect x="72" y="26" width="10" height="36" class="bar bar-3" rx="1" />
+          <polyline
+            points="30,52 45,44 62,34 80,22"
+            class="stroke-accent trend"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <circle cx="80" cy="22" r="2.5" class="trend-dot" />
+        </>
+      )
+    }
+
+    {
+      scene === "retention" && (
+        <>
+          <path
+            d="M60 16 L80 24 L80 42 C80 54 72 62 60 66 C48 62 40 54 40 42 L40 24 Z"
+            class="stroke shield"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M51 40 L57 46 L69 32"
+            class="stroke-accent check"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </>
+      )
+    }
+  </svg>
+</div>
+
+<style>
+  .stat-art {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 80px;
+    color: var(--color-ink);
+    transition: transform 0.35s ease;
+  }
+  .stat-art svg {
+    overflow: visible;
+  }
+
+  .stroke {
+    stroke: currentColor;
+    fill: none;
+  }
+  .stroke-accent {
+    stroke: var(--color-accent-mint);
+    fill: none;
+  }
+
+  /* ——— Scroll-in: stroke draw + fade ——— */
+  .stroke,
+  .stroke-accent {
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    opacity: 0;
+  }
+  :global(.stat[data-in-view="true"]) .stroke,
+  :global(.stat[data-in-view="true"]) .stroke-accent {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    transition:
+      stroke-dashoffset 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.35s ease-out;
+  }
+  .spark,
+  .trend-dot {
+    opacity: 0;
+  }
+  :global(.stat[data-in-view="true"]) .spark,
+  :global(.stat[data-in-view="true"]) .trend-dot {
+    opacity: 1;
+    transition: opacity 0.5s ease-out 0.9s;
+  }
+
+  :global(.stat):hover .stat-art {
+    transform: translateY(-2px);
+  }
+
+  /* ———— Scene: launch ———— */
+  .art-rocket {
+    transform-origin: 60px 52px;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :global(.stat):hover .art-rocket {
+    transform: translateY(-5px);
+  }
+  @keyframes flame-flicker {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.25) translateY(1px); }
+  }
+  .flame {
+    transform-origin: 60px 46px;
+    animation: flame-flicker 0.45s ease-in-out infinite;
+  }
+  .spark {
+    fill: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  }
+  @keyframes spark-drift {
+    0% { transform: translate(0, 0); opacity: 0.9; }
+    100% { transform: translate(-3px, 6px); opacity: 0; }
+  }
+  .spark-1 { animation: spark-drift 1.6s ease-out infinite; }
+  .spark-2 { animation: spark-drift 1.8s ease-out infinite 0.25s; }
+  .spark-3 { animation: spark-drift 2.0s ease-out infinite 0.6s; }
+  .spark-4 { animation: spark-drift 1.7s ease-out infinite 0.9s; }
+
+  /* ———— Scene: rise ———— */
+  .bar {
+    fill: color-mix(in srgb, var(--color-ink) 14%, transparent);
+    transform-origin: center bottom;
+    transform: scaleY(0);
+  }
+  .trend-dot {
+    fill: var(--color-accent-mint);
+  }
+  :global(.stat[data-in-view="true"]) .bar-1 {
+    transform: scaleY(1);
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+  }
+  :global(.stat[data-in-view="true"]) .bar-2 {
+    transform: scaleY(1);
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.25s;
+  }
+  :global(.stat[data-in-view="true"]) .bar-3 {
+    transform: scaleY(1);
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.4s;
+  }
+  :global(.stat[data-in-view="true"]) .trend {
+    transition-delay: 0.6s;
+  }
+  :global(.stat[data-in-view="true"]) .trend-dot {
+    transition-delay: 1.2s;
+  }
+  @keyframes bar-breathe {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.04); }
+  }
+  :global(.stat):hover .bar-1 {
+    animation: bar-breathe 1.1s ease-in-out infinite;
+  }
+  :global(.stat):hover .bar-2 {
+    animation: bar-breathe 1.1s ease-in-out 0.12s infinite;
+  }
+  :global(.stat):hover .bar-3 {
+    animation: bar-breathe 1.1s ease-in-out 0.24s infinite;
+  }
+
+  /* ———— Scene: retention ———— */
+  .shield {
+    transform-origin: 60px 40px;
+    transition: transform 0.4s ease;
+  }
+  @keyframes shield-breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+  }
+  :global(.stat[data-in-view="true"]) .shield {
+    animation: shield-breathe 3.2s ease-in-out infinite;
+  }
+  :global(.stat):hover .shield {
+    animation-duration: 1.4s;
+  }
+  @keyframes check-glow {
+    0%, 100% { stroke-width: 2; filter: drop-shadow(0 0 0 transparent); }
+    50% { stroke-width: 2.4; filter: drop-shadow(0 0 3px var(--color-accent-mint)); }
+  }
+  :global(.stat):hover .check {
+    animation: check-glow 1.2s ease-in-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .art-rocket, .flame, .spark, .bar, .trend, .tip, .shield, .check, .trend-dot {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+    .stroke, .stroke-accent, .spark, .trend-dot {
+      stroke-dasharray: none;
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+    .bar {
+      transform: scaleY(1) !important;
+    }
+  }
+</style>

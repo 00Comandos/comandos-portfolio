@@ -1,6 +1,8 @@
 ---
 import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
 import Divider from "~/components/case-study/Divider.astro";
+import StatIllustration from "~/components/case-study/StatIllustration.astro";
 import type { CaseStudyContent, StatIcon } from "~/data/case-studies/types";
 
 type Props = { content: CaseStudyContent["result"] };
@@ -20,7 +22,7 @@ const builtInIcon = (icon: Extract<StatIcon, string>): string => {
 };
 ---
 
-<section id="result" class="pb-24">
+<section id="result" class="pt-6 md:pt-8 pb-24">
   <div class="cs-body">
     <Divider />
 
@@ -28,15 +30,15 @@ const builtInIcon = (icon: Extract<StatIcon, string>): string => {
       {content.heading}
     </h2>
 
-    <dl class="mt-12 grid gap-10 md:grid-cols-3">
+    <dl class="mt-14 grid gap-12 md:gap-10 md:grid-cols-3" data-stats>
       {
         content.stats.map((s) => (
-          <div class="flex flex-col items-start">
+          <div class="stat group flex flex-col items-start md:items-center md:text-center">
             {typeof s.icon === "string" ? (
-              <div class="h-14 w-14 rounded-full bg-[color:var(--color-paper-warm)] flex items-center justify-center text-xl">
+              <div class="h-14 w-14 rounded-full bg-[color:var(--color-paper-soft)] border border-[color:var(--color-border)] flex items-center justify-center text-xl">
                 <span aria-hidden="true">{builtInIcon(s.icon)}</span>
               </div>
-            ) : (
+            ) : s.icon.kind === "image" ? (
               <Image
                 src={s.icon.image}
                 alt={s.icon.alt ?? ""}
@@ -46,12 +48,25 @@ const builtInIcon = (icon: Extract<StatIcon, string>): string => {
                 decoding="async"
                 class="h-14 w-14 object-contain"
               />
+            ) : s.icon.kind === "phosphor" ? (
+              <span
+                class:list={[
+                  "fallback-icon",
+                  s.icon.animation && `fallback-icon--${s.icon.animation}`,
+                ]}
+                aria-hidden={s.icon.alt ? undefined : "true"}
+                aria-label={s.icon.alt ?? undefined}
+              >
+                <Icon name={s.icon.name} size={28} />
+              </span>
+            ) : (
+              <StatIllustration scene={s.icon.scene} />
             )}
-            <dt class="mt-4 text-[1.125rem] font-bold leading-tight">
+            <dt class="mt-5 text-[1.375rem] md:text-[1.5rem] font-bold leading-[1.2] tracking-tight">
               {s.value} {s.label}
             </dt>
             {s.caption && (
-              <dd class="mt-2 text-sm text-[color:var(--color-muted)]">
+              <dd class="mt-2 text-base text-[color:var(--color-muted)] leading-[1.55]">
                 {s.caption}
               </dd>
             )}
@@ -61,3 +76,37 @@ const builtInIcon = (icon: Extract<StatIcon, string>): string => {
     </dl>
   </div>
 </section>
+
+<style>
+  .fallback-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 3.25rem;
+    width: 3.25rem;
+    border-radius: 9999px;
+    background-color: var(--color-paper-soft);
+    color: var(--color-ink);
+    border: 1px solid var(--color-border);
+  }
+</style>
+
+<script>
+  const stats = document.querySelectorAll<HTMLElement>(
+    "[data-stats] .stat",
+  );
+  if (stats.length > 0) {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).setAttribute("data-in-view", "true");
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.35 },
+    );
+    stats.forEach((s) => obs.observe(s));
+  }
+</script>

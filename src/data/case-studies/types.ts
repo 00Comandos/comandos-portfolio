@@ -24,12 +24,27 @@ export type ChecklistItem = {
   sub?: readonly string[];
 };
 
+export type StatAnimation = "spin" | "bob" | "shake";
+
 export type StatIcon =
   | "globe"
   | "money"
   | "bell"
   | "chart"
-  | { kind: "image"; image: ImageMetadata; alt?: string };
+  | { kind: "image"; image: ImageMetadata; alt?: string }
+  | {
+      kind: "phosphor";
+      /** Iconify name, e.g. "lucide:globe". */
+      name: string;
+      animation?: StatAnimation;
+      alt?: string;
+    }
+  | {
+      kind: "illustration";
+      /** Hand-crafted SVG scene — matches the editorial product-page aesthetic. */
+      scene: "launch" | "rise" | "retention";
+      alt?: string;
+    };
 
 export type AdventureBlock =
   | { kind: "intro"; text: string }
