@@ -1,0 +1,58 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Placeholder from "~/components/ui/Placeholder.astro";
+import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+import { site } from "~/lib/site";
+
+export const prerender = true;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "North Face Growth",
+  description:
+    "Comandos' methodology for creating and scaling products in turbo mode.",
+  url: `${site.url}/north-face-growth`,
+  author: { "@type": "Person", name: site.person.name },
+};
+---
+
+<BaseLayout
+  title="North Face Growth"
+  description="Comandos' methodology for creating and scaling products in turbo mode."
+  type="article"
+  jsonLd={jsonLd}
+>
+  <section class="container-page pt-14 md:pt-20 pb-10">
+    <p class="text-xs font-semibold tracking-[0.18em] uppercase text-[color:var(--color-muted)]">
+      Methodology
+    </p>
+    <h1 class="mt-3 text-3xl md:text-[3rem] font-extrabold leading-[1.05] tracking-tight max-w-3xl">
+      North Face Growth
+    </h1>
+    <p class="mt-5 max-w-2xl text-[1.0625rem] leading-[1.55] text-[color:var(--color-muted)]">
+      Our methodology for creating and scaling products in turbo mode. Full
+      write-up coming soon — final design pending.
+    </p>
+  </section>
+
+  <section class="container-page pb-24">
+    <Placeholder ratio="16 / 9" label="North Face Growth hero" />
+
+    <div class="mt-12 grid md:grid-cols-3 gap-6">
+      <Placeholder ratio="1 / 1" label="Base Camp" />
+      <Placeholder ratio="1 / 1" label="Ascent" />
+      <Placeholder ratio="1 / 1" label="Summit" />
+    </div>
+
+    <div class="mt-14 max-w-xl">
+      <p class="text-[color:var(--color-muted)]">
+        Want to apply this methodology to your product?
+      </p>
+      <a href="/contact" class="btn-primary mt-4">
+        Start a conversation
+        <ArrowIcon />
+      </a>
+    </div>
+  </section>
+</BaseLayout>

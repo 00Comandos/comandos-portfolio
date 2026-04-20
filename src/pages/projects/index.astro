@@ -1,0 +1,43 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import ProjectCard from "~/components/projects/ProjectCard.astro";
+import { projects } from "~/data/projects";
+import { site } from "~/lib/site";
+
+export const prerender = true;
+
+const sorted = [...projects].sort((a, b) => a.order - b.order);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Projects — Comandos",
+  url: `${site.url}/projects`,
+  description:
+    "Selected product design case studies by Comandos across FinTech, SaaS, IoT, and FoodTech.",
+  hasPart: sorted.map((p) => ({
+    "@type": "CreativeWork",
+    name: p.title,
+    url: `${site.url}/projects/${p.slug}`,
+    about: p.brand,
+  })),
+};
+---
+
+<BaseLayout
+  title="Projects"
+  description="Selected product design case studies by Comandos: FinTech, SaaS, IoT, and FoodTech. Real outcomes, real metrics."
+  jsonLd={jsonLd}
+>
+  <section class="container-page pt-12 md:pt-16 pb-6">
+    <h1 class="font-serif italic text-3xl md:text-[2.75rem] leading-[1.05] tracking-tight max-w-md">
+      Building exponential growth
+    </h1>
+  </section>
+
+  <section class="container-page pb-20">
+    <div class="divide-y divide-[color:var(--color-border)]">
+      {sorted.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+</BaseLayout>

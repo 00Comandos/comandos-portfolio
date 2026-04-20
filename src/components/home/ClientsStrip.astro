@@ -1,0 +1,26 @@
+---
+import { clients } from "~/data/clients";
+---
+
+<section aria-labelledby="clients-heading" class="py-16 md:py-20 border-y border-[color:var(--color-border)] bg-[color:var(--color-paper-soft)]">
+  <div class="container-page">
+    <p id="clients-heading" class="text-center text-sm font-medium text-[color:var(--color-ink)]">
+      We have impacted millions of users with
+    </p>
+
+    <ul class="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-6 md:gap-x-14">
+      {
+        clients.map((c) => (
+          <li class="flex items-center justify-center">
+            <div class="h-8 min-w-[88px] flex items-center justify-center rounded-sm bg-[color:var(--color-border)]/60 px-4 text-[0.75rem] font-semibold tracking-wider text-[color:var(--color-muted)] uppercase">
+              {c.name}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-4 text-center text-[0.7rem] text-[color:var(--color-muted)]">
+      Logo placeholders — final SVG assets pending brand guide.
+    </p>
+  </div>
+</section>

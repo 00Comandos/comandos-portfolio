@@ -1,0 +1,22 @@
+---
+type Props = {
+  label?: string;
+  ratio?: string;
+  class?: string;
+};
+
+const {
+  label = "Image placeholder",
+  ratio = "4 / 3",
+  class: className = "",
+} = Astro.props;
+---
+
+<div
+  class={`placeholder-frame ${className}`}
+  style={`aspect-ratio: ${ratio};`}
+  role="img"
+  aria-label={label}
+>
+  <span>{label}</span>
+</div>

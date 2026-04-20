@@ -1,0 +1,35 @@
+---
+import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+---
+
+<section aria-labelledby="nfg-heading" class="pb-24">
+  <div class="container-page">
+    <div class="rounded-xl bg-[color:var(--color-paper-warm)] p-8 md:p-14 grid md:grid-cols-2 gap-10 items-center">
+      <div>
+        <h2 id="nfg-heading" class="text-3xl md:text-[2.25rem] tracking-tight">
+          <span class="font-extrabold">Our Secret,</span><br />
+          <span class="font-medium">To Create Amazing Products</span>
+        </h2>
+        <p class="mt-5 max-w-md text-[0.95rem] leading-[1.55] text-[color:var(--color-ink-soft)]">
+          North Face Growth: our methodology for creating and scaling products
+          in turbo mode.
+        </p>
+        <a href="/north-face-growth" class="btn-outline mt-7">
+          Learn more about North Face Growth
+          <ArrowIcon />
+        </a>
+      </div>
+
+      <div class="flex items-center justify-center">
+        <div
+          class="placeholder-frame w-full max-w-sm"
+          style="aspect-ratio: 4 / 3;"
+          role="img"
+          aria-label="North Face Growth mountain illustration placeholder"
+        >
+          Mountain illustration
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

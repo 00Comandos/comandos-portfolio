@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://comandos.me/sitemap-index.xml

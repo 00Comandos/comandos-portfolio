@@ -1,0 +1,130 @@
+---
+import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+import { PROJECT_TYPES } from "~/lib/contact";
+
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+const status = new URL(Astro.request.url).searchParams.get("status");
+const reason = new URL(Astro.request.url).searchParams.get("reason");
+
+const fieldClass =
+  "w-full rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-paper)] px-4 py-3 text-[0.95rem] focus:border-[color:var(--color-ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-accent)]/25 transition-colors";
+const labelClass =
+  "block text-xs font-semibold tracking-[0.12em] uppercase text-[color:var(--color-muted)]";
+---
+
+{
+  status === "success" && (
+    <div
+      role="status"
+      class="mb-8 rounded-md border border-[color:var(--color-accent-mint)] bg-[color:var(--color-accent-mint)]/10 p-4 text-sm"
+    >
+      <strong class="block">Thanks — your message is on its way.</strong>
+      We usually reply within one business day.
+    </div>
+  )
+}
+{
+  status === "error" && (
+    <div
+      role="alert"
+      class="mb-8 rounded-md border border-red-300 bg-red-50 p-4 text-sm"
+    >
+      <strong class="block">Something went wrong.</strong>
+      {reason ? <span class="block mt-1 text-red-900">{reason}</span> : null}
+      Please try again, or email us directly at
+      <a class="underline ml-1" href="mailto:c@comandos.me">c@comandos.me</a>.
+    </div>
+  )
+}
+
+<form
+  method="POST"
+  action="/api/contact"
+  novalidate
+  class="grid gap-5 max-w-xl"
+>
+  <div class="grid gap-1.5">
+    <label class={labelClass} for="name">Name</label>
+    <input
+      class={fieldClass}
+      id="name"
+      name="name"
+      type="text"
+      required
+      minlength="2"
+      autocomplete="name"
+    />
+  </div>
+
+  <div class="grid gap-1.5">
+    <label class={labelClass} for="email">Email</label>
+    <input
+      class={fieldClass}
+      id="email"
+      name="email"
+      type="email"
+      required
+      autocomplete="email"
+    />
+  </div>
+
+  <div class="grid gap-1.5">
+    <label class={labelClass} for="company">Company (optional)</label>
+    <input
+      class={fieldClass}
+      id="company"
+      name="company"
+      type="text"
+      autocomplete="organization"
+    />
+  </div>
+
+  <div class="grid gap-1.5">
+    <label class={labelClass} for="projectType">Project type</label>
+    <select class={fieldClass} id="projectType" name="projectType" required>
+      <option value="">Choose one…</option>
+      {PROJECT_TYPES.map((t) => <option value={t}>{t}</option>)}
+    </select>
+  </div>
+
+  <div class="grid gap-1.5">
+    <label class={labelClass} for="message">Message</label>
+    <textarea
+      class={`${fieldClass} min-h-[160px] resize-y`}
+      id="message"
+      name="message"
+      required
+      minlength="10"
+      maxlength="4000"
+    />
+  </div>
+
+  <div aria-hidden="true" class="hidden">
+    <label>
+      Website
+      <input name="website" type="text" tabindex="-1" autocomplete="off" />
+    </label>
+  </div>
+
+  {
+    turnstileKey && (
+      <>
+        <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="light" />
+        <script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          async
+          defer
+        />
+      </>
+    )
+  }
+
+  <button type="submit" class="btn-primary justify-center w-fit">
+    Send message
+    <ArrowIcon />
+  </button>
+
+  <p class="text-xs text-[color:var(--color-muted)]">
+    Protected by Cloudflare Turnstile. We'll reply to your email directly.
+  </p>
+</form>

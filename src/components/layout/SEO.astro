@@ -1,0 +1,57 @@
+---
+import { site } from "~/lib/site";
+
+type Props = {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  image?: string;
+  noindex?: boolean;
+  type?: "website" | "article";
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
+};
+
+const {
+  title,
+  description = site.description,
+  canonical,
+  image = "/og-default.svg",
+  noindex = false,
+  type = "website",
+  jsonLd,
+} = Astro.props;
+
+const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
+const url = canonical ?? new URL(Astro.url.pathname, site.url).toString();
+const ogImage = new URL(image, site.url).toString();
+const jsonLdArray = jsonLd
+  ? Array.isArray(jsonLd)
+    ? jsonLd
+    : [jsonLd]
+  : [];
+---
+
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<meta name="author" content={site.person.name} />
+<link rel="canonical" href={url} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content="en_US" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+{
+  jsonLdArray.map((ld) => (
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  ))
+}

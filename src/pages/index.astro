@@ -1,0 +1,47 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/home/Hero.astro";
+import JourneyChart from "~/components/home/JourneyChart.astro";
+import ClientsStrip from "~/components/home/ClientsStrip.astro";
+import Testimonials from "~/components/home/Testimonials.astro";
+import NorthFaceGrowthCTA from "~/components/home/NorthFaceGrowthCTA.astro";
+import { site } from "~/lib/site";
+
+export const prerender = true;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: site.name,
+    url: site.url,
+    description: site.description,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: site.person.name,
+    alternateName: site.person.alternateName,
+    jobTitle: site.person.jobTitle,
+    url: site.url,
+    sameAs: [site.social.linkedin, site.social.twitter],
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Mexico City",
+      addressCountry: "MX",
+    },
+  },
+];
+---
+
+<BaseLayout
+  title="World-Class Product Design, Backed By Data"
+  description={site.description}
+  jsonLd={jsonLd}
+>
+  <Hero />
+  <JourneyChart />
+  <ClientsStrip />
+  <Testimonials />
+  <NorthFaceGrowthCTA />
+</BaseLayout>

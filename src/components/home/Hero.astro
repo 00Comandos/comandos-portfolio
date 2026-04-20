@@ -1,0 +1,35 @@
+---
+import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+---
+
+<section class="relative overflow-hidden">
+  <div class="container-page pt-16 md:pt-24 pb-6 md:pb-12">
+    <div class="max-w-3xl">
+      <h1 class="text-[2.25rem] md:text-[3.5rem] leading-[1.02] tracking-tight">
+        World-Class Product <br class="hidden md:block" /><span
+          class="font-extrabold">Design</span
+        >, <span class="font-medium">Backed By Data</span>
+      </h1>
+
+      <p class="mt-6 max-w-xl text-[1.0625rem] leading-[1.55] text-[color:var(--color-muted)]">
+        We partner with FinTech and SaaS founders to build products that millions
+        of people use. User research, product strategy, design systems, and
+        growth — from Mexico City to the world.
+      </p>
+
+      <div class="mt-8 flex items-center gap-5 flex-wrap">
+        <a href="/contact" class="btn-primary">
+          Contact Us
+          <ArrowIcon />
+        </a>
+        <a href="/projects" class="btn-link">
+          View success stories
+          <ArrowIcon />
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div aria-hidden="true" class="absolute -top-10 -left-20 w-64 h-14 bg-[color:var(--color-accent-sky)] rounded-md opacity-90 hidden md:block"></div>
+  <div aria-hidden="true" class="absolute -top-4 -right-24 w-40 h-40 bg-[color:var(--color-accent-sun)] rounded-md opacity-90 rotate-[14deg] hidden md:block"></div>
+</section>

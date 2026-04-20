@@ -1,0 +1,42 @@
+---
+import { testimonials } from "~/data/testimonials";
+
+const initials = (name: string) =>
+  name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("");
+---
+
+<section aria-labelledby="testimonials-heading" class="py-20 md:py-24">
+  <div class="container-page">
+    <h2 id="testimonials-heading" class="text-3xl md:text-[2.25rem] tracking-tight">
+      <span class="font-extrabold">Opinions</span><br />
+      <span class="font-medium">Of Our Clients</span>
+    </h2>
+
+    <div class="mt-10 -mx-5 px-5 md:mx-0 md:px-0 overflow-x-auto pb-4 snap-x snap-mandatory scroll-px-5">
+      <ul class="flex gap-5 md:gap-6 w-max">
+        {
+          testimonials.map((t) => (
+            <li class="snap-start flex flex-col justify-between w-[320px] md:w-[360px] bg-[color:var(--color-paper)] border border-[color:var(--color-border)] rounded-lg p-6 shadow-[var(--shadow-card)]">
+              <blockquote class="text-[0.92rem] leading-[1.55] text-[color:var(--color-ink-soft)]">
+                “{t.quote}”
+              </blockquote>
+              <figcaption class="mt-6 flex items-center gap-3">
+                <div class="h-10 w-10 rounded-full bg-[color:var(--color-border)] flex items-center justify-center text-xs font-semibold text-[color:var(--color-muted)]">
+                  {initials(t.name)}
+                </div>
+                <div>
+                  <div class="text-sm font-semibold">{t.name}</div>
+                  <div class="text-xs text-[color:var(--color-muted)]">{t.role}</div>
+                </div>
+              </figcaption>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
