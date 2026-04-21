@@ -24,6 +24,14 @@ export type ChecklistItem = {
   sub?: readonly string[];
 };
 
+export type FeatureGridItem = {
+  number: string;
+  label?: string;
+  title: string;
+  body: string;
+  highlight?: boolean;
+};
+
 export type StatAnimation = "spin" | "bob" | "shake";
 
 export type StatIcon =
@@ -34,34 +42,38 @@ export type StatIcon =
   | { kind: "image"; image: ImageMetadata; alt?: string }
   | {
       kind: "phosphor";
-      /** Iconify name, e.g. "lucide:globe". */
       name: string;
       animation?: StatAnimation;
       alt?: string;
     }
   | {
       kind: "illustration";
-      /** Hand-crafted SVG scene — matches the editorial product-page aesthetic. */
       scene: "launch" | "rise" | "retention";
       alt?: string;
     };
+
+export type TwoColMediaItem = {
+  image: ContentImage;
+  title: string;
+  detail?: string;
+};
 
 export type AdventureBlock =
   | { kind: "intro"; text: string }
   | { kind: "checklist"; items: readonly ChecklistItem[] }
   | { kind: "image"; image: ContentImage; rounded?: boolean }
-  | { kind: "divider" }
+  | { kind: "divider"; variant?: "hatched" | "line" }
   | {
       kind: "step";
-      step: string; // "STEP 01"
+      step: string;
       heading: string;
       body?: string;
       image?: ContentImage;
-      tail?: readonly ChecklistItem[]; // bullets beneath the image (e.g. First Insights)
+      tail?: readonly ChecklistItem[];
     }
   | {
       kind: "callout";
-      label?: string; // "Design System"
+      label?: string;
       heading: string;
       image?: ContentImage;
     }
@@ -69,6 +81,26 @@ export type AdventureBlock =
       kind: "chip";
       icon: "seeing-mountain" | "making-top";
       label: string;
+    }
+  | {
+      kind: "feature-grid";
+      columns: 2 | 3;
+      items: readonly FeatureGridItem[];
+    }
+  | {
+      kind: "heading";
+      label?: string;
+      heading: string;
+      body?: string;
+    }
+  | {
+      kind: "two-col-media";
+      items: readonly TwoColMediaItem[];
+    }
+  | {
+      kind: "responsive-media";
+      desktop: ContentImage;
+      mobile: readonly ContentImage[];
     };
 
 export type WorthBlock =
@@ -78,22 +110,42 @@ export type WorthBlock =
       kind: "before-after";
       before: ContentImage;
       after: ContentImage;
-      impact: string; // "↑477%"
+      impact: string;
     }
   | {
       kind: "chip";
       icon: "seeing-mountain" | "making-top" | "worth";
       label: string;
     }
-  | { kind: "divider" };
+  | { kind: "divider"; variant?: "hatched" | "line" }
+  | { kind: "text"; text: string }
+  | {
+      kind: "checklist";
+      heading?: string;
+      items: readonly ChecklistItem[];
+    }
+  | { kind: "big-heading"; heading: string }
+  | {
+      kind: "image-grid";
+      columns: 2 | 3 | 4;
+      images: readonly ContentImage[];
+    }
+  | {
+      kind: "responsive-media";
+      desktop: ContentImage;
+      mobile: readonly ContentImage[];
+    };
 
 export type CaseStudyContent = {
   slug: string;
   kicker: string;
   brandLogo?: { kind: "public"; src: string; alt: string; height?: number };
   hero: {
-    image?: ContentImage; // defaults to project thumbnail if omitted
-    intro: string; // multi-paragraph; use \n\n as separator
+    image?: ContentImage;
+    /** Multi-paragraph body; split by \n\n. */
+    intro: string;
+    /** Optional bulleted list rendered beneath the intro paragraphs. */
+    bullets?: readonly string[];
   };
   challenge: {
     heading: string;

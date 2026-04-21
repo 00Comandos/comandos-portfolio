@@ -1,12 +1,26 @@
 ---
-type Props = { variant?: "dark" | "light" };
-const { variant = "light" } = Astro.props;
-const color = variant === "dark" ? "rgba(255,255,255,0.35)" : "rgba(11,11,11,0.35)";
+type Props = {
+  tone?: "dark" | "light";
+  variant?: "hatched" | "line";
+};
+const { tone = "light", variant = "hatched" } = Astro.props;
+
+const hatchColor = tone === "dark" ? "rgba(255,255,255,0.35)" : "rgba(11,11,11,0.35)";
+const lineColor = tone === "dark" ? "rgba(255,255,255,0.2)" : "var(--color-border)";
 ---
 
-<div
-  class="my-10 md:my-14 h-[10px] w-full"
-  aria-hidden="true"
-  style={`background-image: repeating-linear-gradient(-45deg, ${color} 0 1px, transparent 1px 8px);`}
->
-</div>
+{
+  variant === "hatched" ? (
+    <div
+      class="my-10 md:my-14 h-[10px] w-full"
+      aria-hidden="true"
+      style={`background-image: repeating-linear-gradient(-45deg, ${hatchColor} 0 1px, transparent 1px 8px);`}
+    />
+  ) : (
+    <hr
+      class="my-10 md:my-14 border-0 h-px w-full"
+      aria-hidden="true"
+      style={`background-color: ${lineColor};`}
+    />
+  )
+}

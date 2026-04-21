@@ -16,6 +16,10 @@ const storiModules = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/images/stori/*",
   { eager: true },
 );
+const kartaModules = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/karta/*",
+  { eager: true },
+);
 
 const toMap = (
   modules: Record<string, { default: ImageMetadata }>,
@@ -32,6 +36,7 @@ export const projectImages = toMap(projectModules);
 export const avatarImages = toMap(avatarModules);
 export const brandImages = toMap(brandModules);
 export const storiImages = toMap(storiModules);
+export const kartaImages = toMap(kartaModules);
 
 export function requireImage(
   map: Record<string, ImageMetadata>,

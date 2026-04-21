@@ -2,6 +2,9 @@
 import ContentImage from "~/components/case-study/ContentImage.astro";
 import SectionChip from "~/components/case-study/SectionChip.astro";
 import Divider from "~/components/case-study/Divider.astro";
+import Checklist from "~/components/case-study/Checklist.astro";
+import ImageGrid from "~/components/case-study/ImageGrid.astro";
+import ResponsiveMedia from "~/components/case-study/ResponsiveMedia.astro";
 import type { CaseStudyContent } from "~/data/case-studies/types";
 
 type Props = { content: CaseStudyContent["worth"] };
@@ -13,7 +16,7 @@ const { content } = Astro.props;
     <div class="worth-blocks space-y-14 md:space-y-16">
       {
         content.blocks.map((block) => {
-          if (block.kind === "divider") return <Divider />;
+          if (block.kind === "divider") return <Divider variant={block.variant ?? "hatched"} />;
           if (block.kind === "chip") {
             return (
               <div data-chip="true">
@@ -40,8 +43,38 @@ const { content } = Astro.props;
               </div>
             );
           }
+          if (block.kind === "text") {
+            return (
+              <p class="text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
+                {block.text}
+              </p>
+            );
+          }
           if (block.kind === "image") {
-            return <ContentImage image={block.image} rounded={block.rounded !== false} />;
+            return <ContentImage image={block.image} rounded={block.rounded === true} />;
+          }
+          if (block.kind === "checklist") {
+            return (
+              <div>
+                {block.heading && (
+                  <p class="mb-3 text-[0.95rem] font-bold">{block.heading}</p>
+                )}
+                <Checklist items={block.items} />
+              </div>
+            );
+          }
+          if (block.kind === "big-heading") {
+            return (
+              <h3 class="text-center text-[1.75rem] md:text-[2.25rem] font-extrabold leading-[1.15] tracking-tight">
+                {block.heading}
+              </h3>
+            );
+          }
+          if (block.kind === "image-grid") {
+            return <ImageGrid columns={block.columns} images={block.images} />;
+          }
+          if (block.kind === "responsive-media") {
+            return <ResponsiveMedia desktop={block.desktop} mobile={block.mobile} />;
           }
           if (block.kind === "before-after") {
             return (
@@ -70,9 +103,6 @@ const { content } = Astro.props;
 </section>
 
 <style>
-  /* Tight chip → heading pairing. Tailwind v4 space-y-* applies
-     margin-block-end to :not(:last-child), so we trim the chip's own bottom
-     margin rather than the next sibling's top. */
   .worth-blocks > [data-chip] {
     margin-block-end: 0.75rem !important;
   }

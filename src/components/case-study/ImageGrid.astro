@@ -1,0 +1,22 @@
+---
+import ContentImage from "~/components/case-study/ContentImage.astro";
+import type { ContentImage as ContentImageType } from "~/data/case-studies/types";
+
+type Props = {
+  columns: 2 | 3 | 4;
+  images: readonly ContentImageType[];
+  rounded?: boolean;
+};
+
+const { columns, images, rounded = false } = Astro.props;
+const gridClass =
+  columns === 4
+    ? "md:grid-cols-4"
+    : columns === 3
+      ? "md:grid-cols-3"
+      : "md:grid-cols-2";
+---
+
+<div class:list={["grid grid-cols-1 gap-4 md:gap-4", gridClass]}>
+  {images.map((img) => <ContentImage image={img} rounded={rounded} />)}
+</div>

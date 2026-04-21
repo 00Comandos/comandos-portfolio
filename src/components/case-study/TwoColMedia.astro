@@ -1,0 +1,26 @@
+---
+import ContentImage from "~/components/case-study/ContentImage.astro";
+import type { TwoColMediaItem } from "~/data/case-studies/types";
+
+type Props = { items: readonly TwoColMediaItem[] };
+const { items } = Astro.props;
+---
+
+<div class="grid gap-6 md:grid-cols-2 md:gap-6">
+  {
+    items.map((it) => (
+      <div>
+        <ContentImage image={it.image} />
+        <p class="mt-4 text-[0.95rem] font-bold leading-[1.3] tracking-tight">
+          {it.title}
+        </p>
+        {it.detail && (
+          <p class="mt-2 flex gap-1.5 text-[0.9rem] leading-[1.55] text-[color:var(--color-ink-soft)]">
+            <span aria-hidden="true">✓</span>
+            <span>{it.detail}</span>
+          </p>
+        )}
+      </div>
+    ))
+  }
+</div>

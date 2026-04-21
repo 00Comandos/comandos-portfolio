@@ -3,7 +3,7 @@ import { Image, getImage } from "astro:assets";
 import type { ContentImage } from "~/data/case-studies/types";
 
 type Props = { image: ContentImage; rounded?: boolean; priority?: boolean };
-const { image, rounded = true, priority = false } = Astro.props;
+const { image, rounded = false, priority = false } = Astro.props;
 const radius = rounded ? "rounded-xl" : "";
 
 let mobileSrc: string | undefined;
@@ -36,7 +36,7 @@ if (image.kind === "image" && image.mobileImage) {
     </figure>
   ) : (
     <figure class="w-full">
-      <div class={`overflow-hidden ${radius} bg-[color:var(--color-paper-soft)]`}>
+      <div class={`overflow-hidden ${radius}`}>
         {mobileSrc ? (
           <picture>
             <source media="(max-width: 767px)" srcset={mobileSrc} />

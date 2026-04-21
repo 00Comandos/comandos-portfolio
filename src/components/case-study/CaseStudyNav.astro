@@ -45,7 +45,7 @@ const linkIconPath =
 </aside>
 
 <nav
-  aria-label="Case study sections (mobile)"
+  aria-label="Case study (mobile)"
   class="cs-nav-mobile"
   data-visible="false"
 >
@@ -60,17 +60,8 @@ const linkIconPath =
     >
       <path d={linkIconPath} />
     </svg>
-    <span data-copy-label>Copy</span>
+    <span data-copy-label>Copy Link</span>
   </button>
-  <div class="cs-pill-scroll">
-    {
-      sections.map((s) => (
-        <a href={`#${s.id}`} class="cs-pill" data-section={s.id}>
-          {s.label}
-        </a>
-      ))
-    }
-  </div>
 </nav>
 
 <style>

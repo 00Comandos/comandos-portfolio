@@ -1,7 +1,8 @@
 import type { CaseStudyContent } from "./types";
 import { storiInversionPlus } from "./stori-inversion-plus";
+import { kartaApp } from "./karta-app";
 
-const caseStudies: readonly CaseStudyContent[] = [storiInversionPlus];
+const caseStudies: readonly CaseStudyContent[] = [storiInversionPlus, kartaApp];
 
 const bySlug = new Map(caseStudies.map((c) => [c.slug, c]));
 

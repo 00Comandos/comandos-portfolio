@@ -1,0 +1,18 @@
+---
+import ContentImage from "~/components/case-study/ContentImage.astro";
+import type { ContentImage as ContentImageType } from "~/data/case-studies/types";
+
+type Props = {
+  desktop: ContentImageType;
+  mobile: readonly ContentImageType[];
+};
+
+const { desktop, mobile } = Astro.props;
+---
+
+<div class="hidden md:block">
+  <ContentImage image={desktop} />
+</div>
+<div class="md:hidden space-y-4">
+  {mobile.map((img) => <ContentImage image={img} />)}
+</div>
