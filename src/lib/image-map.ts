@@ -44,6 +44,10 @@ const yaydooDesignSystemModules = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/images/yaydoo-design-system/*",
   { eager: true },
 );
+const yaydooPorCobrarModules = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/yaydoo-porcobrar/*",
+  { eager: true },
+);
 
 const toMap = (
   modules: Record<string, { default: ImageMetadata }>,
@@ -67,6 +71,7 @@ export const legalarioEmailsImages = toMap(legalarioEmailsModules);
 export const truoraReportImages = toMap(truoraReportModules);
 export const truoraTruConnectImages = toMap(truoraTruConnectModules);
 export const yaydooDesignSystemImages = toMap(yaydooDesignSystemModules);
+export const yaydooPorCobrarImages = toMap(yaydooPorCobrarModules);
 
 export function requireImage(
   map: Record<string, ImageMetadata>,
