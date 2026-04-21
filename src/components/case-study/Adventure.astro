@@ -99,11 +99,7 @@ const { content } = Astro.props;
                 <h3 class="mt-2 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
                   {block.heading}
                 </h3>
-                {block.body && (
-                  <p class="mt-3 text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
-                    {block.body}
-                  </p>
-                )}
+                {block.body && <Fragment set:html={renderProse(block.body)} />}
               </div>
             );
           }

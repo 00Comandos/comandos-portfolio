@@ -60,6 +60,10 @@ const rebajatuscuentasModules = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/images/rebajatuscuentas/*",
   { eager: true },
 );
+const miposDarkKitchenModules = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/mipos-dark-kitchen/*",
+  { eager: true },
+);
 
 const toMap = (
   modules: Record<string, { default: ImageMetadata }>,
@@ -87,6 +91,7 @@ export const yaydooPorCobrarImages = toMap(yaydooPorCobrarModules);
 export const yaydooVendorplaceImages = toMap(yaydooVendorplaceModules);
 export const stadioImages = toMap(stadioModules);
 export const rebajatuscuentasImages = toMap(rebajatuscuentasModules);
+export const miposDarkKitchenImages = toMap(miposDarkKitchenModules);
 
 export function requireImage(
   map: Record<string, ImageMetadata>,
