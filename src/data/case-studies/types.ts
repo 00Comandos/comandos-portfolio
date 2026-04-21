@@ -82,7 +82,12 @@ export type AdventureBlock =
     }
   | {
       kind: "chip";
-      icon: "seeing-mountain" | "making-top";
+      icon:
+        | "seeing-mountain"
+        | "making-top"
+        | "nps"
+        | "interview"
+        | "signature";
       label: string;
     }
   | {
@@ -125,7 +130,13 @@ export type WorthBlock =
     }
   | {
       kind: "chip";
-      icon: "seeing-mountain" | "making-top" | "worth";
+      icon:
+        | "seeing-mountain"
+        | "making-top"
+        | "worth"
+        | "nps"
+        | "interview"
+        | "signature";
       label: string;
     }
   | { kind: "divider"; variant?: "hatched" | "line" }
@@ -182,6 +193,14 @@ export type CaseStudyContent = {
       label: string;
       caption?: string;
       icon: StatIcon;
+      /** Optional large chart image rendered below the stat label. */
+      chart?: ContentImage;
+    }[];
+    /** Optional impact cards rendered below the stats grid. */
+    cards?: readonly {
+      heading: string;
+      body?: string;
+      image?: ContentImage;
     }[];
   };
 };

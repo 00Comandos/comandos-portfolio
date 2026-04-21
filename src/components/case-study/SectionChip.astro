@@ -5,7 +5,10 @@ type ChipVariant =
   | "worth"
   | "result"
   | "seeing-mountain"
-  | "making-top";
+  | "making-top"
+  | "nps"
+  | "interview"
+  | "signature";
 
 type Props = {
   variant: ChipVariant;
@@ -22,6 +25,9 @@ const styles: Record<ChipVariant, { bg: string; fg: string; glyph: string }> = {
   result: { bg: "#FFCF40", fg: "#0b0b0b", glyph: "★" },
   "seeing-mountain": { bg: "#FFD2D2", fg: "#0b0b0b", glyph: "⛰" },
   "making-top": { bg: "#C9DCFF", fg: "#0b0b0b", glyph: "▲" },
+  nps: { bg: "#C6F0D9", fg: "#0b0b0b", glyph: "⚡" },
+  interview: { bg: "#FFD2D2", fg: "#0b0b0b", glyph: "👤" },
+  signature: { bg: "#C6F0D9", fg: "#0b0b0b", glyph: "✎" },
 };
 
 const s = styles[variant];
