@@ -9,6 +9,7 @@ import { truoraTruConnect } from "./truora-truconnect";
 import { yaydooDesignSystem } from "./yaydoo-design-system";
 import { yaydooPorCobrar } from "./yaydoo-porcobrar";
 import { yaydooVendorplace } from "./yaydoo-vendorplace";
+import { stadioAppleWatch } from "./stadio-apple-watch";
 
 const caseStudies: readonly CaseStudyContent[] = [
   storiInversionPlus,
@@ -21,6 +22,7 @@ const caseStudies: readonly CaseStudyContent[] = [
   yaydooDesignSystem,
   yaydooPorCobrar,
   yaydooVendorplace,
+  stadioAppleWatch,
 ];
 
 const bySlug = new Map(caseStudies.map((c) => [c.slug, c]));

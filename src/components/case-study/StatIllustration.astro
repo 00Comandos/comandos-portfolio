@@ -17,7 +17,11 @@ type Scene =
   | "unify"
   | "flow"
   | "streak"
-  | "orbit";
+  | "orbit"
+  | "sync"
+  | "whisper"
+  | "lap"
+  | "magnet";
 
 type Props = { scene: Scene; class?: string };
 const { scene, class: className = "" } = Astro.props;
@@ -452,6 +456,102 @@ const { scene, class: className = "" } = Astro.props;
           <circle cx="86" cy="40" r="3.2" class="orbit-node orbit-n-2" />
           <circle cx="48" cy="62" r="3.2" class="orbit-node orbit-n-3" />
           <circle cx="34" cy="40" r="3.2" class="orbit-node orbit-n-4" />
+        </g>
+      )
+    }
+
+    {
+      scene === "sync" && (
+        <g class="sync">
+          <rect x="22" y="26" width="28" height="28" rx="6" class="sync-device sync-watch" fill="none" stroke-width="1.6" />
+          <rect x="34" y="21" width="4" height="5" rx="0.8" class="sync-crown" />
+          <line x1="36" y1="17" x2="36" y2="21" class="sync-stem" stroke-width="1.4" stroke-linecap="round" />
+          <circle cx="36" cy="40" r="4" class="sync-face" fill="none" stroke-width="1.2" />
+          <rect x="70" y="22" width="22" height="36" rx="4" class="sync-device sync-phone" fill="none" stroke-width="1.6" />
+          <path d="M76 38 L80 42 L88 32" class="sync-check" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M50 40 Q60 22 70 40" class="sync-arc" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="2 3" />
+          <circle cx="60" cy="28" r="2" class="sync-packet" />
+        </g>
+      )
+    }
+
+    {
+      scene === "whisper" && (
+        <g class="whisper">
+          <path
+            d="M28 34 L28 46 L42 46 L58 54 L58 26 L42 34 Z"
+            class="wh-horn"
+            fill="none"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+          />
+          <path d="M66 30 Q72 40 66 50" class="wh-wave wh-w-1" fill="none" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M76 24 Q84 40 76 56" class="wh-wave wh-w-2" fill="none" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M86 18 Q96 40 86 62" class="wh-wave wh-w-3" fill="none" stroke-width="1.5" stroke-linecap="round" />
+          <circle cx="100" cy="22" r="2.2" class="wh-recv wh-r-1" />
+          <circle cx="102" cy="40" r="2.2" class="wh-recv wh-r-2" />
+          <circle cx="100" cy="58" r="2.2" class="wh-recv wh-r-3" />
+        </g>
+      )
+    }
+
+    {
+      scene === "lap" && (
+        <g class="lap">
+          <ellipse cx="60" cy="40" rx="32" ry="18" class="lap-track lap-track-outer" fill="none" stroke-width="1.4" stroke-dasharray="2 3" />
+          <ellipse cx="60" cy="40" rx="20" ry="8" class="lap-track lap-track-inner" fill="none" stroke-width="1" stroke-dasharray="2 3" />
+          <path
+            d="M60 58 L84 58"
+            class="lap-finish"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
+          <g class="lap-runner">
+            <ellipse cx="28" cy="40" rx="4.5" ry="3" class="lap-shoe" />
+          </g>
+          <path
+            d="M52 22 L60 18 L68 22 M60 18 L60 28"
+            class="lap-arrow"
+            fill="none"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </g>
+      )
+    }
+
+    {
+      scene === "magnet" && (
+        <g class="magnet">
+          <path
+            d="M24 22 L24 42 A14 14 0 0 0 52 42 L52 22 L44 22 L44 42 A6 6 0 0 1 32 42 L32 22 Z"
+            class="mag-body"
+            fill="none"
+            stroke-width="1.6"
+            stroke-linejoin="round"
+          />
+          <rect x="24" y="18" width="8" height="6" class="mag-pole mag-pole-n" rx="1" />
+          <rect x="44" y="18" width="8" height="6" class="mag-pole mag-pole-s" rx="1" />
+          <path
+            d="M60 28 Q74 28 80 40 Q74 52 60 52"
+            class="mag-field mag-f-1"
+            fill="none"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-dasharray="3 3"
+          />
+          <path
+            d="M60 22 Q82 22 90 40 Q82 58 60 58"
+            class="mag-field mag-f-2"
+            fill="none"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-dasharray="3 3"
+          />
+          <circle cx="94" cy="24" r="2.4" class="mag-dot mag-d-1" />
+          <circle cx="102" cy="40" r="2.4" class="mag-dot mag-d-2" />
+          <circle cx="94" cy="56" r="2.4" class="mag-dot mag-d-3" />
         </g>
       )
     }
@@ -1463,6 +1563,293 @@ const { scene, class: className = "" } = Astro.props;
     to { transform: rotate(360deg); }
   }
 
+  /* ———— Scene: sync (Apple Watch + Strava device linked) ———— */
+  .sync-device,
+  .sync-face {
+    stroke: currentColor;
+    fill: none;
+    opacity: 0;
+    transform-origin: center;
+    transform: translateY(6px);
+    transition:
+      opacity 0.45s ease-out,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sync-crown {
+    fill: currentColor;
+    opacity: 0;
+    transition: opacity 0.3s ease-out 0.3s;
+  }
+  .sync-stem {
+    stroke: currentColor;
+    fill: none;
+    stroke-dasharray: 8;
+    stroke-dashoffset: 8;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.35s ease-out 0.25s,
+      opacity 0.3s ease-out 0.25s;
+  }
+  .sync-check {
+    stroke: var(--color-accent-mint);
+    fill: none;
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.55s,
+      opacity 0.3s ease-out 0.55s;
+  }
+  .sync-arc {
+    stroke: var(--color-accent-mint);
+    fill: none;
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.75s,
+      opacity 0.3s ease-out 0.75s;
+  }
+  .sync-packet {
+    fill: var(--color-accent-mint);
+    opacity: 0;
+  }
+  :global(.stat[data-in-view="true"]) .sync-device,
+  :global(.stat[data-in-view="true"]) .sync-face {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  :global(.stat[data-in-view="true"]) .sync-watch { transition-delay: 0.1s; }
+  :global(.stat[data-in-view="true"]) .sync-phone { transition-delay: 0.25s; }
+  :global(.stat[data-in-view="true"]) .sync-face { transition-delay: 0.35s; }
+  :global(.stat[data-in-view="true"]) .sync-crown,
+  :global(.stat[data-in-view="true"]) .sync-stem {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  :global(.stat[data-in-view="true"]) .sync-arc {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .sync-check {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .sync-packet {
+    animation: sync-packet-travel 2.2s ease-in-out infinite 1.6s;
+  }
+  @keyframes sync-packet-travel {
+    0% { transform: translate(-10px, 12px); opacity: 0; }
+    15% { opacity: 1; }
+    50% { transform: translate(0, 0); opacity: 1; }
+    85% { opacity: 1; }
+    100% { transform: translate(10px, 12px); opacity: 0; }
+  }
+
+  /* ———— Scene: whisper (megaphone + radiating waves + received dots) ———— */
+  .wh-horn {
+    stroke: currentColor;
+    fill: color-mix(in srgb, currentColor 6%, transparent);
+    stroke-dasharray: 160;
+    stroke-dashoffset: 160;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease-out;
+  }
+  .wh-wave {
+    stroke: var(--color-accent-mint);
+    fill: none;
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease-out;
+  }
+  .wh-recv {
+    fill: currentColor;
+    opacity: 0;
+    transform-origin: center;
+    transform: scale(0);
+    transition:
+      opacity 0.3s ease-out,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :global(.stat[data-in-view="true"]) .wh-horn {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .wh-wave { stroke-dashoffset: 0; opacity: 1; }
+  :global(.stat[data-in-view="true"]) .wh-w-1 { transition-delay: 0.5s; }
+  :global(.stat[data-in-view="true"]) .wh-w-2 { transition-delay: 0.7s; }
+  :global(.stat[data-in-view="true"]) .wh-w-3 { transition-delay: 0.9s; }
+  :global(.stat[data-in-view="true"]) .wh-recv { opacity: 1; transform: scale(1); }
+  :global(.stat[data-in-view="true"]) .wh-r-1 { transition-delay: 1.2s; }
+  :global(.stat[data-in-view="true"]) .wh-r-2 { transition-delay: 1.35s; }
+  :global(.stat[data-in-view="true"]) .wh-r-3 { transition-delay: 1.5s; }
+  @keyframes whisper-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+  :global(.stat[data-in-view="true"]) .wh-w-1 { animation: whisper-pulse 2.4s ease-in-out infinite 1.8s; }
+  :global(.stat[data-in-view="true"]) .wh-w-2 { animation: whisper-pulse 2.4s ease-in-out infinite 2s; }
+  :global(.stat[data-in-view="true"]) .wh-w-3 { animation: whisper-pulse 2.4s ease-in-out infinite 2.2s; }
+
+  /* ———— Scene: lap (oval track + returning runner + loop arrow) ———— */
+  .lap-track {
+    stroke: color-mix(in srgb, currentColor 45%, transparent);
+    fill: none;
+    opacity: 0;
+    transform-origin: 60px 40px;
+    transform: scale(0.85);
+    transition:
+      opacity 0.5s ease-out,
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .lap-finish {
+    stroke: var(--color-accent-mint);
+    stroke-dasharray: 26;
+    stroke-dashoffset: 26;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.5s,
+      opacity 0.3s ease-out 0.5s;
+  }
+  .lap-shoe {
+    fill: var(--color-accent-mint);
+    opacity: 0;
+    transform-origin: center;
+    transform: scale(0.4);
+    transition:
+      opacity 0.35s ease-out,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .lap-arrow {
+    stroke: var(--color-accent-mint);
+    fill: none;
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.1s,
+      opacity 0.3s ease-out 1.1s;
+  }
+  :global(.stat[data-in-view="true"]) .lap-track-outer {
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: 0.1s;
+  }
+  :global(.stat[data-in-view="true"]) .lap-track-inner {
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: 0.25s;
+  }
+  :global(.stat[data-in-view="true"]) .lap-finish {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .lap-shoe {
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: 0.7s;
+    animation: lap-shoe-run 4s linear infinite 1.3s;
+  }
+  :global(.stat[data-in-view="true"]) .lap-arrow {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    animation: lap-arrow-bounce 2s ease-in-out infinite 2s;
+  }
+  @keyframes lap-shoe-run {
+    0% { transform: translate(0, 0) scaleX(1); }
+    25% { transform: translate(30px, -18px) scaleX(1); }
+    50% { transform: translate(60px, 0) scaleX(-1); }
+    75% { transform: translate(30px, 18px) scaleX(-1); }
+    100% { transform: translate(0, 0) scaleX(1); }
+  }
+  @keyframes lap-arrow-bounce {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(0, -2px); }
+  }
+
+  /* ———— Scene: magnet (retention — dots pulled back into the room) ———— */
+  .mag-body {
+    stroke: currentColor;
+    fill: none;
+    stroke-dasharray: 140;
+    stroke-dashoffset: 140;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease-out;
+  }
+  .mag-pole {
+    fill: var(--color-accent-mint);
+    opacity: 0;
+    transform-origin: center;
+    transform: translateY(4px);
+    transition:
+      opacity 0.35s ease-out 0.55s,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.55s;
+  }
+  .mag-field {
+    stroke: var(--color-accent-mint);
+    fill: none;
+    stroke-dasharray: 70;
+    stroke-dashoffset: 70;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease-out;
+  }
+  .mag-dot {
+    fill: currentColor;
+    opacity: 0;
+    transform-origin: center;
+    transform: translateX(10px) scale(0.4);
+    transition:
+      opacity 0.4s ease-out,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :global(.stat[data-in-view="true"]) .mag-body {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .mag-pole {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  :global(.stat[data-in-view="true"]) .mag-f-1 {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    transition-delay: 0.7s;
+  }
+  :global(.stat[data-in-view="true"]) .mag-f-2 {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    transition-delay: 0.95s;
+  }
+  :global(.stat[data-in-view="true"]) .mag-dot {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  :global(.stat[data-in-view="true"]) .mag-d-1 {
+    transition-delay: 1.25s;
+    animation: mag-dot-pull 3s ease-in-out infinite 2.2s;
+  }
+  :global(.stat[data-in-view="true"]) .mag-d-2 {
+    transition-delay: 1.4s;
+    animation: mag-dot-pull 3s ease-in-out infinite 2.4s;
+  }
+  :global(.stat[data-in-view="true"]) .mag-d-3 {
+    transition-delay: 1.55s;
+    animation: mag-dot-pull 3s ease-in-out infinite 2.6s;
+  }
+  @keyframes mag-dot-pull {
+    0%, 100% { transform: translateX(0) scale(1); }
+    50% { transform: translateX(-6px) scale(1.1); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .art-rocket, .flame, .spark, .bar, .trend, .tip, .shield, .check, .trend-dot,
     .mul-card, .mul-chip, .av, .av-plus-bg, .ink-line, .ink-tip, .ink-baseline,
@@ -1473,7 +1860,11 @@ const { scene, class: className = "" } = Astro.props;
     .sprint-body, .sprint-crown, .sprint-stem, .sprint-tick, .sprint-needle, .sprint-pivot,
     .uni-cell, .uni-link, .flow-long, .flow-short, .flow-node, .flow-check,
     .streak-base, .streak-bar, .streak-trend, .streak-tip,
-    .orbit-ring, .orbit-core, .orbit-pulse, .orbit-node {
+    .orbit-ring, .orbit-core, .orbit-pulse, .orbit-node,
+    .sync-device, .sync-face, .sync-crown, .sync-stem, .sync-check, .sync-arc, .sync-packet,
+    .wh-horn, .wh-wave, .wh-recv,
+    .lap-track, .lap-finish, .lap-shoe, .lap-arrow,
+    .mag-body, .mag-pole, .mag-field, .mag-dot {
       animation: none !important;
       transition: none !important;
       transform: none !important;
@@ -1487,7 +1878,11 @@ const { scene, class: className = "" } = Astro.props;
     .sprint-body, .sprint-crown, .sprint-stem, .sprint-tick, .sprint-needle, .sprint-pivot,
     .uni-cell, .uni-link, .flow-long, .flow-short, .flow-node, .flow-check,
     .streak-base, .streak-trend, .streak-tip,
-    .orbit-ring, .orbit-core, .orbit-pulse, .orbit-node {
+    .orbit-ring, .orbit-core, .orbit-pulse, .orbit-node,
+    .sync-device, .sync-face, .sync-crown, .sync-stem, .sync-check, .sync-arc, .sync-packet,
+    .wh-horn, .wh-wave, .wh-recv,
+    .lap-track, .lap-finish, .lap-shoe, .lap-arrow,
+    .mag-body, .mag-pole, .mag-field, .mag-dot {
       stroke-dasharray: none;
       stroke-dashoffset: 0;
       opacity: 1;

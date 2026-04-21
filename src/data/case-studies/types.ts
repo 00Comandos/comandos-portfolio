@@ -160,7 +160,11 @@ export type IllustrationScene =
   | "unify"
   | "flow"
   | "streak"
-  | "orbit";
+  | "orbit"
+  | "sync"
+  | "whisper"
+  | "lap"
+  | "magnet";
 
 export type WorthBlock =
   | { kind: "intro"; label?: string; heading: string; body?: string }
