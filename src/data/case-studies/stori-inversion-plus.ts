@@ -8,7 +8,7 @@ const heroImage: ContentImage = {
   kind: "image",
   image: img("stori-inverstion-easy-finance-1536x1020.webp"),
   mobileImage: img("stori-inverstion-easy-finance-mobile-768x836.webp"),
-  alt: "Stori Inversión+ — product screen with time-locked savings",
+  alt: "Stori Inversión+ fintech app — phone showing the time-locked savings product screen with tiered yields and guided investing",
 };
 
 // Phone-in-hand (real photo) — challenge
@@ -16,56 +16,56 @@ const challengeImage: ContentImage = {
   kind: "image",
   image: img("Stori-Inversion-App-1536x1020.webp"),
   mobileImage: img("Stori-Inversion-App-Mobile-768x836.webp"),
-  alt: "Stori Inversión+ — app in-hand, real context",
+  alt: "Stori Inversión+ mobile app held in-hand — real-world usage of the guided investing flow in Mexico",
 };
 
 const userInterviewImage: ContentImage = {
   kind: "image",
   image: img("stori-inversion-user-interview.webp"),
   mobileImage: img("stori-inversion-user-interview-mobile-768x969.webp"),
-  alt: "+40 interviews and usability tests with users",
+  alt: "Stori user research for Inversión+ — 40+ interviews and usability tests with Mexican savers",
 };
 
 const firstVersionImage: ContentImage = {
   kind: "image",
   image: img("stori-inversion-first-version-1536x622.webp"),
   mobileImage: img("stori-inversion-first-version-onboarding-768x982.webp"),
-  alt: "First version — three phone mockups tested with users (JTBD framework)",
+  alt: "Stori Inversión+ first version — three phone mockups of the onboarding tested with users through the JTBD framework",
 };
 
 const designSystemImage: ContentImage = {
   kind: "image",
   image: img("stori-inversion-Design-System-1536x984.webp"),
   mobileImage: img("stori-inversion-Design-System-mobile-733x1024.webp"),
-  alt: "Design System — DeLorean components that did not support a critical JTBD",
+  alt: "Stori DeLorean Design System audit — components that did not yet support a critical Inversión+ Job-To-Be-Done",
 };
 
 const iteration02Image: ContentImage = {
   kind: "image",
   image: img("stori-inversion-iteration02-x-1536x843.webp"),
   mobileImage: img("stori-inversion-iteration02-mobile-567x1024.webp"),
-  alt: "MVP iteration — four phone mockups of the new investment flow",
+  alt: "Stori Inversión+ MVP iteration — four phone mockups of the redesigned time-locked investment flow instrumented with Amplitude",
 };
 
 const deleteStepImage: ContentImage = {
   kind: "image",
   image: img("stori-inversion-delete-step-1536x1099.webp"),
   mobileImage: img("stori-inversion-delete-step-mobile-759x2048.webp"),
-  alt: "Before and after — iterations that removed friction from the invest flow (+477%)",
+  alt: "Stori Inversión+ before-and-after — iterations that removed friction from the invest flow and drove +477% activation",
 };
 
 const contentCreatorsImage: ContentImage = {
   kind: "image",
   image: img("stori-inversion-Content-Creators-1536x733.webp"),
   mobileImage: img("stori-inversion-Content-Creators-mobile-768x1445.webp"),
-  alt: "YouTube content creators reacting to Stori Inversión+ improvements",
+  alt: "YouTube personal-finance creators reacting to the redesigned Stori Inversión+ investing flow in Mexico",
 };
 
 const beforeAfterEvolutionImage: ContentImage = {
   kind: "image",
   image: img("stori-inversion-beforeAfter-1536x957.webp"),
   mobileImage: img("stori-inversion-before-768x997.webp"),
-  alt: "Before and after — Stori Investment evolution from first to last version",
+  alt: "Stori Inversión+ before-and-after — evolution of the time-locked investment product from first internal version to launched release",
 };
 
 export const storiInversionPlus: CaseStudyContent = {

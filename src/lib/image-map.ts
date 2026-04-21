@@ -36,6 +36,10 @@ const truoraReportModules = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/images/truora-report/*",
   { eager: true },
 );
+const truoraTruConnectModules = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/truora-truconnect/*",
+  { eager: true },
+);
 
 const toMap = (
   modules: Record<string, { default: ImageMetadata }>,
@@ -57,6 +61,7 @@ export const kartaCardImages = toMap(kartaCardModules);
 export const legalarioImages = toMap(legalarioModules);
 export const legalarioEmailsImages = toMap(legalarioEmailsModules);
 export const truoraReportImages = toMap(truoraReportModules);
+export const truoraTruConnectImages = toMap(truoraTruConnectModules);
 
 export function requireImage(
   map: Record<string, ImageMetadata>,

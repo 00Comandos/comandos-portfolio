@@ -6,6 +6,7 @@ import Checklist from "~/components/case-study/Checklist.astro";
 import FeatureGrid from "~/components/case-study/FeatureGrid.astro";
 import TwoColMedia from "~/components/case-study/TwoColMedia.astro";
 import ResponsiveMedia from "~/components/case-study/ResponsiveMedia.astro";
+import ImageGrid from "~/components/case-study/ImageGrid.astro";
 import ProseWithImage from "~/components/case-study/ProseWithImage.astro";
 import StatIllustration from "~/components/case-study/StatIllustration.astro";
 import AnimatedIcon from "~/components/case-study/AnimatedIcon.astro";
@@ -96,6 +97,9 @@ const { content } = Astro.props;
           }
           if (block.kind === "responsive-media") {
             return <ResponsiveMedia desktop={block.desktop} mobile={block.mobile} />;
+          }
+          if (block.kind === "image-grid") {
+            return <ImageGrid columns={block.columns} images={block.images} />;
           }
           if (block.kind === "prose-with-image") {
             return (

@@ -112,6 +112,11 @@ export type AdventureBlock =
       mobile: readonly ContentImage[];
     }
   | {
+      kind: "image-grid";
+      columns: 2 | 3 | 4;
+      images: readonly ContentImage[];
+    }
+  | {
       kind: "prose-with-image";
       heading: string;
       body: string;
@@ -149,7 +154,8 @@ export type IllustrationScene =
   | "progress"
   | "documents"
   | "signed-growth"
-  | "love";
+  | "love"
+  | "reactivate";
 
 export type WorthBlock =
   | { kind: "intro"; label?: string; heading: string; body?: string }

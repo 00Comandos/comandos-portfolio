@@ -11,6 +11,7 @@ import Result from "~/components/case-study/Result.astro";
 import RelatedCases from "~/components/case-study/RelatedCases.astro";
 import { projects, getProjectBySlug, getRelatedProjects } from "~/data/projects";
 import { getCaseStudy } from "~/data/case-studies";
+import { extractCaseStudyImages } from "~/lib/case-study-images";
 import { site } from "~/lib/site";
 
 export const prerender = true;
@@ -43,6 +44,42 @@ const ogVariant = await getImage({
 });
 const ogImageAbs = new URL(ogVariant.src, site.url).toString();
 
+// Emit every case-study image into JSON-LD as an ImageObject so Google
+// Image Search indexes each with its alt (caption) + optional caption
+// (description). Deduplicated by underlying ImageMetadata.src.
+const inPageImages = caseStudy ? extractCaseStudyImages(caseStudy) : [];
+const seen = new Set<string>();
+const dedupedImages = inPageImages.filter((ci) => {
+  const key = ci.image.src;
+  if (seen.has(key)) return false;
+  seen.add(key);
+  return true;
+});
+const imageObjects = await Promise.all(
+  dedupedImages.map(async (ci) => {
+    const v = await getImage({
+      src: ci.image,
+      width: 1200,
+      format: "webp",
+    });
+    return {
+      "@type": "ImageObject" as const,
+      url: new URL(v.src, site.url).toString(),
+      caption: ci.alt,
+      description: ci.caption ?? ci.alt,
+      width: v.attributes?.width ?? ci.image.width ?? 1200,
+      height: v.attributes?.height ?? ci.image.height ?? 800,
+    };
+  }),
+);
+
+const primaryImage = {
+  "@type": "ImageObject" as const,
+  url: ogImageAbs,
+  width: 1200,
+  height: ogVariant.attributes?.height ?? 800,
+};
+
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -52,12 +89,8 @@ const jsonLd = [
     about: project.brand,
     description: project.description,
     author: { "@type": "Person", name: site.person.name },
-    image: {
-      "@type": "ImageObject",
-      url: ogImageAbs,
-      width: 1200,
-      height: ogVariant.attributes?.height ?? 800,
-    },
+    image:
+      imageObjects.length > 0 ? [primaryImage, ...imageObjects] : primaryImage,
     ...(caseStudy
       ? {
           hasPart: [

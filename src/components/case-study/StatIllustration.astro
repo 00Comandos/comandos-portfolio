@@ -11,7 +11,8 @@ type Scene =
   | "progress"
   | "documents"
   | "signed-growth"
-  | "love";
+  | "love"
+  | "reactivate";
 
 type Props = { scene: Scene; class?: string };
 const { scene, class: className = "" } = Astro.props;
@@ -305,6 +306,25 @@ const { scene, class: className = "" } = Astro.props;
             stroke-linecap="round"
             stroke-linejoin="round"
           />
+        </g>
+      )
+    }
+
+    {
+      scene === "reactivate" && (
+        <g class="react">
+          <path
+            d="M34 26 L78 26 Q84 26 84 32 L84 48 Q84 54 78 54 L58 54 L52 62 L52 54 L40 54 Q34 54 34 48 L34 32 Q34 26 34 26 Z"
+            class="react-bubble"
+            fill="none"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+          />
+          <circle cx="50" cy="40" r="1.8" class="react-dot react-d-1" />
+          <circle cx="58" cy="40" r="1.8" class="react-dot react-d-2" />
+          <circle cx="66" cy="40" r="1.8" class="react-dot react-d-3" />
+          <circle cx="80" cy="26" r="3" class="react-pulse" />
+          <circle cx="80" cy="26" r="3" class="react-ring" fill="none" stroke-width="1.2" />
         </g>
       )
     }
@@ -869,6 +889,76 @@ const { scene, class: className = "" } = Astro.props;
     50% { transform: translate(2px, -2px); }
   }
 
+  /* ———— Scene: reactivate (chat bubble + typing dots + mint pulse) ———— */
+  .react-bubble {
+    stroke: currentColor;
+    stroke-dasharray: 180;
+    stroke-dashoffset: 180;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 1s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.35s ease-out;
+  }
+  .react-dot {
+    fill: currentColor;
+    opacity: 0;
+    transform-origin: center;
+    transition: opacity 0.3s ease-out;
+  }
+  .react-pulse {
+    fill: var(--color-accent-mint);
+    opacity: 0;
+    transform-origin: 80px 26px;
+    transform: scale(0);
+    transition:
+      opacity 0.3s ease-out,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .react-ring {
+    stroke: var(--color-accent-mint);
+    opacity: 0;
+    transform-origin: 80px 26px;
+    transform: scale(1);
+  }
+  :global(.stat[data-in-view="true"]) .react-bubble {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .react-dot {
+    opacity: 1;
+    transition-delay: 0.5s;
+  }
+  :global(.stat[data-in-view="true"]) .react-pulse {
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: 0.8s;
+    animation: react-pulse-beat 2s ease-in-out infinite 1.6s;
+  }
+  :global(.stat[data-in-view="true"]) .react-ring {
+    animation: react-ring-expand 2s ease-out infinite 1.8s;
+  }
+  :global(.stat[data-in-view="true"]) .react-d-1 {
+    animation: react-dot-bounce 1.4s ease-in-out infinite 1.2s;
+  }
+  :global(.stat[data-in-view="true"]) .react-d-2 {
+    animation: react-dot-bounce 1.4s ease-in-out infinite 1.35s;
+  }
+  :global(.stat[data-in-view="true"]) .react-d-3 {
+    animation: react-dot-bounce 1.4s ease-in-out infinite 1.5s;
+  }
+  @keyframes react-dot-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 1; }
+    30% { transform: translateY(-3px); opacity: 0.7; }
+  }
+  @keyframes react-pulse-beat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+  @keyframes react-ring-expand {
+    0% { transform: scale(1); opacity: 0.75; }
+    100% { transform: scale(3); opacity: 0; }
+  }
+
   /* ———— Scene: love (heart + sparkles) ———— */
   .love-heart {
     fill: var(--color-accent-mint);
@@ -986,7 +1076,8 @@ const { scene, class: className = "" } = Astro.props;
     .mul-card, .mul-chip, .av, .av-plus-bg, .ink-line, .ink-tip, .ink-baseline,
     .bio-face, .bio-dot, .bio-scan, .cert-ribbon, .cert-medal, .cert-inner, .cert-check,
     .prog-fill, .prog-check, .prog-bg, .doc, .doc-sig,
-    .sg-doc, .sg-fold, .sg-ruled, .sg-sig, .sg-arrow, .love-heart, .love-spark {
+    .sg-doc, .sg-fold, .sg-ruled, .sg-sig, .sg-arrow, .love-heart, .love-spark,
+    .react-bubble, .react-dot, .react-pulse, .react-ring {
       animation: none !important;
       transition: none !important;
       transform: none !important;
@@ -995,7 +1086,8 @@ const { scene, class: className = "" } = Astro.props;
     .mul-card, .mul-chip, .av, .ink-line, .ink-baseline,
     .bio-face, .bio-dot, .cert-ribbon, .cert-medal, .cert-inner, .cert-check,
     .prog-fill, .prog-check, .prog-bg, .doc, .doc-sig,
-    .sg-doc, .sg-fold, .sg-ruled, .sg-sig, .sg-arrow, .love-heart, .love-spark {
+    .sg-doc, .sg-fold, .sg-ruled, .sg-sig, .sg-arrow, .love-heart, .love-spark,
+    .react-bubble, .react-dot, .react-pulse, .react-ring {
       stroke-dasharray: none;
       stroke-dashoffset: 0;
       opacity: 1;
