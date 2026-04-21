@@ -6,6 +6,7 @@ import Checklist from "~/components/case-study/Checklist.astro";
 import FeatureGrid from "~/components/case-study/FeatureGrid.astro";
 import TwoColMedia from "~/components/case-study/TwoColMedia.astro";
 import ResponsiveMedia from "~/components/case-study/ResponsiveMedia.astro";
+import ProseWithImage from "~/components/case-study/ProseWithImage.astro";
 import type { CaseStudyContent } from "~/data/case-studies/types";
 
 type Props = { content: CaseStudyContent["adventure"] };
@@ -27,6 +28,13 @@ const { content } = Astro.props;
           if (block.kind === "intro") {
             return (
               <p class="text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
+                {block.text}
+              </p>
+            );
+          }
+          if (block.kind === "caption") {
+            return (
+              <p class="text-center text-[0.95rem] leading-[1.65] text-[color:var(--color-muted)] max-w-xl mx-auto pb-6 md:pb-10">
                 {block.text}
               </p>
             );
@@ -68,6 +76,16 @@ const { content } = Astro.props;
           }
           if (block.kind === "responsive-media") {
             return <ResponsiveMedia desktop={block.desktop} mobile={block.mobile} />;
+          }
+          if (block.kind === "prose-with-image") {
+            return (
+              <ProseWithImage
+                heading={block.heading}
+                body={block.body}
+                image={block.image}
+                imagePosition={block.imagePosition}
+              />
+            );
           }
           if (block.kind === "callout") {
             return (
@@ -126,9 +144,9 @@ const { content } = Astro.props;
 </section>
 
 <style>
-  /* Tight chip / heading → next-block pairing, same trick as in Worth.astro. */
-  .adventure-blocks > [data-chip],
-  .adventure-blocks > [data-heading] {
+  /* Tight chip → next-block pairing so the chip reads as a lead-in.
+     Headings keep regular spacing so images below them can breathe. */
+  .adventure-blocks > [data-chip] {
     margin-block-end: 0.5rem !important;
   }
 </style>

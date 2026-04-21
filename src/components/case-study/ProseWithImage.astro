@@ -1,0 +1,32 @@
+---
+import ContentImage from "~/components/case-study/ContentImage.astro";
+import type { ContentImage as ContentImageType } from "~/data/case-studies/types";
+
+type Props = {
+  heading: string;
+  body: string;
+  image: ContentImageType;
+  imagePosition?: "left" | "right";
+};
+
+const { heading, body, image, imagePosition = "right" } = Astro.props;
+---
+
+<div
+  class:list={[
+    "grid gap-8 md:gap-10 md:grid-cols-2 items-center",
+    imagePosition === "left" ? "md:[&>div:first-child]:order-2" : "",
+  ]}
+>
+  <div>
+    <h3 class="text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
+      {heading}
+    </h3>
+    <p class="mt-4 text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
+      {body}
+    </p>
+  </div>
+  <div>
+    <ContentImage image={image} />
+  </div>
+</div>

@@ -1,5 +1,5 @@
 ---
-type Scene = "launch" | "rise" | "retention";
+type Scene = "launch" | "rise" | "retention" | "multiply" | "audience";
 
 type Props = { scene: Scene; class?: string };
 const { scene, class: className = "" } = Astro.props;
@@ -97,6 +97,87 @@ const { scene, class: className = "" } = Astro.props;
             stroke-linejoin="round"
           />
         </>
+      )
+    }
+
+    {
+      scene === "multiply" && (
+        <>
+          <rect
+            class="mul-card mul-card-1"
+            x="22"
+            y="36"
+            width="46"
+            height="28"
+            rx="3"
+          />
+          <rect
+            class="mul-card mul-card-2"
+            x="37"
+            y="28"
+            width="46"
+            height="28"
+            rx="3"
+          />
+          <rect
+            class="mul-card mul-card-3 mul-card-accent"
+            x="52"
+            y="20"
+            width="46"
+            height="28"
+            rx="3"
+          />
+          <rect
+            class="mul-chip"
+            x="58"
+            y="26"
+            width="7"
+            height="5"
+            rx="1"
+          />
+        </>
+      )
+    }
+
+    {
+      scene === "audience" && (
+        <g class="audience">
+          <g class="av av-1">
+            <circle cx="26" cy="34" r="4.5" class="av-head" />
+            <path
+              d="M18 58 L18 50 A8 8 0 0 1 34 50 L34 58 Z"
+              class="av-body"
+            />
+          </g>
+          <g class="av av-2">
+            <circle cx="46" cy="34" r="4.5" class="av-head" />
+            <path
+              d="M38 58 L38 50 A8 8 0 0 1 54 50 L54 58 Z"
+              class="av-body"
+            />
+          </g>
+          <g class="av av-3">
+            <circle cx="66" cy="34" r="4.5" class="av-head" />
+            <path
+              d="M58 58 L58 50 A8 8 0 0 1 74 50 L74 58 Z"
+              class="av-body"
+            />
+          </g>
+          <g class="av av-4">
+            <circle cx="86" cy="34" r="4.5" class="av-head" />
+            <path
+              d="M78 58 L78 50 A8 8 0 0 1 94 50 L94 58 Z"
+              class="av-body"
+            />
+          </g>
+          <g class="av av-plus">
+            <circle cx="104" cy="38" r="8" class="av-plus-bg" />
+            <path
+              d="M100 38 H108 M104 34 V42"
+              class="av-plus-icon"
+            />
+          </g>
+        </g>
       )
     }
   </svg>
@@ -246,13 +327,141 @@ const { scene, class: className = "" } = Astro.props;
     animation: check-glow 1.2s ease-in-out;
   }
 
+  /* ———— Scene: multiply (stacked credit cards) ———— */
+  .mul-card {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.55s ease-out,
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .mul-card-accent {
+    stroke: var(--color-accent-mint);
+  }
+  .mul-chip {
+    fill: none;
+    stroke: var(--color-accent-mint);
+    stroke-width: 1;
+    opacity: 0;
+    transform-origin: 61.5px 28.5px;
+    transition:
+      opacity 0.35s ease-out,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :global(.stat[data-in-view="true"]) .mul-card-1 {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+  }
+  :global(.stat[data-in-view="true"]) .mul-card-2 {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.28s;
+  }
+  :global(.stat[data-in-view="true"]) .mul-card-3 {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.46s;
+  }
+  :global(.stat[data-in-view="true"]) .mul-chip {
+    opacity: 1;
+    transition-delay: 0.7s;
+  }
+  :global(.stat):hover .mul-card-1 {
+    transform: translate(-4px, 2px);
+    transition-delay: 0s;
+  }
+  :global(.stat):hover .mul-card-3 {
+    transform: translate(4px, -3px);
+    transition-delay: 0s;
+  }
+  :global(.stat):hover .mul-chip {
+    transform: translate(4px, -3px);
+    transition-delay: 0s;
+  }
+
+  /* ———— Scene: audience (overlapping user silhouettes + "+N") ———— */
+  .av {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+    transform-origin: center 48px;
+    transition:
+      opacity 0.4s ease-out,
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .av-head {
+    fill: currentColor;
+  }
+  .av-body {
+    fill: currentColor;
+  }
+  .av-plus-bg {
+    fill: var(--color-accent-mint);
+  }
+  .av-plus-icon {
+    stroke: var(--color-ink);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    fill: none;
+  }
+  :global(.stat[data-in-view="true"]) .av-1 {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 0.05s;
+  }
+  :global(.stat[data-in-view="true"]) .av-2 {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 0.2s;
+  }
+  :global(.stat[data-in-view="true"]) .av-3 {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 0.35s;
+  }
+  :global(.stat[data-in-view="true"]) .av-4 {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 0.5s;
+  }
+  :global(.stat[data-in-view="true"]) .av-plus {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 0.7s;
+  }
+
+  /* Ambient — the "+" badge gently pulses once loaded */
+  @keyframes av-plus-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+  :global(.stat[data-in-view="true"]) .av-plus {
+    transform-origin: 104px 38px;
+  }
+  :global(.stat[data-in-view="true"]) .av-plus .av-plus-bg {
+    transform-origin: 104px 38px;
+    animation: av-plus-pulse 2.8s ease-in-out infinite 1.2s;
+  }
+  :global(.stat):hover .av-1 { transform: translateY(-2px); }
+  :global(.stat):hover .av-2 { transform: translateY(-2px); transition-delay: 40ms; }
+  :global(.stat):hover .av-3 { transform: translateY(-2px); transition-delay: 80ms; }
+  :global(.stat):hover .av-4 { transform: translateY(-2px); transition-delay: 120ms; }
+  :global(.stat):hover .av-plus .av-plus-bg {
+    animation-duration: 1.2s;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .art-rocket, .flame, .spark, .bar, .trend, .tip, .shield, .check, .trend-dot {
+    .art-rocket, .flame, .spark, .bar, .trend, .tip, .shield, .check, .trend-dot,
+    .mul-card, .mul-chip, .av, .av-plus-bg {
       animation: none !important;
       transition: none !important;
       transform: none !important;
     }
-    .stroke, .stroke-accent, .spark, .trend-dot {
+    .stroke, .stroke-accent, .spark, .trend-dot,
+    .mul-card, .mul-chip, .av {
       stroke-dasharray: none;
       stroke-dashoffset: 0;
       opacity: 1;

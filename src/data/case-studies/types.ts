@@ -48,18 +48,21 @@ export type StatIcon =
     }
   | {
       kind: "illustration";
-      scene: "launch" | "rise" | "retention";
+      scene: "launch" | "rise" | "retention" | "multiply" | "audience";
       alt?: string;
     };
 
 export type TwoColMediaItem = {
   image: ContentImage;
+  /** Optional small uppercase label above the title. */
+  kicker?: string;
   title: string;
   detail?: string;
 };
 
 export type AdventureBlock =
   | { kind: "intro"; text: string }
+  | { kind: "caption"; text: string }
   | { kind: "checklist"; items: readonly ChecklistItem[] }
   | { kind: "image"; image: ContentImage; rounded?: boolean }
   | { kind: "divider"; variant?: "hatched" | "line" }
@@ -101,6 +104,14 @@ export type AdventureBlock =
       kind: "responsive-media";
       desktop: ContentImage;
       mobile: readonly ContentImage[];
+    }
+  | {
+      kind: "prose-with-image";
+      heading: string;
+      body: string;
+      image: ContentImage;
+      /** Position of the image relative to the text on desktop. Defaults to "right". */
+      imagePosition?: "left" | "right";
     };
 
 export type WorthBlock =
@@ -142,6 +153,8 @@ export type CaseStudyContent = {
   brandLogo?: { kind: "public"; src: string; alt: string; height?: number };
   hero: {
     image?: ContentImage;
+    /** Optional stack of images rendered on mobile instead of `image`. */
+    mobileStack?: readonly ContentImage[];
     /** Multi-paragraph body; split by \n\n. */
     intro: string;
     /** Optional bulleted list rendered beneath the intro paragraphs. */

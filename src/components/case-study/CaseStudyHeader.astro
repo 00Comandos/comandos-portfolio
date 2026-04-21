@@ -41,7 +41,30 @@ const introParagraphs = content.hero.intro.split(/\n\n+/);
 
   <div class="cs-body mt-10">
     {
-      content.hero.image ? (
+      content.hero.mobileStack && content.hero.mobileStack.length > 0 ? (
+        <>
+          <div class="hidden md:block">
+            {content.hero.image ? (
+              <ContentImage image={content.hero.image} priority />
+            ) : (
+              <Image
+                src={fallbackImage}
+                alt={title}
+                widths={[640, 960, 1280, 1536]}
+                sizes="(min-width: 768px) 720px, 100vw"
+                loading="eager"
+                decoding="async"
+                class="w-full h-auto object-cover aspect-[16/10]"
+              />
+            )}
+          </div>
+          <div class="md:hidden space-y-4">
+            {content.hero.mobileStack.map((img) => (
+              <ContentImage image={img} priority />
+            ))}
+          </div>
+        </>
+      ) : content.hero.image ? (
         <ContentImage image={content.hero.image} priority />
       ) : (
         <div class="overflow-hidden bg-[color:var(--color-paper-soft)]">
