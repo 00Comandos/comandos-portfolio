@@ -1,0 +1,102 @@
+---
+import { Icon } from "astro-icon/components";
+
+type Props = {
+  name: string;
+  size?: number;
+  /** Optional motion preset. Defaults to "breathe" (gentle scale pulse). */
+  motion?: "breathe" | "rock" | "bounce" | "scan" | "none";
+  class?: string;
+};
+
+const { name, size = 40, motion = "breathe", class: className = "" } = Astro.props;
+---
+
+<span
+  class:list={["anim-icon", `anim-icon--${motion}`, className]}
+  data-anim-icon
+>
+  <Icon name={name} size={size} />
+</span>
+
+<style>
+  .anim-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    width: 3rem;
+    border-radius: 9999px;
+    background-color: var(--color-paper-soft);
+    border: 1px solid var(--color-border);
+    color: var(--color-ink);
+    transition:
+      background-color 0.25s ease,
+      border-color 0.25s ease,
+      transform 0.3s ease;
+  }
+  .anim-icon :global(svg) {
+    width: 60%;
+    height: 60%;
+    stroke-width: 1.6;
+    transform-origin: center;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Entrance — requires parent to set data-in-view="true". */
+  .anim-icon {
+    opacity: 0;
+    transform: translateY(8px) scale(0.92);
+  }
+  :global([data-in-view="true"]) .anim-icon,
+  :global(.stat[data-in-view="true"]) .anim-icon {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition:
+      opacity 0.4s ease-out,
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.25s ease;
+  }
+
+  /* Ambient motion presets — only run once the icon is in view. */
+  @keyframes anim-breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+  }
+  @keyframes anim-rock {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(6deg); }
+  }
+  @keyframes anim-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  @keyframes anim-scan {
+    0%, 100% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.05); filter: brightness(1.08); }
+  }
+
+  :global([data-in-view="true"]) .anim-icon--breathe :global(svg) {
+    animation: anim-breathe 3.2s ease-in-out infinite 0.6s;
+  }
+  :global([data-in-view="true"]) .anim-icon--rock :global(svg) {
+    animation: anim-rock 3.4s ease-in-out infinite 0.6s;
+  }
+  :global([data-in-view="true"]) .anim-icon--bounce :global(svg) {
+    animation: anim-bounce 2.8s ease-in-out infinite 0.6s;
+  }
+  :global([data-in-view="true"]) .anim-icon--scan :global(svg) {
+    animation: anim-scan 2.6s ease-in-out infinite 0.6s;
+  }
+
+  /* No hover treatment — keep the icon static and on-brand while the ambient
+     animation handles motion. */
+
+  @media (prefers-reduced-motion: reduce) {
+    .anim-icon,
+    .anim-icon :global(svg) {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>

@@ -7,7 +7,18 @@ import FeatureGrid from "~/components/case-study/FeatureGrid.astro";
 import TwoColMedia from "~/components/case-study/TwoColMedia.astro";
 import ResponsiveMedia from "~/components/case-study/ResponsiveMedia.astro";
 import ProseWithImage from "~/components/case-study/ProseWithImage.astro";
+import StatIllustration from "~/components/case-study/StatIllustration.astro";
+import AnimatedIcon from "~/components/case-study/AnimatedIcon.astro";
 import type { CaseStudyContent } from "~/data/case-studies/types";
+
+type IconMotion = "breathe" | "rock" | "bounce" | "scan" | "none";
+const motionFor = (name?: string): IconMotion => {
+  if (!name) return "breathe";
+  if (name.includes("scan")) return "scan";
+  if (name.includes("gauge") || name.includes("activity")) return "rock";
+  if (name.includes("message")) return "bounce";
+  return "breathe";
+};
 
 type Props = { content: CaseStudyContent["adventure"] };
 const { content } = Astro.props;
@@ -87,6 +98,53 @@ const { content } = Astro.props;
               />
             );
           }
+          if (block.kind === "illustrated-heading") {
+            return (
+              <div data-adventure-stat data-in-view="false">
+                {block.icon ? (
+                  <AnimatedIcon name={block.icon} motion={motionFor(block.icon)} />
+                ) : block.scene ? (
+                  <div class="stat inline-block">
+                    <StatIllustration scene={block.scene} />
+                  </div>
+                ) : null}
+                <h3 class="mt-4 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
+                  {block.heading}
+                </h3>
+                {block.body && (
+                  <p class="mt-3 text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
+                    {block.body}
+                  </p>
+                )}
+              </div>
+            );
+          }
+          if (block.kind === "illustrated-groups") {
+            const cols = block.groups.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3";
+            return (
+              <div data-adventure-stat data-in-view="false">
+                <div class:list={["grid gap-10", cols, "md:gap-10"]}>
+                  {block.groups.map((g) => (
+                    <div>
+                      {g.icon ? (
+                        <AnimatedIcon name={g.icon} motion={motionFor(g.icon)} />
+                      ) : g.scene ? (
+                        <div class="stat inline-block">
+                          <StatIllustration scene={g.scene} />
+                        </div>
+                      ) : null}
+                      <h4 class="mt-4 text-[1.125rem] md:text-[1.25rem] font-bold tracking-tight leading-[1.2]">
+                        {g.heading}
+                      </h4>
+                      <div class="mt-4">
+                        <Checklist items={g.items} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
           if (block.kind === "callout") {
             return (
               <div class="text-center">
@@ -149,4 +207,43 @@ const { content } = Astro.props;
   .adventure-blocks > [data-chip] {
     margin-block-end: 0.5rem !important;
   }
+  /* Illustrated headings / groups are a new visual beat — give them
+     real breathing room above so they don't feel glued to the imagery
+     from the previous block. */
+  .adventure-blocks > [data-adventure-stat] {
+    margin-block-start: 3.5rem !important;
+  }
+  @media (min-width: 768px) {
+    .adventure-blocks > [data-adventure-stat] {
+      margin-block-start: 4.5rem !important;
+    }
+  }
 </style>
+
+<script>
+  // Mark inline illustrations as in-view once they scroll into viewport so
+  // their CSS animations (stroke-dashoffset, cascades, etc.) kick in.
+  // Observes both the outer wrapper (for AnimatedIcon) and inner .stat
+  // elements (for rich StatIllustration scenes).
+  const wrappers = document.querySelectorAll<HTMLElement>(
+    "[data-adventure-stat]",
+  );
+  const stats = document.querySelectorAll<HTMLElement>(
+    "[data-adventure-stat] .stat",
+  );
+  const all: HTMLElement[] = [...wrappers, ...stats];
+  if (all.length > 0) {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).setAttribute("data-in-view", "true");
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 },
+    );
+    all.forEach((el) => obs.observe(el));
+  }
+</script>

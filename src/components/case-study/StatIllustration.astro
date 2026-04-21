@@ -1,5 +1,15 @@
 ---
-type Scene = "launch" | "rise" | "retention" | "multiply" | "audience";
+type Scene =
+  | "launch"
+  | "rise"
+  | "retention"
+  | "multiply"
+  | "audience"
+  | "ink"
+  | "biometric"
+  | "certified"
+  | "progress"
+  | "documents";
 
 type Props = { scene: Scene; class?: string };
 const { scene, class: className = "" } = Astro.props;
@@ -136,6 +146,125 @@ const { scene, class: className = "" } = Astro.props;
             rx="1"
           />
         </>
+      )
+    }
+
+    {
+      scene === "ink" && (
+        <>
+          <line
+            x1="20"
+            y1="58"
+            x2="100"
+            y2="58"
+            class="ink-baseline"
+            stroke-dasharray="2 4"
+            stroke-width="1"
+          />
+          <path
+            d="M24 56 Q32 38 42 48 T62 42 Q70 28 80 40 Q88 52 96 46"
+            class="ink-line"
+            fill="none"
+            stroke-width="2.2"
+            stroke-linecap="round"
+          />
+          <circle cx="96" cy="46" r="2.8" class="ink-tip" />
+        </>
+      )
+    }
+
+    {
+      scene === "documents" && (
+        <g class="docs">
+          <path
+            d="M32 20 L50 20 L54 24 L54 60 L32 60 Z"
+            class="doc doc-1"
+            fill="none"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M46 26 L64 26 L68 30 L68 66 L46 66 Z"
+            class="doc doc-2"
+            fill="none"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+          />
+          <g class="doc doc-3">
+            <path
+              d="M60 32 L78 32 L82 36 L82 72 L60 72 Z"
+              class="doc-paper"
+              fill="none"
+              stroke-width="1.8"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M78 32 L78 36 L82 36"
+              class="doc-fold"
+              fill="none"
+              stroke-width="1.6"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M64 62 Q70 55 74 60 T80 58"
+              class="doc-sig"
+              fill="none"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+          </g>
+        </g>
+      )
+    }
+
+    {
+      scene === "progress" && (
+        <g class="prog">
+          <circle cx="60" cy="40" r="22" class="prog-bg" stroke-width="3" />
+          <circle
+            cx="60"
+            cy="40"
+            r="22"
+            class="prog-fill"
+            stroke-width="3"
+            transform="rotate(-90 60 40)"
+          />
+          <path
+            d="M52 40 L58 46 L68 32"
+            class="prog-check"
+            stroke-width="2.2"
+          />
+        </g>
+      )
+    }
+
+    {
+      scene === "biometric" && (
+        <g class="bio">
+          <ellipse cx="60" cy="40" rx="18" ry="22" class="bio-face" />
+          <circle cx="52" cy="32" r="1.4" class="bio-dot bio-d-1" />
+          <circle cx="60" cy="30" r="1.4" class="bio-dot bio-d-2" />
+          <circle cx="68" cy="32" r="1.4" class="bio-dot bio-d-3" />
+          <circle cx="50" cy="42" r="1.4" class="bio-dot bio-d-4" />
+          <circle cx="70" cy="42" r="1.4" class="bio-dot bio-d-5" />
+          <circle cx="56" cy="52" r="1.4" class="bio-dot bio-d-6" />
+          <circle cx="64" cy="52" r="1.4" class="bio-dot bio-d-7" />
+          <line x1="40" y1="40" x2="80" y2="40" class="bio-scan" />
+        </g>
+      )
+    }
+
+    {
+      scene === "certified" && (
+        <g class="cert">
+          <path
+            d="M48 46 L48 70 L54 62 L60 68 L66 62 L72 70 L72 46"
+            class="cert-ribbon"
+          />
+          <circle cx="60" cy="34" r="16" class="cert-medal" />
+          <circle cx="60" cy="34" r="11" class="cert-inner" />
+          <path d="M54 34 L58 38 L66 28" class="cert-check" />
+        </g>
       )
     }
 
@@ -383,6 +512,249 @@ const { scene, class: className = "" } = Astro.props;
     transition-delay: 0s;
   }
 
+  /* ———— Scene: ink (signature draw) ———— */
+  .ink-baseline {
+    stroke: color-mix(in srgb, currentColor 35%, transparent);
+    fill: none;
+    opacity: 0;
+    transition: opacity 0.4s ease-out 0.15s;
+  }
+  .ink-line {
+    stroke: currentColor;
+    stroke-dasharray: 180;
+    stroke-dashoffset: 180;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.3s,
+      opacity 0.35s ease-out 0.3s;
+  }
+  .ink-tip {
+    fill: var(--color-accent-mint);
+    opacity: 0;
+    transform-origin: 96px 46px;
+    transition: opacity 0.3s ease-out 1.5s;
+  }
+  :global(.stat[data-in-view="true"]) .ink-baseline {
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .ink-line {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .ink-tip {
+    opacity: 1;
+    animation: ink-pulse 1.4s ease-in-out infinite 1.6s;
+  }
+  @keyframes ink-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.25); }
+  }
+  :global(.stat):hover .ink-line {
+    animation: ink-redraw 1.2s ease-out;
+  }
+  @keyframes ink-redraw {
+    from { stroke-dashoffset: 180; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* ———— Scene: documents (3 stacked docs + signature) ———— */
+  .doc {
+    opacity: 0;
+    transform: translateY(10px);
+    transform-origin: center;
+    transition:
+      opacity 0.45s ease-out,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .doc-1,
+  .doc-2 {
+    stroke: currentColor;
+  }
+  .doc-3 .doc-paper,
+  .doc-3 .doc-fold {
+    stroke: var(--color-accent-mint);
+    fill: none;
+  }
+  .doc-sig {
+    stroke: var(--color-accent-mint);
+    stroke-dasharray: 32;
+    stroke-dashoffset: 32;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.9s,
+      opacity 0.3s ease-out 0.9s;
+  }
+  :global(.stat[data-in-view="true"]) .doc-1 {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+  }
+  :global(.stat[data-in-view="true"]) .doc-2 {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.3s;
+  }
+  :global(.stat[data-in-view="true"]) .doc-3 {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.55s;
+  }
+  :global(.stat[data-in-view="true"]) .doc-sig {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  /* ———— Scene: progress (circular completion ring) ———— */
+  .prog-bg {
+    fill: none;
+    stroke: color-mix(in srgb, currentColor 18%, transparent);
+    stroke-linecap: round;
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+  }
+  .prog-fill {
+    fill: none;
+    stroke: var(--color-accent-mint);
+    stroke-linecap: round;
+    stroke-dasharray: 138;
+    stroke-dashoffset: 138;
+    transition: stroke-dashoffset 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+  }
+  .prog-check {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 26;
+    stroke-dashoffset: 26;
+    transition: stroke-dashoffset 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.1s;
+  }
+  :global(.stat[data-in-view="true"]) .prog-bg {
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .prog-fill {
+    stroke-dashoffset: 1.4; /* ~99% of circumference ≈ 138 */
+  }
+  :global(.stat[data-in-view="true"]) .prog-check {
+    stroke-dashoffset: 0;
+  }
+
+  /* ———— Scene: biometric (face with scan mesh + sweeping scan line) ———— */
+  .bio-face {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-dasharray: 140;
+    stroke-dashoffset: 140;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 1s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease-out;
+  }
+  .bio-dot {
+    fill: currentColor;
+    opacity: 0;
+    transform-origin: center;
+    transform: scale(0.4);
+    transition:
+      opacity 0.3s ease-out,
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .bio-scan {
+    stroke: var(--color-accent-mint);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    opacity: 0;
+  }
+  :global(.stat[data-in-view="true"]) .bio-face {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .bio-d-1 { opacity: 1; transform: scale(1); transition-delay: 0.5s; }
+  :global(.stat[data-in-view="true"]) .bio-d-2 { opacity: 1; transform: scale(1); transition-delay: 0.6s; }
+  :global(.stat[data-in-view="true"]) .bio-d-3 { opacity: 1; transform: scale(1); transition-delay: 0.7s; }
+  :global(.stat[data-in-view="true"]) .bio-d-4 { opacity: 1; transform: scale(1); transition-delay: 0.8s; }
+  :global(.stat[data-in-view="true"]) .bio-d-5 { opacity: 1; transform: scale(1); transition-delay: 0.9s; }
+  :global(.stat[data-in-view="true"]) .bio-d-6 { opacity: 1; transform: scale(1); transition-delay: 1s; }
+  :global(.stat[data-in-view="true"]) .bio-d-7 { opacity: 1; transform: scale(1); transition-delay: 1.1s; }
+
+  @keyframes bio-sweep {
+    0% { transform: translateY(-14px); opacity: 0; }
+    15% { opacity: 1; }
+    50% { transform: translateY(14px); opacity: 1; }
+    85% { opacity: 0; }
+    100% { transform: translateY(14px); opacity: 0; }
+  }
+  :global(.stat[data-in-view="true"]) .bio-scan {
+    animation: bio-sweep 2.8s ease-in-out infinite 1.3s;
+  }
+
+  /* ———— Scene: certified (medal with ribbon + check) ———— */
+  .cert-ribbon {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+    stroke-dasharray: 120;
+    stroke-dashoffset: 120;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.3s,
+      opacity 0.3s ease-out 0.3s;
+  }
+  .cert-medal {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    opacity: 0;
+    transform-origin: 60px 34px;
+    transform: scale(0.6);
+    transition:
+      opacity 0.35s ease-out,
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cert-inner {
+    fill: var(--color-accent-mint);
+    opacity: 0;
+    transform-origin: 60px 34px;
+    transform: scale(0.4);
+    transition:
+      opacity 0.35s ease-out 0.25s,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.25s;
+  }
+  .cert-check {
+    fill: none;
+    stroke: var(--color-ink);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 26;
+    stroke-dashoffset: 26;
+    transition: stroke-dashoffset 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.8s;
+  }
+  :global(.stat[data-in-view="true"]) .cert-medal {
+    opacity: 1;
+    transform: scale(1);
+  }
+  :global(.stat[data-in-view="true"]) .cert-inner {
+    opacity: 1;
+    transform: scale(1);
+  }
+  :global(.stat[data-in-view="true"]) .cert-ribbon {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .cert-check {
+    stroke-dashoffset: 0;
+  }
+  @keyframes cert-glow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+  }
+  :global(.stat[data-in-view="true"]) .cert-inner {
+    animation: cert-glow 2.8s ease-in-out infinite 1.5s;
+  }
+
   /* ———— Scene: audience (overlapping user silhouettes + "+N") ———— */
   .av {
     opacity: 0;
@@ -455,13 +827,17 @@ const { scene, class: className = "" } = Astro.props;
 
   @media (prefers-reduced-motion: reduce) {
     .art-rocket, .flame, .spark, .bar, .trend, .tip, .shield, .check, .trend-dot,
-    .mul-card, .mul-chip, .av, .av-plus-bg {
+    .mul-card, .mul-chip, .av, .av-plus-bg, .ink-line, .ink-tip, .ink-baseline,
+    .bio-face, .bio-dot, .bio-scan, .cert-ribbon, .cert-medal, .cert-inner, .cert-check,
+    .prog-fill, .prog-check, .prog-bg, .doc, .doc-sig {
       animation: none !important;
       transition: none !important;
       transform: none !important;
     }
     .stroke, .stroke-accent, .spark, .trend-dot,
-    .mul-card, .mul-chip, .av {
+    .mul-card, .mul-chip, .av, .ink-line, .ink-baseline,
+    .bio-face, .bio-dot, .cert-ribbon, .cert-medal, .cert-inner, .cert-check,
+    .prog-fill, .prog-check, .prog-bg, .doc, .doc-sig {
       stroke-dasharray: none;
       stroke-dashoffset: 0;
       opacity: 1;

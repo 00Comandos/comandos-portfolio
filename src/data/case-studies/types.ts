@@ -48,7 +48,7 @@ export type StatIcon =
     }
   | {
       kind: "illustration";
-      scene: "launch" | "rise" | "retention" | "multiply" | "audience";
+      scene: IllustrationScene;
       alt?: string;
     };
 
@@ -117,7 +117,36 @@ export type AdventureBlock =
       image: ContentImage;
       /** Position of the image relative to the text on desktop. Defaults to "right". */
       imagePosition?: "left" | "right";
+    }
+  | {
+      kind: "illustrated-heading";
+      /** Either a rich StatIllustration scene or an Iconify name (e.g. "lucide:scan-face"). */
+      scene?: IllustrationScene;
+      icon?: string;
+      heading: string;
+      body?: string;
+    }
+  | {
+      kind: "illustrated-groups";
+      groups: readonly {
+        scene?: IllustrationScene;
+        icon?: string;
+        heading: string;
+        items: readonly ChecklistItem[];
+      }[];
     };
+
+export type IllustrationScene =
+  | "launch"
+  | "rise"
+  | "retention"
+  | "multiply"
+  | "audience"
+  | "ink"
+  | "biometric"
+  | "certified"
+  | "progress"
+  | "documents";
 
 export type WorthBlock =
   | { kind: "intro"; label?: string; heading: string; body?: string }
@@ -201,6 +230,8 @@ export type CaseStudyContent = {
       heading: string;
       body?: string;
       image?: ContentImage;
+      /** Animated illustration rendered in place of the image. */
+      scene?: IllustrationScene;
     }[];
   };
 };

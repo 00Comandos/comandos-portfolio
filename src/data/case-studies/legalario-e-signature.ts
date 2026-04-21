@@ -191,38 +191,43 @@ export const legalarioESignature: CaseStudyContent = {
         desktop: legacyDesktop,
         mobile: [legacyMobile01, legacyMobile02, legacyMobile03],
       },
-      { kind: "chip", icon: "nps", label: "Net Promoter Score" },
       {
-        kind: "checklist",
-        items: [
+        kind: "illustrated-groups",
+        groups: [
           {
-            label: "57% of users",
-            body:
-              "indicated that their low-end phones do not have support.",
+            icon: "lucide:gauge",
+            heading: "Net Promoter Score",
+            items: [
+              {
+                label: "57% of users",
+                body:
+                  "indicated that their low-end phones do not have support.",
+              },
+              {
+                label: "26% rate the document",
+                body: "signing service with 3 stars.",
+              },
+              {
+                label: "10% of users",
+                body:
+                  "do not understand how to start signing from the invitation email.",
+              },
+            ],
           },
           {
-            label: "26% rate the document",
-            body: "signing service with 3 stars.",
-          },
-          {
-            label: "10% of users",
-            body:
-              "do not understand how to start signing from the invitation email.",
-          },
-        ],
-      },
-      { kind: "chip", icon: "interview", label: "Interview with users" },
-      {
-        kind: "checklist",
-        items: [
-          { label: "I don't feel comfortable signing any documents." },
-          {
-            label: "Is it legal",
-            body: "to sign documents electronically?",
-          },
-          {
-            label: "I have large-scale hiring processes",
-            body: "How can I protect myself against identity fraud?",
+            icon: "lucide:messages-square",
+            heading: "Interview with users",
+            items: [
+              { label: "I don't feel comfortable signing any documents." },
+              {
+                label: "Is it legal",
+                body: "to sign documents electronically?",
+              },
+              {
+                label: "I have large-scale hiring processes",
+                body: "How can I protect myself against identity fraud?",
+              },
+            ],
           },
         ],
       },
@@ -240,12 +245,18 @@ export const legalarioESignature: CaseStudyContent = {
         mobile: [v1Mobile01, v1Mobile02],
       },
       { kind: "divider" },
-      { kind: "chip", icon: "signature", label: "Testing" },
       {
-        kind: "heading",
+        kind: "illustrated-heading",
+        icon: "lucide:scan-face",
         heading: "Testing the entire product before the first deployment",
       },
       { kind: "image", image: testingImage },
+      { kind: "image", image: {
+          kind: "image",
+          image: img("legalario-electronic-signature-biometric-2048x1025.webp"),
+          alt: "Face-mesh biometric validation — profile view with face-scan overlay on a phone",
+        }
+      },
       { kind: "divider" },
       { kind: "chip", icon: "making-top", label: "Making top" },
       {
@@ -285,35 +296,37 @@ export const legalarioESignature: CaseStudyContent = {
       {
         value: "99%",
         label: "completion rate",
-        icon: { kind: "illustration", scene: "rise", alt: "Completion rate" },
-        chart: completionRateChart,
+        icon: {
+          kind: "illustration",
+          scene: "progress",
+          alt: "Signing flow completion rate",
+        },
       },
       {
         value: "+24%",
         label: "in our NPS",
-        icon: { kind: "illustration", scene: "audience", alt: "NPS growth" },
-        chart: npsChart,
+        icon: { kind: "illustration", scene: "rise", alt: "NPS growth" },
       },
       {
         value: "+31%",
         label: "signed documents",
-        icon: { kind: "illustration", scene: "multiply", alt: "Signed documents growth" },
-        chart: signedDocumentsChart,
+        icon: {
+          kind: "illustration",
+          scene: "documents",
+          alt: "Signed documents growth",
+        },
       },
     ],
     cards: [
       {
-        heading: "4 new biometric models implemented",
-        image: biometricModelsImage,
+        heading: "4 new biometric models",
+        body: "Implemented with AI-powered anti-fraud support.",
+        scene: "biometric",
       },
       {
         heading: "iBeta certification",
         body: "To verify the authenticity of the person signing the document.",
-        image: ibetaImage,
-      },
-      {
-        heading: "Face-scan biometric validation",
-        image: biometricDetailImage,
+        scene: "certified",
       },
     ],
   },
