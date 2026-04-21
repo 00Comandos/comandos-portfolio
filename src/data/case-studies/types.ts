@@ -158,7 +158,9 @@ export type IllustrationScene =
   | "reactivate"
   | "sprint"
   | "unify"
-  | "flow";
+  | "flow"
+  | "streak"
+  | "orbit";
 
 export type WorthBlock =
   | { kind: "intro"; label?: string; heading: string; body?: string }
