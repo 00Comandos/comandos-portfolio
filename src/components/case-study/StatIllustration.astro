@@ -21,7 +21,8 @@ type Scene =
   | "sync"
   | "whisper"
   | "lap"
-  | "magnet";
+  | "magnet"
+  | "summit";
 
 type Props = { scene: Scene; class?: string };
 const { scene, class: className = "" } = Astro.props;
@@ -552,6 +553,43 @@ const { scene, class: className = "" } = Astro.props;
           <circle cx="94" cy="24" r="2.4" class="mag-dot mag-d-1" />
           <circle cx="102" cy="40" r="2.4" class="mag-dot mag-d-2" />
           <circle cx="94" cy="56" r="2.4" class="mag-dot mag-d-3" />
+        </g>
+      )
+    }
+
+    {
+      scene === "summit" && (
+        <g class="summit">
+          <path
+            d="M18 62 L46 30 L58 44 L72 26 L102 62 Z"
+            class="sum-mount"
+            fill="none"
+            stroke-width="1.6"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M66 32 L72 26 L78 32 L75 35 L72 31 L69 35 Z"
+            class="sum-snow"
+          />
+          <path
+            d="M26 60 Q36 52 44 44 Q54 36 60 32 Q66 30 72 26"
+            class="sum-path"
+            fill="none"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-dasharray="3 3"
+          />
+          <line x1="72" y1="26" x2="72" y2="12" class="sum-pole" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M72 12 L86 16 L72 20 Z" class="sum-flag" />
+          <circle cx="60" cy="32" r="2.6" class="sum-climber" />
+          <path
+            d="M68 22 L71 25 L78 16"
+            class="sum-check"
+            fill="none"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </g>
       )
     }
@@ -1850,6 +1888,97 @@ const { scene, class: className = "" } = Astro.props;
     50% { transform: translateX(-6px) scale(1.1); }
   }
 
+  /* ———— Scene: summit (process completion — mountain path + climber + flag + check) ———— */
+  .sum-mount {
+    stroke: currentColor;
+    fill: none;
+    stroke-dasharray: 180;
+    stroke-dashoffset: 180;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 1s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease-out;
+  }
+  .sum-snow {
+    fill: color-mix(in srgb, currentColor 18%, transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease-out 0.55s;
+  }
+  .sum-path {
+    stroke: var(--color-accent-mint);
+    fill: none;
+    stroke-dasharray: 140;
+    stroke-dashoffset: 140;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.4s,
+      opacity 0.3s ease-out 0.4s;
+  }
+  .sum-climber {
+    fill: currentColor;
+    opacity: 0;
+    transform-origin: center;
+    transform: scale(0.3);
+    transition:
+      opacity 0.3s ease-out,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sum-pole,
+  .sum-flag {
+    fill: var(--color-accent-mint);
+    stroke: var(--color-accent-mint);
+    opacity: 0;
+    transform-origin: 72px 26px;
+    transform: scale(0.3);
+    transition:
+      opacity 0.35s ease-out,
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sum-pole {
+    fill: none;
+  }
+  .sum-check {
+    stroke: var(--color-accent-mint);
+    fill: none;
+    stroke-dasharray: 22;
+    stroke-dashoffset: 22;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.8s,
+      opacity 0.3s ease-out 1.8s;
+  }
+  :global(.stat[data-in-view="true"]) .sum-mount {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .sum-snow {
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .sum-path {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .sum-climber {
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: 1.3s;
+    animation: sum-climber-step 2.6s ease-in-out infinite 1.8s;
+  }
+  :global(.stat[data-in-view="true"]) .sum-pole,
+  :global(.stat[data-in-view="true"]) .sum-flag {
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: 1.55s;
+  }
+  :global(.stat[data-in-view="true"]) .sum-check {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  @keyframes sum-climber-step {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(2px, -2px) scale(1.08); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .art-rocket, .flame, .spark, .bar, .trend, .tip, .shield, .check, .trend-dot,
     .mul-card, .mul-chip, .av, .av-plus-bg, .ink-line, .ink-tip, .ink-baseline,
@@ -1864,7 +1993,8 @@ const { scene, class: className = "" } = Astro.props;
     .sync-device, .sync-face, .sync-crown, .sync-stem, .sync-check, .sync-arc, .sync-packet,
     .wh-horn, .wh-wave, .wh-recv,
     .lap-track, .lap-finish, .lap-shoe, .lap-arrow,
-    .mag-body, .mag-pole, .mag-field, .mag-dot {
+    .mag-body, .mag-pole, .mag-field, .mag-dot,
+    .sum-mount, .sum-snow, .sum-path, .sum-climber, .sum-pole, .sum-flag, .sum-check {
       animation: none !important;
       transition: none !important;
       transform: none !important;
@@ -1882,7 +2012,8 @@ const { scene, class: className = "" } = Astro.props;
     .sync-device, .sync-face, .sync-crown, .sync-stem, .sync-check, .sync-arc, .sync-packet,
     .wh-horn, .wh-wave, .wh-recv,
     .lap-track, .lap-finish, .lap-shoe, .lap-arrow,
-    .mag-body, .mag-pole, .mag-field, .mag-dot {
+    .mag-body, .mag-pole, .mag-field, .mag-dot,
+    .sum-mount, .sum-snow, .sum-path, .sum-climber, .sum-pole, .sum-flag, .sum-check {
       stroke-dasharray: none;
       stroke-dashoffset: 0;
       opacity: 1;

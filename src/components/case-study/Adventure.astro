@@ -21,6 +21,21 @@ const motionFor = (name?: string): IconMotion => {
   return "breathe";
 };
 
+// Render body copy that supports \n\n paragraph breaks and **bold** emphasis.
+// HTML-escapes first, then swaps in <strong> — keeps the surface minimal.
+const escape = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const renderProse = (body: string) =>
+  body
+    .split(/\n{2,}/)
+    .map(
+      (p) =>
+        `<p class="mt-3 text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">${escape(
+          p,
+        ).replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")}</p>`,
+    )
+    .join("");
+
 type Props = { content: CaseStudyContent["adventure"] };
 const { content } = Astro.props;
 ---
@@ -189,11 +204,7 @@ const { content } = Astro.props;
                 <h3 class="mt-2 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
                   {block.heading}
                 </h3>
-                {block.body && (
-                  <p class="mt-3 text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
-                    {block.body}
-                  </p>
-                )}
+                {block.body && <Fragment set:html={renderProse(block.body)} />}
                 {block.image && (
                   <div class="mt-6">
                     <ContentImage image={block.image} />

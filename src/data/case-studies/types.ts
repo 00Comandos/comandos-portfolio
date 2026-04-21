@@ -164,7 +164,8 @@ export type IllustrationScene =
   | "sync"
   | "whisper"
   | "lap"
-  | "magnet";
+  | "magnet"
+  | "summit";
 
 export type WorthBlock =
   | { kind: "intro"; label?: string; heading: string; body?: string }

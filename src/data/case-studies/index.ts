@@ -10,6 +10,7 @@ import { yaydooDesignSystem } from "./yaydoo-design-system";
 import { yaydooPorCobrar } from "./yaydoo-porcobrar";
 import { yaydooVendorplace } from "./yaydoo-vendorplace";
 import { stadioAppleWatch } from "./stadio-apple-watch";
+import { rebajatuscuentas } from "./rebajatuscuentas";
 
 const caseStudies: readonly CaseStudyContent[] = [
   storiInversionPlus,
@@ -23,6 +24,7 @@ const caseStudies: readonly CaseStudyContent[] = [
   yaydooPorCobrar,
   yaydooVendorplace,
   stadioAppleWatch,
+  rebajatuscuentas,
 ];
 
 const bySlug = new Map(caseStudies.map((c) => [c.slug, c]));
