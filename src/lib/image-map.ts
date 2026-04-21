@@ -68,6 +68,10 @@ const miposRestaurantPosModules = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/images/mipos-restaurant-pos/*",
   { eager: true },
 );
+const miposKioskModules = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/mipos-kiosk/*",
+  { eager: true },
+);
 
 const toMap = (
   modules: Record<string, { default: ImageMetadata }>,
@@ -97,6 +101,7 @@ export const stadioImages = toMap(stadioModules);
 export const rebajatuscuentasImages = toMap(rebajatuscuentasModules);
 export const miposDarkKitchenImages = toMap(miposDarkKitchenModules);
 export const miposRestaurantPosImages = toMap(miposRestaurantPosModules);
+export const miposKioskImages = toMap(miposKioskModules);
 
 export function requireImage(
   map: Record<string, ImageMetadata>,

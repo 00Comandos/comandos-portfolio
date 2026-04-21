@@ -168,7 +168,9 @@ export type IllustrationScene =
   | "summit"
   | "anydevice"
   | "renew"
-  | "simmer";
+  | "simmer"
+  | "tap-pay"
+  | "refer";
 
 export type WorthBlock =
   | { kind: "intro"; label?: string; heading: string; body?: string }

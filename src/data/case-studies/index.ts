@@ -13,6 +13,7 @@ import { stadioAppleWatch } from "./stadio-apple-watch";
 import { rebajatuscuentas } from "./rebajatuscuentas";
 import { miposDarkKitchen } from "./mipos-dark-kitchen";
 import { miposRestaurantPos } from "./mipos-restaurant-pos";
+import { miposKiosk } from "./mipos-kiosk";
 
 const caseStudies: readonly CaseStudyContent[] = [
   storiInversionPlus,
@@ -29,6 +30,7 @@ const caseStudies: readonly CaseStudyContent[] = [
   rebajatuscuentas,
   miposDarkKitchen,
   miposRestaurantPos,
+  miposKiosk,
 ];
 
 const bySlug = new Map(caseStudies.map((c) => [c.slug, c]));
