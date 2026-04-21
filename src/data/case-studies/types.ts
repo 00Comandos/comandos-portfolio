@@ -63,6 +63,7 @@ export type TwoColMediaItem = {
 export type AdventureBlock =
   | { kind: "intro"; text: string }
   | { kind: "caption"; text: string }
+  | { kind: "spacer"; size?: "sm" | "md" | "lg" }
   | { kind: "checklist"; items: readonly ChecklistItem[] }
   | { kind: "image"; image: ContentImage; rounded?: boolean }
   | { kind: "divider"; variant?: "hatched" | "line" }
@@ -146,7 +147,9 @@ export type IllustrationScene =
   | "biometric"
   | "certified"
   | "progress"
-  | "documents";
+  | "documents"
+  | "signed-growth"
+  | "love";
 
 export type WorthBlock =
   | { kind: "intro"; label?: string; heading: string; body?: string }

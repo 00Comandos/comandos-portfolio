@@ -28,6 +28,10 @@ const legalarioModules = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/images/legalario/*",
   { eager: true },
 );
+const legalarioEmailsModules = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/legalario-emails/*",
+  { eager: true },
+);
 
 const toMap = (
   modules: Record<string, { default: ImageMetadata }>,
@@ -47,6 +51,7 @@ export const storiImages = toMap(storiModules);
 export const kartaImages = toMap(kartaModules);
 export const kartaCardImages = toMap(kartaCardModules);
 export const legalarioImages = toMap(legalarioModules);
+export const legalarioEmailsImages = toMap(legalarioEmailsModules);
 
 export function requireImage(
   map: Record<string, ImageMetadata>,

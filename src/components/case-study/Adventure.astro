@@ -36,6 +36,15 @@ const { content } = Astro.props;
       {
         content.blocks.map((block) => {
           if (block.kind === "divider") return <Divider variant={block.variant ?? "hatched"} />;
+          if (block.kind === "spacer") {
+            const h =
+              block.size === "lg"
+                ? "h-10 md:h-14"
+                : block.size === "sm"
+                  ? "h-3 md:h-4"
+                  : "h-6 md:h-9";
+            return <div class:list={["block", h]} aria-hidden="true" />;
+          }
           if (block.kind === "intro") {
             return (
               <p class="text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">

@@ -9,7 +9,9 @@ type Scene =
   | "biometric"
   | "certified"
   | "progress"
-  | "documents";
+  | "documents"
+  | "signed-growth"
+  | "love";
 
 type Props = { scene: Scene; class?: string };
 const { scene, class: className = "" } = Astro.props;
@@ -264,6 +266,62 @@ const { scene, class: className = "" } = Astro.props;
           <circle cx="60" cy="34" r="16" class="cert-medal" />
           <circle cx="60" cy="34" r="11" class="cert-inner" />
           <path d="M54 34 L58 38 L66 28" class="cert-check" />
+        </g>
+      )
+    }
+
+    {
+      scene === "signed-growth" && (
+        <g class="sg">
+          <path
+            d="M36 18 L70 18 L78 26 L78 66 L36 66 Z"
+            class="sg-doc"
+            fill="none"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M70 18 L70 26 L78 26"
+            class="sg-fold"
+            fill="none"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+          />
+          <line x1="42" y1="32" x2="70" y2="32" class="sg-ruled" stroke-width="1" />
+          <line x1="42" y1="38" x2="66" y2="38" class="sg-ruled" stroke-width="1" />
+          <line x1="42" y1="44" x2="68" y2="44" class="sg-ruled" stroke-width="1" />
+          <path
+            d="M42 58 Q48 50 54 56 T66 54 Q72 48 76 54"
+            class="sg-sig"
+            fill="none"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M88 60 L98 48 M92 48 L98 48 L98 54"
+            class="sg-arrow"
+            fill="none"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </g>
+      )
+    }
+
+    {
+      scene === "love" && (
+        <g class="love">
+          <path
+            d="M60 58 C52 52 42 46 42 36 C42 30 47 26 52 26 C56 26 58 28 60 31 C62 28 64 26 68 26 C73 26 78 30 78 36 C78 46 68 52 60 58 Z"
+            class="love-heart"
+          />
+          <circle cx="28" cy="28" r="1.8" class="love-spark love-s-1" />
+          <circle cx="92" cy="30" r="1.8" class="love-spark love-s-2" />
+          <circle cx="32" cy="60" r="1.5" class="love-spark love-s-3" />
+          <circle cx="92" cy="60" r="1.5" class="love-spark love-s-4" />
+          <circle cx="22" cy="46" r="1" class="love-spark love-s-5" />
+          <circle cx="100" cy="46" r="1" class="love-spark love-s-6" />
         </g>
       )
     }
@@ -755,6 +813,104 @@ const { scene, class: className = "" } = Astro.props;
     animation: cert-glow 2.8s ease-in-out infinite 1.5s;
   }
 
+  /* ———— Scene: signed-growth (document + signature draw + upward arrow) ———— */
+  .sg-doc,
+  .sg-fold {
+    stroke: currentColor;
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 0.45s ease-out,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sg-ruled {
+    stroke: color-mix(in srgb, currentColor 32%, transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease-out 0.45s;
+  }
+  .sg-sig {
+    stroke: var(--color-accent-mint);
+    stroke-dasharray: 90;
+    stroke-dashoffset: 90;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.7s,
+      opacity 0.3s ease-out 0.7s;
+  }
+  .sg-arrow {
+    stroke: var(--color-accent-mint);
+    stroke-dasharray: 28;
+    stroke-dashoffset: 28;
+    opacity: 0;
+    transform-origin: 93px 54px;
+    transition:
+      stroke-dashoffset 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.55s,
+      opacity 0.3s ease-out 1.55s;
+  }
+  :global(.stat[data-in-view="true"]) .sg-doc,
+  :global(.stat[data-in-view="true"]) .sg-fold {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  :global(.stat[data-in-view="true"]) .sg-ruled {
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .sg-sig {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .sg-arrow {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    animation: sg-arrow-float 2.4s ease-in-out infinite 2.2s;
+  }
+  @keyframes sg-arrow-float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(2px, -2px); }
+  }
+
+  /* ———— Scene: love (heart + sparkles) ———— */
+  .love-heart {
+    fill: var(--color-accent-mint);
+    stroke: var(--color-ink);
+    stroke-width: 1.3;
+    stroke-linejoin: round;
+    opacity: 0;
+    transform-origin: 60px 42px;
+    transform: scale(0.4);
+    transition:
+      opacity 0.4s ease-out,
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .love-spark {
+    fill: var(--color-accent-mint);
+    opacity: 0;
+    transform-origin: center;
+    transform: scale(0.4);
+    transition:
+      opacity 0.4s ease-out,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :global(.stat[data-in-view="true"]) .love-heart {
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: 0.05s;
+    animation: love-beat 2.4s ease-in-out infinite 1.4s;
+  }
+  :global(.stat[data-in-view="true"]) .love-s-1 { opacity: 1; transform: scale(1); transition-delay: 0.6s; }
+  :global(.stat[data-in-view="true"]) .love-s-2 { opacity: 1; transform: scale(1); transition-delay: 0.72s; }
+  :global(.stat[data-in-view="true"]) .love-s-3 { opacity: 1; transform: scale(1); transition-delay: 0.84s; }
+  :global(.stat[data-in-view="true"]) .love-s-4 { opacity: 1; transform: scale(1); transition-delay: 0.96s; }
+  :global(.stat[data-in-view="true"]) .love-s-5 { opacity: 1; transform: scale(1); transition-delay: 1.08s; }
+  :global(.stat[data-in-view="true"]) .love-s-6 { opacity: 1; transform: scale(1); transition-delay: 1.2s; }
+
+  @keyframes love-beat {
+    0%, 100% { transform: scale(1); }
+    18% { transform: scale(1.14); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.1); }
+  }
+
   /* ———— Scene: audience (overlapping user silhouettes + "+N") ———— */
   .av {
     opacity: 0;
@@ -829,7 +985,8 @@ const { scene, class: className = "" } = Astro.props;
     .art-rocket, .flame, .spark, .bar, .trend, .tip, .shield, .check, .trend-dot,
     .mul-card, .mul-chip, .av, .av-plus-bg, .ink-line, .ink-tip, .ink-baseline,
     .bio-face, .bio-dot, .bio-scan, .cert-ribbon, .cert-medal, .cert-inner, .cert-check,
-    .prog-fill, .prog-check, .prog-bg, .doc, .doc-sig {
+    .prog-fill, .prog-check, .prog-bg, .doc, .doc-sig,
+    .sg-doc, .sg-fold, .sg-ruled, .sg-sig, .sg-arrow, .love-heart, .love-spark {
       animation: none !important;
       transition: none !important;
       transform: none !important;
@@ -837,7 +994,8 @@ const { scene, class: className = "" } = Astro.props;
     .stroke, .stroke-accent, .spark, .trend-dot,
     .mul-card, .mul-chip, .av, .ink-line, .ink-baseline,
     .bio-face, .bio-dot, .cert-ribbon, .cert-medal, .cert-inner, .cert-check,
-    .prog-fill, .prog-check, .prog-bg, .doc, .doc-sig {
+    .prog-fill, .prog-check, .prog-bg, .doc, .doc-sig,
+    .sg-doc, .sg-fold, .sg-ruled, .sg-sig, .sg-arrow, .love-heart, .love-spark {
       stroke-dasharray: none;
       stroke-dashoffset: 0;
       opacity: 1;
