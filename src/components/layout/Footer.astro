@@ -1,91 +1,287 @@
 ---
-import Logo from "~/components/ui/Logo.astro";
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 import { site } from "~/lib/site";
 
 const year = new Date().getFullYear();
+
+// Shared path for the Comandos wordmark — reused in the intro logo
+// and again as the huge halftone treatment at the bottom.
+const LOGO_PATH =
+  "M35.5833 25.3854V32.4158H2.58419V12.1988H9.61463V25.3854H35.5833ZM12.1988 9.61462H35.9877V2.58489H12.1988V9.61462ZM38.5719 12.1988V0H9.61463V9.61463H0V35H38.1682V22.8012H12.1988V12.1988H38.5719ZM119.08 16.8444C121.3 16.8444 121.599 18.7953 121.599 20.7038V26.1836H123.837V19.9591C123.837 15.1966 121.409 14.585 119.293 14.585C117.809 14.585 116.628 15.5291 115.899 16.3217L115.652 16.5894L115.53 14.9049H113.472V26.1836H115.71L115.728 18.9496C116.238 17.9787 117.421 16.8444 119.08 16.8444ZM127.411 20.5336C127.411 22.7211 129.068 24.4353 131.185 24.4353C133.277 24.4353 134.916 22.7211 134.916 20.5336C134.916 18.3954 133.207 16.5897 131.185 16.5897C129.068 16.5897 127.411 18.3221 127.411 20.5336ZM137.069 10.5435V26.1839H134.988L134.837 24.4677L134.589 24.8016C133.834 25.8225 132.463 26.4819 131.099 26.4819C127.757 26.4819 125.236 23.9245 125.236 20.5336C125.236 17.1984 127.812 14.5853 131.099 14.5853C132.46 14.5853 133.797 15.2377 134.591 16.2889L134.873 16.6637V10.5435H137.069ZM104.891 24.4353C102.774 24.4353 101.117 22.7211 101.117 20.5336C101.117 18.3221 102.774 16.5897 104.891 16.5897C106.913 16.5897 108.622 18.3954 108.622 20.5336C108.622 22.7211 106.983 24.4353 104.891 24.4353ZM110.775 26.1839V14.9045H108.675L108.548 16.6221L108.296 16.2889C107.503 15.2377 106.166 14.5853 104.806 14.5853C101.518 14.5853 98.9425 17.1984 98.9425 20.5336C98.9425 23.9245 101.463 26.4819 104.806 26.4819C106.17 26.4819 107.54 25.8225 108.295 24.8016L108.542 24.4677L108.694 26.1839H110.775ZM94.8799 20.7038C94.8799 18.7509 94.6946 16.8444 92.4887 16.8444C90.6823 16.8444 89.7192 18.164 89.3064 18.9496L89.2853 18.9897L89.2888 19.0341L89.2905 19.0588C89.3104 19.3414 89.3311 19.634 89.3311 19.9591V26.1836H87.0935V20.7038C87.0935 18.7509 86.9089 16.8444 84.7016 16.8444C82.8959 16.8444 81.9336 18.164 81.52 18.9496L81.5017 26.1836H79.2641V14.9049H81.3213L81.4432 16.5894L81.6905 16.3217C82.481 15.4629 83.4821 14.585 84.9144 14.585C86.1367 14.585 87.6564 14.7795 88.5667 16.2963L88.678 16.4809L88.8203 16.3189C89.5488 15.4854 91.2403 14.585 92.7008 14.585C94.7573 14.585 97.1174 15.1966 97.1174 19.9591V26.1836H94.8799V20.7038ZM58.8333 10.224C54.3765 10.224 50.8856 13.7995 50.8856 18.3634C50.8856 22.8399 54.4702 26.4823 58.8763 26.4823C61.402 26.4823 63.5966 25.267 65.0697 23.0569L63.25 21.6127C62.0938 23.2373 60.5848 24.0947 58.8763 24.0947C55.739 24.0947 53.1873 21.5239 53.1873 18.3634C53.1873 15.1564 55.72 12.5469 58.8333 12.5469C60.4502 12.5469 61.8416 13.2915 62.971 14.7612L64.8478 13.3726C63.3493 11.3407 61.2195 10.224 58.8333 10.224ZM140.94 20.5338C140.94 22.5678 142.566 24.2227 144.566 24.2227C146.576 24.2227 148.212 22.5678 148.212 20.5338C148.212 18.4646 146.576 16.7808 144.566 16.7808C142.566 16.7808 140.94 18.4646 140.94 20.5338ZM138.724 20.5338C138.724 17.2536 141.354 14.5855 144.587 14.5855C147.832 14.5855 150.472 17.2536 150.472 20.5338C150.472 23.8021 147.832 26.461 144.587 26.461C141.354 26.461 138.724 23.8021 138.724 20.5338ZM71.6826 24.2227C69.6832 24.2227 68.0571 22.5678 68.0571 20.5338C68.0571 18.4646 69.6832 16.7808 71.6826 16.7808C73.6933 16.7808 75.3285 18.4646 75.3285 20.5338C75.3285 22.5678 73.6933 24.2227 71.6826 24.2227ZM71.7038 14.5855C68.4707 14.5855 65.84 17.2536 65.84 20.5338C65.84 23.8021 68.4707 26.461 71.7038 26.461C74.9488 26.461 77.5886 23.8021 77.5886 20.5338C77.5886 17.2536 74.9488 14.5855 71.7038 14.5855ZM160.325 22.9949C160.325 24.9817 158.728 26.3696 156.441 26.3696C154.633 26.3696 152.76 25.298 151.632 23.6276L153.284 22.3848C153.87 23.1105 155.097 24.1954 156.441 24.1954C157.388 24.1954 158.129 23.7058 158.129 23.0802C158.129 22.0988 156.986 21.6225 155.492 21.1019C153.143 20.2797 151.987 19.1172 151.961 17.5454C151.944 16.8198 152.21 16.1554 152.73 15.6242C153.459 14.8788 154.633 14.4512 155.951 14.4512C157.025 14.4512 158.62 14.6632 160.17 16.4598L158.456 17.7448C157.706 17.0015 156.778 16.5619 155.951 16.5619C155.078 16.5619 154.198 16.8733 154.198 17.5701C154.198 18.1985 154.714 18.672 155.776 19.0179C158.795 19.988 160.325 21.3266 160.325 22.9949Z";
 ---
 
-<footer class="mt-24 border-t border-[color:var(--color-border)] bg-[color:var(--color-paper-soft)]">
-  <div class="container-page py-14 grid gap-10 md:grid-cols-4">
-    <div class="md:col-span-2">
-      <Logo />
-      <p class="mt-4 max-w-sm text-sm leading-relaxed text-[color:var(--color-muted)]">
-        {site.description}
-      </p>
-      <a href="/contact" class="btn-primary mt-6">
-        Start a project
-        <span class="arrow"><ArrowIcon /></span>
-      </a>
-    </div>
+<footer class="footer">
+  <div class="container-page footer-inner">
+    <div class="grid gap-12 md:gap-10 md:grid-cols-4">
+      <div class="md:col-span-2">
+        <img
+          src="/images/Logo-Comandos-white.svg"
+          alt="Comandos"
+          height={34}
+          width={Math.round((161 / 35) * 34)}
+          style="height: 34px; width: auto;"
+          class="footer-logo"
+          loading="lazy"
+          decoding="async"
+        />
+        <p class="mt-5 max-w-sm text-sm leading-relaxed footer-muted">
+          {site.description}
+        </p>
+        <a href="/contact" class="footer-cta mt-6">
+          <span>Start a project</span>
+          <span class="footer-cta-arrow"><ArrowIcon /></span>
+        </a>
+      </div>
 
-    <div>
-      <h4 class="text-xs font-semibold tracking-[0.12em] uppercase text-[color:var(--color-muted)]">
-        Navigation
-      </h4>
-      <ul class="mt-4 space-y-2 text-sm">
-        {
-          site.nav.map((item) => (
-            <li>
-              <a href={item.href} class="footer-link">
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-        <li>
-          <a href="/north-face-growth" class="footer-link">
-            North Face Growth
-          </a>
-        </li>
-      </ul>
-    </div>
+      <div>
+        <h4 class="footer-col-title">Navigation</h4>
+        <ul class="mt-5 space-y-3 text-sm">
+          {
+            site.nav.map((item) => (
+              <li>
+                <a href={item.href} class="footer-link">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+          <li>
+            <a href="/north-face-growth" class="footer-link">North Face Growth</a>
+          </li>
+        </ul>
+      </div>
 
-    <div>
-      <h4 class="text-xs font-semibold tracking-[0.12em] uppercase text-[color:var(--color-muted)]">
-        Social
-      </h4>
-      <ul class="mt-4 space-y-2 text-sm">
-        <li>
-          <a
-            href={site.social.linkedin}
-            rel="noopener noreferrer"
-            target="_blank"
-            class="footer-link"
-          >
-            LinkedIn
-          </a>
-        </li>
-        <li>
-          <a
-            href={site.social.twitter}
-            rel="noopener noreferrer"
-            target="_blank"
-            class="footer-link"
-          >
-            Twitter
-          </a>
-        </li>
-      </ul>
+      <div>
+        <h4 class="footer-col-title">Social</h4>
+        <ul class="mt-5 space-y-3 text-sm">
+          <li>
+            <a
+              href={site.social.linkedin}
+              rel="noopener noreferrer"
+              target="_blank"
+              class="footer-link"
+            >
+              LinkedIn
+            </a>
+          </li>
+          <li>
+            <a
+              href={site.social.twitter}
+              rel="noopener noreferrer"
+              target="_blank"
+              class="footer-link"
+            >
+              Twitter
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <div class="border-t border-[color:var(--color-border)]">
-    <div class="container-page py-6 text-xs text-[color:var(--color-muted)]">
+  <div class="footer-halftone" aria-hidden="true">
+    <div class="halftone-bloom"></div>
+    <div class="halftone-stack">
+      <svg
+        class="halftone-svg halftone-ghost"
+        viewBox="0 0 161 35"
+        preserveAspectRatio="xMidYMid meet"
+        xmlns="http://www.w3.org/2000/svg"
+        role="presentation"
+      >
+        <path fill-rule="evenodd" clip-rule="evenodd" d={LOGO_PATH} fill="currentColor"></path>
+      </svg>
+      <svg
+        class="halftone-svg halftone-dots"
+        viewBox="0 0 161 35"
+        preserveAspectRatio="xMidYMid meet"
+        xmlns="http://www.w3.org/2000/svg"
+        role="presentation"
+      >
+        <defs>
+          <pattern
+            id="halftone-dots-pattern"
+            x="0"
+            y="0"
+            width="0.9"
+            height="0.9"
+            patternUnits="userSpaceOnUse"
+          >
+            <circle cx="0.45" cy="0.45" r="0.28" fill="currentColor"></circle>
+          </pattern>
+        </defs>
+        <path fill-rule="evenodd" clip-rule="evenodd" d={LOGO_PATH} fill="url(#halftone-dots-pattern)"></path>
+      </svg>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container-page text-xs footer-muted">
       <p>© {year} Comandos. All rights reserved.</p>
     </div>
   </div>
 </footer>
 
 <style>
+  .footer {
+    margin-top: 6rem;
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .footer-inner {
+    padding-top: 4.5rem;
+    padding-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .footer-logo {
+    display: block;
+  }
+
+  .footer-col-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-paper);
+  }
+
+  .footer-muted {
+    color: color-mix(in srgb, var(--color-paper) 55%, transparent);
+  }
+
   .footer-link {
-    color: var(--color-ink);
+    color: color-mix(in srgb, var(--color-paper) 82%, transparent);
     text-decoration: none;
     border-bottom: 1px solid transparent;
-    transition: border-color 0.15s ease;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease;
   }
   .footer-link:hover,
   .footer-link:focus-visible {
-    border-bottom-color: var(--color-ink);
+    color: var(--color-paper);
+    border-bottom-color: var(--color-paper);
+  }
+
+  .footer-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.65rem 1.2rem;
+    border-radius: 9999px;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
+  }
+  .footer-cta:hover {
+    background-color: var(--color-accent-mint);
+    transform: translateY(-1px);
+  }
+  .footer-cta-arrow :global(svg) {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ———— Halftone Comandos logo (Capchase-style) ————
+     Two stacked SVGs of the same wordmark:
+       1. A faint solid "ghost" silhouette on the bottom — shows through
+          at the edges where the dots fade out.
+       2. A dotted pattern layer on top, masked with a radial gradient
+          whose focus sits below center (50% 80%) — this mimics the
+          "backlit-from-below" look of the Capchase reference where
+          letters are brightest just above the baseline.
+     A blurred paper-coloured bloom sits behind the stack, concentrated
+     near the baseline, to echo the soft halo under the reference. */
+  .footer-halftone {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 3rem 0 3.5rem;
+    pointer-events: none;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .halftone-bloom {
+    position: absolute;
+    left: 50%;
+    bottom: 20%;
+    transform: translateX(-50%);
+    width: min(55%, 720px);
+    aspect-ratio: 5 / 1;
+    background: radial-gradient(
+      ellipse at center,
+      color-mix(in srgb, var(--color-paper) 14%, transparent) 0%,
+      color-mix(in srgb, var(--color-paper) 5%, transparent) 40%,
+      transparent 72%
+    );
+    filter: blur(30px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .halftone-stack {
+    position: relative;
+    width: min(78%, 1000px);
+    z-index: 1;
+  }
+  .halftone-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    color: var(--color-paper);
+  }
+  .halftone-ghost {
+    position: absolute;
+    inset: 0;
+    opacity: 0.05;
+    z-index: 1;
+  }
+  .halftone-dots {
+    position: relative;
+    z-index: 2;
+    opacity: 0.95;
+    -webkit-mask-image: radial-gradient(
+      ellipse 55% 95% at 50% 82%,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0.88) 22%,
+      rgba(0, 0, 0, 0.45) 55%,
+      rgba(0, 0, 0, 0.12) 80%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    mask-image: radial-gradient(
+      ellipse 55% 95% at 50% 82%,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0.88) 22%,
+      rgba(0, 0, 0, 0.45) 55%,
+      rgba(0, 0, 0, 0.12) 80%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
+
+  .footer-bottom {
+    border-top: 1px solid color-mix(in srgb, var(--color-paper) 12%, transparent);
+    padding: 1.1rem 0 1.4rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  @media (max-width: 767px) {
+    .footer-halftone {
+      padding: 2rem 0 2.5rem;
+    }
+    .halftone-stack {
+      width: 92%;
+    }
   }
 </style>
