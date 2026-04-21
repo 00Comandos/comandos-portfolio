@@ -165,7 +165,10 @@ export type IllustrationScene =
   | "whisper"
   | "lap"
   | "magnet"
-  | "summit";
+  | "summit"
+  | "anydevice"
+  | "renew"
+  | "simmer";
 
 export type WorthBlock =
   | { kind: "intro"; label?: string; heading: string; body?: string }

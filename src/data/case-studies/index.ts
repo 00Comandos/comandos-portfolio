@@ -12,6 +12,7 @@ import { yaydooVendorplace } from "./yaydoo-vendorplace";
 import { stadioAppleWatch } from "./stadio-apple-watch";
 import { rebajatuscuentas } from "./rebajatuscuentas";
 import { miposDarkKitchen } from "./mipos-dark-kitchen";
+import { miposRestaurantPos } from "./mipos-restaurant-pos";
 
 const caseStudies: readonly CaseStudyContent[] = [
   storiInversionPlus,
@@ -27,6 +28,7 @@ const caseStudies: readonly CaseStudyContent[] = [
   stadioAppleWatch,
   rebajatuscuentas,
   miposDarkKitchen,
+  miposRestaurantPos,
 ];
 
 const bySlug = new Map(caseStudies.map((c) => [c.slug, c]));
