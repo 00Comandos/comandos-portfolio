@@ -73,7 +73,7 @@ export const projects: readonly Project[] = [
   {
     slug: "truora-report",
     brand: "Truora",
-    title: "Truora Report Case Study: -50% Reading Time",
+    title: "Truora Background Check Report Case Study: -50% Reading Time",
     description:
       "Design case study for Truora's background check PDF report. Redesigned for non-technical users. Results: -50% reading time, +85% satisfaction.",
     impact: "-50% reading time",

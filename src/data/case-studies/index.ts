@@ -4,6 +4,7 @@ import { kartaApp } from "./karta-app";
 import { kartaCard } from "./karta-card";
 import { legalarioESignature } from "./legalario-e-signature";
 import { legalarioEmails } from "./legalario-emails";
+import { truoraReport } from "./truora-report";
 
 const caseStudies: readonly CaseStudyContent[] = [
   storiInversionPlus,
@@ -11,6 +12,7 @@ const caseStudies: readonly CaseStudyContent[] = [
   kartaCard,
   legalarioESignature,
   legalarioEmails,
+  truoraReport,
 ];
 
 const bySlug = new Map(caseStudies.map((c) => [c.slug, c]));
