@@ -12,7 +12,10 @@ type Scene =
   | "documents"
   | "signed-growth"
   | "love"
-  | "reactivate";
+  | "reactivate"
+  | "sprint"
+  | "unify"
+  | "flow";
 
 type Props = { scene: Scene; class?: string };
 const { scene, class: className = "" } = Astro.props;
@@ -306,6 +309,62 @@ const { scene, class: className = "" } = Astro.props;
             stroke-linecap="round"
             stroke-linejoin="round"
           />
+        </g>
+      )
+    }
+
+    {
+      scene === "sprint" && (
+        <g class="sprint">
+          <rect x="57" y="14" width="6" height="4" class="sprint-crown" rx="0.8" />
+          <line x1="60" y1="10" x2="60" y2="14" class="sprint-stem" stroke-width="1.5" stroke-linecap="round" />
+          <circle cx="60" cy="44" r="22" class="sprint-body" fill="none" stroke-width="1.8" />
+          <line x1="60" y1="24" x2="60" y2="27" class="sprint-tick" stroke-width="1.5" stroke-linecap="round" />
+          <line x1="80" y1="44" x2="77" y2="44" class="sprint-tick" stroke-width="1.5" stroke-linecap="round" />
+          <line x1="60" y1="64" x2="60" y2="61" class="sprint-tick" stroke-width="1.5" stroke-linecap="round" />
+          <line x1="40" y1="44" x2="43" y2="44" class="sprint-tick" stroke-width="1.5" stroke-linecap="round" />
+          <line x1="60" y1="44" x2="60" y2="26" class="sprint-needle" stroke-width="2" stroke-linecap="round" />
+          <circle cx="60" cy="44" r="2.5" class="sprint-pivot" />
+        </g>
+      )
+    }
+
+    {
+      scene === "unify" && (
+        <g class="unify">
+          <rect x="30" y="22" width="14" height="14" class="uni-cell uni-c-1" rx="1.8" />
+          <rect x="53" y="22" width="14" height="14" class="uni-cell uni-c-2" rx="1.8" />
+          <rect x="76" y="22" width="14" height="14" class="uni-cell uni-c-3" rx="1.8" />
+          <rect x="30" y="45" width="14" height="14" class="uni-cell uni-c-4" rx="1.8" />
+          <rect x="53" y="45" width="14" height="14" class="uni-cell uni-c-5" rx="1.8" />
+          <rect x="76" y="45" width="14" height="14" class="uni-cell uni-c-6" rx="1.8" />
+          <path
+            d="M44 29 L53 29 M67 29 L76 29 M44 52 L53 52 M67 52 L76 52 M37 36 L37 45 M60 36 L60 45 M83 36 L83 45"
+            class="uni-link"
+            fill="none"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </g>
+      )
+    }
+
+    {
+      scene === "flow" && (
+        <g class="flow">
+          <path
+            d="M30 46 Q42 46 50 32 Q60 20 70 32 Q78 46 90 46"
+            class="flow-long"
+            fill="none"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-dasharray="3 3"
+          />
+          <line x1="30" y1="46" x2="90" y2="46" class="flow-short" stroke-width="2.2" stroke-linecap="round" />
+          <circle cx="30" cy="46" r="4.5" class="flow-node flow-n-1" />
+          <circle cx="60" cy="26" r="4.5" class="flow-node flow-n-2" />
+          <circle cx="90" cy="46" r="4.5" class="flow-node flow-n-3" />
+          <path d="M84 60 L90 66 L102 54" class="flow-check" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
         </g>
       )
     }
@@ -889,6 +948,161 @@ const { scene, class: className = "" } = Astro.props;
     50% { transform: translate(2px, -2px); }
   }
 
+  /* ———— Scene: sprint (stopwatch gauge with sweeping needle) ———— */
+  .sprint-body,
+  .sprint-crown,
+  .sprint-stem {
+    stroke: currentColor;
+    fill: none;
+    stroke-dasharray: 180;
+    stroke-dashoffset: 180;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease-out;
+  }
+  .sprint-crown {
+    fill: currentColor;
+    stroke: none;
+  }
+  .sprint-tick {
+    stroke: currentColor;
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+  }
+  .sprint-needle {
+    stroke: var(--color-accent-mint);
+    transform-origin: 60px 44px;
+    transform: rotate(-110deg);
+    opacity: 0;
+    transition:
+      transform 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease-out;
+  }
+  .sprint-pivot {
+    fill: var(--color-accent-mint);
+    opacity: 0;
+    transform-origin: 60px 44px;
+    transform: scale(0);
+    transition:
+      opacity 0.35s ease-out,
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :global(.stat[data-in-view="true"]) .sprint-body,
+  :global(.stat[data-in-view="true"]) .sprint-crown,
+  :global(.stat[data-in-view="true"]) .sprint-stem {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .sprint-tick {
+    opacity: 0.6;
+    transition-delay: 0.5s;
+  }
+  :global(.stat[data-in-view="true"]) .sprint-needle {
+    transform: rotate(45deg);
+    opacity: 1;
+    transition-delay: 0.6s;
+  }
+  :global(.stat[data-in-view="true"]) .sprint-pivot {
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: 0.9s;
+    animation: sprint-pulse 2s ease-in-out infinite 1.8s;
+  }
+  @keyframes sprint-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.25); }
+  }
+
+  /* ———— Scene: unify (six cells connected into one system) ———— */
+  .uni-cell {
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
+    opacity: 0;
+    transform-origin: center;
+    transform: scale(0.7);
+    transition:
+      opacity 0.4s ease-out,
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .uni-link {
+    stroke: var(--color-accent-mint);
+    stroke-dasharray: 130;
+    stroke-dashoffset: 130;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 1s cubic-bezier(0.22, 1, 0.36, 1) 0.8s,
+      opacity 0.3s ease-out 0.8s;
+  }
+  :global(.stat[data-in-view="true"]) .uni-cell {
+    opacity: 1;
+    transform: scale(1);
+  }
+  :global(.stat[data-in-view="true"]) .uni-c-1 { transition-delay: 0.05s; }
+  :global(.stat[data-in-view="true"]) .uni-c-2 { transition-delay: 0.15s; }
+  :global(.stat[data-in-view="true"]) .uni-c-3 { transition-delay: 0.25s; }
+  :global(.stat[data-in-view="true"]) .uni-c-4 { transition-delay: 0.35s; }
+  :global(.stat[data-in-view="true"]) .uni-c-5 { transition-delay: 0.45s; }
+  :global(.stat[data-in-view="true"]) .uni-c-6 { transition-delay: 0.55s; }
+  :global(.stat[data-in-view="true"]) .uni-link {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  /* ———— Scene: flow (JTBD optimization — winding path → direct path + check) ———— */
+  .flow-long {
+    stroke: color-mix(in srgb, currentColor 45%, transparent);
+    stroke-dasharray: 3 3;
+    opacity: 0;
+    transition: opacity 0.5s ease-out 0.1s;
+  }
+  .flow-short {
+    stroke: var(--color-accent-mint);
+    stroke-dasharray: 70;
+    stroke-dashoffset: 70;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.6s,
+      opacity 0.3s ease-out 0.6s;
+  }
+  .flow-node {
+    fill: currentColor;
+    opacity: 0;
+    transform-origin: center;
+    transform: scale(0.3);
+    transition:
+      opacity 0.3s ease-out,
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .flow-check {
+    stroke: var(--color-accent-mint);
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.5s,
+      opacity 0.3s ease-out 1.5s;
+  }
+  :global(.stat[data-in-view="true"]) .flow-long {
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .flow-short {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .flow-node {
+    opacity: 1;
+    transform: scale(1);
+  }
+  :global(.stat[data-in-view="true"]) .flow-n-1 { transition-delay: 0.2s; }
+  :global(.stat[data-in-view="true"]) .flow-n-2 { transition-delay: 0.3s; }
+  :global(.stat[data-in-view="true"]) .flow-n-3 { transition-delay: 0.4s; }
+  :global(.stat[data-in-view="true"]) .flow-check {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
   /* ———— Scene: reactivate (chat bubble + typing dots + mint pulse) ———— */
   .react-bubble {
     stroke: currentColor;
@@ -1077,7 +1291,9 @@ const { scene, class: className = "" } = Astro.props;
     .bio-face, .bio-dot, .bio-scan, .cert-ribbon, .cert-medal, .cert-inner, .cert-check,
     .prog-fill, .prog-check, .prog-bg, .doc, .doc-sig,
     .sg-doc, .sg-fold, .sg-ruled, .sg-sig, .sg-arrow, .love-heart, .love-spark,
-    .react-bubble, .react-dot, .react-pulse, .react-ring {
+    .react-bubble, .react-dot, .react-pulse, .react-ring,
+    .sprint-body, .sprint-crown, .sprint-stem, .sprint-tick, .sprint-needle, .sprint-pivot,
+    .uni-cell, .uni-link, .flow-long, .flow-short, .flow-node, .flow-check {
       animation: none !important;
       transition: none !important;
       transform: none !important;
@@ -1087,7 +1303,9 @@ const { scene, class: className = "" } = Astro.props;
     .bio-face, .bio-dot, .cert-ribbon, .cert-medal, .cert-inner, .cert-check,
     .prog-fill, .prog-check, .prog-bg, .doc, .doc-sig,
     .sg-doc, .sg-fold, .sg-ruled, .sg-sig, .sg-arrow, .love-heart, .love-spark,
-    .react-bubble, .react-dot, .react-pulse, .react-ring {
+    .react-bubble, .react-dot, .react-pulse, .react-ring,
+    .sprint-body, .sprint-crown, .sprint-stem, .sprint-tick, .sprint-needle, .sprint-pivot,
+    .uni-cell, .uni-link, .flow-long, .flow-short, .flow-node, .flow-check {
       stroke-dasharray: none;
       stroke-dashoffset: 0;
       opacity: 1;

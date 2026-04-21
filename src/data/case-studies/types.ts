@@ -155,7 +155,10 @@ export type IllustrationScene =
   | "documents"
   | "signed-growth"
   | "love"
-  | "reactivate";
+  | "reactivate"
+  | "sprint"
+  | "unify"
+  | "flow";
 
 export type WorthBlock =
   | { kind: "intro"; label?: string; heading: string; body?: string }
