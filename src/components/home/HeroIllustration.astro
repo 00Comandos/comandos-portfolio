@@ -1,292 +1,462 @@
 ---
-// The Ascent Chart — hero illustration.
-// A rising stepped ridgeline that reads simultaneously as a mountain range
-// ("North Face Growth", "Seeing the mountain", "Making top") and as a growth
-// chart ("Backed by Data"). Four waypoint dots along the ridge use the exact
-// case-study chip palette (Challenge pink → Adventure mint → Worth mint →
-// Result gold), so the hero's four dots rhyme with every case study below.
-// A climber dot travels the ridge from base camp to summit, where a mint
-// flag plants and pulses.
+// The Framework — hero illustration.
+// One-shot narrative animation (CSS-driven, no JS animation library):
+//   1. RESEARCH: scattered users / interviews / data fade in on the left
+//   2. DESIGN + ITERATION: phone frame with UI v1 → v2 → v3 cross-fading
+//   3. SHIP: mint "Shipped" tag drops in
+//   4. BUSINESS IMPACT: two metric cards, counter 0 → 300%, bar fills
+// "Repeat" button restarts by toggling the `play` class.
 ---
 
-<div class="hero-illus" aria-hidden="true">
-  <svg
-    viewBox="0 0 480 280"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    preserveAspectRatio="xMidYMid meet"
-  >
-    <line
-      x1="20"
-      y1="240"
-      x2="460"
-      y2="240"
-      class="hi-baseline"
-      stroke-width="1"
-      stroke-dasharray="3 4"
-      stroke-linecap="round"
-    />
-    <line x1="60" y1="238" x2="60" y2="244" class="hi-tick" stroke-width="1" />
-    <line x1="160" y1="238" x2="160" y2="244" class="hi-tick" stroke-width="1" />
-    <line x1="260" y1="238" x2="260" y2="244" class="hi-tick" stroke-width="1" />
-    <line x1="360" y1="238" x2="360" y2="244" class="hi-tick" stroke-width="1" />
+<div class="flow-demo" data-flow>
+  <div class="flow-stage">
+    <svg
+      viewBox="0 0 640 420"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <g class="act-research">
+        <text x="50" y="28" class="rz-label">Research</text>
 
-    <path
-      d="M 30 230 L 75 210 L 120 180 L 155 200 L 210 140 L 250 160 L 300 100 L 335 120 L 430 40"
-      class="hi-line"
-      pathLength="100"
-      stroke-width="2.4"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
+        <g class="rz-user rz-user-1">
+          <circle cx="30" cy="58" r="4.5" class="rz-head" />
+          <path d="M 22 74 a 8 8 0 0 1 16 0 v 4 h -16 z" class="rz-body" />
+        </g>
+        <g class="rz-user rz-user-2">
+          <circle cx="78" cy="46" r="4.5" class="rz-head" />
+          <path d="M 70 62 a 8 8 0 0 1 16 0 v 4 h -16 z" class="rz-body" />
+        </g>
+        <g class="rz-user rz-user-3">
+          <circle cx="128" cy="60" r="4.5" class="rz-head" />
+          <path d="M 120 76 a 8 8 0 0 1 16 0 v 4 h -16 z" class="rz-body" />
+        </g>
+        <g class="rz-user rz-user-4">
+          <circle cx="48" cy="120" r="4.5" class="rz-head" />
+          <path d="M 40 136 a 8 8 0 0 1 16 0 v 4 h -16 z" class="rz-body" />
+        </g>
 
-    <g transform="translate(120 180)">
-      <g class="hi-wp hi-wp-1">
-        <circle r="5.4" />
-      </g>
-    </g>
-    <g transform="translate(210 140)">
-      <g class="hi-wp hi-wp-2">
-        <circle r="5.4" />
-      </g>
-    </g>
-    <g transform="translate(300 100)">
-      <g class="hi-wp hi-wp-3">
-        <circle r="5.4" />
-      </g>
-    </g>
+        <g class="rz-bubble rz-bubble-1">
+          <rect x="70" y="110" width="48" height="20" rx="10" class="rz-bubble-bg" />
+          <circle cx="82" cy="120" r="1.4" class="rz-bubble-dot" />
+          <circle cx="94" cy="120" r="1.4" class="rz-bubble-dot" />
+          <circle cx="106" cy="120" r="1.4" class="rz-bubble-dot" />
+        </g>
+        <g class="rz-bubble rz-bubble-2">
+          <rect x="130" y="100" width="48" height="20" rx="10" class="rz-bubble-bg" />
+          <circle cx="142" cy="110" r="1.4" class="rz-bubble-dot" />
+          <circle cx="154" cy="110" r="1.4" class="rz-bubble-dot" />
+          <circle cx="166" cy="110" r="1.4" class="rz-bubble-dot" />
+        </g>
 
-    <g transform="translate(430 40)">
-      <circle r="16" class="hi-pulse" />
-      <g class="hi-wp hi-wp-4">
-        <circle r="6.2" />
+        <circle cx="20" cy="170" r="2" class="rz-dot rz-dot-1" />
+        <circle cx="50" cy="190" r="2" class="rz-dot rz-dot-2" />
+        <circle cx="90" cy="175" r="2" class="rz-dot rz-dot-3" />
+        <circle cx="130" cy="195" r="2" class="rz-dot rz-dot-4" />
+        <circle cx="170" cy="165" r="2" class="rz-dot rz-dot-5" />
+        <circle cx="30" cy="220" r="2" class="rz-dot rz-dot-6" />
+        <circle cx="70" cy="235" r="2" class="rz-dot rz-dot-7" />
+        <circle cx="110" cy="225" r="2" class="rz-dot rz-dot-8" />
+        <circle cx="150" cy="240" r="2" class="rz-dot rz-dot-9" />
+        <circle cx="180" cy="215" r="2" class="rz-dot rz-dot-10" />
       </g>
-      <g class="hi-flag">
-        <line
-          x1="0"
-          y1="0"
-          x2="0"
-          y2="-26"
-          class="hi-flag-pole"
-          stroke-width="1.6"
-          stroke-linecap="round"
-        />
-        <path d="M0 -25 L16 -20 L0 -14 Z" class="hi-flag-cloth" />
+
+      <g class="act-design">
+        <g class="phone">
+          <rect x="250" y="40" width="140" height="260" rx="16" class="phone-frame" />
+          <rect x="296" y="46" width="48" height="4" rx="2" class="phone-notch" />
+        </g>
+
+        <g class="ui-layer ui-v1">
+          <rect x="258" y="60" width="124" height="10" rx="2" class="skel-bar" />
+          <rect x="258" y="80" width="124" height="60" rx="2" class="skel-bar" />
+          <rect x="258" y="148" width="58" height="60" rx="2" class="skel-bar" />
+          <rect x="324" y="148" width="58" height="60" rx="2" class="skel-bar" />
+          <rect x="258" y="216" width="124" height="38" rx="2" class="skel-bar" />
+          <rect x="258" y="262" width="80" height="28" rx="14" class="skel-cta" />
+        </g>
+
+        <g class="ui-layer ui-v2">
+          <rect x="258" y="60" width="124" height="22" rx="3" class="struct-header" />
+          <circle cx="270" cy="71" r="4" class="struct-header-dot" />
+          <rect x="282" y="68" width="40" height="6" rx="3" class="struct-line" />
+          <rect x="258" y="88" width="124" height="72" rx="3" class="struct-card" />
+          <rect x="268" y="100" width="50" height="6" rx="3" class="struct-line" />
+          <rect x="268" y="112" width="80" height="4" rx="2" class="struct-muted" />
+          <rect x="268" y="122" width="60" height="4" rx="2" class="struct-muted" />
+          <rect x="258" y="166" width="58" height="58" rx="3" class="struct-card" />
+          <rect x="324" y="166" width="58" height="58" rx="3" class="struct-card" />
+          <rect x="258" y="232" width="124" height="32" rx="16" class="struct-cta" />
+        </g>
+
+        <g class="ui-layer ui-v3">
+          <rect x="258" y="60" width="124" height="24" rx="4" class="hi-header" />
+          <circle cx="272" cy="72" r="5" class="hi-header-icon" />
+          <rect x="284" y="69" width="44" height="6" rx="3" class="hi-title" />
+          <circle cx="372" cy="72" r="3" class="hi-header-alt" />
+
+          <rect x="258" y="90" width="124" height="76" rx="4" class="hi-card" />
+          <rect x="268" y="100" width="40" height="6" rx="3" class="hi-muted" />
+          <text x="268" y="128" class="hi-metric-text">+300%</text>
+          <path
+            d="M 268 156 L 290 148 L 310 144 L 335 134 L 374 120"
+            class="hi-chart"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+          />
+          <circle cx="374" cy="120" r="3" class="hi-chart-dot" />
+
+          <rect x="258" y="172" width="58" height="50" rx="4" class="hi-card-sm" />
+          <rect x="268" y="182" width="28" height="4" rx="2" class="hi-muted" />
+          <rect x="268" y="196" width="36" height="12" rx="2" class="hi-accent" />
+          <rect x="324" y="172" width="58" height="50" rx="4" class="hi-card-sm" />
+          <rect x="334" y="182" width="28" height="4" rx="2" class="hi-muted" />
+          <rect x="334" y="196" width="36" height="12" rx="2" class="hi-accent-alt" />
+
+          <rect x="258" y="230" width="124" height="34" rx="17" class="hi-cta" />
+          <text x="320" y="251" text-anchor="middle" class="hi-cta-text">Start now</text>
+        </g>
+
+        <g class="version-badge">
+          <rect x="398" y="44" width="38" height="20" rx="10" class="v-badge-bg" />
+          <text x="417" y="58" text-anchor="middle" class="v-badge-text" data-version>v1</text>
+        </g>
       </g>
-    </g>
 
-    <g class="hi-climber">
-      <circle r="4.2" class="hi-climber-dot" />
-      <animateMotion
-        begin="1.6s"
-        dur="1.6s"
-        calcMode="spline"
-        keyTimes="0;1"
-        keySplines="0.22 1 0.36 1"
-        path="M 30 230 L 75 210 L 120 180 L 155 200 L 210 140 L 250 160 L 300 100 L 335 120 L 430 40"
-        fill="freeze"
-        rotate="0"
-      />
-    </g>
+      <g class="act-shipped">
+        <rect x="398" y="76" width="82" height="24" rx="12" class="ship-bg" />
+        <circle cx="412" cy="88" r="5" class="ship-check-bg" />
+        <path d="M 408 88 L 411 91 L 416 85" class="ship-check" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        <text x="424" y="92" class="ship-text">Shipped</text>
+      </g>
 
-    <text x="30" y="264" class="hi-label hi-label-left">Base camp</text>
-    <text x="430" y="264" class="hi-label hi-label-right" text-anchor="end">
-      Making top
-    </text>
-  </svg>
+      <g class="act-impact">
+        <g class="metric metric-1" transform="translate(40 320)">
+          <rect width="264" height="84" rx="10" class="metric-bg" />
+          <text x="18" y="30" class="metric-kicker">BUSINESS IMPACT</text>
+          <text x="18" y="68" class="metric-value" data-counter>+0%</text>
+          <text x="150" y="68" class="metric-label">conversion growth</text>
+          <circle cx="252" cy="44" r="18" class="metric-pulse" />
+          <circle cx="252" cy="44" r="5" class="metric-dot" />
+        </g>
+
+        <g class="metric metric-2" transform="translate(320 320)">
+          <rect width="264" height="84" rx="10" class="metric-bg" />
+          <text x="18" y="30" class="metric-kicker">USERS REACHED</text>
+          <g transform="translate(18 46)">
+            <rect width="200" height="8" rx="4" class="bar-track" />
+            <rect width="0" height="8" rx="4" class="bar-fill" data-bar />
+          </g>
+          <text x="18" y="74" class="metric-value-sm" data-users>0</text>
+          <text x="60" y="74" class="metric-label">monthly actives</text>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <button type="button" class="flow-repeat" data-flow-repeat aria-label="Replay animation">
+    <svg viewBox="0 0 16 16" aria-hidden="true" fill="none">
+      <path d="M2 8 A6 6 0 1 1 4 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      <path d="M2 3 L2 8 L7 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <span>Repeat</span>
+  </button>
 </div>
 
 <style>
-  .hero-illus {
+  .flow-demo {
     width: 100%;
-    max-width: 560px;
+    max-width: 640px;
     margin-inline: auto;
     color: var(--color-ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-  .hero-illus svg {
+  .flow-stage {
+    width: 100%;
+  }
+  .flow-stage svg {
     width: 100%;
     height: auto;
     display: block;
     overflow: visible;
   }
 
-  .hi-baseline,
-  .hi-tick {
-    stroke: color-mix(in srgb, currentColor 22%, transparent);
-    fill: none;
-    opacity: 0;
-    animation: hi-fade 0.5s ease-out 0.1s forwards;
-  }
-  .hi-tick {
-    animation-delay: 0.25s;
-  }
-
-  .hi-line {
-    stroke: currentColor;
-    fill: none;
-    stroke-dasharray: 100;
-    stroke-dashoffset: 100;
-    animation: hi-draw 2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
-  }
-
-  .hi-wp {
-    transform: scale(0.3);
-    transform-origin: 0 0;
-    transform-box: fill-box;
-    opacity: 0;
-  }
-  .hi-wp-1 circle {
-    fill: #ff4e88;
-  }
-  .hi-wp-2 circle,
-  .hi-wp-3 circle {
-    fill: #1ccb89;
-  }
-  .hi-wp-4 circle {
-    fill: #ffcf40;
-  }
-  .hi-wp-1 {
-    animation: hi-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.55s forwards;
-  }
-  .hi-wp-2 {
-    animation: hi-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.95s forwards;
-  }
-  .hi-wp-3 {
-    animation: hi-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) 2.35s forwards;
-  }
-  .hi-wp-4 {
-    animation: hi-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) 3s forwards;
-  }
-
-  .hi-climber-dot {
-    fill: currentColor;
-  }
-  .hi-climber {
-    opacity: 0;
-    animation: hi-fade 0.3s ease-out 1.55s forwards;
-  }
-
-  .hi-flag-pole {
-    stroke: currentColor;
-    opacity: 0;
-    transform: translateY(4px);
-    transform-origin: 0 0;
-    transform-box: fill-box;
-    animation: hi-rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) 3.2s forwards;
-  }
-  .hi-flag-cloth {
-    fill: var(--color-accent-mint);
-    opacity: 0;
-    transform: scale(0.3);
-    transform-origin: 0 0;
-    transform-box: fill-box;
-    animation:
-      hi-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1) 3.35s forwards,
-      hi-flag-wave 2.8s ease-in-out 4s infinite;
-  }
-
-  .hi-pulse {
-    fill: color-mix(in srgb, var(--color-accent-mint) 32%, transparent);
-    opacity: 0;
-    transform-origin: 0 0;
-    transform-box: fill-box;
-    transform: scale(0.4);
-    animation: hi-pulse-ring 2.6s ease-out 3.6s infinite;
-  }
-
-  .hi-label {
-    font-family: inherit;
+  .flow-demo text {
+    font-family: var(--font-sans);
     font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    fill: color-mix(in srgb, currentColor 55%, transparent);
-    opacity: 0;
-    animation: hi-fade 0.6s ease-out forwards;
-  }
-  .hi-label-left {
-    animation-delay: 0.5s;
-  }
-  .hi-label-right {
-    animation-delay: 3.2s;
+    font-weight: 500;
+    fill: var(--color-ink);
   }
 
-  @keyframes hi-draw {
-    to {
-      stroke-dashoffset: 0;
-    }
+  /* Research zone styling */
+  .rz-label { font-size: 9.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; fill: color-mix(in srgb, var(--color-ink) 55%, transparent); }
+  .rz-head, .rz-body { fill: none; stroke: color-mix(in srgb, var(--color-ink) 70%, transparent); stroke-width: 1.2; }
+  .rz-bubble-bg { fill: var(--color-paper); stroke: color-mix(in srgb, var(--color-ink) 40%, transparent); stroke-width: 1; }
+  .rz-bubble-dot { fill: color-mix(in srgb, var(--color-ink) 55%, transparent); }
+  .rz-dot { fill: color-mix(in srgb, var(--color-ink) 45%, transparent); }
+
+  /* Phone */
+  .phone-frame { fill: var(--color-paper); stroke: color-mix(in srgb, var(--color-ink) 85%, transparent); stroke-width: 1.8; }
+  .phone-notch { fill: color-mix(in srgb, var(--color-ink) 85%, transparent); }
+
+  /* v1 wireframe */
+  .skel-bar { fill: color-mix(in srgb, var(--color-ink) 10%, var(--color-paper)); stroke: color-mix(in srgb, var(--color-ink) 18%, transparent); stroke-width: 0.8; }
+  .skel-cta { fill: none; stroke: color-mix(in srgb, var(--color-ink) 40%, transparent); stroke-width: 1; }
+
+  /* v2 structure */
+  .struct-header { fill: color-mix(in srgb, var(--color-ink) 8%, var(--color-paper)); }
+  .struct-header-dot { fill: color-mix(in srgb, var(--color-ink) 45%, transparent); }
+  .struct-line { fill: color-mix(in srgb, var(--color-ink) 55%, transparent); }
+  .struct-muted { fill: color-mix(in srgb, var(--color-ink) 22%, transparent); }
+  .struct-card { fill: color-mix(in srgb, var(--color-ink) 5%, var(--color-paper)); stroke: color-mix(in srgb, var(--color-ink) 12%, transparent); stroke-width: 0.8; }
+  .struct-cta { fill: var(--color-ink); }
+
+  /* v3 hi-fi */
+  .hi-header { fill: var(--color-ink); }
+  .hi-header-icon { fill: var(--color-accent-mint); }
+  .hi-header-alt { fill: color-mix(in srgb, var(--color-paper) 90%, transparent); }
+  .hi-title { fill: color-mix(in srgb, var(--color-paper) 92%, transparent); }
+  .hi-card { fill: var(--color-paper); stroke: color-mix(in srgb, var(--color-ink) 10%, transparent); stroke-width: 0.8; }
+  .hi-card-sm { fill: color-mix(in srgb, var(--color-ink) 4%, var(--color-paper)); stroke: color-mix(in srgb, var(--color-ink) 10%, transparent); stroke-width: 0.8; }
+  .hi-muted { fill: color-mix(in srgb, var(--color-ink) 30%, transparent); }
+  .hi-accent { fill: var(--color-accent-mint); }
+  .hi-accent-alt { fill: color-mix(in srgb, #3b82f6 85%, transparent); }
+  .hi-metric-text { font-size: 14px; font-weight: 800; fill: var(--color-ink); }
+  .hi-chart { stroke: var(--color-accent-mint); stroke-dasharray: 120; stroke-dashoffset: 120; }
+  .hi-chart-dot { fill: var(--color-accent-mint); }
+  .hi-cta { fill: var(--color-accent-mint); }
+  .hi-cta-text { font-size: 11px; font-weight: 700; fill: var(--color-ink); }
+
+  /* Version badge */
+  .v-badge-bg { fill: var(--color-ink); }
+  .v-badge-text { font-size: 9.5px; font-weight: 700; fill: var(--color-accent-mint); letter-spacing: 0.04em; }
+
+  /* Shipped pill */
+  .ship-bg { fill: var(--color-accent-mint); }
+  .ship-check-bg { fill: var(--color-ink); }
+  .ship-check { stroke: var(--color-accent-mint); }
+  .ship-text { font-size: 10.5px; font-weight: 700; fill: var(--color-ink); }
+
+  /* Impact metrics */
+  .metric-bg { fill: var(--color-paper); stroke: color-mix(in srgb, var(--color-ink) 12%, transparent); stroke-width: 1; }
+  .metric-kicker { font-size: 9px; font-weight: 700; letter-spacing: 0.18em; fill: color-mix(in srgb, var(--color-ink) 55%, transparent); }
+  .metric-value { font-size: 28px; font-weight: 800; fill: var(--color-ink); letter-spacing: -0.02em; }
+  .metric-value-sm { font-size: 18px; font-weight: 700; fill: var(--color-ink); letter-spacing: -0.01em; }
+  .metric-label { font-size: 11px; fill: color-mix(in srgb, var(--color-ink) 60%, transparent); }
+  .bar-track { fill: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+  .bar-fill { fill: var(--color-accent-mint); }
+  .metric-pulse { fill: color-mix(in srgb, var(--color-accent-mint) 30%, transparent); }
+  .metric-dot { fill: var(--color-accent-mint); }
+
+  /* ========= ANIMATION BASE STATES (applied always) ========= */
+  .rz-label, .rz-user, .rz-bubble, .rz-dot,
+  .phone, .version-badge,
+  .ui-v1, .ui-v2, .ui-v3,
+  .act-shipped,
+  .metric-1, .metric-2,
+  .metric-dot, .metric-pulse {
+    opacity: 0;
   }
-  @keyframes hi-fade {
-    to {
-      opacity: 1;
-    }
+
+  /* ========= PLAY STATE ========= */
+  /* Act 1 — Research */
+  .flow-demo.play .rz-label { animation: fade-in 0.5s 0.1s both; }
+  .flow-demo.play .rz-user-1 { animation: fade-in 0.5s 0.2s both; }
+  .flow-demo.play .rz-user-2 { animation: fade-in 0.5s 0.3s both; }
+  .flow-demo.play .rz-user-3 { animation: fade-in 0.5s 0.4s both; }
+  .flow-demo.play .rz-user-4 { animation: fade-in 0.5s 0.5s both; }
+  .flow-demo.play .rz-bubble-1 { animation: fade-in 0.5s 0.6s both; }
+  .flow-demo.play .rz-bubble-2 { animation: fade-in 0.5s 0.7s both; }
+  .flow-demo.play .rz-dot-1 { animation: fade-in 0.3s 0.7s both; }
+  .flow-demo.play .rz-dot-2 { animation: fade-in 0.3s 0.75s both; }
+  .flow-demo.play .rz-dot-3 { animation: fade-in 0.3s 0.8s both; }
+  .flow-demo.play .rz-dot-4 { animation: fade-in 0.3s 0.85s both; }
+  .flow-demo.play .rz-dot-5 { animation: fade-in 0.3s 0.9s both; }
+  .flow-demo.play .rz-dot-6 { animation: fade-in 0.3s 0.95s both; }
+  .flow-demo.play .rz-dot-7 { animation: fade-in 0.3s 1s both; }
+  .flow-demo.play .rz-dot-8 { animation: fade-in 0.3s 1.05s both; }
+  .flow-demo.play .rz-dot-9 { animation: fade-in 0.3s 1.1s both; }
+  .flow-demo.play .rz-dot-10 { animation: fade-in 0.3s 1.15s both; }
+
+  /* After design settles, research dims */
+  .flow-demo.play .rz-label,
+  .flow-demo.play .rz-user,
+  .flow-demo.play .rz-bubble,
+  .flow-demo.play .rz-dot {
+    animation: fade-in 0.5s both, dim 0.8s 5s both;
   }
-  @keyframes hi-pop {
-    0% {
-      opacity: 0;
-      transform: scale(0.3);
-    }
-    60% {
-      opacity: 1;
-      transform: scale(1.18);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
+
+  /* Act 2 — Phone + UI iteration */
+  .flow-demo.play .phone { animation: fade-in 0.5s 1.5s both; }
+  .flow-demo.play .version-badge { animation: fade-in 0.4s 1.9s both; }
+
+  .flow-demo.play .ui-v1 {
+    animation: fade-in 0.5s 2.2s both, fade-out 0.3s 3.4s both;
   }
-  @keyframes hi-rise {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .flow-demo.play .ui-v2 {
+    animation: fade-in 0.5s 3.4s both, fade-out 0.3s 4.5s both;
   }
-  @keyframes hi-pulse-ring {
-    0% {
-      opacity: 0.5;
-      transform: scale(0.5);
-    }
-    100% {
-      opacity: 0;
-      transform: scale(2);
-    }
+  .flow-demo.play .ui-v3 {
+    animation: fade-in 0.5s 4.5s both;
   }
-  @keyframes hi-flag-wave {
-    0%,
-    100% {
-      transform: scale(1) skewX(0deg);
-    }
-    50% {
-      transform: scale(1.03) skewX(-4deg);
-    }
+  .flow-demo.play .hi-chart {
+    animation: draw 1s 4.9s forwards;
   }
+
+  /* Act 3 — Shipped */
+  .flow-demo.play .act-shipped {
+    animation: fade-in 0.5s 5s both, subtle-bounce 0.6s 5s both;
+  }
+
+  /* Act 4 — Business impact */
+  .flow-demo.play .metric-1 { animation: fade-in 0.5s 5.6s both; }
+  .flow-demo.play .metric-2 { animation: fade-in 0.5s 5.8s both; }
+  .flow-demo.play .metric-dot { animation: fade-in 0.4s 7.4s both; }
+  .flow-demo.play .metric-pulse { animation: pulse-ring 2.4s 7.4s infinite; }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  @keyframes dim {
+    from { opacity: 1; }
+    to { opacity: 0.18; }
+  }
+  @keyframes draw {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes subtle-bounce {
+    0% { opacity: 0; transform: translateY(-6px); }
+    60% { opacity: 1; transform: translateY(2px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse-ring {
+    0% { opacity: 0.55; transform: translate(252px, 44px) scale(0.5); transform-origin: 0 0; }
+    100% { opacity: 0; transform: translate(252px, 44px) scale(2.2); transform-origin: 0 0; }
+  }
+
+  /* Repeat button */
+  .flow-repeat {
+    margin-top: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+    border-radius: 9999px;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  }
+  .flow-repeat svg { width: 14px; height: 14px; }
+  .flow-repeat:hover { border-color: var(--color-ink); background: color-mix(in srgb, var(--color-accent-mint) 15%, var(--color-paper)); }
+  .flow-repeat:active { transform: scale(0.97); }
 
   @media (prefers-reduced-motion: reduce) {
-    .hi-baseline,
-    .hi-tick,
-    .hi-label,
-    .hi-climber,
-    .hi-flag-pole,
-    .hi-flag-cloth {
+    .rz-label, .rz-user, .rz-bubble, .rz-dot,
+    .phone, .version-badge,
+    .ui-v3, .act-shipped, .metric-1, .metric-2, .metric-dot {
       opacity: 1;
-      transform: none;
-      animation: none;
     }
-    .hi-line {
-      stroke-dashoffset: 0;
-      animation: none;
-    }
-    .hi-wp {
-      opacity: 1;
-      transform: scale(1);
-      animation: none;
-    }
-    .hi-pulse {
-      opacity: 0;
-      animation: none;
-    }
-    .hi-climber-dot {
-      display: none;
-    }
+    .ui-v1, .ui-v2 { opacity: 0; }
+    .hi-chart { stroke-dashoffset: 0; }
+    .metric-pulse { opacity: 0; }
+    .flow-repeat { display: none; }
   }
 </style>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-flow]");
+  const repeat = document.querySelector<HTMLButtonElement>("[data-flow-repeat]");
+  const versionEl = root?.querySelector<HTMLElement>("[data-version]");
+  const counterEl = root?.querySelector<HTMLElement>("[data-counter]");
+  const usersEl = root?.querySelector<HTMLElement>("[data-users]");
+  const barEl = root?.querySelector<SVGRectElement>("[data-bar]");
+
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  // Simple cubic-bezier easing helper
+  const ease = (t: number) => {
+    const c1 = 0.22, c2 = 1, c3 = 0.36, c4 = 1;
+    // Approximation via Hermite — cheap and close to cubic-bezier(0.22,1,0.36,1)
+    return 1 - Math.pow(1 - t, 3);
+  };
+
+  const tween = (from: number, to: number, duration: number, onUpdate: (v: number) => void) => {
+    const start = performance.now();
+    const step = (now: number) => {
+      const elapsed = (now - start) / 1000;
+      const t = Math.min(1, elapsed / duration);
+      const v = from + (to - from) * ease(t);
+      onUpdate(v);
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  const resetTexts = () => {
+    if (versionEl) versionEl.textContent = "v1";
+    if (counterEl) counterEl.textContent = "+0%";
+    if (usersEl) usersEl.textContent = "0";
+    if (barEl) barEl.setAttribute("width", "0");
+  };
+
+  const runSequence = async () => {
+    if (!root) return;
+    resetTexts();
+
+    // Version label switches on UI morph timings
+    setTimeout(() => { if (versionEl) versionEl.textContent = "v1"; }, 2200);
+    setTimeout(() => { if (versionEl) versionEl.textContent = "v2"; }, 3400);
+    setTimeout(() => { if (versionEl) versionEl.textContent = "v3"; }, 4500);
+
+    // Counters fire after both metric cards are visible (~6.3s into play)
+    await wait(6300);
+
+    tween(0, 300, 1.6, (v) => {
+      if (counterEl) counterEl.textContent = `+${Math.round(v)}%`;
+    });
+    tween(0, 1_400_000, 1.6, (v) => {
+      if (usersEl) usersEl.textContent = `${(v / 1_000_000).toFixed(1)}M`;
+    });
+    tween(0, 200, 1.6, (v) => {
+      if (barEl) barEl.setAttribute("width", String(v));
+    });
+  };
+
+  const play = () => {
+    if (!root) return;
+    root.classList.remove("play");
+    // force reflow so CSS animations restart
+    void root.offsetWidth;
+    root.classList.add("play");
+    runSequence();
+  };
+
+  if (!root) {
+    // no-op
+  } else if (prefersReduced) {
+    if (versionEl) versionEl.textContent = "v3";
+    if (counterEl) counterEl.textContent = "+300%";
+    if (usersEl) usersEl.textContent = "1.4M";
+    if (barEl) barEl.setAttribute("width", "200");
+  } else {
+    requestAnimationFrame(() => play());
+    repeat?.addEventListener("click", () => play());
+  }
+</script>
