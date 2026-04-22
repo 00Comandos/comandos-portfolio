@@ -1,31 +1,38 @@
 ---
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+import HeroIllustration from "~/components/home/HeroIllustration.astro";
 ---
 
 <section class="relative overflow-hidden">
   <div class="container-page pt-16 md:pt-24 pb-6 md:pb-12">
-    <div class="max-w-3xl">
-      <h1 class="text-[2.25rem] md:text-[3.5rem] leading-[1.02] tracking-tight">
-        World-Class Product <br class="hidden md:block" /><span
-          class="font-extrabold">Design</span
-        >, <span class="font-medium">Backed By Data</span>
-      </h1>
+    <div class="grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-10 md:gap-14 items-center">
+      <div class="max-w-xl">
+        <h1 class="text-[2.25rem] md:text-[3.5rem] leading-[1.02] tracking-tight">
+          World-Class Product <br class="hidden md:block" /><span
+            class="font-extrabold">Design</span
+          >, <span class="font-medium">Backed By Data</span>
+        </h1>
 
-      <p class="mt-6 max-w-xl text-[1.0625rem] leading-[1.55] text-[color:var(--color-muted)]">
-        We partner with FinTech and SaaS founders to build products that millions
-        of people use. User research, product strategy, design systems, and
-        growth — from Mexico City to the world.
-      </p>
+        <p class="mt-6 text-[1.0625rem] leading-[1.55] text-[color:var(--color-muted)]">
+          We partner with FinTech and SaaS founders to build products that millions
+          of people use. User research, product strategy, design systems, and
+          growth — from Mexico City to the world.
+        </p>
 
-      <div class="mt-8 flex items-center gap-5 flex-wrap">
-        <a href="/contact" class="btn-primary">
-          Contact Us
-          <span class="arrow"><ArrowIcon /></span>
-        </a>
-        <a href="/projects" class="btn-link">
-          View success stories
-          <ArrowIcon />
-        </a>
+        <div class="mt-8 flex items-center gap-5 flex-wrap">
+          <a href="/contact" class="btn-primary">
+            Contact Us
+            <span class="arrow"><ArrowIcon /></span>
+          </a>
+          <a href="/projects" class="btn-link">
+            View success stories
+            <ArrowIcon />
+          </a>
+        </div>
+      </div>
+
+      <div class="relative order-first md:order-none">
+        <HeroIllustration />
       </div>
     </div>
   </div>

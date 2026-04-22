@@ -3,6 +3,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import Hero from "~/components/home/Hero.astro";
 import JourneyChart from "~/components/home/JourneyChart.astro";
 import ClientsStrip from "~/components/home/ClientsStrip.astro";
+import FeaturedProjects from "~/components/home/FeaturedProjects.astro";
 import Testimonials from "~/components/home/Testimonials.astro";
 import NorthFaceGrowthCTA from "~/components/home/NorthFaceGrowthCTA.astro";
 import { site } from "~/lib/site";
@@ -24,7 +25,7 @@ const jsonLd = [
     alternateName: site.person.alternateName,
     jobTitle: site.person.jobTitle,
     url: site.url,
-    sameAs: [site.social.linkedin, site.social.twitter],
+    sameAs: [site.social.linkedin, site.social.x],
     address: {
       "@type": "PostalAddress",
       addressLocality: "Mexico City",
@@ -42,6 +43,7 @@ const jsonLd = [
   <Hero />
   <JourneyChart />
   <ClientsStrip />
+  <FeaturedProjects />
   <Testimonials />
   <NorthFaceGrowthCTA />
 </BaseLayout>

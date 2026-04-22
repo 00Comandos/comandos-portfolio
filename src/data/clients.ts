@@ -6,7 +6,7 @@ export type Client = {
 
 export const clients: readonly Client[] = [
   { name: "Stori", logo: "/images/logo-stori.png", website: "https://www.storicard.com" },
-  { name: "Karta", logo: "/images/Logo-Karta.svg" },
+  { name: "Karta", logo: "/images/logo-karta.png" },
   { name: "Truora", logo: "/images/Truora-Logo.svg", website: "https://www.truora.com" },
   { name: "RebajaTusCuentas", logo: "/images/RebajaTusCuentas-Logotipo.svg", website: "https://rebajatuscuentas.com" },
   { name: "Yaydoo", logo: "/images/yaydoo-logo.svg" },
