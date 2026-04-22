@@ -1,14 +1,17 @@
 ---
 import { clients } from "~/data/clients";
+
+const mobileTrack = [...clients, ...clients];
 ---
 
-<section aria-labelledby="clients-heading" class="py-14 md:py-20 bg-[color:var(--color-paper)]">
+<section
+  aria-label="Trusted by"
+  class="pt-4 pb-10 md:pt-6 md:pb-12 bg-[color:var(--color-paper)]"
+>
   <div class="container-page">
-    <p id="clients-heading" class="text-center text-sm font-medium text-[color:var(--color-ink)]">
-      We have impacted millions of users with
-    </p>
-
-    <ul class="mt-10 flex flex-wrap items-center justify-center gap-x-10 sm:gap-x-12 md:gap-x-16 gap-y-8">
+    <ul
+      class="clients-desktop hidden md:flex flex-wrap items-center justify-center gap-x-12 md:gap-x-16 gap-y-8"
+    >
       {
         clients.map((c) => (
           <li class="flex items-center justify-center h-10">
@@ -25,7 +28,7 @@ import { clients } from "~/data/clients";
                   alt={c.name}
                   loading="lazy"
                   decoding="async"
-                  class="max-h-7 md:max-h-8 w-auto object-contain"
+                  class={`${c.maxHeightClass ?? "max-h-7 md:max-h-8"} w-auto object-contain`}
                 />
               </a>
             ) : (
@@ -34,12 +37,78 @@ import { clients } from "~/data/clients";
                 alt={c.name}
                 loading="lazy"
                 decoding="async"
-                class="max-h-7 md:max-h-8 w-auto object-contain grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition duration-200"
+                class={`${c.maxHeightClass ?? "max-h-7 md:max-h-8"} w-auto object-contain grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition duration-200`}
               />
             )}
           </li>
         ))
       }
     </ul>
+
+    <div class="clients-marquee md:hidden" aria-hidden="true">
+      <ul class="clients-track" data-clients-track>
+        {
+          mobileTrack.map((c) => (
+            <li class="clients-item">
+              <img
+                src={c.logo}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                class={`${c.maxHeightClass?.split(" ")[0] ?? "max-h-7"} w-auto object-contain grayscale opacity-80`}
+              />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
 </section>
+
+<style>
+  .clients-marquee {
+    position: relative;
+    overflow: hidden;
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+  }
+  .clients-track {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    width: max-content;
+    animation: clients-scroll 34s linear infinite;
+  }
+  .clients-item {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.5rem;
+  }
+  @keyframes clients-scroll {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .clients-track {
+      animation: none;
+    }
+  }
+</style>
