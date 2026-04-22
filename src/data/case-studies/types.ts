@@ -170,7 +170,10 @@ export type IllustrationScene =
   | "renew"
   | "simmer"
   | "tap-pay"
-  | "refer";
+  | "refer"
+  | "parking"
+  | "activate"
+  | "wayfind";
 
 export type WorthBlock =
   | { kind: "intro"; label?: string; heading: string; body?: string }

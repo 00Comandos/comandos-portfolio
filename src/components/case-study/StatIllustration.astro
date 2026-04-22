@@ -27,7 +27,10 @@ type Scene =
   | "renew"
   | "simmer"
   | "tap-pay"
-  | "refer";
+  | "refer"
+  | "parking"
+  | "activate"
+  | "wayfind";
 
 type Props = { scene: Scene; class?: string };
 const { scene, class: className = "" } = Astro.props;
@@ -887,6 +890,200 @@ const { scene, class: className = "" } = Astro.props;
               stroke-linecap="round"
             />
           </g>
+        </g>
+      )
+    }
+
+    {
+      scene === "parking" && (
+        <g class="parking">
+          <rect
+            x="20"
+            y="42"
+            width="18"
+            height="28"
+            class="pk-bay"
+            fill="none"
+            stroke-width="1.3"
+          />
+          <rect
+            x="40"
+            y="42"
+            width="18"
+            height="28"
+            class="pk-reserved"
+            rx="1"
+          />
+          <rect
+            x="60"
+            y="42"
+            width="18"
+            height="28"
+            class="pk-bay"
+            fill="none"
+            stroke-width="1.3"
+          />
+          <rect
+            x="80"
+            y="42"
+            width="18"
+            height="28"
+            class="pk-bay"
+            fill="none"
+            stroke-width="1.3"
+          />
+          <rect
+            x="23"
+            y="46"
+            width="12"
+            height="20"
+            rx="2"
+            class="pk-car pk-c-1"
+            fill="none"
+            stroke-width="1.3"
+          />
+          <rect
+            x="63"
+            y="46"
+            width="12"
+            height="20"
+            rx="2"
+            class="pk-car pk-c-2"
+            fill="none"
+            stroke-width="1.3"
+          />
+          <rect
+            x="83"
+            y="46"
+            width="12"
+            height="20"
+            rx="2"
+            class="pk-car pk-c-3"
+            fill="none"
+            stroke-width="1.3"
+          />
+          <path
+            d="M49 44 C52 44 54 46 54 49 C54 52 49 56 49 56 C49 56 44 52 44 49 C44 46 46 44 49 44 Z"
+            class="pk-pin"
+            fill="none"
+            stroke-width="1.4"
+          />
+          <circle cx="49" cy="49" r="1.6" class="pk-pin-dot" />
+          <path
+            d="M14 36 L98 36"
+            class="pk-lane"
+            stroke-width="1"
+            stroke-dasharray="3 3"
+          />
+        </g>
+      )
+    }
+
+    {
+      scene === "activate" && (
+        <g class="activate">
+          <ellipse
+            cx="60"
+            cy="62"
+            rx="16"
+            ry="4"
+            class="act-base"
+            fill="none"
+            stroke-width="1.4"
+          />
+          <path
+            d="M44 62 Q44 50 60 50 Q76 50 76 62"
+            class="act-dome"
+            fill="none"
+            stroke-width="1.6"
+          />
+          <circle cx="60" cy="55" r="1.6" class="act-led" />
+          <path
+            d="M50 46 Q60 38 70 46"
+            class="act-wave act-w-1"
+            fill="none"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+          <path
+            d="M44 40 Q60 26 76 40"
+            class="act-wave act-w-2"
+            fill="none"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+          <path
+            d="M38 34 Q60 14 82 34"
+            class="act-wave act-w-3"
+            fill="none"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+          <circle cx="60" cy="22" r="5.5" class="act-badge" />
+          <path
+            d="M57 22 L59.5 24.5 L63.5 20"
+            class="act-check"
+            fill="none"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </g>
+      )
+    }
+
+    {
+      scene === "wayfind" && (
+        <g class="wayfind">
+          <rect
+            x="18"
+            y="14"
+            width="30"
+            height="54"
+            rx="4"
+            class="wf-phone"
+            fill="none"
+            stroke-width="1.6"
+          />
+          <rect
+            x="22"
+            y="20"
+            width="22"
+            height="40"
+            rx="1"
+            class="wf-screen"
+            fill="none"
+            stroke-width="1"
+          />
+          <circle cx="33" cy="64" r="1.1" class="wf-home" />
+          <path
+            d="M33 54 L33 28"
+            class="wf-arrow-stem"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M26 34 L33 27 L40 34"
+            class="wf-arrow-head"
+            fill="none"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M52 28 Q70 20 86 24"
+            class="wf-path"
+            fill="none"
+            stroke-width="1.4"
+            stroke-dasharray="3 3"
+          />
+          <path
+            d="M94 14 C97 14 99 16 99 19 C99 23 94 30 94 30 C94 30 89 23 89 19 C89 16 91 14 94 14 Z"
+            class="wf-pin"
+            fill="none"
+            stroke-width="1.6"
+          />
+          <circle cx="94" cy="19" r="1.8" class="wf-pin-dot" />
         </g>
       )
     }
@@ -2659,6 +2856,252 @@ const { scene, class: className = "" } = Astro.props;
     50% { transform: scale(1.15); }
   }
 
+  /* ———— Scene: parking (4 bays, 3 cars, mint reserved bay with pin — Spotfinder pilot) ———— */
+  .pk-bay,
+  .pk-car,
+  .pk-pin {
+    stroke: currentColor;
+    fill: none;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.4s ease-out,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .pk-reserved {
+    fill: color-mix(in srgb, var(--color-accent-mint) 55%, transparent);
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.4s ease-out,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .pk-pin-dot {
+    fill: currentColor;
+    opacity: 0;
+    transition: opacity 0.3s ease-out 0.85s;
+  }
+  .pk-lane {
+    stroke: color-mix(in srgb, currentColor 40%, transparent);
+    stroke-dasharray: 3 3;
+    stroke-dashoffset: 60;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.9s,
+      opacity 0.3s ease-out 0.9s;
+  }
+  :global(.stat[data-in-view="true"]) .pk-bay {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+  }
+  :global(.stat[data-in-view="true"]) .pk-reserved {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.35s;
+  }
+  :global(.stat[data-in-view="true"]) .pk-car {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  :global(.stat[data-in-view="true"]) .pk-c-1 {
+    transition-delay: 0.25s;
+  }
+  :global(.stat[data-in-view="true"]) .pk-c-2 {
+    transition-delay: 0.4s;
+  }
+  :global(.stat[data-in-view="true"]) .pk-c-3 {
+    transition-delay: 0.55s;
+  }
+  :global(.stat[data-in-view="true"]) .pk-pin {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.7s;
+  }
+  :global(.stat[data-in-view="true"]) .pk-pin-dot {
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .pk-lane {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  /* ———— Scene: activate (IoT puck with signal waves + mint check — Spotfinder activation rate) ———— */
+  .act-base,
+  .act-dome {
+    stroke: currentColor;
+    fill: none;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.4s ease-out,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .act-led {
+    fill: var(--color-accent-mint);
+    opacity: 0;
+    transition: opacity 0.3s ease-out 0.4s;
+  }
+  .act-wave {
+    stroke: var(--color-accent-mint);
+    fill: none;
+    stroke-dasharray: 44;
+    stroke-dashoffset: 44;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease-out;
+  }
+  .act-badge {
+    fill: var(--color-accent-mint);
+    opacity: 0;
+    transform-origin: 60px 22px;
+    transform: scale(0.3);
+    transition:
+      opacity 0.35s ease-out 1.2s,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 1.2s;
+  }
+  .act-check {
+    stroke: var(--color-paper);
+    stroke-dasharray: 14;
+    stroke-dashoffset: 14;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.4s cubic-bezier(0.22, 1, 0.36, 1) 1.45s,
+      opacity 0.2s ease-out 1.45s;
+  }
+  :global(.stat[data-in-view="true"]) .act-base {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+  }
+  :global(.stat[data-in-view="true"]) .act-dome {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.25s;
+  }
+  :global(.stat[data-in-view="true"]) .act-led {
+    opacity: 1;
+    animation: act-led-pulse 1.6s ease-in-out infinite 0.8s;
+  }
+  :global(.stat[data-in-view="true"]) .act-wave {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .act-w-1 {
+    transition-delay: 0.5s;
+    animation: act-wave-pulse 2s ease-in-out infinite 1.3s;
+  }
+  :global(.stat[data-in-view="true"]) .act-w-2 {
+    transition-delay: 0.7s;
+    animation: act-wave-pulse 2s ease-in-out infinite 1.5s;
+  }
+  :global(.stat[data-in-view="true"]) .act-w-3 {
+    transition-delay: 0.9s;
+    animation: act-wave-pulse 2s ease-in-out infinite 1.7s;
+  }
+  :global(.stat[data-in-view="true"]) .act-badge {
+    opacity: 1;
+    transform: scale(1);
+  }
+  :global(.stat[data-in-view="true"]) .act-check {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  @keyframes act-led-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  @keyframes act-wave-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ———— Scene: wayfind (phone with AR up-arrow → dashed path → destination pin) ———— */
+  .wf-phone,
+  .wf-screen {
+    stroke: currentColor;
+    fill: none;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.4s ease-out,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .wf-home {
+    fill: currentColor;
+    opacity: 0;
+    transition: opacity 0.3s ease-out 0.4s;
+  }
+  .wf-arrow-stem,
+  .wf-arrow-head {
+    stroke: var(--color-accent-mint);
+    fill: none;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.4s ease-out 0.5s,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.5s;
+  }
+  .wf-path {
+    stroke: color-mix(in srgb, currentColor 50%, transparent);
+    fill: none;
+    stroke-dasharray: 3 3;
+    stroke-dashoffset: 48;
+    opacity: 0;
+    transition:
+      stroke-dashoffset 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.9s,
+      opacity 0.3s ease-out 0.9s;
+  }
+  .wf-pin {
+    stroke: currentColor;
+    fill: none;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.4s ease-out 1.2s,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.2s;
+  }
+  .wf-pin-dot {
+    fill: currentColor;
+    opacity: 0;
+    transition: opacity 0.3s ease-out 1.4s;
+  }
+  :global(.stat[data-in-view="true"]) .wf-phone {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+  }
+  :global(.stat[data-in-view="true"]) .wf-screen {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.25s;
+  }
+  :global(.stat[data-in-view="true"]) .wf-home {
+    opacity: 0.5;
+  }
+  :global(.stat[data-in-view="true"]) .wf-arrow-stem,
+  :global(.stat[data-in-view="true"]) .wf-arrow-head {
+    opacity: 1;
+    transform: translateY(0);
+    animation: wf-arrow-bob 1.8s ease-in-out infinite 1.2s;
+  }
+  :global(.stat[data-in-view="true"]) .wf-path {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  :global(.stat[data-in-view="true"]) .wf-pin {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  :global(.stat[data-in-view="true"]) .wf-pin-dot {
+    opacity: 1;
+  }
+  @keyframes wf-arrow-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .art-rocket, .flame, .spark, .bar, .trend, .tip, .shield, .check, .trend-dot,
     .mul-card, .mul-chip, .av, .av-plus-bg, .ink-line, .ink-tip, .ink-baseline,
@@ -2679,7 +3122,10 @@ const { scene, class: className = "" } = Astro.props;
     .rnw-arc, .rnw-head, .rnw-check,
     .sim-pot, .sim-lid, .sim-handle, .sim-knob, .sim-steam, .sim-flame,
     .tp-body, .tp-screen, .tp-key, .tp-card, .tp-wave, .tp-check,
-    .rf-head, .rf-body, .rf-bubble, .rf-heart, .rf-arc, .rf-dot {
+    .rf-head, .rf-body, .rf-bubble, .rf-heart, .rf-arc, .rf-dot,
+    .pk-bay, .pk-reserved, .pk-car, .pk-pin, .pk-pin-dot, .pk-lane,
+    .act-base, .act-dome, .act-led, .act-wave, .act-badge, .act-check,
+    .wf-phone, .wf-screen, .wf-home, .wf-arrow-stem, .wf-arrow-head, .wf-path, .wf-pin, .wf-pin-dot {
       animation: none !important;
       transition: none !important;
       transform: none !important;
@@ -2703,7 +3149,10 @@ const { scene, class: className = "" } = Astro.props;
     .rnw-arc, .rnw-head, .rnw-check,
     .sim-pot, .sim-lid, .sim-handle, .sim-knob, .sim-steam, .sim-flame,
     .tp-body, .tp-screen, .tp-key, .tp-card-body, .tp-card-chip, .tp-card-stripe, .tp-wave, .tp-check,
-    .rf-head, .rf-body, .rf-bubble, .rf-heart, .rf-arc, .rf-dot {
+    .rf-head, .rf-body, .rf-bubble, .rf-heart, .rf-arc, .rf-dot,
+    .pk-bay, .pk-reserved, .pk-car, .pk-pin, .pk-pin-dot, .pk-lane,
+    .act-base, .act-dome, .act-led, .act-wave, .act-badge, .act-check,
+    .wf-phone, .wf-screen, .wf-home, .wf-arrow-stem, .wf-arrow-head, .wf-path, .wf-pin, .wf-pin-dot {
       stroke-dasharray: none;
       stroke-dashoffset: 0;
       opacity: 1;

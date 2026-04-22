@@ -14,6 +14,7 @@ import { rebajatuscuentas } from "./rebajatuscuentas";
 import { miposDarkKitchen } from "./mipos-dark-kitchen";
 import { miposRestaurantPos } from "./mipos-restaurant-pos";
 import { miposKiosk } from "./mipos-kiosk";
+import { spotfinder } from "./spotfinder";
 
 const caseStudies: readonly CaseStudyContent[] = [
   storiInversionPlus,
@@ -31,6 +32,7 @@ const caseStudies: readonly CaseStudyContent[] = [
   miposDarkKitchen,
   miposRestaurantPos,
   miposKiosk,
+  spotfinder,
 ];
 
 const bySlug = new Map(caseStudies.map((c) => [c.slug, c]));
