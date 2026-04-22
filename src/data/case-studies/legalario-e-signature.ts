@@ -8,7 +8,7 @@ const heroImage: ContentImage = {
   kind: "image",
   image: img("Legalario-ElectronicSignature-2.webp"),
   mobileImage: img("Legalario-ElectronicSignature-2-768x510.webp"),
-  alt: "Legalario mobile app successfully signing an electronic document on a phone held outdoors",
+  alt: "Legalario mobile e-signature success screen on iPhone — legally valid electronic signature captured end-to-end with biometric face scan, held in-hand by a Mexican SMB operator closing a contract outside the office, the redesigned LegalTech flow that replaced print-and-scan notarised paper across LATAM",
 };
 
 // ———— Adventure ————
@@ -31,12 +31,12 @@ const legacyMobile01: ContentImage = {
 const legacyMobile02: ContentImage = {
   kind: "image",
   image: img("legalario-electronic-signature-legacy-02-768x981.webp"),
-  alt: "Legalario legacy flow — draw signature inside rectangle screen",
+  alt: "Legalario legacy e-signature flow — draw-your-signature step inside a cramped finger-stroke rectangle on mobile, the pre-redesign UX that confused Mexican SMB signers and leaked drop-off before the Comandos rebuild",
 };
 const legacyMobile03: ContentImage = {
   kind: "image",
   image: img("legalario-electronic-signature-legacy-03-768x981.webp"),
-  alt: "Legalario legacy flow — document preview in browser screen",
+  alt: "Legalario legacy e-signature flow — contract preview rendered inside a zoomed-out browser frame on a phone, the low-confidence final review step Mexican signers had to accept before the new design moved it to a full-screen reader with biometric confirmation",
 };
 
 const v1Desktop: ContentImage = {
@@ -113,7 +113,7 @@ const biometricModelsImage: ContentImage = {
 const biometricDetailImage: ContentImage = {
   kind: "image",
   image: img("legalario-electronic-signature-biometric-2048x1025.webp"),
-  alt: "Biometric validation detail — woman's profile with face-mesh recognition on her phone",
+  alt: "Legalario biometric validation step — Mexican SMB signer's profile captured with face-mesh liveness recognition on her phone during an iBeta-certified identity check, the fraud-resistant biometric layer added around the redesigned electronic signature flow",
 };
 const ibetaImage: ContentImage = {
   kind: "image",

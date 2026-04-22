@@ -23,7 +23,7 @@ const understandingImage: ContentImage = {
   image: img("yaydoo-vendorplace-2021-before-comandos.png"),
   alt: "Yaydoo Vendorplace dashboard in 2021 before the redesign — business overview with accounts payable, receivables and taxes inside the broader Yaydoo ecosystem that porCobrar lived in",
   caption:
-    "The Yaydoo Vendorplace ecosystem in 2021 — the context porCobrar was inheriting before the redesign.",
+    "The Yaydoo Vendorplace ecosystem in 2021 — the Mexican B2B SMB receivables, payables and tax context porCobrar was inheriting before the Comandos redesign turned it into a standalone cash-collection product.",
 };
 
 const userPersonaImage: ContentImage = {

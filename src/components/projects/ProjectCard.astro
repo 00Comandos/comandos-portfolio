@@ -15,7 +15,7 @@ const { project } = Astro.props;
   >
     <Image
       src={project.image}
-      alt={`${project.brand} — ${project.title}`}
+      alt={`${project.brand} — ${project.title}. ${project.description}`}
       widths={[240, 360, 480, 720]}
       sizes="(min-width: 768px) 240px, 100vw"
       loading="lazy"

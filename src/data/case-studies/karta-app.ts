@@ -9,7 +9,7 @@ const heroImage: ContentImage = {
   kind: "image",
   image: img("Karta-GlobalApp-Thumbnail-2.webp"),
   mobileImage: img("Karta-GlobalApp-Thumbnail-2-mobile-768x836.webp"),
-  alt: "Karta premium credit card app hero — iPhone showing balance and recent transactions on a warm background",
+  alt: "Karta premium credit card app hero on iPhone — live account balance, recent card charges, Karta Points rewards counter and quick-send money actions, rendered on the warm Karta brand backdrop the LATAM high-net-worth launch campaign used in Mexico and Brazil",
 };
 
 const challengeImage: ContentImage = {
@@ -48,7 +48,7 @@ const digitalCardImage: ContentImage = {
 const optimization01Image: ContentImage = {
   kind: "image",
   image: img("karta-optimization-01-768x589.webp"),
-  alt: "Contactless payment with the Karta digital card at a point-of-sale terminal",
+  alt: "Karta digital credit card used for a contactless tap-to-pay at a LATAM retail point-of-sale terminal — new customer completing their first NFC purchase within minutes of activating the virtual card in the Karta app, before the physical metal card ships",
 };
 
 const optimization02Image: ContentImage = {
@@ -149,12 +149,12 @@ const conciergeTransactionsMobile: ContentImage = {
 const usingCard01: ContentImage = {
   kind: "image",
   image: img("karta-using-credit-card-01-768x892.webp"),
-  alt: "Karta premium metal credit card used in a travel moment",
+  alt: "Karta premium metal credit card in hand during a travel moment abroad — the weighty black card the LATAM premium tier ships to every Karta customer as a status signal on trips, hotels and restaurants outside Mexico",
 };
 const usingCard02: ContentImage = {
   kind: "image",
   image: img("karta-using-credit-card-02-768x892.webp"),
-  alt: "Karta premium metal credit card lifestyle shot — abroad with the black card",
+  alt: "Karta black metal credit card photographed at a world-class travel destination — the premium card LATAM high-net-worth customers carry across Europe, the US and Asia for Priority Pass lounge access and no-FX-fee spending",
 };
 const usingCard03: ContentImage = {
   kind: "image",

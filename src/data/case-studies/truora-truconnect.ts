@@ -7,14 +7,14 @@ const img = (filename: string) => requireImage(truoraTruConnectImages, filename)
 const heroImage: ContentImage = {
   kind: "image",
   image: img("truora-truConnect.png"),
-  alt: "Truora TruConnect metrics dashboard — total conversations, conversion funnel and effectiveness charts on a green frame",
+  alt: "Truora TruConnect no-code WhatsApp chatbot builder — LATAM product dashboard with Total conversations, Conversion funnel and Efectividad de la conversación charts tracking onboarding completion and user reactivation, the self-serve conversational-onboarding product Colombian, Mexican and Brazilian FinTechs deploy in hours instead of quarters",
 };
 
 // ———— Challenge ————
 const challengeImage: ContentImage = {
   kind: "image",
   image: img("comandos-truora-truconnecttu-primer-proyecto.png"),
-  alt: "Your first project — the TruConnect canvas showing a conversation flow with simple blocks, multiple answers, user verification and finish nodes",
+  alt: "Truora TruConnect visual chatbot editor — Tu primer proyecto onboarding canvas with drag-and-drop conversation blocks, multiple-answer branching, user identity verification and finish nodes, the LATAM product designer and growth team's self-serve builder for WhatsApp onboarding without writing code",
 };
 
 // ———— Adventure ————
@@ -26,7 +26,7 @@ const whereWeStandImage: ContentImage = {
 const uxProcess01Image: ContentImage = {
   kind: "image",
   image: img("truConnect-UX-process-01.png"),
-  alt: "First UX experiments — early chatbot conversation frames alongside a branching flow diagram with multiple answers and city-of-residence question",
+  alt: "Truora TruConnect early UX experiments — low-fidelity WhatsApp chatbot conversation frames alongside a branching conversation flow diagram with multiple-answer questions and Cuál es tu ciudad de residencia identity step, the first usability tests that validated the no-code onboarding pattern for LATAM FinTechs",
 };
 const uxProcess02Image: ContentImage = {
   kind: "image",

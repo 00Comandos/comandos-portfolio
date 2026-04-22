@@ -24,7 +24,7 @@ const redFlagsImage: ContentImage = {
   image: img("GrillDesignSystem-RedFlags-yaydoo-comandos-project.png"),
   alt: "Yaydoo brand audit — eight inconsistent logo variations of Yaydoo, PorCobrar, Fcard, Vendorplace and YAYDOO shipping across the product portfolio before the redesign",
   caption:
-    "Eight logo variations across seven Yaydoo products — the inconsistency Grill Design System set out to fix.",
+    "Eight logo variations across seven Yaydoo B2B SaaS products — porCobrar, Vendorplace, Fcard and YAYDOO shipping — the brand inconsistency the Grill Design System was built to fix before the Series B and the eventual Paystand acquisition.",
 };
 
 const newBrandImage: ContentImage = {

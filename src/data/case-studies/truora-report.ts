@@ -7,7 +7,7 @@ const img = (filename: string) => requireImage(truoraReportImages, filename);
 const heroImage: ContentImage = {
   kind: "image",
   image: img("truora-background-check-report.webp"),
-  alt: "Truora Background Check Report — greeting between two professionals with a people-consultation card overlay showing a clean background score",
+  alt: "Truora Background Check Report hero — a Colombian hiring manager greeting a candidate with a people-consultation card overlay showing a clean People Consultation score, the LATAM identity-verification report HR, banks and gig platforms use to approve new hires across Mexico, Colombia and Brazil",
 };
 
 // ———— Challenge ————
@@ -27,13 +27,13 @@ const problemsImage: ContentImage = {
 const opportunitiesImage: ContentImage = {
   kind: "image",
   image: img("truora-backgroundCheck-current-problem.webp"),
-  alt: "Current Truora report screenshot side-by-side with Camilo Villafaña's quote: I felt I had to look for someone with more experience to interpret the result",
+  alt: "Truora legacy Background Check Report opened in-browser next to a Camilo Villafaña customer quote — the raw, technical report layout LATAM HR analysts struggled to interpret before the Comandos redesign, with an 8-minute read time that drove the rewrite of the whole deliverable",
 };
 
 const firstIterationImage: ContentImage = {
   kind: "image",
   image: img("truora-backgorundCheck-firs-Iteration.webp"),
-  alt: "Three confidence-score iterations — Confidence level → High confidence, with a sample of the renewed report below",
+  alt: "Truora Background Check Report confidence-score iterations — three design explorations of the single headline metric (Confidence level → High confidence) with the renewed LATAM report sample below, the at-a-glance HR summary that replaced raw technical data in the redesign",
 };
 
 const interviewImage: ContentImage = {

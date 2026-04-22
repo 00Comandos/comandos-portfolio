@@ -13,7 +13,7 @@ export const site = {
   },
   social: {
     linkedin: "https://www.linkedin.com/in/01comandos/",
-    twitter: "https://twitter.com/comandos",
+    x: "https://x.com/01Comandos",
     email: "mailto:c@comandos.me",
   },
   nav: [

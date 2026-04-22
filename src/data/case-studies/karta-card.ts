@@ -128,7 +128,7 @@ const usingCard01: ContentImage = {
 const usingCard02: ContentImage = {
   kind: "image",
   image: karta("karta-using-credit-card-02-768x892.webp"),
-  alt: "Karta metal card photographed at a world-class destination",
+  alt: "Karta black metal credit card photographed at a world-class travel destination — the heavyweight premium card LATAM customers hand to hotel concierges and Michelin-starred restaurant staff abroad, branded as travel-worthy status by design",
 };
 const usingCard03: ContentImage = {
   kind: "image",
@@ -138,7 +138,7 @@ const usingCard03: ContentImage = {
 const usingCard04: ContentImage = {
   kind: "image",
   image: karta("karta-using-credit-card-04-768x1020.webp"),
-  alt: "Karta black metal card close-up on a neutral surface",
+  alt: "Karta black metal credit card studio close-up — laser-etched Karta wordmark, diamond motif and contactless NFC mark on the heavyweight brushed-metal body, the premium physical product the LATAM high-net-worth customer receives in a signed presentation box after account approval",
 };
 
 export const kartaCard: CaseStudyContent = {

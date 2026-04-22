@@ -7,14 +7,14 @@ const img = (filename: string) => requireImage(legalarioEmailsImages, filename);
 const heroImage: ContentImage = {
   kind: "image",
   image: img("legalario-first-email.webp"),
-  alt: "Hands holding a phone showing the new Legalario email with the list of documents to sign",
+  alt: "Legalario redesigned transactional email opened on an iPhone — Mexican SMB signer previewing the list of documents to sign with the multilingual notification template, the NPS-saving customer-success rewrite that replaced the legacy one-size-fits-all mail across LATAM",
 };
 
 // ———— Challenge ————
 const challengeImage: ContentImage = {
   kind: "image",
   image: img("Legalario-ElectronicSignature-Emails2.webp"),
-  alt: "Preview of the redesigned Legalario signing invitation email on a phone",
+  alt: "Legalario signing-invitation email preview on a phone — the redesigned e-signature request template with contract title, sender context, legal-validity copy and Firmar documento CTA, the first touchpoint between the Mexican SMB sender and the LATAM signer",
 };
 
 // ———— Adventure ————
