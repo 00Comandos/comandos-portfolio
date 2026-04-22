@@ -1,10 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect x="3" y="5" width="22" height="7" rx="1.5" fill="none" stroke="#0b0b0b" stroke-width="2.2"/>
-  <rect x="7" y="14" width="22" height="13" rx="1.5" fill="none" stroke="#0b0b0b" stroke-width="2.2"/>
-  <style>
-    rect { stroke: #0b0b0b; }
-    @media (prefers-color-scheme: dark) {
-      rect { stroke: #ffffff; }
-    }
-  </style>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" fill="none">
+  <rect width="60" height="60" fill="#0b0b0b"/>
+  <g transform="translate(10 12.5)">
+    <path
+      d="M35.5833 25.3854V32.4158H2.58419V12.1988H9.61463V25.3854H35.5833ZM12.1988 9.61462H35.9877V2.58489H12.1988V9.61462ZM38.5719 12.1988V0H9.61463V9.61463H0V35H38.1682V22.8012H12.1988V12.1988H38.5719Z"
+      fill="#ffffff"
+    />
+  </g>
 </svg>
