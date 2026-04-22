@@ -6,6 +6,7 @@ export type Testimonial = {
   name: string;
   role: string;
   avatar?: ImageMetadata;
+  tabLabel: string;
 };
 
 const avatar = (filename: string) => requireImage(avatarImages, filename);
@@ -15,15 +16,17 @@ export const testimonials: readonly Testimonial[] = [
     quote:
       "Carlos is THE definition of state-of-the-art design. The bar is never too high for Carlos, and he pushes his teammates to constantly try harder. Carlos displays a lot of customer obsession and …",
     name: "Valentin Vermersch",
-    role: "Angel Investor | GM @Deliverect",
+    role: "Angel Investor · GM at Deliverect",
     avatar: avatar("Avatar-Valentin-Vermesh.png"),
+    tabLabel: "Angel Investor",
   },
   {
     quote:
       "I was lucky to work with Carlos in my short time at Yaydoo, and I found a super dedicated professional. There is no impossible task for Comandos — fast, responsible, participative. He knew how to push 9 FinTech projects at the same time, managing the UX and UI team, hiring, training, creating the growth plans of his team.",
     name: "Martín Vivas",
-    role: "Corporate Venture Capital",
+    role: "Corporate Venture Capital · Yaydoo",
     avatar: avatar("avatar-MartinVivas.jpeg"),
+    tabLabel: "Corporate VC",
   },
   {
     quote:
@@ -31,6 +34,7 @@ export const testimonials: readonly Testimonial[] = [
     name: "Martín Mendoza del Solar",
     role: "CTO at RebajaTusCuentas.com",
     avatar: avatar("Avatar-martin-RTC.png"),
+    tabLabel: "CTO, RebajaTusCuentas",
   },
   {
     quote:
@@ -38,5 +42,6 @@ export const testimonials: readonly Testimonial[] = [
     name: "Nicolás Mendoza del Solar",
     role: "CEO at RebajaTusCuentas.com",
     avatar: avatar("Avatar-nicolas-rebajatuscuentas.png"),
+    tabLabel: "CEO, RebajaTusCuentas",
   },
 ];

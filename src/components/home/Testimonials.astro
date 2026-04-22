@@ -1,66 +1,102 @@
 ---
-import { Image } from "astro:assets";
 import { testimonials } from "~/data/testimonials";
-
-const marquee = [...testimonials, ...testimonials];
 ---
 
-<section aria-labelledby="testimonials-heading" class="py-20 md:py-24 overflow-hidden">
+<section
+  aria-labelledby="testimonials-heading"
+  class="py-24 md:py-32 bg-[color:var(--color-paper)]"
+>
   <div class="container-page">
-    <h2 id="testimonials-heading" class="text-3xl md:text-[2.25rem] tracking-tight">
-      <span class="font-extrabold">Opinions</span><br />
-      <span class="font-medium">Of Our Clients</span>
+    <h2 id="testimonials-heading" class="sr-only">
+      What clients say about Comandos
     </h2>
-  </div>
 
-  <div
-    class="marquee mt-10"
-    data-marquee
-    role="region"
-    aria-label="Testimonials carousel — drag to explore"
-  >
-    <ul class="marquee-track" data-track role="list">
+    <div class="testimonial-stage" data-testimonials>
       {
-        marquee.map((t, i) => (
-          <li
-            class="marquee-item"
-            aria-hidden={i >= testimonials.length ? "true" : "false"}
+        testimonials.map((t, i) => (
+          <figure
+            class="testimonial-slide"
+            data-slide-index={i}
+            data-active={i === 0 ? "true" : "false"}
+            aria-hidden={i === 0 ? "false" : "true"}
           >
-            <blockquote class="text-[0.95rem] leading-[1.6] text-[color:var(--color-ink-soft)]">
-              “{t.quote}”
+            <blockquote class="mx-auto max-w-3xl text-center text-[1.25rem] md:text-[1.625rem] leading-[1.45] tracking-[-0.01em] text-[color:var(--color-ink-soft)]">
+              &ldquo;{t.quote}&rdquo;
             </blockquote>
-            <figcaption class="mt-6 flex items-center gap-3">
-              {t.avatar ? (
-                <Image
-                  src={t.avatar}
-                  alt={t.name}
-                  width={80}
-                  height={80}
-                  loading="lazy"
-                  decoding="async"
-                  class="h-10 w-10 rounded-full object-cover bg-[color:var(--color-border)] pointer-events-none select-none"
-                />
-              ) : (
-                <div class="h-10 w-10 rounded-full bg-[color:var(--color-border)]" />
-              )}
-              <div>
-                <div class="text-sm font-semibold">{t.name}</div>
-                <div class="text-xs text-[color:var(--color-muted)]">{t.role}</div>
-              </div>
+
+            <figcaption class="mt-8 md:mt-10 text-center text-sm">
+              <span class="font-semibold text-[color:var(--color-ink)]">
+                {t.name},
+              </span>
+              <span class="text-[color:var(--color-muted)]"> {t.role}</span>
             </figcaption>
-          </li>
+          </figure>
         ))
       }
-    </ul>
+    </div>
+
+    {
+      testimonials.length > 1 && (
+        <div class="mt-14 md:mt-20 border-t border-[color:var(--color-border)]">
+          <div
+            class="testimonial-tabs"
+            data-tablist
+            role="tablist"
+            aria-label="Choose a testimonial"
+          >
+            {testimonials.map((t, i) => (
+              <button
+                type="button"
+                class="testimonial-tab"
+                data-tab-index={i}
+                aria-selected={i === 0 ? "true" : "false"}
+                role="tab"
+              >
+                {t.tabLabel}
+              </button>
+            ))}
+          </div>
+        </div>
+      )
+    }
   </div>
 </section>
 
 <style>
-  .marquee {
+  .testimonial-stage {
     position: relative;
-    width: 100%;
-    overflow: hidden;
-    cursor: grab;
+    display: grid;
+  }
+  .testimonial-stage > .testimonial-slide {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .testimonial-slide {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.5s ease-out,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    margin: 0;
+  }
+  .testimonial-slide[data-active="true"] {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .testimonial-tabs {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2rem;
+    overflow-x: auto;
+    padding: 1.75rem 1.5rem 0.5rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
     mask-image: linear-gradient(
       90deg,
       transparent 0,
@@ -75,132 +111,147 @@ const marquee = [...testimonials, ...testimonials];
       black 94%,
       transparent 100%
     );
-    touch-action: pan-y;
-    user-select: none;
   }
-  .marquee[data-dragging="true"] {
-    cursor: grabbing;
-  }
-
-  .marquee-track {
-    display: flex;
-    gap: 1.5rem;
-    width: max-content;
-    padding-inline: 1.5rem;
-    will-change: transform;
-  }
-
-  .marquee-item {
-    flex: 0 0 auto;
-    width: 320px;
-    min-height: 260px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background-color: var(--color-paper);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: 1.75rem;
-    box-shadow: var(--shadow-card);
+  .testimonial-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   @media (min-width: 768px) {
-    .marquee-item {
-      width: 420px;
+    .testimonial-tabs {
+      justify-content: center;
+      gap: 3rem;
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+  }
+
+  .testimonial-tab {
+    position: relative;
+    background: transparent;
+    border: 0;
+    padding: 0.5rem 0;
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, var(--color-ink) 38%, transparent);
+    cursor: pointer;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+    scroll-snap-align: center;
+  }
+  .testimonial-tab:hover {
+    color: color-mix(in srgb, var(--color-ink) 70%, transparent);
+  }
+  .testimonial-tab[aria-selected="true"] {
+    color: var(--color-ink);
+  }
+  .testimonial-tab::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -9px;
+    height: 2px;
+    background: var(--color-ink);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .testimonial-tab[aria-selected="true"]::after {
+    transform: scaleX(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .testimonial-slide,
+    .testimonial-tab::after {
+      transition: none;
+      transform: none;
     }
   }
 </style>
 
 <script>
-  type MarqueeState = {
-    position: number;
-    halfWidth: number;
-    hovered: boolean;
-    dragging: boolean;
-    dragStartX: number;
-    dragStartPosition: number;
-    lastTime: number;
-  };
+  const ROTATE_MS = 8000;
 
-  const SPEED = 0.04;
+  document
+    .querySelectorAll<HTMLElement>("[data-testimonials]")
+    .forEach((stage) => {
+      const slides = Array.from(
+        stage.querySelectorAll<HTMLElement>(".testimonial-slide"),
+      );
+      if (slides.length <= 1) return;
 
-  const marquees = document.querySelectorAll<HTMLElement>("[data-marquee]");
+      const section = stage.closest("section");
+      const scope = section ?? document;
+      const tabList = scope.querySelector<HTMLElement>("[data-tablist]");
+      const tabs = Array.from(
+        scope.querySelectorAll<HTMLButtonElement>("[data-tab-index]"),
+      );
 
-  marquees.forEach((wrapper) => {
-    const track = wrapper.querySelector<HTMLElement>("[data-track]");
-    if (!track) return;
+      let current = 0;
+      let timer: number | null = null;
+      let paused = false;
 
-    const state: MarqueeState = {
-      position: 0,
-      halfWidth: 0,
-      hovered: false,
-      dragging: false,
-      dragStartX: 0,
-      dragStartPosition: 0,
-      lastTime: performance.now(),
-    };
-
-    const measure = () => {
-      state.halfWidth = track.scrollWidth / 2;
-    };
-    measure();
-    const resizeObs = new ResizeObserver(measure);
-    resizeObs.observe(track);
-
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    const step = (now: number) => {
-      const dt = now - state.lastTime;
-      state.lastTime = now;
-
-      if (!state.dragging && !state.hovered && !prefersReduced) {
-        state.position -= SPEED * dt;
-      }
-
-      if (state.halfWidth > 0) {
-        if (state.position <= -state.halfWidth) {
-          state.position += state.halfWidth;
-        } else if (state.position > 0) {
-          state.position -= state.halfWidth;
+      const show = (index: number) => {
+        const next = (index + slides.length) % slides.length;
+        slides.forEach((s, i) => {
+          const isActive = i === next;
+          s.setAttribute("data-active", isActive ? "true" : "false");
+          s.setAttribute("aria-hidden", isActive ? "false" : "true");
+        });
+        tabs.forEach((d, i) => {
+          d.setAttribute("aria-selected", i === next ? "true" : "false");
+        });
+        const activeTab = tabs[next];
+        if (activeTab && tabList) {
+          const overflows = tabList.scrollWidth > tabList.clientWidth + 2;
+          if (overflows) {
+            const target =
+              activeTab.offsetLeft -
+              tabList.clientWidth / 2 +
+              activeTab.clientWidth / 2;
+            tabList.scrollTo({
+              left: Math.max(0, target),
+              behavior: "smooth",
+            });
+          }
         }
-      }
+        current = next;
+      };
 
-      track.style.transform = `translate3d(${state.position}px, 0, 0)`;
-      requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
+      const start = () => {
+        if (timer !== null) return;
+        timer = window.setInterval(() => {
+          if (!paused) show(current + 1);
+        }, ROTATE_MS);
+      };
+      const stop = () => {
+        if (timer !== null) {
+          window.clearInterval(timer);
+          timer = null;
+        }
+      };
 
-    wrapper.addEventListener("pointerenter", () => {
-      state.hovered = true;
+      tabs.forEach((tab, i) => {
+        tab.addEventListener("click", () => {
+          show(i);
+          stop();
+          start();
+        });
+      });
+
+      stage.addEventListener("pointerenter", () => {
+        paused = true;
+      });
+      stage.addEventListener("pointerleave", () => {
+        paused = false;
+      });
+
+      const prefersReduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      if (!prefersReduced) start();
     });
-    wrapper.addEventListener("pointerleave", () => {
-      state.hovered = false;
-      state.dragging = false;
-      wrapper.setAttribute("data-dragging", "false");
-    });
-
-    wrapper.addEventListener("pointerdown", (e) => {
-      state.dragging = true;
-      state.dragStartX = e.clientX;
-      state.dragStartPosition = state.position;
-      wrapper.setAttribute("data-dragging", "true");
-      wrapper.setPointerCapture?.(e.pointerId);
-    });
-
-    wrapper.addEventListener("pointermove", (e) => {
-      if (!state.dragging) return;
-      state.position = state.dragStartPosition + (e.clientX - state.dragStartX);
-    });
-
-    const endDrag = (e: PointerEvent) => {
-      if (!state.dragging) return;
-      state.dragging = false;
-      wrapper.setAttribute("data-dragging", "false");
-      wrapper.releasePointerCapture?.(e.pointerId);
-    };
-    wrapper.addEventListener("pointerup", endDrag);
-    wrapper.addEventListener("pointercancel", endDrag);
-  });
 </script>
