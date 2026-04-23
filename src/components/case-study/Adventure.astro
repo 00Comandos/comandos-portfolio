@@ -44,7 +44,7 @@ const { content } = Astro.props;
   <div class="cs-body">
     <SectionChip variant="adventure" label="Adventure" />
 
-    <h2 class="mt-6 text-[1.75rem] md:text-[2.25rem] font-extrabold leading-[1.1] tracking-tight">
+    <h2 class="display-serif mt-6 text-[2.25rem] md:text-[3rem]">
       {content.heading}
     </h2>
 
@@ -96,7 +96,7 @@ const { content } = Astro.props;
                     {block.label}
                   </p>
                 )}
-                <h3 class="mt-2 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
+                <h3 class="display-serif mt-2 text-[2rem] md:text-[2.375rem]">
                   {block.heading}
                 </h3>
                 {block.body && <Fragment set:html={renderProse(block.body)} />}
@@ -132,7 +132,7 @@ const { content } = Astro.props;
                     <StatIllustration scene={block.scene} />
                   </div>
                 ) : null}
-                <h3 class="mt-4 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
+                <h3 class="display-serif mt-4 text-[2rem] md:text-[2.375rem]">
                   {block.heading}
                 </h3>
                 {block.body && (
@@ -177,7 +177,7 @@ const { content } = Astro.props;
                     {block.label}
                   </p>
                 )}
-                <h3 class="mt-2 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
+                <h3 class="display-serif mt-2 text-[2rem] md:text-[2.375rem]">
                   {block.heading}
                 </h3>
                 {block.image && (
@@ -197,7 +197,7 @@ const { content } = Astro.props;
                 <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--color-muted)]">
                   {block.step}
                 </p>
-                <h3 class="mt-2 text-xl md:text-[1.625rem] font-bold tracking-tight leading-[1.2]">
+                <h3 class="display-serif mt-2 text-[2rem] md:text-[2.375rem]">
                   {block.heading}
                 </h3>
                 {block.body && <Fragment set:html={renderProse(block.body)} />}

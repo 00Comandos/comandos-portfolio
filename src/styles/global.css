@@ -21,6 +21,8 @@
   --font-display: "Poppins", var(--font-sans);
   --font-serif:
     "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
+  --font-display-serif:
+    "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
 
   --radius-xs: 0.25rem;
   --radius-sm: 0.5rem;
@@ -69,6 +71,24 @@
 }
 
 @layer components {
+  /* Editorial display headline — Instrument Serif regular + italic accent.
+     Apply to H1/H2 on marketing pages (home, north-face-growth, projects,
+     contact, case studies) for a consistent editorial voice. */
+  .display-serif {
+    font-family: var(--font-display-serif);
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: -0.015em;
+    line-height: 1.02;
+    color: inherit;
+  }
+  .display-serif em,
+  .display-serif-italic {
+    font-family: var(--font-display-serif);
+    font-style: italic;
+    font-weight: 400;
+  }
+
   .container-page {
     width: 100%;
     max-width: 1200px;

@@ -1,58 +1,319 @@
 ---
+import { Image } from "astro:assets";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import Placeholder from "~/components/ui/Placeholder.astro";
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+import Testimonials from "~/components/home/Testimonials.astro";
+import { brandImages, requireImage } from "~/lib/image-map";
 import { site } from "~/lib/site";
+
+import uxAuditScene from "~/assets/images/methodology/comandos-north-face-growth-UXAudit.svg";
+import productStrategyScene from "~/assets/images/methodology/comandos-product-strategy.svg";
+import productMvpScene from "~/assets/images/methodology/comandos-product-mvp.svg";
+import testingScene from "~/assets/images/methodology/comandos-testing-and-experimentation.svg";
+
+const mountain = requireImage(brandImages, "mountain-white.jpg");
 
 export const prerender = true;
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "North Face Growth",
+  headline: "North Face Growth — Our Methodology",
   description:
-    "Comandos' methodology for creating and scaling products in turbo mode.",
+    "Comandos' methodology for creating and scaling digital products — science-backed, experiment-driven. UX audit & user research, product strategy, MVP & design system, testing & experimentation.",
   url: `${site.url}/north-face-growth`,
   author: { "@type": "Person", name: site.person.name },
 };
+
+const steps = [
+  {
+    number: "01",
+    tab: "Data, UX Audit & User Research",
+    heading: "Data, UX Audit & User Research",
+    body:
+      "We pair qualitative interviews with a quantitative audit — behavioural analytics, conversion funnels, retention curves — so the brief lands on numbers, not opinions. Every signal is mirrored in a shared live logbook the moment we surface it: no black box, no monthly decks.",
+    image: uxAuditScene,
+    imageAlt:
+      "Comandos UX audit + user research visualisation — donut chart showing 40% of users love your product vs 60% prefer another service, the qualitative and quantitative gap a product design audit surfaces on day one for FinTech, SaaS and AI founders",
+  },
+  {
+    number: "02",
+    tab: "Product Strategy",
+    heading: "Product Strategy",
+    body:
+      "With research on the table, we prioritise the opportunities that move the metric. North Star, user stories, JTBD, roadmap — the decisions your team can defend to a board.",
+    image: productStrategyScene,
+    imageAlt:
+      "Comandos product strategy illustration — a mountain with a dashed path and a summit flag, the North Face Growth roadmap metaphor for prioritising the features, North Star metric and JTBD opportunities that move business KPIs",
+  },
+  {
+    number: "03",
+    tab: "Product Feature, MVP & Design System",
+    heading: "Product Feature, MVP & Design System",
+    body:
+      "We ship what matters: a production-ready MVP plus the design system that lets your team extend it without drifting. Figma tokens, component libraries, handoff hygiene.",
+    image: productMvpScene,
+    imageAlt:
+      "Comandos product MVP and design system illustration — a clean mobile app frame with a mint CTA, the shippable end-to-end outcome of Figma tokens, component libraries, production-ready handoff and design-engineering hygiene",
+  },
+  {
+    number: "04",
+    tab: "Testing & Experimentation",
+    heading: "Testing & Experimentation",
+    body:
+      "We close the loop with real-world testing — usability rounds, pilots, A/B experiments — so the next iteration is informed by evidence, not opinion.",
+    image: testingScene,
+    imageAlt:
+      "Comandos testing and experimentation illustration — a paper-plane tracing an ascending dashed path, the continuous A/B testing, usability round and pilot experimentation loop that closes the North Face Growth product-design methodology",
+  },
+];
 ---
 
 <BaseLayout
-  title="North Face Growth"
-  description="Comandos' methodology for creating and scaling products in turbo mode."
+  title="North Face Growth — Our Methodology"
+  description="Comandos' science-backed methodology for creating and scaling digital products. UX audit, product strategy, MVP & design system, testing & experimentation."
   type="article"
   jsonLd={jsonLd}
 >
-  <section class="container-page pt-14 md:pt-20 pb-10">
-    <p class="text-xs font-semibold tracking-[0.18em] uppercase text-[color:var(--color-muted)]">
-      Methodology
-    </p>
-    <h1 class="mt-3 text-3xl md:text-[3rem] font-extrabold leading-[1.05] tracking-tight max-w-3xl">
-      North Face Growth
-    </h1>
-    <p class="mt-5 max-w-2xl text-[1.0625rem] leading-[1.55] text-[color:var(--color-muted)]">
-      Our methodology for creating and scaling products in turbo mode. Full
-      write-up coming soon — final design pending.
-    </p>
-  </section>
-
-  <section class="container-page pb-24">
-    <Placeholder ratio="16 / 9" label="North Face Growth hero" />
-
-    <div class="mt-12 grid md:grid-cols-3 gap-6">
-      <Placeholder ratio="1 / 1" label="Base Camp" />
-      <Placeholder ratio="1 / 1" label="Ascent" />
-      <Placeholder ratio="1 / 1" label="Summit" />
+  <section class="nfg-hero">
+    <div class="container-page pt-16 md:pt-24 pb-6 md:pb-10 text-center">
+      <p
+        class="nfg-reveal text-xs font-semibold tracking-[0.18em] uppercase text-[color:var(--color-muted)]"
+        style="--d: 0.05s"
+      >
+        Methodology
+      </p>
+      <h1
+        class="nfg-reveal display-serif nfg-headline mt-3 mx-auto"
+        style="--d: 0.15s"
+      >
+        Growing a product is like
+        <em>climbing a mountain.</em>
+      </h1>
+      <p
+        class="nfg-reveal mt-7 mx-auto max-w-2xl text-[1.0625rem] md:text-[1.1875rem] leading-[1.55] text-[color:var(--color-ink-soft)]"
+        style="--d: 0.3s"
+      >
+        Meet <strong>North Face Growth</strong> — our science-backed methodology
+        for creating and scaling products. Research, strategy, MVP,
+        experimentation.
+      </p>
+      <div
+        class="nfg-reveal mt-8 flex items-center justify-center gap-5 flex-wrap"
+        style="--d: 0.45s"
+      >
+        <a href="/contact" class="btn-primary">
+          I want to implement this
+          <span class="arrow"><ArrowIcon /></span>
+        </a>
+      </div>
     </div>
 
-    <div class="mt-14 max-w-xl">
-      <p class="text-[color:var(--color-muted)]">
-        Want to apply this methodology to your product?
+    <div class="nfg-reveal nfg-mountain" style="--d: 0.6s">
+      <Image
+        src={mountain}
+        alt="North Face Growth methodology hero illustration — a mountain framing how Comandos scales digital products from MVP to market across FinTech, SaaS and AI founders"
+        widths={[480, 640, 720]}
+        sizes="(min-width: 768px) 720px, 100vw"
+        loading="eager"
+        decoding="async"
+        class="nfg-mountain-img"
+      />
+    </div>
+  </section>
+
+  <section class="py-20 md:py-28 bg-[color:var(--color-paper-soft)]">
+    <div class="container-page">
+      <div class="text-center">
+        <p class="text-xs font-semibold tracking-[0.18em] uppercase text-[color:var(--color-muted)]">
+          Hit your goals with
+        </p>
+        <h2 class="display-serif mt-3 text-[2.5rem] md:text-[3.5rem]">
+          North Face Growth
+        </h2>
+        <p class="mt-5 mx-auto max-w-2xl text-[color:var(--color-muted)] leading-[1.6]">
+          Like climbing a mountain. Depending on the product's stage, all or
+          some of these steps apply — in this order.
+        </p>
+      </div>
+
+      <ol class="mt-14 md:mt-20 grid gap-12 md:gap-16">
+        {
+          steps.map((step, i) => (
+            <li
+              class={`nfg-step grid md:grid-cols-2 gap-8 md:gap-14 items-center ${i % 2 === 1 ? "md:[direction:rtl]" : ""}`}
+            >
+              <div class="md:[direction:ltr]">
+                <span class="block text-[2.5rem] md:text-[2.75rem] font-extrabold text-[color:var(--color-accent-mint)] leading-none">
+                  {step.number}
+                </span>
+                <h3 class="display-serif mt-5 text-[2.25rem] md:text-[2.5rem]">
+                  {step.heading}
+                </h3>
+                <p class="mt-4 text-[1rem] leading-[1.6] text-[color:var(--color-ink-soft)] max-w-xl">
+                  {step.body}
+                </p>
+                <a href="/contact" class="btn-outline mt-6">
+                  I want to implement this
+                  <ArrowIcon />
+                </a>
+              </div>
+
+              <figure class="nfg-step-media md:[direction:ltr]">
+                <Image
+                  src={step.image}
+                  alt={step.imageAlt}
+                  widths={[480, 720, 960, 1200]}
+                  sizes="(min-width: 768px) 480px, 100vw"
+                  loading={i === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  class="nfg-step-img"
+                />
+              </figure>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <Testimonials />
+
+  <section class="py-24 md:py-32">
+    <div class="container-page text-center max-w-3xl mx-auto">
+      <h2 class="display-serif text-[2.5rem] md:text-[3.5rem]">
+        Grow in results,
+        <br />
+        <em>not in problems.</em>
+      </h2>
+      <p class="mt-5 text-[color:var(--color-muted)] leading-[1.6]">
+        Take your digital product to the next level — make safer, more reliable
+        business decisions based on data and experimentation.
       </p>
-      <a href="/contact" class="btn-primary mt-4">
+      <a href="/contact" class="btn-primary mt-8">
         Start a conversation
-        <ArrowIcon />
+        <span class="arrow"><ArrowIcon /></span>
       </a>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .nfg-mountain {
+    max-width: 820px;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+    display: flex;
+    justify-content: center;
+  }
+  .nfg-mountain-img {
+    width: 100%;
+    max-width: 720px;
+    height: auto;
+    display: block;
+    mix-blend-mode: multiply;
+  }
+
+  .nfg-headline {
+    font-size: clamp(3.25rem, 9vw, 4.5rem);
+    max-width: 22ch;
+  }
+
+  .nfg-step-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nfg-step-img {
+    width: 100%;
+    max-width: 476px;
+    height: auto;
+    display: block;
+  }
+
+  /* On mobile, render the illustration above the copy and clip its width
+     so the overall step block isn't dominated by a giant illustration. */
+  @media (max-width: 767px) {
+    .nfg-step .nfg-step-media {
+      order: -1;
+    }
+    .nfg-step-img {
+      max-width: 320px;
+    }
+  }
+
+  @keyframes nfg-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .nfg-reveal {
+    opacity: 0;
+    animation-name: nfg-fade-up;
+    animation-duration: 0.75s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: forwards;
+    animation-delay: var(--d, 0s);
+  }
+  /* Step cards: default hidden. Reveal via either scroll timeline (modern
+     browsers) or data-in-view attribute set by the IO fallback below. */
+  .nfg-step {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  .nfg-step[data-in-view="true"] {
+    animation-name: nfg-fade-up;
+    animation-duration: 0.8s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: forwards;
+  }
+  @supports (animation-timeline: view()) {
+    .nfg-step {
+      animation-name: nfg-fade-up;
+      animation-duration: 0.8s;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+      animation-fill-mode: forwards;
+      animation-timeline: view();
+      animation-range: entry 5% cover 30%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nfg-reveal,
+    .nfg-step {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // Fallback for browsers that don't support animation-timeline: view() —
+  // flip data-in-view on step cards as they enter the viewport.
+  const supportsScrollTimeline =
+    typeof CSS !== "undefined" && CSS.supports?.("animation-timeline: view()");
+  if (!supportsScrollTimeline) {
+    const steps = document.querySelectorAll<HTMLElement>(".nfg-step");
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.setAttribute("data-in-view", "true");
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 },
+      );
+      steps.forEach((el) => io.observe(el));
+    } else {
+      steps.forEach((el) => el.setAttribute("data-in-view", "true"));
+    }
+  }
+</script>

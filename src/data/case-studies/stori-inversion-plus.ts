@@ -196,7 +196,7 @@ export const storiInversionPlus: CaseStudyContent = {
     ],
   },
   result: {
-    heading: "Amazing results in 12 months",
+    heading: "Amazing results in 90 days",
     stats: [
       {
         value: "477%+",
