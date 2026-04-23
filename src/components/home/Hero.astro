@@ -1,39 +1,126 @@
 ---
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
-import HeroIllustration from "~/components/home/HeroIllustration.astro";
 ---
 
-<section class="relative overflow-hidden">
-  <div class="container-page pt-16 md:pt-24 pb-6 md:pb-12">
-    <div class="grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-10 md:gap-14 items-center">
-      <div class="max-w-xl">
-        <h1 class="text-[2.25rem] md:text-[3.5rem] leading-[1.02] tracking-tight">
-          World-Class Product <br class="hidden md:block" /><span
-            class="font-extrabold">Design</span
-          >, <span class="font-medium">Backed By Data</span>
-        </h1>
+<section class="hero">
+  <div class="container-page pt-24 md:pt-40 pb-20 md:pb-32">
+    <div class="mx-auto max-w-5xl text-center">
+      <h1 class="hero-headline">
+        We turn product chaos <br class="hidden md:block" />
+        into <em>measurable&nbsp;growth.</em>
+      </h1>
 
-        <p class="mt-6 text-[1.0625rem] leading-[1.55] text-[color:var(--color-muted)]">
-          We partner with FinTech and SaaS founders to build products that millions
-          of people use. User research, product strategy, design systems, and
-          growth — from Mexico City to the world.
-        </p>
+      <p class="hero-sub">
+        Product design for FinTech and SaaS founders shipping from Mexico City
+        to the world. User research, product strategy, design systems, and
+        growth — backed by data and experimentation.
+      </p>
 
-        <div class="mt-8 flex items-center gap-5 flex-wrap">
-          <a href="/contact" class="btn-primary">
-            Contact Us
-            <span class="arrow"><ArrowIcon /></span>
-          </a>
-          <a href="/projects" class="btn-link">
-            View success stories
-            <ArrowIcon />
-          </a>
-        </div>
+      <div class="hero-cta">
+        <a href="/contact" class="btn-primary">
+          Start a project
+          <span class="arrow"><ArrowIcon /></span>
+        </a>
+        <a href="#before-after" class="hero-scroll">See the work</a>
       </div>
 
-      <div class="relative order-first md:order-none">
-        <HeroIllustration />
-      </div>
+      <p class="hero-note">
+        <span>[1]</span>
+        <em>
+          Work shipped at Stori, Karta, Truora, Legalario, Yaydoo and more —
+          used by millions across Mexico, Brazil, Colombia, Peru and Puerto
+          Rico.
+        </em>
+      </p>
     </div>
   </div>
 </section>
+
+<style>
+  .hero {
+    background: var(--color-paper-soft);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-headline {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-style: normal;
+    font-size: clamp(2.75rem, 7.5vw, 5.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+    max-width: 22ch;
+    margin-inline: auto;
+  }
+  .hero-headline em {
+    font-style: italic;
+    font-family: var(--font-serif);
+    color: var(--color-ink);
+  }
+
+  .hero-sub {
+    margin: 2rem auto 0;
+    max-width: 42rem;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--color-muted);
+  }
+  @media (min-width: 768px) {
+    .hero-sub {
+      font-size: 1.125rem;
+    }
+  }
+
+  .hero-cta {
+    margin-top: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-scroll {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: none;
+    padding-bottom: 3px;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 30%, transparent);
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+  .hero-scroll:hover {
+    border-bottom-color: var(--color-ink);
+  }
+
+  .hero-note {
+    margin: 5rem auto 0;
+    max-width: 42rem;
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-ink) 60%, transparent);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.5rem;
+    text-align: left;
+  }
+  .hero-note span {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .hero-note em {
+    font-style: italic;
+  }
+</style>

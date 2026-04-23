@@ -24,6 +24,10 @@ const LOGO_PATH =
           loading="lazy"
           decoding="async"
         />
+        <p class="footer-tagline mt-5">
+          Grow in <span>results</span>,<br />
+          not in problems.
+        </p>
         <p class="mt-5 max-w-sm text-sm leading-relaxed footer-muted">
           {site.description}
         </p>
@@ -140,6 +144,19 @@ const LOGO_PATH =
 
   .footer-logo {
     display: block;
+  }
+
+  .footer-tagline {
+    font-size: 1.375rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    font-weight: 500;
+    color: var(--color-paper);
+    max-width: 16ch;
+  }
+  .footer-tagline span {
+    color: var(--color-accent-mint);
+    font-weight: 700;
   }
 
   .footer-col-title {

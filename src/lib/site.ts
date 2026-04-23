@@ -2,7 +2,7 @@ export const site = {
   name: "Comandos",
   tagline: "World-Class Product Design, Backed By Data",
   description:
-    "Comandos partners with FinTech and SaaS founders to build products that millions of people use. User research, product strategy, design systems, and growth — from Mexico City to the world.",
+    "Comandos partners with FinTech, SaaS and AI founders to build products that millions of people use. User research, product strategy, design systems, and growth — from Mexico City to the world.",
   url: "https://comandos.me",
   person: {
     name: "Carlos Comandos",

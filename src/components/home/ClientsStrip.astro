@@ -6,7 +6,7 @@ const mobileTrack = [...clients, ...clients];
 
 <section
   aria-label="Trusted by"
-  class="pt-4 pb-10 md:pt-6 md:pb-12 bg-[color:var(--color-paper)]"
+  class="pt-4 pb-14 md:pt-6 md:pb-16 bg-[color:var(--color-paper-soft)]"
 >
   <div class="container-page">
     <ul
@@ -28,7 +28,7 @@ const mobileTrack = [...clients, ...clients];
                   alt={c.name}
                   loading="lazy"
                   decoding="async"
-                  class={`${c.maxHeightClass ?? "max-h-7 md:max-h-8"} w-auto object-contain`}
+                  class={`${c.maxHeightClass ?? "max-h-6 md:max-h-7"} w-auto object-contain`}
                 />
               </a>
             ) : (
@@ -37,7 +37,7 @@ const mobileTrack = [...clients, ...clients];
                 alt={c.name}
                 loading="lazy"
                 decoding="async"
-                class={`${c.maxHeightClass ?? "max-h-7 md:max-h-8"} w-auto object-contain grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition duration-200`}
+                class={`${c.maxHeightClass ?? "max-h-6 md:max-h-7"} w-auto object-contain grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition duration-200`}
               />
             )}
           </li>
