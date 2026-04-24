@@ -18,21 +18,53 @@ type Props = {
 const props = Astro.props;
 const gaId = import.meta.env.PUBLIC_GA_ID;
 
-const defaultJsonLd: Record<string, unknown> = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: site.person.name,
-  alternateName: site.person.alternateName,
-  jobTitle: site.person.jobTitle,
-  url: site.url,
-  sameAs: [site.social.linkedin, site.social.x],
-  description: site.description,
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Mexico City",
-    addressCountry: "MX",
+const defaultJsonLd: Record<string, unknown>[] = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: site.person.name,
+    alternateName: site.person.alternateName,
+    jobTitle: site.person.jobTitle,
+    url: site.url,
+    sameAs: [site.social.linkedin, site.social.x],
+    description: site.description,
+    knowsAbout: [
+      "Product design",
+      "Product strategy",
+      "UX research",
+      "Design systems",
+      "FinTech product design",
+      "SaaS product design",
+      "AI product design",
+      "LATAM product design",
+    ],
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Mexico City",
+      addressCountry: "MX",
+    },
   },
-};
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: site.name,
+    url: site.url,
+    logo: new URL("/images/Logo-Comandos.svg", site.url).toString(),
+    sameAs: [site.social.linkedin, site.social.x],
+    description: site.description,
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      email: "c@comandos.me",
+      areaServed: ["MX", "LATAM"],
+      availableLanguage: ["en", "es"],
+    },
+    founder: {
+      "@type": "Person",
+      name: site.person.name,
+    },
+  },
+];
 ---
 
 <!doctype html>

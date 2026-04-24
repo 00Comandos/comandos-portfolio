@@ -80,15 +80,39 @@ const primaryImage = {
   height: ogVariant.attributes?.height ?? 800,
 };
 
+// Build-time timestamp used as a conservative publish / modified date so
+// Google has recency signal on the article even before real editorial
+// metadata ships.
+const buildIso = new Date().toISOString();
+
 const jsonLd = [
   {
     "@context": "https://schema.org",
-    "@type": "CreativeWork",
+    "@type": "Article",
+    headline: project.title,
     name: project.title,
     url: `${site.url}/projects/${project.slug}`,
+    mainEntityOfPage: `${site.url}/projects/${project.slug}`,
     about: project.brand,
     description: project.description,
-    author: { "@type": "Person", name: site.person.name },
+    keywords: `${project.brand}, ${project.title}, product design, case study, LATAM, FinTech, SaaS, UX research`,
+    inLanguage: "en",
+    datePublished: buildIso,
+    dateModified: buildIso,
+    author: {
+      "@type": "Person",
+      name: site.person.name,
+      url: site.url,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: site.name,
+      url: site.url,
+      logo: {
+        "@type": "ImageObject",
+        url: new URL("/images/Logo-Comandos.svg", site.url).toString(),
+      },
+    },
     image:
       imageObjects.length > 0 ? [primaryImage, ...imageObjects] : primaryImage,
     ...(caseStudy

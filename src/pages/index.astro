@@ -1,4 +1,5 @@
 ---
+import { getImage } from "astro:assets";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Hero from "~/components/home/Hero.astro";
 import ClientsStrip from "~/components/home/ClientsStrip.astro";
@@ -6,8 +7,37 @@ import BeforeAfter from "~/components/home/BeforeAfter.astro";
 import Testimonials from "~/components/home/Testimonials.astro";
 import NorthFaceGrowthCTA from "~/components/home/NorthFaceGrowthCTA.astro";
 import { site } from "~/lib/site";
+import { homeBeforeAfter } from "~/data/home-before-after";
+import { projects } from "~/data/projects";
 
 export const prerender = true;
+
+// Resolve every showcased project's after-image to a stable WebP URL so
+// Google can index it directly from the home ItemList.
+const listItems = await Promise.all(
+  homeBeforeAfter.map(async (it, i) => {
+    const project = projects.find((p) => p.slug === it.slug);
+    const variant = await getImage({
+      src: it.after,
+      width: 1200,
+      format: "webp",
+    });
+    return {
+      "@type": "ListItem" as const,
+      position: i + 1,
+      url: `${site.url}/projects/${it.slug}`,
+      item: {
+        "@type": "CreativeWork" as const,
+        name: project?.title ?? `${it.brand} — ${it.tagline}`,
+        url: `${site.url}/projects/${it.slug}`,
+        description: it.tagline,
+        about: it.brand,
+        image: new URL(variant.src, site.url).toString(),
+        creator: { "@type": "Person", name: site.person.name },
+      },
+    };
+  }),
+);
 
 const jsonLd = [
   {
@@ -16,6 +46,11 @@ const jsonLd = [
     name: site.name,
     url: site.url,
     description: site.description,
+    publisher: {
+      "@type": "Organization",
+      name: site.name,
+      url: site.url,
+    },
   },
   {
     "@context": "https://schema.org",
@@ -25,11 +60,47 @@ const jsonLd = [
     jobTitle: site.person.jobTitle,
     url: site.url,
     sameAs: [site.social.linkedin, site.social.x],
+    knowsAbout: [
+      "Product design",
+      "Product strategy",
+      "UX research",
+      "Design systems",
+      "FinTech product design",
+      "SaaS product design",
+      "AI product design",
+      "LATAM product design",
+    ],
     address: {
       "@type": "PostalAddress",
       addressLocality: "Mexico City",
       addressCountry: "MX",
     },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: site.name,
+    url: site.url,
+    logo: new URL("/images/Logo-Comandos.svg", site.url).toString(),
+    sameAs: [site.social.linkedin, site.social.x],
+    description: site.description,
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      email: "c@comandos.me",
+      areaServed: ["MX", "LATAM"],
+      availableLanguage: ["en", "es"],
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Before / After Comandos — featured product design case studies",
+    description:
+      "Curated product-design transformations across FinTech, SaaS, IoT, PropTech and FoodTech in LATAM — each links to the full case study.",
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    numberOfItems: listItems.length,
+    itemListElement: listItems,
   },
 ];
 ---
