@@ -2,202 +2,664 @@
 import { Image } from "astro:assets";
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 import { homeBeforeAfter } from "~/data/home-before-after";
+
+const items = homeBeforeAfter;
+const panelVh = 55;
 ---
 
 <section
   id="before-after"
   aria-labelledby="before-after-heading"
-  class="py-24 md:py-32 bg-[color:var(--color-paper-soft)]"
+  class="ba-section"
 >
-  <div class="container-page">
-    <div class="ba-reveal mx-auto max-w-3xl text-center">
-      <p class="text-xs font-semibold tracking-[0.18em] uppercase text-[color:var(--color-muted)]">
-        Before / After Comandos
-      </p>
-      <h2
-        id="before-after-heading"
-        class="mt-3 text-[2rem] md:text-[2.75rem] font-extrabold leading-[1.08] tracking-tight"
-      >
-        Product problems, measurably solved.
-      </h2>
-      <p class="mt-4 text-[color:var(--color-muted)] leading-[1.6]">
-        Real transformations from FinTech, IoT and FoodTech case studies — the
-        state we inherited, the state we shipped, and the metric the team moved.
-      </p>
+  <div class="ba-intro container-page">
+    <p class="text-xs font-semibold tracking-[0.18em] uppercase text-[color:var(--color-muted)]">
+      Before / After Comandos
+    </p>
+    <h2
+      id="before-after-heading"
+      class="display-serif mt-3 text-[2.5rem] md:text-[3.5rem] max-w-3xl"
+    >
+      Product problems,<br /><em>measurably solved.</em>
+    </h2>
+    <p class="mt-4 max-w-xl text-[color:var(--color-muted)] leading-[1.6]">
+      Scroll to see eight products go from stuck to shipped — what we
+      inherited on the left, what we shipped on the right, and the metric
+      the team moved.
+    </p>
+  </div>
+
+  <div
+    class="ba-scroll"
+    data-ba-scroll
+    style={`--panels:${items.length};--panel-vh:${panelVh}vh`}
+  >
+    <div class="ba-sticky">
+      <div class="container-page ba-grid">
+        <div class="ba-col ba-col-before">
+          <span class="ba-label">Before Comandos</span>
+          <div class="ba-stack">
+            {
+              items.map((it, i) => (
+                <a
+                  class:list={["ba-pic", i === 0 ? "is-active" : ""]}
+                  data-idx={i}
+                  href={`/projects/${it.slug}`}
+                  aria-label={`Read the ${it.brand} case study`}
+                >
+                  <div class="ba-media">
+                    <Image
+                      src={it.before}
+                      alt={it.beforeAlt}
+                      widths={[420, 640, 840]}
+                      sizes="(min-width: 1024px) 360px, 45vw"
+                      loading={i === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      class="ba-img"
+                    />
+                  </div>
+                  <span class="ba-caption">{it.duringCaption}</span>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="ba-col ba-col-center">
+          <div class="ba-names-window">
+            <ol class="ba-names" data-ba-names>
+              {
+                items.map((it, i) => (
+                  <li
+                    class:list={["ba-name", i === 0 ? "is-active" : ""]}
+                    data-idx={i}
+                    data-long={it.brand.length > 14 ? "true" : "false"}
+                  >
+                    <a href={`/projects/${it.slug}`} class="ba-name-link">
+                      {it.brand}
+                    </a>
+                  </li>
+                ))
+              }
+            </ol>
+          </div>
+        </div>
+
+        <div class="ba-col ba-col-after">
+          <span class="ba-label">Now</span>
+          <div class="ba-stack">
+            {
+              items.map((it, i) => (
+                <a
+                  class:list={["ba-pic", i === 0 ? "is-active" : ""]}
+                  data-idx={i}
+                  href={`/projects/${it.slug}`}
+                  aria-label={`Read the ${it.brand} case study`}
+                >
+                  <div class="ba-media">
+                    <Image
+                      src={it.after}
+                      alt={it.afterAlt}
+                      widths={[420, 640, 840]}
+                      sizes="(min-width: 1024px) 360px, 45vw"
+                      loading={i === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      class="ba-img"
+                    />
+                  </div>
+                  <span class="ba-caption">{it.nowCaption}</span>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
     </div>
 
-    <ul
-      class="mt-16 md:mt-20 grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12"
-      role="list"
-    >
-      {
-        homeBeforeAfter.map((c) => (
-          <li class="ba-reveal">
-            <a
-              href={`/projects/${c.slug}`}
-              class="ba-card group block h-full"
-              aria-label={`${c.brand} — ${c.tagline}`}
-            >
-              <div class="grid grid-cols-2 gap-2 md:gap-3">
-                <figure class="ba-half ba-before">
-                  <div class="ba-media">
-                    <Image
-                      src={c.before}
-                      alt={c.beforeAlt}
-                      widths={[320, 480, 640]}
-                      sizes="(min-width: 1024px) 280px, 50vw"
-                      loading="lazy"
-                      decoding="async"
-                      class="ba-img"
-                    />
-                    <span class="ba-tag ba-tag-before">Before</span>
-                  </div>
-                </figure>
-                <figure class="ba-half ba-after">
-                  <div class="ba-media">
-                    <Image
-                      src={c.after}
-                      alt={c.afterAlt}
-                      widths={[320, 480, 640]}
-                      sizes="(min-width: 1024px) 280px, 50vw"
-                      loading="lazy"
-                      decoding="async"
-                      class="ba-img"
-                    />
-                    <span class="ba-tag ba-tag-after">After</span>
-                  </div>
-                </figure>
-              </div>
+    {
+      items.map((it, i) => (
+        <div
+          class="ba-marker"
+          data-idx={i}
+          data-impact={it.impact}
+          data-slug={it.slug}
+          style={`top: calc(${i} * ${panelVh}vh + 40vh)`}
+        />
+      ))
+    }
+  </div>
 
-              <div class="mt-5">
-                <p class="text-[0.7rem] tracking-[0.18em] font-mono uppercase text-[color:var(--color-muted)]">
-                  {c.brand}
-                </p>
-                <h3 class="ba-title mt-2 text-[1.125rem] md:text-[1.25rem] leading-[1.3] font-semibold text-[color:var(--color-ink)]">
-                  {c.tagline}
-                </h3>
-                <p class="mt-2 text-[0.9rem] font-semibold text-[color:var(--color-ink)]">
-                  {c.impact}
-                </p>
+  <div class="ba-mobile" aria-hidden="true">
+    <ol class="ba-m-track">
+      {
+        items.map((it) => (
+          <li class="ba-m-card" data-before-caption={it.duringCaption} data-after-caption={it.nowCaption}>
+            <div class="ba-m-stack" data-state="before">
+              <a href={`/projects/${it.slug}`} class="ba-m-link">
+                <Image
+                  src={it.before}
+                  alt={it.beforeAlt}
+                  widths={[480, 720, 960]}
+                  sizes="85vw"
+                  loading="lazy"
+                  decoding="async"
+                  class="ba-m-img ba-m-img-before"
+                />
+                <Image
+                  src={it.after}
+                  alt={it.afterAlt}
+                  widths={[480, 720, 960]}
+                  sizes="85vw"
+                  loading="lazy"
+                  decoding="async"
+                  class="ba-m-img ba-m-img-after"
+                />
+              </a>
+              <div class="ba-m-overlay">
+                <h3 class="ba-m-brand">{it.brand}</h3>
+                <p class="ba-m-caption" data-m-caption>{it.duringCaption}</p>
               </div>
-            </a>
+            </div>
+            <div class="ba-m-toggle" role="tablist">
+              <button
+                type="button"
+                class="ba-m-toggle-btn is-active"
+                data-m-state="before"
+                role="tab"
+              >
+                Before Comandos
+              </button>
+              <button
+                type="button"
+                class="ba-m-toggle-btn"
+                data-m-state="after"
+                role="tab"
+              >
+                Now
+              </button>
+            </div>
           </li>
         ))
       }
-    </ul>
+    </ol>
+  </div>
 
-    <div class="ba-reveal mt-20 md:mt-24 flex justify-center">
-      <a href="/projects" class="btn-outline">
-        See all case studies
-        <ArrowIcon />
-      </a>
-    </div>
+  <div class="container-page mt-20 md:mt-0 ba-outlink">
+    <a href="/projects" class="btn-outline">
+      See all case studies
+      <ArrowIcon />
+    </a>
   </div>
 </section>
 
 <style>
-  .ba-card {
-    color: inherit;
+  .ba-section {
+    background: var(--color-paper-soft);
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+
+  .ba-intro {
+    max-width: 1200px;
+  }
+
+  /* ————— Desktop scroll showcase ————— */
+  .ba-scroll {
+    position: relative;
+    /* Section height = scroll distance + 1 viewport for the sticky finale.
+       Scroll distance = N panels × panel-vh, so each project occupies
+       panel-vh of scroll. */
+    height: calc(var(--panels) * var(--panel-vh) + 100vh);
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .ba-scroll {
+      display: block;
+    }
+    .ba-mobile {
+      display: none;
+    }
+  }
+
+  .ba-sticky {
+    position: sticky;
+    top: 80px; /* sits below the sticky header */
+    height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+  }
+
+  .ba-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr;
+    gap: 3rem;
+    align-items: start;
+    padding-block: 2rem;
+  }
+
+  .ba-col {
+    position: relative;
+  }
+  .ba-col-before,
+  .ba-col-after {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .ba-col-before {
+    align-items: flex-start;
+  }
+  .ba-col-after {
+    align-items: flex-end;
+  }
+  .ba-col-before > .ba-label,
+  .ba-col-before > .ba-stack,
+  .ba-col-after > .ba-label,
+  .ba-col-after > .ba-stack {
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .ba-label {
+    display: block;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1rem;
+    color: color-mix(in srgb, var(--color-ink) 70%, transparent);
+    letter-spacing: 0.01em;
+    text-align: center;
+  }
+
+  .ba-stack {
+    position: relative;
+    aspect-ratio: 3 / 4;
+  }
+  .ba-pic {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    transition: opacity 0.4s linear;
+    will-change: opacity;
+  }
+  .ba-pic.is-active {
+    opacity: 1;
   }
   .ba-media {
     position: relative;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
-    aspect-ratio: 4 / 3;
     background: var(--color-paper);
-    border-radius: 2px;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 16px 40px rgba(0, 0, 0, 0.08);
   }
   .ba-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .ba-card:hover .ba-img,
-  .ba-card:focus-visible .ba-img {
-    transform: scale(1.04);
+  .ba-caption {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--color-ink) 65%, transparent);
+  }
+  .ba-col-after .ba-caption {
+    text-align: right;
   }
 
-  .ba-tag {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-family: var(--font-sans);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    padding: 0.25rem 0.55rem;
-    border-radius: 999px;
+  .ba-col-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  .ba-name-link {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+    padding: 0 0.5rem;
+  }
+  .ba-pic {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .ba-names-window {
+    --slot: 90px;
+    --window: 520px;
+    height: var(--window);
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    /* Active sits at the vertical centre (aligned with the image centres);
+       past names cascade above and future names cascade below, both fade. */
+    mask-image: linear-gradient(
+      180deg,
+      transparent 0,
+      black 18%,
+      black 82%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      180deg,
+      transparent 0,
+      black 18%,
+      black 82%,
+      transparent 100%
+    );
+  }
+  .ba-names {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateY(0);
+    will-change: transform;
+  }
+  .ba-name {
+    flex: 0 0 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-weight: 400;
     line-height: 1;
+    font-size: 1.625rem;
+    color: color-mix(in srgb, var(--color-ink) 22%, transparent);
+    transition:
+      color 0.35s linear,
+      font-size 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      font-style 0.35s linear;
+    white-space: nowrap;
+    text-align: center;
   }
-  .ba-tag-before {
-    background: color-mix(in srgb, var(--color-ink) 92%, transparent);
-    color: var(--color-paper);
-  }
-  .ba-tag-after {
-    background: var(--color-accent-mint);
+  .ba-name.is-active {
+    font-size: clamp(3.5rem, 5.5vw, 5rem);
+    font-style: italic;
     color: var(--color-ink);
   }
-
-  .ba-title {
-    transition: opacity 0.2s ease;
-  }
-  .ba-card:hover .ba-title {
-    opacity: 0.7;
-  }
-  .ba-card:focus-visible {
-    outline: 2px solid var(--color-ink);
-    outline-offset: 6px;
-    border-radius: 4px;
+  /* Longer brand names (e.g., "mipOS Dark Kitchen", "RebajaTusCuentas",
+     "Yaydoo Design System") break onto two lines at a smaller size so the
+     active slot height stays intact. */
+  .ba-name.is-active[data-long="true"] {
+    font-size: clamp(2.25rem, 3vw, 2.75rem);
+    line-height: 1.02;
+    white-space: normal;
+    max-width: 14ch;
   }
 
-  .ba-reveal {
-    opacity: 0;
-    transform: translateY(18px);
-    transition:
-      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  .ba-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
   }
-  .ba-reveal[data-in-view="true"] {
+  .ba-meta-impact {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+  .ba-meta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: none;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--color-ink) 35%, transparent);
+    padding-bottom: 2px;
+  }
+  .ba-meta-link:hover {
+    border-bottom-color: var(--color-ink);
+  }
+
+  .ba-marker {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    pointer-events: none;
+  }
+
+  .ba-outlink {
+    display: flex;
+    justify-content: center;
+    margin-top: 4rem;
+  }
+
+  /* ————— Mobile swiper — YC-style horizontal carousel ————— */
+  .ba-mobile {
+    padding-block: 2rem;
+  }
+  .ba-m-track {
+    list-style: none;
+    margin: 0;
+    padding: 0 5vw;
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .ba-m-track::-webkit-scrollbar {
+    display: none;
+  }
+  .ba-m-card {
+    flex: 0 0 85vw;
+    max-width: 440px;
+    scroll-snap-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .ba-m-stack {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--color-paper);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 16px 40px rgba(0, 0, 0, 0.1);
+  }
+  .ba-m-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .ba-m-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.35s linear;
+  }
+  .ba-m-img-before {
     opacity: 1;
-    transform: translateY(0);
+  }
+  .ba-m-img-after {
+    opacity: 0;
+  }
+  .ba-m-stack[data-state="after"] .ba-m-img-before {
+    opacity: 0;
+  }
+  .ba-m-stack[data-state="after"] .ba-m-img-after {
+    opacity: 1;
+  }
+
+  .ba-m-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 2rem 1.25rem 1.25rem;
+    background: linear-gradient(
+      180deg,
+      transparent 0,
+      rgba(0, 0, 0, 0.15) 40%,
+      rgba(0, 0, 0, 0.7) 100%
+    );
+    color: var(--color-paper);
+    pointer-events: none;
+  }
+  .ba-m-brand {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    margin: 0;
+    font-weight: 400;
+  }
+  .ba-m-caption {
+    margin-top: 0.5rem;
+    font-size: 0.9375rem;
+    line-height: 1.35;
+    color: color-mix(in srgb, var(--color-paper) 90%, transparent);
+  }
+
+  .ba-m-toggle {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.25rem;
+    background: color-mix(in srgb, var(--color-ink) 6%, transparent);
+    border-radius: 999px;
+  }
+  .ba-m-toggle-btn {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+  .ba-m-toggle-btn.is-active {
+    background: var(--color-ink);
+    color: var(--color-paper);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ba-img,
-    .ba-title {
-      transition: none;
-    }
-    .ba-reveal {
-      opacity: 1;
-      transform: none;
+    .ba-pic,
+    .ba-names,
+    .ba-name {
       transition: none;
     }
   }
 </style>
 
 <script>
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const targets = document.querySelectorAll<HTMLElement>(
-    "#before-after .ba-reveal",
-  );
+  const scope = document.querySelector<HTMLElement>("[data-ba-scroll]");
+  const namesEl = document.querySelector<HTMLElement>("[data-ba-names]");
 
-  if (reduce) {
-    targets.forEach((el) => el.setAttribute("data-in-view", "true"));
-  } else if ("IntersectionObserver" in window) {
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.setAttribute("data-in-view", "true");
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+  if (scope && namesEl) {
+    const picsBefore = scope.querySelectorAll<HTMLElement>(
+      ".ba-col-before .ba-pic",
     );
-    targets.forEach((el) => io.observe(el));
-  } else {
-    targets.forEach((el) => el.setAttribute("data-in-view", "true"));
+    const picsAfter = scope.querySelectorAll<HTMLElement>(
+      ".ba-col-after .ba-pic",
+    );
+    const names = scope.querySelectorAll<HTMLElement>(".ba-name");
+    const total = names.length;
+
+    // Must match CSS --slot + --window
+    const SLOT = 90;
+    const WINDOW = 520;
+
+    let currentIdx = -1;
+
+    const applyClasses = (next: number) => {
+      if (next === currentIdx) return;
+      currentIdx = next;
+      for (let i = 0; i < total; i++) {
+        picsBefore[i]?.classList.toggle("is-active", i === next);
+        picsAfter[i]?.classList.toggle("is-active", i === next);
+        names[i]?.classList.toggle("is-active", i === next);
+      }
+    };
+
+    // Continuous translate — keeps names list 1:1 with scroll so there's
+    // no CSS-transition lag between the active name and the is-active
+    // image/caption. The active sits at the vertical centre of the window
+    // (aligned with the centre of the two images).
+    const applyTranslate = (progress: number) => {
+      const start = WINDOW / 2 - SLOT / 2; // idx 0 centred
+      const end = start - (total - 1) * SLOT; // last idx centred
+      const ty = start + (end - start) * progress;
+      namesEl.style.transform = `translateY(${ty}px)`;
+    };
+
+    let rafId = 0;
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const rect = scope.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const range = scope.offsetHeight - vh;
+        if (range <= 0) {
+          applyTranslate(0);
+          applyClasses(0);
+          return;
+        }
+        const scrolled = Math.max(0, Math.min(range, -rect.top));
+        const t = scrolled / range;
+        applyTranslate(t);
+
+        // Snap classes to the nearest project — the one whose slot centre
+        // is closest to the window centre.
+        const idx = Math.max(
+          0,
+          Math.min(total - 1, Math.round(t * (total - 1))),
+        );
+        applyClasses(idx);
+      });
+    };
+
+    applyClasses(0);
+    applyTranslate(0);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    onScroll();
   }
+
+  // Mobile before/after toggle per card
+  document.querySelectorAll<HTMLElement>(".ba-m-card").forEach((card) => {
+    const stack = card.querySelector<HTMLElement>(".ba-m-stack");
+    const captionEl = card.querySelector<HTMLElement>("[data-m-caption]");
+    const before = card.dataset.beforeCaption ?? "";
+    const after = card.dataset.afterCaption ?? "";
+    const btns = card.querySelectorAll<HTMLButtonElement>(".ba-m-toggle-btn");
+    btns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const state = btn.dataset.mState;
+        if (!state || !stack || !captionEl) return;
+        stack.dataset.state = state;
+        captionEl.textContent = state === "before" ? before : after;
+        btns.forEach((b) =>
+          b.classList.toggle("is-active", b.dataset.mState === state),
+        );
+      });
+    });
+  });
 </script>

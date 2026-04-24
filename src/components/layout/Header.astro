@@ -35,7 +35,6 @@ const menuItems = [
       >
         <span class="menu-btn-bar"></span>
         <span class="menu-btn-bar"></span>
-        <span class="menu-btn-bar"></span>
       </button>
     </div>
   </div>
@@ -79,9 +78,15 @@ const menuItems = [
     position: sticky;
     top: 0;
     z-index: 40;
+    background-color: transparent;
+    transition:
+      background-color 0.2s ease,
+      backdrop-filter 0.2s ease;
+  }
+  .site-header.is-scrolled {
     background-color: color-mix(in srgb, var(--color-paper) 85%, transparent);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    backdrop-filter: blur(14px) saturate(1.1);
   }
   @media (max-width: 767px) {
     .site-header {
@@ -113,14 +118,10 @@ const menuItems = [
       width 0.25s ease;
   }
   .menu-btn[aria-expanded="true"] .menu-btn-bar:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
+    transform: translateY(3.5px) rotate(45deg);
   }
   .menu-btn[aria-expanded="true"] .menu-btn-bar:nth-child(2) {
-    opacity: 0;
-    width: 0;
-  }
-  .menu-btn[aria-expanded="true"] .menu-btn-bar:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
+    transform: translateY(-3.5px) rotate(-45deg);
   }
 
   .menu-panel {
@@ -180,6 +181,19 @@ const menuItems = [
 </style>
 
 <script>
+  // Toggle solid paper background once the user scrolls past the hero —
+  // transparent at the top so the hero's cream bg shows through, tinted
+  // paper after so content sliding underneath stays readable.
+  const header = document.querySelector<HTMLElement>(".site-header");
+  if (header) {
+    const onScroll = () => {
+      if (window.scrollY > 32) header.classList.add("is-scrolled");
+      else header.classList.remove("is-scrolled");
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
   const toggle = document.getElementById("menuToggle");
   const panel = document.getElementById("primaryMenu");
   if (toggle && panel) {
