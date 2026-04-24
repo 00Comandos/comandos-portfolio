@@ -155,9 +155,9 @@ export const homeBeforeAfter: readonly BeforeAfterCase[] = [
     before: YDS("yaydoo-design-system-before-comandos.png"),
     beforeAlt:
       "Yaydoo brand audit pre-Grill Design System — eight inconsistent logo variations shipping in the wild across the Mexican B2B SMB portfolio: two different Yaydoo wordmarks, two PorCobrar lockups (blue chip + standalone P-icon), a purple-block Vendorplace icon alongside a cyan Vendorplace wordmark, and two YAYDOO all-caps treatments with mismatched lotus / navy-dotted icons — the brand chaos the Comandos Grill Design System rewrite was built to consolidate",
-    after: YDS("GrillDesignSystem-Yaydoo-comandos-project.png"),
+    after: YDS("yaydoo-design-system-after-comandos.png"),
     afterAlt:
-      "Grill Design System for Yaydoo — unified tokens, components and brand applications across porCobrar, Vendorplace, Fcard and YAYDOO, the Comandos rewrite that locked Yaydoo into Series B and the Paystand acquisition",
+      "Grill Design System for Yaydoo shipped across product surfaces — a mint Ready! payment-reminder success toast, a customer search with Café Latte / Deli Café / Cafe Los Alamos results and avatar chips, a payment Step 02 badge, and a role-picker with Administrator vs Operator permissions explained inline, all running off the unified tokens and components the Comandos rewrite locked in before Yaydoo's Series B and the Paystand acquisition",
     duringCaption:
       "Eight inconsistent logos across seven products.",
     nowCaption:
