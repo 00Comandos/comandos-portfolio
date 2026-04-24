@@ -158,25 +158,29 @@ const panelVh = 55;
               <div class="ba-m-overlay">
                 <h3 class="ba-m-brand">{it.brand}</h3>
                 <p class="ba-m-caption" data-m-caption>{it.duringCaption}</p>
+                <div class="ba-m-toggle" role="tablist">
+                  <button
+                    type="button"
+                    class="ba-m-toggle-btn is-active"
+                    data-m-state="before"
+                    role="tab"
+                    aria-label="Show Before Comandos"
+                  >
+                    <span>Before</span>
+                    <span class="ba-m-toggle-line" aria-hidden="true"></span>
+                  </button>
+                  <button
+                    type="button"
+                    class="ba-m-toggle-btn"
+                    data-m-state="after"
+                    role="tab"
+                    aria-label="Show Now"
+                  >
+                    <span class="ba-m-toggle-line" aria-hidden="true"></span>
+                    <span>Now</span>
+                  </button>
+                </div>
               </div>
-            </div>
-            <div class="ba-m-toggle" role="tablist">
-              <button
-                type="button"
-                class="ba-m-toggle-btn is-active"
-                data-m-state="before"
-                role="tab"
-              >
-                Before Comandos
-              </button>
-              <button
-                type="button"
-                class="ba-m-toggle-btn"
-                data-m-state="after"
-                role="tab"
-              >
-                Now
-              </button>
             </div>
           </li>
         ))
@@ -507,56 +511,73 @@ const panelVh = 55;
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 2rem 1.25rem 1.25rem;
+    padding: 3rem 1.25rem 1.25rem;
     background: linear-gradient(
       180deg,
       transparent 0,
-      rgba(0, 0, 0, 0.15) 40%,
-      rgba(0, 0, 0, 0.7) 100%
+      rgba(0, 0, 0, 0.2) 35%,
+      rgba(0, 0, 0, 0.75) 100%
     );
     color: var(--color-paper);
     pointer-events: none;
   }
   .ba-m-brand {
     font-family: var(--font-serif);
-    font-size: 1.5rem;
-    line-height: 1.1;
+    font-size: 2rem;
+    line-height: 1.05;
     margin: 0;
     font-weight: 400;
+    letter-spacing: -0.01em;
   }
   .ba-m-caption {
     margin-top: 0.5rem;
     font-size: 0.9375rem;
     line-height: 1.35;
-    color: color-mix(in srgb, var(--color-paper) 90%, transparent);
+    color: color-mix(in srgb, var(--color-paper) 92%, transparent);
   }
 
+  /* Thin-line YC-style toggle inside the card overlay */
   .ba-m-toggle {
     display: flex;
-    gap: 0.5rem;
-    padding: 0.25rem;
-    background: color-mix(in srgb, var(--color-ink) 6%, transparent);
-    border-radius: 999px;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    pointer-events: auto;
   }
   .ba-m-toggle-btn {
     flex: 1;
-    padding: 0.5rem 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.25rem 0;
     background: transparent;
     border: 0;
-    border-radius: 999px;
+    color: color-mix(in srgb, var(--color-paper) 60%, transparent);
     font-family: var(--font-sans);
     font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.02em;
-    color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+    letter-spacing: 0.04em;
     cursor: pointer;
-    transition:
-      background 0.2s ease,
-      color 0.2s ease;
+    transition: color 0.25s ease;
+  }
+  .ba-m-toggle-btn:first-child {
+    justify-content: flex-start;
+  }
+  .ba-m-toggle-btn:last-child {
+    justify-content: flex-end;
   }
   .ba-m-toggle-btn.is-active {
-    background: var(--color-ink);
     color: var(--color-paper);
+  }
+  .ba-m-toggle-line {
+    flex: 1;
+    height: 1.5px;
+    background: color-mix(in srgb, var(--color-paper) 25%, transparent);
+    border-radius: 2px;
+    transition: background 0.25s ease;
+  }
+  .ba-m-toggle-btn.is-active .ba-m-toggle-line {
+    background: var(--color-paper);
   }
 
   @media (prefers-reduced-motion: reduce) {
