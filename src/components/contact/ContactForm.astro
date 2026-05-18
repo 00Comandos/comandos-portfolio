@@ -6,9 +6,11 @@ const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 const status = new URL(Astro.request.url).searchParams.get("status");
 
 const fieldClass =
-  "w-full rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-paper)] px-4 py-3 text-[0.95rem] focus:border-[color:var(--color-ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ink)]/15 transition-colors";
+  "w-full rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-paper)] px-4 py-3 text-[0.95rem] focus:border-[color:var(--color-ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ink)]/15 transition-colors data-[invalid]:border-red-400 data-[invalid]:focus:ring-red-200";
 const labelClass =
   "block text-xs font-semibold tracking-[0.12em] uppercase text-[color:var(--color-muted)]";
+const errorClass =
+  "hidden text-xs text-red-700 mt-0.5 leading-snug";
 ---
 
 {
@@ -52,8 +54,11 @@ const labelClass =
       type="text"
       required
       minlength="2"
+      maxlength="120"
       autocomplete="name"
+      aria-describedby="name-error"
     />
+    <span id="name-error" data-error class={errorClass} />
   </div>
 
   <div class="grid gap-1.5">
@@ -64,8 +69,11 @@ const labelClass =
       name="email"
       type="email"
       required
+      maxlength="200"
       autocomplete="email"
+      aria-describedby="email-error"
     />
+    <span id="email-error" data-error class={errorClass} />
   </div>
 
   <div class="grid gap-1.5">
@@ -75,24 +83,39 @@ const labelClass =
       id="company"
       name="company"
       type="text"
+      maxlength="200"
       autocomplete="organization"
     />
   </div>
 
   <div class="grid gap-1.5">
     <label class={labelClass} for="projectType">Project type</label>
-    <select class={fieldClass} id="projectType" name="projectType" required>
+    <select
+      class={fieldClass}
+      id="projectType"
+      name="projectType"
+      required
+      aria-describedby="projectType-error"
+    >
       <option value="">Choose one…</option>
       {PROJECT_TYPES.map((t) => <option value={t}>{t}</option>)}
     </select>
+    <span id="projectType-error" data-error class={errorClass} />
   </div>
 
   <div class="grid gap-1.5">
     <label class={labelClass} for="referralSource">How did you hear about us?</label>
-    <select class={fieldClass} id="referralSource" name="referralSource" required>
+    <select
+      class={fieldClass}
+      id="referralSource"
+      name="referralSource"
+      required
+      aria-describedby="referralSource-error"
+    >
       <option value="">Choose one…</option>
       {REFERRAL_SOURCES.map((s) => <option value={s}>{s}</option>)}
     </select>
+    <span id="referralSource-error" data-error class={errorClass} />
   </div>
 
   <div class="grid gap-1.5">
@@ -104,7 +127,9 @@ const labelClass =
       required
       minlength="10"
       maxlength="4000"
+      aria-describedby="message-error"
     />
+    <span id="message-error" data-error class={errorClass} />
   </div>
 
   <div aria-hidden="true" class="hidden">
@@ -127,8 +152,106 @@ const labelClass =
     )
   }
 
-  <button type="submit" class="btn-primary justify-center w-fit">
+  <button
+    type="submit"
+    class="btn-primary justify-center w-fit disabled:opacity-50 disabled:cursor-not-allowed"
+    data-submit
+  >
     Send message
     <ArrowIcon />
   </button>
 </form>
+
+<script>
+  type FieldEl = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+
+  function messageFor(field: FieldEl): string {
+    const v = field.validity;
+    if (v.valueMissing) return "This field is required.";
+    if (v.typeMismatch && field.type === "email")
+      return "Enter a valid email address.";
+    if (v.tooShort)
+      return `Please enter at least ${field.minLength} characters (you have ${field.value.trim().length}).`;
+    if (v.tooLong)
+      return `Please keep it under ${field.maxLength} characters.`;
+    if (v.patternMismatch) return "Please match the requested format.";
+    return "Please review this field.";
+  }
+
+  function setError(field: FieldEl, msg: string | null) {
+    const describedBy = field.getAttribute("aria-describedby");
+    const errEl = describedBy
+      ? document.getElementById(describedBy)
+      : null;
+    if (msg) {
+      field.dataset.invalid = "true";
+      field.setAttribute("aria-invalid", "true");
+      if (errEl) {
+        errEl.textContent = msg;
+        errEl.classList.remove("hidden");
+      }
+    } else {
+      delete field.dataset.invalid;
+      field.removeAttribute("aria-invalid");
+      if (errEl) {
+        errEl.textContent = "";
+        errEl.classList.add("hidden");
+      }
+    }
+  }
+
+  function init() {
+    const form = document.querySelector<HTMLFormElement>(
+      'form[action="/api/contact"]',
+    );
+    if (!form) return;
+
+    const submitBtn = form.querySelector<HTMLButtonElement>("[data-submit]");
+    if (!submitBtn) return;
+
+    const fields = Array.from(
+      form.querySelectorAll<FieldEl>(
+        "input[required], select[required], textarea[required]",
+      ),
+    );
+
+    function refreshSubmitState() {
+      const allValid = fields.every((f) => f.validity.valid);
+      submitBtn!.disabled = !allValid;
+    }
+
+    fields.forEach((field) => {
+      field.addEventListener("blur", () => {
+        field.dataset.touched = "true";
+        setError(field, field.validity.valid ? null : messageFor(field));
+      });
+      field.addEventListener("input", () => {
+        if (field.dataset.touched === "true") {
+          setError(field, field.validity.valid ? null : messageFor(field));
+        }
+        refreshSubmitState();
+      });
+      field.addEventListener("change", refreshSubmitState);
+    });
+
+    form.addEventListener("submit", (e) => {
+      const firstInvalid = fields.find((f) => !f.validity.valid);
+      if (firstInvalid) {
+        e.preventDefault();
+        fields.forEach((f) => {
+          f.dataset.touched = "true";
+          setError(f, f.validity.valid ? null : messageFor(f));
+        });
+        firstInvalid.focus();
+      }
+    });
+
+    refreshSubmitState();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+</script>

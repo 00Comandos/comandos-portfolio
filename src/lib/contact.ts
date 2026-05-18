@@ -84,22 +84,57 @@ export async function sendContactEmail(input: ContactInput): Promise<void> {
   const { Resend } = await import("resend");
   const resend = new Resend(apiKey);
 
-  const subject = `New inquiry — ${input.projectType} — ${input.name}`;
+  const subject = `New lead — ${input.projectType} — ${input.name}`;
   const escape = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+  const rows: Array<[string, string]> = [
+    ["Name", escape(input.name)],
+    ["Email", `<a href="mailto:${escape(input.email)}" style="color:#0b0b0b">${escape(input.email)}</a>`],
+    ["Company", escape(input.company || "—")],
+    ["Project type", escape(input.projectType)],
+    ["Heard via", escape(input.referralSource)],
+    ["Message", escape(input.message)],
+  ];
+
+  const rowHtml = rows
+    .map(
+      ([label, value], i) => `
+      <tr>
+        <td style="padding:14px 16px;width:140px;color:#666;font-weight:600;border-bottom:${
+          i === rows.length - 1 ? "none" : "1px solid #ececec"
+        };vertical-align:top;background:#fafafa">${label}</td>
+        <td style="padding:14px 16px;border-bottom:${
+          i === rows.length - 1 ? "none" : "1px solid #ececec"
+        };white-space:pre-wrap;line-height:1.55">${value}</td>
+      </tr>`,
+    )
+    .join("");
+
   const html = `
-    <h2 style="font-family:Inter,sans-serif;margin:0 0 12px">New contact form submission</h2>
-    <table style="font-family:Inter,sans-serif;font-size:14px;border-collapse:collapse">
-      <tr><td style="padding:6px 12px 6px 0;color:#666">Name</td><td>${escape(input.name)}</td></tr>
-      <tr><td style="padding:6px 12px 6px 0;color:#666">Email</td><td><a href="mailto:${escape(input.email)}">${escape(input.email)}</a></td></tr>
-      <tr><td style="padding:6px 12px 6px 0;color:#666">Company</td><td>${escape(input.company || "—")}</td></tr>
-      <tr><td style="padding:6px 12px 6px 0;color:#666">Project type</td><td>${escape(input.projectType)}</td></tr>
-      <tr><td style="padding:6px 12px 6px 0;color:#666">Heard via</td><td>${escape(input.referralSource)}</td></tr>
-    </table>
-    <h3 style="font-family:Inter,sans-serif;margin:20px 0 6px">Message</h3>
-    <p style="font-family:Inter,sans-serif;font-size:14px;line-height:1.55;white-space:pre-wrap">${escape(input.message)}</p>
-  `.trim();
+<!DOCTYPE html>
+<html><body style="margin:0;padding:32px 16px;background:#f4f4f4;font-family:Inter,Helvetica,Arial,sans-serif">
+  <table role="presentation" style="width:100%;max-width:600px;margin:0 auto;border-collapse:collapse;background:#ffffff;border:1px solid #ececec;border-radius:8px;overflow:hidden">
+    <tr>
+      <td style="padding:24px;background:#0b0b0b;color:#ffffff">
+        <h1 style="margin:0;font-size:18px;font-weight:600;letter-spacing:-0.01em">New lead — Comandos Studio</h1>
+        <p style="margin:4px 0 0;font-size:13px;color:#bdbdbd">Inbound from comandos.me/contact</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:0">
+        <table role="presentation" style="width:100%;border-collapse:collapse;font-size:14px;color:#0b0b0b">
+          ${rowHtml}
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:16px 24px;background:#fafafa;border-top:1px solid #ececec;font-size:12px;color:#666">
+        Reply directly to this email to respond to <strong>${escape(input.name)}</strong>.
+      </td>
+    </tr>
+  </table>
+</body></html>`.trim();
 
   const { error } = await resend.emails.send({
     from,
