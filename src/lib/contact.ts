@@ -27,7 +27,7 @@ export const REFERRAL_SOURCES = [
 export const contactSchema = z.object({
   name: z.string().trim().min(2, "Please share your name.").max(120),
   email: z.email("Enter a valid email.").trim().toLowerCase(),
-  company: z.string().trim().max(200).optional().default(""),
+  company: z.string().trim().min(2, "Please share your company.").max(200),
   projectType: z.enum(PROJECT_TYPES, { message: "Select a project type." }),
   referralSource: z
     .enum(REFERRAL_SOURCES, { message: "Let us know how you found us." }),
@@ -91,7 +91,7 @@ export async function sendContactEmail(input: ContactInput): Promise<void> {
   const rows: Array<[string, string]> = [
     ["Name", escape(input.name)],
     ["Email", `<a href="mailto:${escape(input.email)}" style="color:#0b0b0b">${escape(input.email)}</a>`],
-    ["Company", escape(input.company || "—")],
+    ["Company", escape(input.company)],
     ["Project type", escape(input.projectType)],
     ["Heard via", escape(input.referralSource)],
     ["Message", escape(input.message)],

@@ -77,15 +77,19 @@ const errorClass =
   </div>
 
   <div class="grid gap-1.5">
-    <label class={labelClass} for="company">Company (optional)</label>
+    <label class={labelClass} for="company">Company</label>
     <input
       class={fieldClass}
       id="company"
       name="company"
       type="text"
+      required
+      minlength="2"
       maxlength="200"
       autocomplete="organization"
+      aria-describedby="company-error"
     />
+    <span id="company-error" data-error class={errorClass} />
   </div>
 
   <div class="grid gap-1.5">
