@@ -1,4 +1,5 @@
 ---
+import { getImage } from "astro:assets";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import ProjectCard from "~/components/projects/ProjectCard.astro";
 import { projects } from "~/data/projects";
@@ -8,25 +9,48 @@ export const prerender = true;
 
 const sorted = [...projects].sort((a, b) => a.order - b.order);
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: "Projects — Comandos",
-  url: `${site.url}/projects`,
-  description:
-    "Selected product design case studies by Comandos across FinTech, SaaS, IoT, and FoodTech.",
-  hasPart: sorted.map((p) => ({
-    "@type": "CreativeWork",
-    name: p.title,
-    url: `${site.url}/projects/${p.slug}`,
-    about: p.brand,
-  })),
-};
+const ogVariant = await getImage({
+  src: sorted[0].image,
+  width: 1200,
+  format: "webp",
+});
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Projects — Comandos",
+    url: `${site.url}/projects`,
+    description:
+      "Selected product design case studies by Comandos across FinTech, SaaS, IoT, and FoodTech.",
+    hasPart: sorted.map((p) => ({
+      "@type": "CreativeWork",
+      name: p.title,
+      url: `${site.url}/projects/${p.slug}`,
+      about: p.brand,
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Projects",
+        item: `${site.url}/projects`,
+      },
+    ],
+  },
+];
 ---
 
 <BaseLayout
   title="Projects"
   description="Selected product design case studies by Comandos: FinTech, SaaS, IoT, and FoodTech. Real outcomes, real metrics."
+  image={ogVariant.src}
+  imageAlt={`${sorted[0].brand} — ${sorted[0].title}. Featured product design case study by Carlos Comandos.`}
   jsonLd={jsonLd}
 >
   <section class="container-page pt-12 md:pt-20 pb-20">

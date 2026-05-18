@@ -39,6 +39,12 @@ const listItems = await Promise.all(
   }),
 );
 
+const homeOg = await getImage({
+  src: homeBeforeAfter[0].after,
+  width: 1200,
+  format: "webp",
+});
+
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -108,6 +114,8 @@ const jsonLd = [
 <BaseLayout
   title="World-Class Product Design, Backed By Data"
   description={site.description}
+  image={homeOg.src}
+  imageAlt={`${homeBeforeAfter[0].brand} — ${homeBeforeAfter[0].tagline}. Product design case study by Carlos Comandos.`}
   jsonLd={jsonLd}
 >
   <Hero />

@@ -10,11 +10,27 @@ export const PROJECT_TYPES = [
   "Other",
 ] as const;
 
+export const REFERRAL_SOURCES = [
+  "Google search",
+  "ChatGPT",
+  "Claude",
+  "Perplexity",
+  "Gemini",
+  "LinkedIn",
+  "X / Twitter",
+  "Referral / Word of mouth",
+  "Conference or event",
+  "Read a case study",
+  "Other",
+] as const;
+
 export const contactSchema = z.object({
   name: z.string().trim().min(2, "Please share your name.").max(120),
   email: z.email("Enter a valid email.").trim().toLowerCase(),
   company: z.string().trim().max(200).optional().default(""),
   projectType: z.enum(PROJECT_TYPES, { message: "Select a project type." }),
+  referralSource: z
+    .enum(REFERRAL_SOURCES, { message: "Let us know how you found us." }),
   message: z
     .string()
     .trim()
@@ -31,7 +47,7 @@ export async function verifyTurnstile(
   ip: string | null,
 ): Promise<boolean> {
   const secret = import.meta.env.TURNSTILE_SECRET_KEY;
-  if (!secret) return true; // Turnstile not configured — skip (dev).
+  if (!secret) return !import.meta.env.PROD;
   if (!token) return false;
 
   const body = new FormData();
@@ -79,6 +95,7 @@ export async function sendContactEmail(input: ContactInput): Promise<void> {
       <tr><td style="padding:6px 12px 6px 0;color:#666">Email</td><td><a href="mailto:${escape(input.email)}">${escape(input.email)}</a></td></tr>
       <tr><td style="padding:6px 12px 6px 0;color:#666">Company</td><td>${escape(input.company || "—")}</td></tr>
       <tr><td style="padding:6px 12px 6px 0;color:#666">Project type</td><td>${escape(input.projectType)}</td></tr>
+      <tr><td style="padding:6px 12px 6px 0;color:#666">Heard via</td><td>${escape(input.referralSource)}</td></tr>
     </table>
     <h3 style="font-family:Inter,sans-serif;margin:20px 0 6px">Message</h3>
     <p style="font-family:Inter,sans-serif;font-size:14px;line-height:1.55;white-space:pre-wrap">${escape(input.message)}</p>

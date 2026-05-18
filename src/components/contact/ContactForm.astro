@@ -1,10 +1,9 @@
 ---
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
-import { PROJECT_TYPES } from "~/lib/contact";
+import { PROJECT_TYPES, REFERRAL_SOURCES } from "~/lib/contact";
 
 const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 const status = new URL(Astro.request.url).searchParams.get("status");
-const reason = new URL(Astro.request.url).searchParams.get("reason");
 
 const fieldClass =
   "w-full rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-paper)] px-4 py-3 text-[0.95rem] focus:border-[color:var(--color-ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ink)]/15 transition-colors";
@@ -30,9 +29,10 @@ const labelClass =
       class="mb-8 rounded-md border border-red-300 bg-red-50 p-4 text-sm"
     >
       <strong class="block">Something went wrong.</strong>
-      {reason ? <span class="block mt-1 text-red-900">{reason}</span> : null}
-      Please try again, or email us directly at
-      <a class="underline ml-1" href="mailto:c@comandos.me">c@comandos.me</a>.
+      <span class="block mt-1">
+        Please try again in a moment. If it keeps happening, ping us on the
+        social links in the footer and we'll sort it out.
+      </span>
     </div>
   )
 }
@@ -88,6 +88,14 @@ const labelClass =
   </div>
 
   <div class="grid gap-1.5">
+    <label class={labelClass} for="referralSource">How did you hear about us?</label>
+    <select class={fieldClass} id="referralSource" name="referralSource" required>
+      <option value="">Choose one…</option>
+      {REFERRAL_SOURCES.map((s) => <option value={s}>{s}</option>)}
+    </select>
+  </div>
+
+  <div class="grid gap-1.5">
     <label class={labelClass} for="message">Message</label>
     <textarea
       class={`${fieldClass} min-h-[160px] resize-y`}
@@ -123,8 +131,4 @@ const labelClass =
     Send message
     <ArrowIcon />
   </button>
-
-  <p class="text-xs text-[color:var(--color-muted)]">
-    Protected by Cloudflare Turnstile. We'll reply to your email directly.
-  </p>
 </form>

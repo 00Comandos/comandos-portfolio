@@ -3,14 +3,29 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import ContactForm from "~/components/contact/ContactForm.astro";
 import { site } from "~/lib/site";
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ContactPage",
-  name: "Contact — Comandos",
-  url: `${site.url}/contact`,
-  description:
-    "Partner with Comandos on your next FinTech or SaaS product. Tell us about your project.",
-};
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: "Contact — Comandos",
+    url: `${site.url}/contact`,
+    description:
+      "Partner with Comandos on your next FinTech or SaaS product. Tell us about your project.",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Contact",
+        item: `${site.url}/contact`,
+      },
+    ],
+  },
+];
 ---
 
 <BaseLayout
