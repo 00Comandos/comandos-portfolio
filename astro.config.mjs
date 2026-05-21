@@ -7,7 +7,7 @@ import icon from "astro-icon";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  site: "https://comandos.me",
+  site: "https://www.comandos.me",
   output: "server",
   adapter: vercel(),
   integrations: [
@@ -19,10 +19,10 @@ export default defineConfig({
       serialize(item) {
         // Higher priority + daily freshness for the home and the projects
         // index; keep case studies on weekly.
-        if (item.url === "https://comandos.me/") {
+        if (item.url === "https://www.comandos.me/") {
           return { ...item, priority: 1.0, changefreq: "weekly" };
         }
-        if (item.url === "https://comandos.me/projects/") {
+        if (item.url === "https://www.comandos.me/projects/") {
           return { ...item, priority: 0.9, changefreq: "weekly" };
         }
         return item;

@@ -27,5 +27,5 @@ Disallow: /
 User-agent: MJ12bot
 Disallow: /
 
-Sitemap: https://comandos.me/sitemap-index.xml
-Sitemap: https://comandos.me/sitemap-images.xml
+Sitemap: https://www.comandos.me/sitemap-index.xml
+Sitemap: https://www.comandos.me/sitemap-images.xml
