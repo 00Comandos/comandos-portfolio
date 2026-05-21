@@ -19,7 +19,7 @@ export const GET: APIRoute = async () => {
   const entries: string[] = [];
 
   for (const project of projects) {
-    const loc = `${site.url}/projects/${project.slug}`;
+    const loc = `${site.url}/projects/${project.slug}/`;
 
     // Always include the thumbnail/hero image used on the card.
     const thumb = await getImage({
