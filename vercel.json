@@ -3,9 +3,9 @@
   "trailingSlash": true,
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/:path((?!goods/|b/).*)",
       "has": [{ "type": "host", "value": "comandos.me" }],
-      "destination": "https://www.comandos.me/:path*",
+      "destination": "https://www.comandos.me/:path",
       "permanent": true
     }
   ]
