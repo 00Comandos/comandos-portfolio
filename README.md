@@ -108,7 +108,7 @@ public/
 ├── robots.txt
 ├── site.webmanifest
 └── images/                  Logos, avatars, brand artwork
-vercel.json                   trailingSlash + apex → www redirect
+vercel.json                   trailingSlash + apex → www 308 redirect (excludes /goods, /b)
 ```
 
 ---
@@ -148,7 +148,11 @@ Custom utility classes:
 The site is deployed on Vercel via `@astrojs/vercel`. Pushes to `main` auto-deploy to production; every other branch / PR gets a Preview deployment.
 
 1. **GitHub integration**: Vercel project is linked to `00Comandos/comandos-portfolio`. Build is auto-detected (Astro preset).
-2. **Domain**: `www.comandos.me` is set as the primary. Apex `comandos.me` permanently redirects via `vercel.json` (`redirects` with `permanent: true`).
+2. **Domain**: `www.comandos.me` is the primary. The apex `comandos.me` must redirect to www with a **permanent (308)** status — *not* Vercel's default **307 Temporary**, which tells Google to keep the (spam) apex URLs indexed and stalls de-indexing. Under **Settings → Domains → Edit** the apex, pick one:
+   - **(a)** keep *Redirect to Another Domain* but switch the status dropdown to **308 Permanent Redirect**; or
+   - **(b)** choose **Connect to an environment → Production** so `vercel.json` governs (`permanent: true` → 308). Option (b) also lets `/goods/*` and `/b/*` return **410 directly on the apex** (see below) instead of redirecting to www first.
+
+   Don't use *Remove* — that detaches the apex domain and breaks it.
 3. **Trailing slash**: `vercel.json` declares `trailingSlash: true`, so Vercel edge 308-redirects `/path` → `/path/` for every non-API, non-asset URL. Keeps canonical clean.
 4. **Env vars**: configure under **Project → Settings → Environment Variables**. Mark `RESEND_API_KEY` and `TURNSTILE_SECRET_KEY` as **Sensitive**.
 
@@ -162,6 +166,8 @@ npm run preview
 ### Why `/goods/*` and `/b/*` return 410
 
 The previous WordPress site at this domain was compromised before the migration and accumulated ~24K spam affiliate URLs in Google's index. Two Astro catch-all routes (`src/pages/goods/[...slug].ts`, `src/pages/b/[...slug].ts`) respond `HTTP 410 Gone` with `X-Robots-Tag: noindex` so Google deindexes them faster than the default 404.
+
+The indexed spam lives on the **apex** (`comandos.me/goods/...`, `comandos.me/b/...`), so `vercel.json` excludes those two prefixes from the apex→www redirect — they return 410 on the exact URL Google has indexed, instead of redirecting first. Returning 410 *directly* on the apex requires option (b) in Deploy → Domain (apex connected to the deployment); a 308 dashboard redirect also de-indexes the spam, just via apex → 308 → www → 410.
 
 ---
 
