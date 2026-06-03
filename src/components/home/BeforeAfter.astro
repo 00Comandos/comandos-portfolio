@@ -283,11 +283,16 @@ const panelVh = 55;
     inset: 0;
     margin: 0;
     opacity: 0;
+    /* Stacked images overlap; opacity:0 still captures clicks, so the last
+       sibling (RebajaTusCuentas) would intercept every click. Only the
+       visible image is clickable. */
+    pointer-events: none;
     transition: opacity 0.4s linear;
     will-change: opacity;
   }
   .ba-pic.is-active {
     opacity: 1;
+    pointer-events: auto;
   }
   .ba-media {
     position: relative;
