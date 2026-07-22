@@ -9,6 +9,11 @@ const mobileTrack = [...clients, ...clients];
   class="pt-4 pb-14 md:pt-6 md:pb-16 bg-[color:var(--color-paper-soft)]"
 >
   <div class="container-page">
+    <p class="clients-title">
+      Work shipped at Stori, Karta, Truora, Legalario, Yaydoo and more — used
+      by millions across Mexico, Brazil, Colombia, Peru and Puerto Rico.
+    </p>
+
     <ul
       class="clients-desktop hidden md:flex flex-wrap items-center justify-center gap-x-12 md:gap-x-16 gap-y-8"
     >
@@ -66,6 +71,17 @@ const mobileTrack = [...clients, ...clients];
 </section>
 
 <style>
+  .clients-title {
+    margin: 0 auto 3rem;
+    max-width: 54rem;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--color-ink) 60%, transparent);
+  }
+
   .clients-marquee {
     position: relative;
     overflow: hidden;

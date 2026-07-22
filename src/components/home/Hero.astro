@@ -1,37 +1,47 @@
 ---
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+
+// Placeholder stock video (Pexels) until the final unified reel is ready.
+const VIDEO_SRC =
+  "https://videos.pexels.com/video-files/852421/852421-hd_1920_1080_30fps.mp4";
 ---
 
 <section class="hero">
-  <div class="container-page pt-24 md:pt-40 pb-20 md:pb-32">
-    <div class="mx-auto max-w-5xl text-center">
-      <h1 class="hero-headline">
-        We turn product chaos <br class="hidden md:block" />
-        into <em>measurable&nbsp;growth.</em>
-      </h1>
+  <div class="hero-frame">
+    <div class="hero-media">
+      <video
+        class="hero-video"
+        src={VIDEO_SRC}
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        aria-hidden="true"
+      ></video>
+      <div class="hero-overlay" aria-hidden="true"></div>
 
-      <p class="hero-sub">
-        Product design for FinTech and SaaS founders shipping from Mexico City
-        to the world. User research, product strategy, design systems, and
-        growth — backed by data and experimentation.
-      </p>
+      <div class="hero-content">
+        <h1 class="hero-headline">
+          We turn product chaos <br class="hidden md:block" />
+          into <em>measurable&nbsp;growth.</em>
+        </h1>
 
-      <div class="hero-cta">
-        <a href="/contact" class="btn-primary">
-          Start a project
-          <span class="arrow"><ArrowIcon /></span>
-        </a>
-        <a href="#before-after" class="hero-scroll">See the work</a>
+        <p class="hero-sub">
+          Product design for FinTech and SaaS founders shipping from Mexico
+          City to the world. User research, product strategy, design systems,
+          and growth — backed by data and experimentation.
+        </p>
+
+        <div class="hero-cta">
+          <a href="/contact" class="btn-primary">
+            Start a project
+            <span class="arrow"><ArrowIcon /></span>
+          </a>
+          <a href="#before-after" class="hero-scroll">See the work</a>
+        </div>
+
       </div>
-
-      <p class="hero-note">
-        <span>[1]</span>
-        <em>
-          Work shipped at Stori, Karta, Truora, Legalario, Yaydoo and more —
-          used by millions across Mexico, Brazil, Colombia, Peru and Puerto
-          Rico.
-        </em>
-      </p>
     </div>
   </div>
 </section>
@@ -39,33 +49,93 @@ import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 <style>
   .hero {
     background: var(--color-paper-soft);
+  }
+
+  .hero-frame {
+    padding: 0.5rem 0.75rem 0;
+  }
+  @media (min-width: 768px) {
+    .hero-frame {
+      padding: 0 1rem;
+    }
+  }
+
+  /* Reference proportion: card ≈ 74% of the viewport height so the next
+     section (clients strip) peeks above the fold. */
+  .hero-media {
     position: relative;
     overflow: hidden;
+    border-radius: 16px;
+    min-height: calc(74svh + 115px);
+    display: flex;
+    align-items: flex-end;
+  }
+  @media (min-width: 768px) {
+    .hero-media {
+      min-height: calc(74svh + 115px);
+      border-radius: 20px;
+    }
+  }
+
+  .hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Legibility scrim: stronger at the bottom-left where the copy sits */
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        to top,
+        rgb(0 0 0 / 0.62) 0%,
+        rgb(0 0 0 / 0.28) 45%,
+        rgb(0 0 0 / 0.12) 100%
+      );
+  }
+
+  /* Same grid as .container-page (logo/body): the card is inset by the
+     frame padding, so the inline padding here is container-page's minus
+     that inset — copy lines up with the logo at every width. */
+  .hero-content {
+    position: relative;
+    width: 100%;
+    max-width: calc(1200px - 2rem);
+    margin-inline: auto;
+    padding: 2rem 0.5rem 2.5rem;
+  }
+  @media (min-width: 768px) {
+    .hero-content {
+      padding: 3rem 1rem 3.5rem;
+    }
   }
 
   .hero-headline {
     font-family: var(--font-serif);
     font-weight: 400;
     font-style: normal;
-    font-size: clamp(2.75rem, 7.5vw, 5.5rem);
+    font-size: clamp(2.125rem, 6.5vw, 5rem);
     line-height: 1.02;
     letter-spacing: -0.015em;
-    color: var(--color-ink);
+    color: #fff;
     max-width: 22ch;
-    margin-inline: auto;
   }
   .hero-headline em {
     font-style: italic;
     font-family: var(--font-serif);
-    color: var(--color-ink);
+    color: #fff;
   }
 
   .hero-sub {
-    margin: 2rem auto 0;
-    max-width: 42rem;
+    margin-top: 1.75rem;
+    max-width: 38rem;
     font-size: 1.0625rem;
     line-height: 1.55;
-    color: var(--color-muted);
+    color: rgb(255 255 255 / 0.85);
   }
   @media (min-width: 768px) {
     .hero-sub {
@@ -74,53 +144,44 @@ import ArrowIcon from "~/components/ui/ArrowIcon.astro";
   }
 
   .hero-cta {
-    margin-top: 2.5rem;
+    margin-top: 2.25rem;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 1.75rem;
     flex-wrap: wrap;
+  }
+
+  /* Inverted button over the dark video, mirroring the reference */
+  .hero .hero-cta :global(.btn-primary) {
+    background-color: #fff;
+    color: var(--color-ink);
+  }
+  .hero .hero-cta :global(.btn-primary:hover) {
+    box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.55);
   }
 
   .hero-scroll {
     font-family: var(--font-sans);
     font-size: 0.95rem;
     font-weight: 500;
-    color: var(--color-ink);
+    color: #fff;
     text-decoration: none;
     padding-bottom: 3px;
-    border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 30%, transparent);
+    border-bottom: 1px solid rgb(255 255 255 / 0.4);
     transition:
       border-color 0.2s ease,
       color 0.2s ease;
   }
   .hero-scroll:hover {
-    border-bottom-color: var(--color-ink);
+    border-bottom-color: #fff;
   }
 
-  .hero-note {
-    margin: 5rem auto 0;
-    max-width: 42rem;
-    font-family: var(--font-serif);
-    font-size: 1rem;
-    line-height: 1.5;
-    color: color-mix(in srgb, var(--color-ink) 60%, transparent);
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 0.5rem;
-    text-align: left;
-  }
-  .hero-note span {
-    font-family: var(--font-sans);
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: color-mix(in srgb, var(--color-ink) 45%, transparent);
-    line-height: 1.5;
-    flex-shrink: 0;
-  }
-  .hero-note em {
-    font-style: italic;
+  @media (prefers-reduced-motion: reduce) {
+    .hero-video {
+      display: none;
+    }
+    .hero-media {
+      background: #111;
+    }
   }
 </style>
