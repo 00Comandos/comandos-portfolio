@@ -22,6 +22,8 @@ const beforeVideo: ContentVideo = {
   kind: "video",
   src: "/videos/truora-truconnect-manual-reporting-before.mp4",
   poster: "/videos/truora-truconnect-manual-reporting-before-poster.jpg",
+  mobileSrc: "/videos/truora-truconnect-manual-reporting-before-mobile.mp4",
+  mobileAspect: "4 / 5",
   alt: "Before TruConnect — a growth analyst working after hours in a dark office, digging through a dense legacy data-report dashboard to understand why users abandon email-based onboarding",
   caption:
     "Before TruConnect — funnel answers buried in manual reports and after-hours dashboard digging.",
@@ -58,6 +60,8 @@ const afterVideo: ContentVideo = {
   kind: "video",
   src: "/videos/truora-truconnect-dashboard-after.mp4",
   poster: "/videos/truora-truconnect-dashboard-after-poster.jpg",
+  mobileSrc: "/videos/truora-truconnect-dashboard-after-mobile.mp4",
+  mobileAspect: "4 / 5",
   alt: "After TruConnect — a relaxed operator reviewing the TruConnect dashboard in daylight: WhatsApp conversation metrics, conversion funnel and reactivation charts on a single clean screen",
   caption:
     "After TruConnect — conversations, funnel and reactivation tracked from one calm dashboard.",
