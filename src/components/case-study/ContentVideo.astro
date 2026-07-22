@@ -14,11 +14,11 @@ const radius = rounded ? "rounded-xl" : "";
     <video
       class="content-video w-full h-auto object-cover"
       poster={video.poster}
-      autoplay
       muted
       loop
       playsinline
-      preload="metadata"
+      preload="none"
+      data-lazy-video
       aria-label={video.alt}
       style={[
         video.aspect ? `aspect-ratio: ${video.aspect};` : "",
@@ -51,3 +51,29 @@ const radius = rounded ? "rounded-xl" : "";
     }
   }
 </style>
+
+<script>
+  // Below-the-fold clips: with preload="none" and no autoplay attribute
+  // the browser downloads nothing until we call play(). Start each video
+  // shortly before it scrolls into view, pause it when it leaves.
+  const videos = document.querySelectorAll<HTMLVideoElement>(
+    "video[data-lazy-video]",
+  );
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  if (videos.length && !reduceMotion) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const v = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        }
+      },
+      { rootMargin: "200px 0px" },
+    );
+    videos.forEach((v) => io.observe(v));
+  }
+</script>
