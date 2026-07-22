@@ -1,9 +1,8 @@
 ---
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 
-// Placeholder stock video (Pexels) until the final unified reel is ready.
-const VIDEO_SRC =
-  "https://videos.pexels.com/video-files/852421/852421-hd_1920_1080_30fps.mp4";
+const VIDEO_SRC = "/videos/hero-desktop.mp4";
+const VIDEO_POSTER = "/videos/hero-poster.jpg";
 ---
 
 <section class="hero">
@@ -12,6 +11,7 @@ const VIDEO_SRC =
       <video
         class="hero-video"
         src={VIDEO_SRC}
+        poster={VIDEO_POSTER}
         autoplay
         muted
         loop
