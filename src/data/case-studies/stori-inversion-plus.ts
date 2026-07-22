@@ -36,22 +36,6 @@ const confidentAfterVideo: ContentVideo = {
   mobileAspect: "4 / 5",
 };
 
-const investmentFlowVideo: ContentVideo = {
-  kind: "video",
-  src: "/videos/stori-inversion-plus-investment-flow.mp4",
-  poster: "/videos/stori-inversion-plus-investment-flow-poster.jpg",
-  alt: "Stori Inversión+ investment flow close-up — ¿Cuánto quieres invertir? screen with a $3,000 MXN amount and 360/180/90-day terms at 16.50%, 16.25% and 15.10% rates, selected with one tap",
-  caption:
-    "The Inversión+ flow — amount, term and rate in one screen, in plain language.",
-  name: "Stori Inversión+ — the guided investment flow UI",
-  description:
-    "Close-up of the final Inversión+ flow: choose an amount, compare 90/180/360-day terms with their rates side by side, and confirm in one tap — the simple-language design that made time-locked savings understandable for first-time investors in Mexico.",
-  uploadDate: "2026-07-22",
-  durationSeconds: 4,
-  orientation: "portrait",
-  mobileAspect: "3 / 4",
-};
-
 // Phone-on-green (product screen) — hero
 const heroImage: ContentImage = {
   kind: "image",
@@ -244,7 +228,6 @@ export const storiInversionPlus: CaseStudyContent = {
         body: "The user can enable a metal or plastic card. All additional cards have digital cards.",
       },
       { kind: "image", image: beforeAfterEvolutionImage },
-      { kind: "video", video: investmentFlowVideo, rounded: true },
     ],
   },
   result: {
