@@ -3,11 +3,12 @@ import { storiImages, requireImage } from "~/lib/image-map";
 
 const img = (filename: string) => requireImage(storiImages, filename);
 
-// ———— Videos (portrait footage) ————
+// ———— Videos — landscape canonical + portrait mobile variants ————
 const anxietyBeforeVideo: ContentVideo = {
   kind: "video",
-  src: "/videos/stori-inversion-plus-financial-anxiety-before.mp4",
-  poster: "/videos/stori-inversion-plus-financial-anxiety-before-poster.jpg",
+  src: "/videos/stori-inversion-plus-financial-anxiety-before-desktop.mp4",
+  poster: "/videos/stori-inversion-plus-financial-anxiety-before-desktop-poster.jpg",
+  mobileSrc: "/videos/stori-inversion-plus-financial-anxiety-before.mp4",
   alt: "Before Stori Inversión+ — a worried woman at night on her couch, phone in one hand and a notebook of handwritten finances on her lap, unsure how to make her savings grow",
   caption:
     "The starting point — savings decisions made late at night, between a notebook and doubts.",
@@ -16,14 +17,14 @@ const anxietyBeforeVideo: ContentVideo = {
     "The user reality Stori Inversión+ was designed for: a Mexican saver reviewing her finances late at night with a notebook and her phone, worried about frozen money, yields and whether investing is safe — the doubts surfaced in NPS, call-center logs and user interviews.",
   uploadDate: "2026-07-22",
   durationSeconds: 5,
-  orientation: "portrait",
   mobileAspect: "4 / 5",
 };
 
 const confidentAfterVideo: ContentVideo = {
   kind: "video",
-  src: "/videos/stori-inversion-plus-confident-investor-after.mp4",
-  poster: "/videos/stori-inversion-plus-confident-investor-after-poster.jpg",
+  src: "/videos/stori-inversion-plus-confident-investor-after-desktop.mp4",
+  poster: "/videos/stori-inversion-plus-confident-investor-after-desktop-poster.jpg",
+  mobileSrc: "/videos/stori-inversion-plus-confident-investor-after.mp4",
   alt: "After Stori Inversión+ — the same user relaxed on her couch, smiling and showing the Stori app with her investment balance and clear terms on screen",
   caption:
     "After — the same decision, now made with confidence from a single guided screen.",
@@ -31,8 +32,7 @@ const confidentAfterVideo: ContentVideo = {
   description:
     "The shipped experience: a Stori customer confidently showing the Inversión+ screen with her balance and simple time-locked terms — the clarity behind +477% activation, +318% average balance and a 17% NPS lift.",
   uploadDate: "2026-07-22",
-  durationSeconds: 4,
-  orientation: "portrait",
+  durationSeconds: 3,
   mobileAspect: "4 / 5",
 };
 
