@@ -1,4 +1,4 @@
-import type { CaseStudyContent, ContentImage } from "./types";
+import type { CaseStudyContent, ContentImage, ContentVideo } from "./types";
 import { truoraTruConnectImages, requireImage } from "~/lib/image-map";
 
 const img = (filename: string) => requireImage(truoraTruConnectImages, filename);
@@ -18,6 +18,20 @@ const challengeImage: ContentImage = {
 };
 
 // ———— Adventure ————
+const beforeVideo: ContentVideo = {
+  kind: "video",
+  src: "/videos/truora-truconnect-manual-reporting-before.mp4",
+  poster: "/videos/truora-truconnect-manual-reporting-before-poster.jpg",
+  alt: "Before TruConnect — a growth analyst working after hours in a dark office, digging through a dense legacy data-report dashboard to understand why users abandon email-based onboarding",
+  caption:
+    "Before TruConnect — funnel answers buried in manual reports and after-hours dashboard digging.",
+  name: "Truora TruConnect — onboarding analysis before (manual reporting)",
+  description:
+    "The starting point for TruConnect: growth teams digging through dense manual reports after hours to understand why prospects abandon email-based onboarding — no live view of conversations, funnel drop-off or reactivation.",
+  uploadDate: "2026-07-22",
+  durationSeconds: 5,
+};
+
 const whereWeStandImage: ContentImage = {
   kind: "image",
   image: img("Why-truConnect.png"),
@@ -40,6 +54,20 @@ const componentsImage: ContentImage = {
 };
 
 // ———— Worth ————
+const afterVideo: ContentVideo = {
+  kind: "video",
+  src: "/videos/truora-truconnect-dashboard-after.mp4",
+  poster: "/videos/truora-truconnect-dashboard-after-poster.jpg",
+  alt: "After TruConnect — a relaxed operator reviewing the TruConnect dashboard in daylight: WhatsApp conversation metrics, conversion funnel and reactivation charts on a single clean screen",
+  caption:
+    "After TruConnect — conversations, funnel and reactivation tracked from one calm dashboard.",
+  name: "Truora TruConnect — the no-code WhatsApp onboarding dashboard (after)",
+  description:
+    "The shipped TruConnect experience: a no-code dashboard where LATAM growth teams track WhatsApp chatbot conversations, conversion funnel and the +30% user reactivation their pilots achieved — onboarding visibility in one glance instead of manual reports.",
+  uploadDate: "2026-07-22",
+  durationSeconds: 3,
+};
+
 const resultMainImage: ContentImage = {
   kind: "image",
   image: img("Spotfinder-Main1.png"),
@@ -80,6 +108,7 @@ export const truoraTruConnect: CaseStudyContent = {
   adventure: {
     heading: "Where do we stand?",
     blocks: [
+      { kind: "video", video: beforeVideo },
       { kind: "image", image: whereWeStandImage },
       {
         kind: "heading",
@@ -156,6 +185,7 @@ export const truoraTruConnect: CaseStudyContent = {
           "After 2 months and 2 weeks, we had the new MVP ready to test with 20 pilots. It required 3 iterations that allowed us to deliver and validate a product that quickly reached its own Product-Market-Fit.",
       },
       { kind: "image", image: resultMainImage },
+      { kind: "video", video: afterVideo },
       {
         kind: "checklist",
         items: [
