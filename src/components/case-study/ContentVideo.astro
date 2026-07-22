@@ -12,8 +12,7 @@ const radius = rounded ? "rounded-xl" : "";
 <figure class="w-full">
   <div class={`overflow-hidden ${radius}`}>
     <video
-      class="w-full h-auto object-cover"
-      src={video.src}
+      class="content-video w-full h-auto object-cover"
       poster={video.poster}
       autoplay
       muted
@@ -21,8 +20,20 @@ const radius = rounded ? "rounded-xl" : "";
       playsinline
       preload="metadata"
       aria-label={video.alt}
-      style={video.aspect ? `aspect-ratio: ${video.aspect};` : undefined}
-    ></video>
+      style={[
+        video.aspect ? `aspect-ratio: ${video.aspect};` : "",
+        video.mobileAspect ? `--mobile-aspect: ${video.mobileAspect};` : "",
+      ]
+        .join(" ")
+        .trim() || undefined}
+    >
+      {
+        video.mobileSrc && (
+          <source src={video.mobileSrc} media="(max-width: 767px)" />
+        )
+      }
+      <source src={video.src} />
+    </video>
   </div>
   {
     video.caption && (
@@ -32,3 +43,11 @@ const radius = rounded ? "rounded-xl" : "";
     )
   }
 </figure>
+
+<style>
+  @media (max-width: 767px) {
+    .content-video {
+      aspect-ratio: var(--mobile-aspect, auto);
+    }
+  }
+</style>

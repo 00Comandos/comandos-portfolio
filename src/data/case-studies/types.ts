@@ -24,6 +24,11 @@ export type ContentVideo = {
   src: string;
   /** Public-path poster frame. */
   poster: string;
+  /** Optional portrait variant served at < 768px. */
+  mobileSrc?: string;
+  /** CSS aspect-ratio applied to the mobile variant (e.g. "4 / 5") so a
+      tall portrait clip is center-cropped instead of filling the screen. */
+  mobileAspect?: string;
   /** Accessible description — mirrors ContentImage.alt. */
   alt: string;
   caption?: string;

@@ -23,6 +23,8 @@ const tabletsWallVideo: ContentVideo = {
   kind: "video",
   src: "/videos/mipos-dark-kitchen-tablet-wall-2019.mp4",
   poster: "/videos/mipos-dark-kitchen-tablet-wall-2019-poster.jpg",
+  mobileSrc: "/videos/mipos-dark-kitchen-tablet-wall-2019-mobile.mp4",
+  mobileAspect: "4 / 5",
   alt: "mipOS Dark Kitchen field research (2019) — footage of 10+ delivery-app tablets for Uber Eats, Didi Food, Rappi and iFood pinned to a wooden wall and wired chaotically, the operational pain mipOS set out to replace with a single screen",
   caption:
     "The Dark Kitchen tablet wall — the operational pain mipOS was built to replace with a single screen.",
@@ -82,6 +84,8 @@ const registrationVideo: ContentVideo = {
   kind: "video",
   src: "/videos/mipos-dark-kitchen-registration-flow.mp4",
   poster: "/videos/mipos-dark-kitchen-registration-flow-poster.jpg",
+  mobileSrc: "/videos/mipos-dark-kitchen-registration-flow-mobile.mp4",
+  mobileAspect: "4 / 5",
   alt: "mipOS Dark Kitchen optimised registration flow in motion — selecting and integrating delivery apps (Uber Eats, Rappi, Didi Food, iFood) with a transparent per-app activation promise, the flow that lifted retention to 70%",
   caption:
     "The optimised registration flow in motion — transparent value promise from the first screen.",
