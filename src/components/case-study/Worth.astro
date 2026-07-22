@@ -1,5 +1,6 @@
 ---
 import ContentImage from "~/components/case-study/ContentImage.astro";
+import ContentVideo from "~/components/case-study/ContentVideo.astro";
 import SectionChip from "~/components/case-study/SectionChip.astro";
 import Divider from "~/components/case-study/Divider.astro";
 import Checklist from "~/components/case-study/Checklist.astro";
@@ -52,6 +53,9 @@ const { content } = Astro.props;
           }
           if (block.kind === "image") {
             return <ContentImage image={block.image} rounded={block.rounded === true} />;
+          }
+          if (block.kind === "video") {
+            return <ContentVideo video={block.video} rounded={block.rounded === true} />;
           }
           if (block.kind === "checklist") {
             return (

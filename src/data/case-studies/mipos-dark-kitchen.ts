@@ -1,4 +1,4 @@
-import type { CaseStudyContent, ContentImage } from "./types";
+import type { CaseStudyContent, ContentImage, ContentVideo } from "./types";
 import { miposDarkKitchenImages, requireImage } from "~/lib/image-map";
 
 const img = (filename: string) =>
@@ -19,12 +19,18 @@ const challengeImage: ContentImage = {
 };
 
 // ———— Adventure ————
-const tabletsWallImage: ContentImage = {
-  kind: "image",
-  image: img("mipOS-DarkKitchen-2019-comandos-project.png"),
-  alt: "mipOS Dark Kitchen field research (2019) — 10+ delivery-app tablets for Uber Eats, Didi Food, Rappi and iFood pinned to a wooden wall and wired chaotically, the operational pain mipOS set out to replace with a single screen",
+const tabletsWallVideo: ContentVideo = {
+  kind: "video",
+  src: "/videos/mipos-dark-kitchen-tablet-wall-2019.mp4",
+  poster: "/videos/mipos-dark-kitchen-tablet-wall-2019-poster.jpg",
+  alt: "mipOS Dark Kitchen field research (2019) — footage of 10+ delivery-app tablets for Uber Eats, Didi Food, Rappi and iFood pinned to a wooden wall and wired chaotically, the operational pain mipOS set out to replace with a single screen",
   caption:
     "The Dark Kitchen tablet wall — the operational pain mipOS was built to replace with a single screen.",
+  name: "mipOS Dark Kitchen — the 2019 tablet wall (before)",
+  description:
+    "Field-research footage from a Dark Kitchen in 2019: more than 10 delivery-app tablets (Uber Eats, Didi Food, Rappi, iFood) wired to a wooden wall — the operational chaos mipOS replaced with a single screen.",
+  uploadDate: "2026-07-21",
+  durationSeconds: 5,
 };
 
 const userJourneyImage: ContentImage = {
@@ -72,6 +78,20 @@ const registerImage: ContentImage = {
     "Optimised registration flow — a Dark Kitchen goes live on its first Delivery Apps in under 2 days.",
 };
 
+const registrationVideo: ContentVideo = {
+  kind: "video",
+  src: "/videos/mipos-dark-kitchen-registration-flow.mp4",
+  poster: "/videos/mipos-dark-kitchen-registration-flow-poster.jpg",
+  alt: "mipOS Dark Kitchen optimised registration flow in motion — selecting and integrating delivery apps (Uber Eats, Rappi, Didi Food, iFood) with a transparent per-app activation promise, the flow that lifted retention to 70%",
+  caption:
+    "The optimised registration flow in motion — transparent value promise from the first screen.",
+  name: "mipOS Dark Kitchen — the optimised registration flow (after)",
+  description:
+    "The redesigned mipOS onboarding: a Dark Kitchen selects its delivery apps (Uber Eats, Rappi, Didi Food, iFood) and goes live in under 2 days, with the activation promise transparent at every step — the flow behind 70% retention.",
+  uploadDate: "2026-07-21",
+  durationSeconds: 4,
+};
+
 export const miposDarkKitchen: CaseStudyContent = {
   slug: "mipos-dark-kitchen",
   kicker: "Food and Delivery — SaaS",
@@ -105,7 +125,7 @@ export const miposDarkKitchen: CaseStudyContent = {
   adventure: {
     heading: "Where to start to provide value to users?",
     blocks: [
-      { kind: "image", image: tabletsWallImage },
+      { kind: "video", video: tabletsWallVideo },
       {
         kind: "heading",
         heading: "Getting ready: Where are we? and What will we need?",
@@ -187,6 +207,7 @@ export const miposDarkKitchen: CaseStudyContent = {
         text:
           "We optimize the registration flow to mipOS Dark Kitchen, maintaining transparency in the promise of value at all times.",
       },
+      { kind: "video", video: registrationVideo },
     ],
   },
   result: {

@@ -1,0 +1,34 @@
+---
+import type { ContentVideo } from "~/data/case-studies/types";
+
+type Props = {
+  video: ContentVideo;
+  rounded?: boolean;
+};
+const { video, rounded = false } = Astro.props;
+const radius = rounded ? "rounded-xl" : "";
+---
+
+<figure class="w-full">
+  <div class={`overflow-hidden ${radius}`}>
+    <video
+      class="w-full h-auto object-cover"
+      src={video.src}
+      poster={video.poster}
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      aria-label={video.alt}
+      style={video.aspect ? `aspect-ratio: ${video.aspect};` : undefined}
+    ></video>
+  </div>
+  {
+    video.caption && (
+      <figcaption class="mt-2 text-xs text-[color:var(--color-muted)]">
+        {video.caption}
+      </figcaption>
+    )
+  }
+</figure>

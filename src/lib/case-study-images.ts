@@ -1,6 +1,7 @@
 import type {
   CaseStudyContent,
   ContentImage,
+  ContentVideo,
 } from "~/data/case-studies/types";
 
 /**
@@ -51,5 +52,17 @@ export function extractCaseStudyImages(cs: CaseStudyContent): Extract<
     }
   }
 
+  return out;
+}
+
+/**
+ * Walk every video block inside a case study. Feeds the VideoObject[]
+ * JSON-LD on the case-study page and the video entries in the sitemap.
+ */
+export function extractCaseStudyVideos(cs: CaseStudyContent): ContentVideo[] {
+  const out: ContentVideo[] = [];
+  for (const block of [...cs.adventure.blocks, ...cs.worth.blocks]) {
+    if (block.kind === "video") out.push(block.video);
+  }
   return out;
 }

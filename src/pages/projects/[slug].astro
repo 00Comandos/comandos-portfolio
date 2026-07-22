@@ -11,7 +11,10 @@ import Result from "~/components/case-study/Result.astro";
 import RelatedCases from "~/components/case-study/RelatedCases.astro";
 import { projects, getProjectBySlug, getRelatedProjects } from "~/data/projects";
 import { getCaseStudy } from "~/data/case-studies";
-import { extractCaseStudyImages } from "~/lib/case-study-images";
+import {
+  extractCaseStudyImages,
+  extractCaseStudyVideos,
+} from "~/lib/case-study-images";
 import { site } from "~/lib/site";
 
 export const prerender = true;
@@ -73,6 +76,26 @@ const imageObjects = await Promise.all(
   }),
 );
 
+// Emit every in-page case-study video as a VideoObject so Google Video
+// indexes the footage (before/after material is real page content here).
+const videoObjects = (caseStudy ? extractCaseStudyVideos(caseStudy) : []).map(
+  (v) => ({
+    "@type": "VideoObject" as const,
+    name: v.name,
+    description: v.description,
+    contentUrl: new URL(v.src, site.url).toString(),
+    thumbnailUrl: new URL(v.poster, site.url).toString(),
+    uploadDate: v.uploadDate,
+    duration: `PT${v.durationSeconds}S`,
+    inLanguage: "en",
+    publisher: {
+      "@type": "Organization",
+      name: site.name,
+      url: site.url,
+    },
+  }),
+);
+
 const primaryImage = {
   "@type": "ImageObject" as const,
   url: ogImageAbs,
@@ -115,6 +138,7 @@ const jsonLd = [
     },
     image:
       imageObjects.length > 0 ? [primaryImage, ...imageObjects] : primaryImage,
+    ...(videoObjects.length > 0 ? { video: videoObjects } : {}),
     ...(caseStudy
       ? {
           hasPart: [
@@ -126,6 +150,7 @@ const jsonLd = [
         }
       : {}),
   },
+  ...videoObjects.map((v) => ({ "@context": "https://schema.org", ...v })),
   {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",

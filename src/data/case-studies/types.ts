@@ -18,6 +18,25 @@ export type ContentImage =
     }
   | { kind: "placeholder"; label: string; aspect?: string; caption?: string };
 
+export type ContentVideo = {
+  kind: "video";
+  /** Public-path mp4, e.g. "/videos/foo.mp4". */
+  src: string;
+  /** Public-path poster frame. */
+  poster: string;
+  /** Accessible description — mirrors ContentImage.alt. */
+  alt: string;
+  caption?: string;
+  aspect?: string;
+  /** VideoObject metadata (JSON-LD + video sitemap). */
+  name: string;
+  description: string;
+  /** ISO 8601 date, e.g. "2026-07-21". */
+  uploadDate: string;
+  /** Duration in whole seconds. */
+  durationSeconds: number;
+};
+
 export type ChecklistItem = {
   label: string;
   body?: string;
@@ -66,6 +85,7 @@ export type AdventureBlock =
   | { kind: "spacer"; size?: "sm" | "md" | "lg" }
   | { kind: "checklist"; items: readonly ChecklistItem[] }
   | { kind: "image"; image: ContentImage; rounded?: boolean }
+  | { kind: "video"; video: ContentVideo; rounded?: boolean }
   | { kind: "divider"; variant?: "hatched" | "line" }
   | {
       kind: "step";
@@ -178,6 +198,7 @@ export type IllustrationScene =
 export type WorthBlock =
   | { kind: "intro"; label?: string; heading: string; body?: string }
   | { kind: "image"; image: ContentImage; rounded?: boolean }
+  | { kind: "video"; video: ContentVideo; rounded?: boolean }
   | {
       kind: "before-after";
       before: ContentImage;

@@ -2,7 +2,10 @@ import type { APIRoute } from "astro";
 import { getImage } from "astro:assets";
 import { projects } from "~/data/projects";
 import { getCaseStudy } from "~/data/case-studies";
-import { extractCaseStudyImages } from "~/lib/case-study-images";
+import {
+  extractCaseStudyImages,
+  extractCaseStudyVideos,
+} from "~/lib/case-study-images";
 import { site } from "~/lib/site";
 
 export const prerender = true;
@@ -69,15 +72,31 @@ export const GET: APIRoute = async () => {
       )
       .join("\n");
 
+    const videos = caseStudy ? extractCaseStudyVideos(caseStudy) : [];
+    const videoXml = videos
+      .map(
+        (v) => `    <video:video>
+      <video:thumbnail_loc>${escapeXml(new URL(v.poster, site.url).toString())}</video:thumbnail_loc>
+      <video:title>${escapeXml(v.name)}</video:title>
+      <video:description>${escapeXml(v.description)}</video:description>
+      <video:content_loc>${escapeXml(new URL(v.src, site.url).toString())}</video:content_loc>
+      <video:duration>${v.durationSeconds}</video:duration>
+      <video:publication_date>${escapeXml(v.uploadDate)}</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>`,
+      )
+      .join("\n");
+
     entries.push(`  <url>
     <loc>${loc}</loc>
-${imageXml}
+${[imageXml, videoXml].filter(Boolean).join("\n")}
   </url>`);
   }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 ${entries.join("\n")}
 </urlset>
 `;
