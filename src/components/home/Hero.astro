@@ -4,6 +4,7 @@ import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 const VIDEO_DESKTOP = "/videos/hero-desktop.mp4";
 const VIDEO_MOBILE = "/videos/hero-mobile.mp4";
 const VIDEO_POSTER = "/videos/hero-poster.jpg";
+const VIDEO_POSTER_MOBILE = "/videos/hero-poster-mobile.jpg";
 ---
 
 <section class="hero">
@@ -22,6 +23,13 @@ const VIDEO_POSTER = "/videos/hero-poster.jpg";
         <source src={VIDEO_MOBILE} media="(max-width: 767px)" />
         <source src={VIDEO_DESKTOP} />
       </video>
+      <script define:vars={{ mobilePoster: VIDEO_POSTER_MOBILE }}>
+        // The poster attribute can't respond to media queries — swap in the
+        // portrait first-frame on phones so poster and reel match.
+        if (window.matchMedia("(max-width: 767px)").matches) {
+          document.querySelector(".hero-video")?.setAttribute("poster", mobilePoster);
+        }
+      </script>
       <div class="hero-overlay" aria-hidden="true"></div>
 
       <div class="hero-content">

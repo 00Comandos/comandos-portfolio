@@ -7,9 +7,10 @@ type Props = {
 };
 const { video, rounded = false } = Astro.props;
 const radius = rounded ? "rounded-xl" : "";
+const portrait = video.orientation === "portrait";
 ---
 
-<figure class="w-full">
+<figure class:list={["w-full", portrait && "md:max-w-sm md:mx-auto"]}>
   <div class={`overflow-hidden ${radius}`}>
     <video
       class="content-video w-full h-auto object-cover"

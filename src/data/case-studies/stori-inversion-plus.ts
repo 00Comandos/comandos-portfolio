@@ -1,7 +1,56 @@
-import type { CaseStudyContent, ContentImage } from "./types";
+import type { CaseStudyContent, ContentImage, ContentVideo } from "./types";
 import { storiImages, requireImage } from "~/lib/image-map";
 
 const img = (filename: string) => requireImage(storiImages, filename);
+
+// ———— Videos (portrait footage) ————
+const anxietyBeforeVideo: ContentVideo = {
+  kind: "video",
+  src: "/videos/stori-inversion-plus-financial-anxiety-before.mp4",
+  poster: "/videos/stori-inversion-plus-financial-anxiety-before-poster.jpg",
+  alt: "Before Stori Inversión+ — a worried woman at night on her couch, phone in one hand and a notebook of handwritten finances on her lap, unsure how to make her savings grow",
+  caption:
+    "The starting point — savings decisions made late at night, between a notebook and doubts.",
+  name: "Stori Inversión+ — financial anxiety before guided investing",
+  description:
+    "The user reality Stori Inversión+ was designed for: a Mexican saver reviewing her finances late at night with a notebook and her phone, worried about frozen money, yields and whether investing is safe — the doubts surfaced in NPS, call-center logs and user interviews.",
+  uploadDate: "2026-07-22",
+  durationSeconds: 5,
+  orientation: "portrait",
+  mobileAspect: "4 / 5",
+};
+
+const confidentAfterVideo: ContentVideo = {
+  kind: "video",
+  src: "/videos/stori-inversion-plus-confident-investor-after.mp4",
+  poster: "/videos/stori-inversion-plus-confident-investor-after-poster.jpg",
+  alt: "After Stori Inversión+ — the same user relaxed on her couch, smiling and showing the Stori app with her investment balance and clear terms on screen",
+  caption:
+    "After — the same decision, now made with confidence from a single guided screen.",
+  name: "Stori Inversión+ — investing with confidence (after)",
+  description:
+    "The shipped experience: a Stori customer confidently showing the Inversión+ screen with her balance and simple time-locked terms — the clarity behind +477% activation, +318% average balance and a 17% NPS lift.",
+  uploadDate: "2026-07-22",
+  durationSeconds: 4,
+  orientation: "portrait",
+  mobileAspect: "4 / 5",
+};
+
+const investmentFlowVideo: ContentVideo = {
+  kind: "video",
+  src: "/videos/stori-inversion-plus-investment-flow.mp4",
+  poster: "/videos/stori-inversion-plus-investment-flow-poster.jpg",
+  alt: "Stori Inversión+ investment flow close-up — ¿Cuánto quieres invertir? screen with a $3,000 MXN amount and 360/180/90-day terms at 16.50%, 16.25% and 15.10% rates, selected with one tap",
+  caption:
+    "The Inversión+ flow — amount, term and rate in one screen, in plain language.",
+  name: "Stori Inversión+ — the guided investment flow UI",
+  description:
+    "Close-up of the final Inversión+ flow: choose an amount, compare 90/180/360-day terms with their rates side by side, and confirm in one tap — the simple-language design that made time-locked savings understandable for first-time investors in Mexico.",
+  uploadDate: "2026-07-22",
+  durationSeconds: 4,
+  orientation: "portrait",
+  mobileAspect: "3 / 4",
+};
 
 // Phone-on-green (product screen) — hero
 const heroImage: ContentImage = {
@@ -101,6 +150,7 @@ export const storiInversionPlus: CaseStudyContent = {
   adventure: {
     heading: "Defining top 3 challenges identified by segment.",
     blocks: [
+      { kind: "video", video: anxietyBeforeVideo, rounded: true },
       {
         kind: "checklist",
         items: [
@@ -185,6 +235,7 @@ export const storiInversionPlus: CaseStudyContent = {
         body: "The impact on our users was greater than expected. Content creators talked about our significant improvements.",
       },
       { kind: "image", image: contentCreatorsImage },
+      { kind: "video", video: confidentAfterVideo, rounded: true },
       { kind: "divider" },
       {
         kind: "intro",
@@ -193,6 +244,7 @@ export const storiInversionPlus: CaseStudyContent = {
         body: "The user can enable a metal or plastic card. All additional cards have digital cards.",
       },
       { kind: "image", image: beforeAfterEvolutionImage },
+      { kind: "video", video: investmentFlowVideo, rounded: true },
     ],
   },
   result: {

@@ -29,6 +29,9 @@ export type ContentVideo = {
   /** CSS aspect-ratio applied to the mobile variant (e.g. "4 / 5") so a
       tall portrait clip is center-cropped instead of filling the screen. */
   mobileAspect?: string;
+  /** Portrait-only footage: rendered centered at a phone-like width on
+      desktop instead of stretching full-bleed. */
+  orientation?: "portrait";
   /** Accessible description — mirrors ContentImage.alt. */
   alt: string;
   caption?: string;
