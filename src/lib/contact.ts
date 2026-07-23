@@ -27,6 +27,20 @@ export const REFERRAL_SOURCES = [
 export const contactSchema = z.object({
   name: z.string().trim().min(2, "Please share your name.").max(120),
   email: z.email("Enter a valid email.").trim().toLowerCase(),
+  whatsapp: z
+    .string()
+    .trim()
+    .regex(
+      /^\+[0-9\s().-]{6,24}$/,
+      "Enter a WhatsApp number starting with your country code (e.g. +52).",
+    )
+    .refine(
+      (v) => {
+        const digits = v.replace(/\D/g, "");
+        return digits.length >= 7 && digits.length <= 15;
+      },
+      { message: "Enter a valid phone number (7–15 digits)." },
+    ),
   company: z.string().trim().min(2, "Please share your company.").max(200),
   projectType: z.enum(PROJECT_TYPES, { message: "Select a project type." }),
   referralSource: z
@@ -74,6 +88,7 @@ export async function sendContactEmail(input: ContactInput): Promise<void> {
     console.info("[contact] submission (email not sent — Resend not configured):", {
       name: input.name,
       email: input.email,
+      whatsapp: input.whatsapp,
       company: input.company,
       projectType: input.projectType,
       message: input.message,
@@ -91,6 +106,7 @@ export async function sendContactEmail(input: ContactInput): Promise<void> {
   const rows: Array<[string, string]> = [
     ["Name", escape(input.name)],
     ["Email", `<a href="mailto:${escape(input.email)}" style="color:#0b0b0b">${escape(input.email)}</a>`],
+    ["WhatsApp", `<a href="https://wa.me/${input.whatsapp.replace(/\D/g, "")}" style="color:#0b0b0b">${escape(input.whatsapp)}</a>`],
     ["Company", escape(input.company)],
     ["Project type", escape(input.projectType)],
     ["Heard via", escape(input.referralSource)],
