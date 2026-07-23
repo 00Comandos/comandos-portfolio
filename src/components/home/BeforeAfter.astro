@@ -383,19 +383,21 @@ const panelVh = 55;
     justify-content: center;
     font-family: var(--font-serif);
     font-weight: 400;
+    /* Italic on every state — font-style can't interpolate between the
+       roman and italic faces, so animating it swaps mid-transition.
+       Keeping one face lets size/color morph cleanly. */
+    font-style: italic;
     line-height: 1;
     font-size: 1.625rem;
     color: color-mix(in srgb, var(--color-ink) 22%, transparent);
     transition:
       color 0.35s linear,
-      font-size 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-      font-style 0.35s linear;
+      font-size 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     white-space: nowrap;
     text-align: center;
   }
   .ba-name.is-active {
     font-size: clamp(3.5rem, 5.5vw, 5rem);
-    font-style: italic;
     color: var(--color-ink);
   }
   /* Longer brand names (e.g., "mipOS Dark Kitchen", "RebajaTusCuentas",
