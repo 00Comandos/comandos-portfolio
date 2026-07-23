@@ -5,6 +5,23 @@ const VIDEO_DESKTOP = "/videos/hero-desktop.mp4";
 const VIDEO_MOBILE = "/videos/hero-mobile.mp4";
 const VIDEO_POSTER = "/videos/hero-poster.jpg";
 const VIDEO_POSTER_MOBILE = "/videos/hero-poster-mobile.jpg";
+
+// Reel rounds per track — `until` is the second each round ends. The brand
+// chip syncs to the playing video via timeupdate. Update when the reel
+// composition changes.
+const ROUNDS = {
+  desktop: [
+    { until: 12.54, label: "Credit Card", logo: "/images/logo-karta.png", href: "/projects/karta-card/", brand: "Karta" },
+    { until: 19.6, label: "Inversión+", logo: "/images/logo-stori.png", href: "/projects/stori-inversion-plus/", brand: "Stori" },
+    { until: 28.64, label: "Dark Kitchen", logo: "/images/mipos-logo.svg", href: "/projects/mipos-dark-kitchen/", brand: "mipOS" },
+    { until: 36.71, label: "TruConnect", logo: "/images/Truora-Logo.svg", href: "/projects/truora-truconnect/", brand: "Truora" },
+  ],
+  mobile: [
+    { until: 8.08, label: "Inversión+", logo: "/images/logo-stori.png", href: "/projects/stori-inversion-plus/", brand: "Stori" },
+    { until: 17.12, label: "Dark Kitchen", logo: "/images/mipos-logo.svg", href: "/projects/mipos-dark-kitchen/", brand: "mipOS" },
+    { until: 24.13, label: "TruConnect", logo: "/images/Truora-Logo.svg", href: "/projects/truora-truconnect/", brand: "Truora" },
+  ],
+};
 ---
 
 <section class="hero">
@@ -28,6 +45,41 @@ const VIDEO_POSTER_MOBILE = "/videos/hero-poster-mobile.jpg";
         // portrait first-frame on phones so poster and reel match.
         if (window.matchMedia("(max-width: 767px)").matches) {
           document.querySelector(".hero-video")?.setAttribute("poster", mobilePoster);
+        }
+      </script>
+
+      <a class="hero-brand" id="heroBrand" href="/projects/">
+        <img id="heroBrandLogo" src="" alt="" height="14" />
+        <span id="heroBrandLabel"></span>
+      </a>
+      <script define:vars={{ rounds: ROUNDS }}>
+        const video = document.querySelector(".hero-video");
+        const chip = document.getElementById("heroBrand");
+        const logo = document.getElementById("heroBrandLogo");
+        const label = document.getElementById("heroBrandLabel");
+        if (video && chip && logo && label) {
+          let current = null;
+          const update = () => {
+            const track = (video.currentSrc || "").includes("hero-mobile")
+              ? rounds.mobile
+              : rounds.desktop;
+            const t = video.currentTime;
+            const round = track.find((r) => t < r.until) ?? track[track.length - 1];
+            if (round && round !== current) {
+              current = round;
+              chip.classList.add("is-swapping");
+              setTimeout(() => {
+                chip.href = round.href;
+                logo.src = round.logo;
+                logo.alt = round.brand;
+                label.textContent = round.label;
+                chip.classList.remove("is-swapping");
+              }, 150);
+            }
+          };
+          video.addEventListener("timeupdate", update);
+          video.addEventListener("loadedmetadata", update);
+          update();
         }
       </script>
       <div class="hero-overlay" aria-hidden="true"></div>
@@ -187,12 +239,61 @@ const VIDEO_POSTER_MOBILE = "/videos/hero-poster-mobile.jpg";
     border-bottom-color: #fff;
   }
 
+  /* Brand chip — which client round is playing, links to its case study */
+  .hero-brand {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.88);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    opacity: 1;
+    transition: opacity 0.15s ease, transform 0.2s ease;
+  }
+  .hero-brand:hover {
+    transform: translateY(-1px);
+  }
+  .hero-brand.is-swapping {
+    opacity: 0;
+  }
+  .hero-brand img {
+    display: block;
+    height: 14px;
+    width: auto;
+  }
+  @media (min-width: 768px) {
+    .hero-brand {
+      top: auto;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      font-size: 0.82rem;
+      padding: 0.5rem 1rem;
+    }
+    .hero-brand img {
+      height: 16px;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .hero-video {
       display: none;
     }
     .hero-media {
       background: #111;
+    }
+    .hero-brand {
+      display: none;
     }
   }
 </style>
