@@ -9,6 +9,8 @@ const classicCardVideo: ContentVideo = {
   kind: "video",
   src: "/videos/karta-card-classic-card-before.mp4",
   poster: "/videos/karta-card-classic-card-before-poster.jpg",
+  mobileSrc: "/videos/karta-card-classic-card-before-mobile.mp4",
+  mobileAspect: "4 / 5",
   alt: "Before Karta — a plain beige credit card standing on a marble surface, the forgettable 20th-century card design nobody shows off",
   caption:
     "The starting point — a technically fine, completely forgettable credit card.",
@@ -23,6 +25,8 @@ const boutiqueCheckoutVideo: ContentVideo = {
   kind: "video",
   src: "/videos/karta-card-boutique-checkout-before.mp4",
   poster: "/videos/karta-card-boutique-checkout-before-poster.jpg",
+  mobileSrc: "/videos/karta-card-boutique-checkout-before-mobile.mp4",
+  mobileAspect: "4 / 5",
   alt: "Before Karta — a shopper in an upscale boutique watches uneasily as the clerk inspects her generic credit card at checkout",
   caption:
     "What users told us, on camera — handing over a card that says nothing about you.",
@@ -37,6 +41,8 @@ const blackCardRevealVideo: ContentVideo = {
   kind: "video",
   src: "/videos/karta-card-black-card-reveal-after.mp4",
   poster: "/videos/karta-card-black-card-reveal-after-poster.jpg",
+  mobileSrc: "/videos/karta-card-black-card-reveal-after-mobile.mp4",
+  mobileAspect: "4 / 5",
   alt: "After the redesign — the matte-black Karta metal credit card standing upright in a single dramatic spotlight",
   caption:
     "The redesign — 17 grams of recycled steel under a single spotlight.",
@@ -51,6 +57,8 @@ const restaurantPaymentVideo: ContentVideo = {
   kind: "video",
   src: "/videos/karta-card-restaurant-payment-after.mp4",
   poster: "/videos/karta-card-restaurant-payment-after-poster.jpg",
+  mobileSrc: "/videos/karta-card-restaurant-payment-after-mobile.mp4",
+  mobileAspect: "4 / 5",
   alt: "After Karta — a smiling diner hands the black Karta metal card to a waiter in a high-rise restaurant overlooking the Tokyo skyline at night",
   caption:
     "The moment Karta was designed for — paying abroad with a card that speaks for you.",
