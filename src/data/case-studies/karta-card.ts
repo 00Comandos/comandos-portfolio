@@ -1,8 +1,65 @@
-import type { CaseStudyContent, ContentImage } from "./types";
+import type { CaseStudyContent, ContentImage, ContentVideo } from "./types";
 import { kartaCardImages, kartaImages, requireImage } from "~/lib/image-map";
 
 const card = (filename: string) => requireImage(kartaCardImages, filename);
 const karta = (filename: string) => requireImage(kartaImages, filename);
+
+// ———— Videos — before/after footage ————
+const classicCardVideo: ContentVideo = {
+  kind: "video",
+  src: "/videos/karta-card-classic-card-before.mp4",
+  poster: "/videos/karta-card-classic-card-before-poster.jpg",
+  alt: "Before Karta — a plain beige credit card standing on a marble surface, the forgettable 20th-century card design nobody shows off",
+  caption:
+    "The starting point — a technically fine, completely forgettable credit card.",
+  name: "Karta credit card — the forgettable card (before)",
+  description:
+    "The before state Karta set out to replace: a generic beige credit card with no personality — the kind high-spending LATAM customers keep in their wallet but never show off, while banks compete for their loyalty with 20th-century designs.",
+  uploadDate: "2026-07-22",
+  durationSeconds: 4,
+};
+
+const boutiqueCheckoutVideo: ContentVideo = {
+  kind: "video",
+  src: "/videos/karta-card-boutique-checkout-before.mp4",
+  poster: "/videos/karta-card-boutique-checkout-before-poster.jpg",
+  alt: "Before Karta — a shopper in an upscale boutique watches uneasily as the clerk inspects her generic credit card at checkout",
+  caption:
+    "What users told us, on camera — handing over a card that says nothing about you.",
+  name: "Karta credit card — the checkout moment users described (before)",
+  description:
+    "The research insight in motion: at a premium boutique checkout, a generic card inspires no confidence and no pride — 4 of 5 users said their card felt old, and 3 of 5 wanted a card worth showing off, benchmarked against Amex Centurion.",
+  uploadDate: "2026-07-22",
+  durationSeconds: 4,
+};
+
+const blackCardRevealVideo: ContentVideo = {
+  kind: "video",
+  src: "/videos/karta-card-black-card-reveal-after.mp4",
+  poster: "/videos/karta-card-black-card-reveal-after-poster.jpg",
+  alt: "After the redesign — the matte-black Karta metal credit card standing upright in a single dramatic spotlight",
+  caption:
+    "The redesign — 17 grams of recycled steel under a single spotlight.",
+  name: "Karta metal credit card — the black card reveal (after)",
+  description:
+    "The shipped Karta card: a matte-black VISA Infinite metal card in 17 grams of 65% recycled steel with an AI-inspired line pattern — the premium redesign built to compete with Amex Centurion for LATAM's global citizens.",
+  uploadDate: "2026-07-22",
+  durationSeconds: 4,
+};
+
+const restaurantPaymentVideo: ContentVideo = {
+  kind: "video",
+  src: "/videos/karta-card-restaurant-payment-after.mp4",
+  poster: "/videos/karta-card-restaurant-payment-after-poster.jpg",
+  alt: "After Karta — a smiling diner hands the black Karta metal card to a waiter in a high-rise restaurant overlooking the Tokyo skyline at night",
+  caption:
+    "The moment Karta was designed for — paying abroad with a card that speaks for you.",
+  name: "Karta metal credit card — paying with status abroad (after)",
+  description:
+    "The experience Karta customers bought into: handing a heavyweight black metal card to the waiter at a world-class restaurant abroad — the borderless, travel-worthy payment moment behind +1k customers in 12 months and 2 additional cards per user.",
+  uploadDate: "2026-07-22",
+  durationSeconds: 4,
+};
 
 // ———— Hero ————
 const heroImage: ContentImage = {
@@ -174,6 +231,7 @@ export const kartaCard: CaseStudyContent = {
   adventure: {
     heading: "Defining top 3 challenges identified.",
     blocks: [
+      { kind: "video", video: classicCardVideo, rounded: true },
       {
         kind: "responsive-media",
         desktop: challengesComposite,
@@ -265,6 +323,7 @@ export const kartaCard: CaseStudyContent = {
           },
         ],
       },
+      { kind: "video", video: boutiqueCheckoutVideo, rounded: true },
       { kind: "divider" },
       {
         kind: "heading",
@@ -293,6 +352,7 @@ export const kartaCard: CaseStudyContent = {
         text:
           "Made from 17 grams of precision metal and 65% recycled steel, it offers a bold and elegant feel while demonstrating that true prestige leaves no footprint.",
       },
+      { kind: "video", video: blackCardRevealVideo, rounded: true },
       {
         kind: "two-col-media",
         items: [
@@ -324,6 +384,7 @@ export const kartaCard: CaseStudyContent = {
         columns: 2,
         images: [usingCard01, usingCard02, usingCard03, usingCard04],
       },
+      { kind: "video", video: restaurantPaymentVideo, rounded: true },
     ],
   },
   result: {
