@@ -142,6 +142,57 @@ const menuItems = [
     border-bottom-color: var(--color-border);
   }
 
+  /* Mobile: full-screen takeover — airy rows, always-visible chevrons.
+     Negative z-index keeps the overlay under the header row inside the
+     header's stacking context, so the logo and the X stay on top. */
+  @media (max-width: 767px) {
+    .menu-panel {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      max-height: none;
+      height: 100dvh;
+      padding-top: 6.5rem;
+      overflow-y: auto;
+      border-bottom: none;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(6px);
+      transition:
+        opacity 0.25s ease,
+        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0.25s;
+    }
+    .menu-panel[data-open="true"] {
+      max-height: none;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .menu-panel ul {
+      gap: 0;
+      padding-block: 0;
+    }
+    .menu-panel .menu-link {
+      border-bottom: none;
+      padding: 1.4rem 0;
+      font-size: 1.625rem;
+      letter-spacing: -0.01em;
+    }
+    .menu-panel .menu-link :global(svg) {
+      opacity: 1;
+      transform: none;
+      width: 22px;
+      height: 22px;
+      color: var(--color-ink);
+    }
+    .menu-panel .mt-3 {
+      margin-top: 2.5rem;
+    }
+  }
+
   .menu-link {
     display: flex;
     align-items: center;
