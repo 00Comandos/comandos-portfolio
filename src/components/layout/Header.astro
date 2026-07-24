@@ -98,6 +98,21 @@ const menuItems = [
     -webkit-backdrop-filter: blur(14px) saturate(1.1);
     backdrop-filter: blur(14px) saturate(1.1);
   }
+
+  /* Over the home hero reel (desktop): fully transparent bar with the
+     logo and burger inverted to white until the user scrolls. */
+  @media (min-width: 768px) {
+    .site-header.has-hero:not(.is-scrolled) {
+      background-color: transparent;
+    }
+    .site-header.has-hero:not(.is-scrolled) a > :global(img) {
+      filter: invert(1) brightness(1.6);
+      transition: filter 0.2s ease;
+    }
+    .site-header.has-hero:not(.is-scrolled) .menu-btn-bar {
+      background-color: #fff;
+    }
+  }
   @media (max-width: 767px) {
     .site-header {
       border-bottom: 1px solid var(--color-border);
@@ -162,7 +177,7 @@ const menuItems = [
       z-index: -1;
       max-height: none;
       height: 100dvh;
-      padding-top: 8.5rem;
+      padding-top: 7.5rem;
       overflow-y: auto;
       border-bottom: none;
       opacity: 0;
@@ -185,17 +200,20 @@ const menuItems = [
       gap: 0;
       padding-block: 0;
     }
+    /* Reference typography: restrained ~20px semibold rows with wide
+       vertical rhythm — not display-size headlines. */
     .menu-panel .menu-link {
       border-bottom: none;
-      padding: 2.25rem 0;
-      font-size: 1.75rem;
-      letter-spacing: -0.01em;
+      padding: 1.5rem 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.005em;
     }
     .menu-panel .menu-link :global(svg) {
       opacity: 1;
       transform: none;
-      width: 22px;
-      height: 22px;
+      width: 18px;
+      height: 18px;
       color: var(--color-ink);
     }
     /* Reference look: no strike-through treatment on the active item. */
@@ -251,6 +269,8 @@ const menuItems = [
   // paper after so content sliding underneath stays readable.
   const header = document.querySelector<HTMLElement>(".site-header");
   if (header) {
+    if (document.querySelector("[data-hero-overlap]"))
+      header.classList.add("has-hero");
     const onScroll = () => {
       if (window.scrollY > 32) header.classList.add("is-scrolled");
       else header.classList.remove("is-scrolled");

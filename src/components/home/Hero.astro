@@ -25,7 +25,7 @@ const ROUNDS = {
 };
 ---
 
-<section class="hero">
+<section class="hero" data-hero-overlap>
   <div class="hero-frame">
     <div class="hero-media">
       <video
@@ -150,9 +150,12 @@ const ROUNDS = {
   .hero-frame {
     padding: 0.5rem 0.75rem 0;
   }
+  /* Desktop: the reel slides under the transparent header so the first
+     screen is 100% video, Tesla-style. */
   @media (min-width: 768px) {
     .hero-frame {
       padding: 0;
+      margin-top: -5rem;
     }
   }
 
@@ -164,11 +167,9 @@ const ROUNDS = {
     display: flex;
     align-items: flex-end;
   }
-  /* Desktop: full-bleed, device-height takeover — the 5rem header plus
-     the video fill exactly the first screen, Tesla-style. */
   @media (min-width: 768px) {
     .hero-media {
-      min-height: calc(100svh - 5rem);
+      min-height: 100svh;
       border-radius: 0;
     }
   }
@@ -181,11 +182,14 @@ const ROUNDS = {
     object-fit: cover;
   }
 
-  /* Legibility scrim: stronger at the bottom-left where the copy sits */
+  /* Legibility scrims: strong at the bottom-left where the copy sits,
+     soft at the top so the inverted header stays readable over light
+     footage. */
   .hero-overlay {
     position: absolute;
     inset: 0;
     background:
+      linear-gradient(to bottom, rgb(0 0 0 / 0.32) 0%, transparent 16%),
       linear-gradient(
         to top,
         rgb(0 0 0 / 0.62) 0%,
