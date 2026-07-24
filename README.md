@@ -19,7 +19,8 @@ Migrated from WordPress (Elementor) to a fast, SEO-optimized, static-first site 
 | Email | [Resend](https://resend.com) |
 | Anti-spam | [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) |
 | Font | Poppins (Google Fonts) |
-| SEO | Per-page meta + OG + Twitter Cards + JSON-LD (`Article`, `BreadcrumbList`, `ItemList`), `@astrojs/sitemap` + custom image sitemap, `robots.txt` |
+| SEO | Per-page meta + OG + Twitter Cards + JSON-LD (`Article`, `BreadcrumbList`, `ItemList`, `VideoObject`), `@astrojs/sitemap` + custom image/video sitemap, `robots.txt` |
+| Video | H.264 reels + per-case-study clips in `public/videos/` (see **Video system**) |
 
 Most pages are **prerendered as static HTML** at build time. The contact form, its API handler, and the catch-all 410 routes (`/goods/`, `/b/`) run dynamically through the Vercel serverless function.
 
@@ -83,7 +84,7 @@ src/
 │   ├── home/        Hero, BeforeAfter, ClientsStrip, Testimonials, NorthFaceGrowthCTA
 │   ├── case-study/  Adventure, Challenge, Result, Worth, CaseStudyHeader, CaseStudyNav, RelatedCases
 │   ├── projects/    ProjectCard
-│   ├── contact/     ContactForm (per-field client-side validation + CTA gating)
+│   ├── contact/     ContactForm (per-field validation incl. E.164 WhatsApp, CTA gating)
 │   └── ui/          Logo, ArrowIcon, Placeholder
 ├── data/
 │   ├── projects.ts, testimonials.ts, clients.ts, home-before-after.ts
@@ -99,7 +100,7 @@ src/
 │   ├── api/contact.ts             POST        — SSR Resend handler
 │   ├── goods/[...slug].ts         GET → 410   — deindex spam from old WP
 │   ├── b/[...slug].ts             GET → 410   — deindex spam from old WP
-│   └── sitemap-images.xml.ts                  — custom image sitemap
+│   └── sitemap-images.xml.ts                  — custom image + video sitemap
 ├── styles/global.css        Tailwind v4 + design tokens
 └── env.d.ts
 public/
@@ -107,6 +108,8 @@ public/
 ├── og-default.png / og-default.svg
 ├── robots.txt
 ├── site.webmanifest
+├── sitemap-purge.xml        Spam URLs still indexed — forces recrawl of the 410s (delete once clear)
+├── videos/                  Hero reels (desktop/mobile) + per-case-study clips with poster JPGs
 └── images/                  Logos, avatars, brand artwork
 vercel.json                   trailingSlash + apex → www 308 redirect (excludes /goods, /b)
 ```
@@ -122,6 +125,20 @@ Content lives in typed TS modules in `src/data/`:
 - `clients.ts` — 6 brand logos displayed in the home strip.
 
 Edit these files to update copy — changes are reflected immediately in both the home page sections and the prerendered project detail pages.
+
+---
+
+## Video system
+
+The home hero is a full-bleed, device-height reel that slides under the transparent header (logo/burger invert to white until scroll). Two masters live in `public/videos/`:
+
+- `hero-desktop.mp4` (1920×1080) and `hero-mobile.mp4` (720×1280) — one round per client (Karta → Stori → mipOS → Truora), audio-free, H.264 `+faststart`, `<source media>` picks per viewport, matching poster JPGs per orientation.
+- A **brand chip** (logo + product label) syncs to the playing round via `timeupdate` and links to its case study — timestamps live in `ROUNDS` at the top of `Hero.astro`; update them whenever the reel composition changes.
+- A **pause/play control** (translucent square, `aria-pressed`) sits on the container grid, aligned with the burger.
+
+Case studies embed clips as typed `{ kind: "video" }` blocks (`ContentVideo` in `src/data/case-studies/types.ts`): landscape canonical `src` + optional portrait `mobileSrc` cropped via `mobileAspect`, lazy-loaded through IntersectionObserver (`preload="none"`, zero bytes until near the viewport). Each clip auto-emits `VideoObject` JSON-LD and a `<video:video>` sitemap entry via `extractCaseStudyVideos`.
+
+Encoding conventions (ffmpeg): H.264 CRF 21–24, `preset slow`, 24 fps, `-an`, `+faststart`; upscaled 720p sources get lanczos + light unsharp. Keep original exports (ideally 1920×1080+) — masters should be rebuilt from first-generation clips, never re-encoded over themselves.
 
 ---
 
@@ -175,8 +192,8 @@ The indexed spam lives on the **apex** (`comandos.me/goods/...`, `comandos.me/b/
 
 - Canonical origin is `https://www.comandos.me/` with trailing slashes enforced via `vercel.json`. Apex 308-redirects to www.
 - Per-page `<title>`, `<meta description>`, canonical, OG + Twitter Card tags via `src/components/layout/SEO.astro`. Per-page OG images derived from real artwork: case studies use their hero, the home and `/projects/` use the top featured case-study image.
-- Structured data (JSON-LD): `Person` + `Organization` (global), `WebSite`, `ItemList` (home), `CollectionPage` + `BreadcrumbList` (`/projects/`), `Article` + `BreadcrumbList` + per-image `ImageObject` (each case study), `ContactPage` + `BreadcrumbList` (`/contact/`).
-- Sitemaps: `/sitemap-index.xml` (via `@astrojs/sitemap`) plus a custom `/sitemap-images.xml` that lists every case-study image with title + caption for Google Image Search.
+- Structured data (JSON-LD): `Person` + `Organization` (global), `WebSite`, `ItemList` (home), `CollectionPage` + `BreadcrumbList` (`/projects/`), `Article` + `BreadcrumbList` + per-image `ImageObject` + per-clip `VideoObject` (each case study), `ContactPage` + `BreadcrumbList` (`/contact/`).
+- Sitemaps: `/sitemap-index.xml` (via `@astrojs/sitemap`) plus a custom `/sitemap-images.xml` that lists every case-study image (title + caption) **and video** (`<video:video>` with thumbnail, description, duration) for Google Image/Video Search. `/sitemap-purge.xml` lists residual indexed spam URLs to force Google to recrawl their 410s — delete it once coverage shows them gone.
 - `robots.txt` allows well-behaved AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended), blocks noisy scrapers (Semrush, Ahrefs, DotBot, MJ12), and points to both sitemaps.
 - Search Console / Bing verification can be added via the optional `PUBLIC_GSC_VERIFICATION` / `PUBLIC_BING_VERIFICATION` env vars (`BaseLayout.astro` injects the meta tags conditionally). The production property is already DNS-verified.
 
@@ -186,7 +203,8 @@ The indexed spam lives on the **apex** (`comandos.me/goods/...`, `comandos.me/b/
 
 - Skip-to-content link.
 - Semantic landmarks (`<header>`, `<main>`, `<footer>`, `<nav aria-label>`).
-- Burger menu wired with `aria-expanded` / `aria-controls`; ESC closes.
+- Burger menu (full-screen takeover on mobile, right drawer on desktop) wired with `aria-expanded` / `aria-controls`; ESC closes; body scroll locks while open.
+- Hero reel: visible pause/play control (`aria-pressed`), and `prefers-reduced-motion` swaps every autoplaying video for its poster.
 - Focus-visible outlines on all interactive elements.
 - Testimonials carousel respects `prefers-reduced-motion` (falls back to snap-scroll).
 - All images carry descriptive `alt`; decorative icons use `alt=""`.
