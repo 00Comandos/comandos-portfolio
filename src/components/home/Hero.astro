@@ -147,14 +147,15 @@ const ROUNDS = {
     background: var(--color-paper-soft);
   }
 
+  /* Full-bleed on every viewport: the reel slides under the transparent
+     header so the first screen is 100% video, Tesla-style. */
   .hero-frame {
-    padding: 0.5rem 0.75rem 0;
+    padding: 0;
+    /* Header is 5rem tall plus a 1px border on mobile — pull past both. */
+    margin-top: calc(-5rem - 1px);
   }
-  /* Desktop: the reel slides under the transparent header so the first
-     screen is 100% video, Tesla-style. */
   @media (min-width: 768px) {
     .hero-frame {
-      padding: 0;
       margin-top: -5rem;
     }
   }
@@ -162,16 +163,10 @@ const ROUNDS = {
   .hero-media {
     position: relative;
     overflow: hidden;
-    border-radius: 16px;
-    min-height: calc(74svh + 115px);
+    border-radius: 0;
+    min-height: 100svh;
     display: flex;
     align-items: flex-end;
-  }
-  @media (min-width: 768px) {
-    .hero-media {
-      min-height: 100svh;
-      border-radius: 0;
-    }
   }
 
   .hero-video {
@@ -204,9 +199,11 @@ const ROUNDS = {
   .hero-content {
     position: relative;
     width: 100%;
-    max-width: calc(1200px - 2rem);
+    max-width: 1200px;
     margin-inline: auto;
-    padding: 2rem 0.5rem 2.5rem;
+    /* Extra bottom room on mobile so the pause + brand cluster gets its
+       own row under the CTAs. */
+    padding: 2rem 1.25rem 6.5rem;
   }
   /* Frame padding is 0 on desktop, so the content mirrors .container-page
      exactly (max-width 1200 + 2rem inline padding) to stay on the grid. */
@@ -279,28 +276,29 @@ const ROUNDS = {
     border-bottom-color: #fff;
   }
 
-  /* Pause/play control — bottom-right cluster with the brand chip (our
-     copy owns the bottom-left corner, unlike the reference) */
+  /* Pause/play — reference style: translucent dark square, white icon.
+     Right edge rides the container-page grid so it lines up with the
+     burger; bottom lines up with the "Start a project" row. */
   .hero-pause {
     position: absolute;
-    right: 1rem;
-    bottom: 1rem;
+    right: 1.25rem;
+    bottom: 1.25rem;
     z-index: 2;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     display: grid;
     place-items: center;
     border: none;
-    border-radius: 999px;
-    background: rgb(255 255 255 / 0.88);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    color: var(--color-ink);
+    border-radius: 8px;
+    background: rgb(0 0 0 / 0.35);
+    color: #fff;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      opacity 0.2s ease;
   }
   .hero-pause:hover {
-    transform: scale(1.06);
+    background: rgb(0 0 0 / 0.55);
   }
   .hero-pause .icon-play {
     display: none;
@@ -313,8 +311,8 @@ const ROUNDS = {
   }
   @media (min-width: 768px) {
     .hero-pause {
-      right: 1.5rem;
-      bottom: 1.5rem;
+      right: max(calc((100% - 1200px) / 2 + 2rem), 2rem);
+      bottom: 3.5rem;
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -323,46 +321,44 @@ const ROUNDS = {
     }
   }
 
-  /* Brand chip — which client round is playing, links to its case study */
+  /* Brand chip — which client round is playing, links to its case study.
+     No pill: white logo + label straight over the scrim, sitting on the
+     same row as the "Start a project" CTA, left of the pause control. */
   .hero-brand {
     position: absolute;
-    right: 1rem;
-    top: 1rem;
+    right: calc(1.25rem + 48px + 14px);
+    bottom: 1.25rem;
     z-index: 2;
+    height: 48px;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.45rem 0.85rem;
-    border-radius: 999px;
-    background: rgb(255 255 255 / 0.88);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    gap: 0.55rem;
     text-decoration: none;
     font-family: var(--font-sans);
-    font-size: 0.78rem;
+    font-size: 0.82rem;
     font-weight: 500;
-    color: var(--color-ink);
+    color: #fff;
     opacity: 1;
-    transition: opacity 0.15s ease, transform 0.2s ease;
+    transition: opacity 0.15s ease;
   }
   .hero-brand:hover {
-    transform: translateY(-1px);
+    opacity: 0.8;
   }
   .hero-brand.is-swapping {
     opacity: 0;
   }
   .hero-brand img {
     display: block;
-    height: 14px;
+    height: 15px;
     width: auto;
+    /* Client logos ship dark — force them white over the reel. */
+    filter: brightness(0) invert(1);
   }
   @media (min-width: 768px) {
     .hero-brand {
-      top: auto;
-      bottom: 1.5rem;
-      right: calc(1.5rem + 52px);
-      font-size: 0.82rem;
-      padding: 0.5rem 1rem;
+      right: calc(max(calc((100% - 1200px) / 2 + 2rem), 2rem) + 48px + 16px);
+      bottom: 3.5rem;
+      font-size: 0.85rem;
     }
     .hero-brand img {
       height: 16px;

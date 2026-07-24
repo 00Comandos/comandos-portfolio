@@ -99,19 +99,25 @@ const menuItems = [
     backdrop-filter: blur(14px) saturate(1.1);
   }
 
-  /* Over the home hero reel (desktop): fully transparent bar with the
-     logo and burger inverted to white until the user scrolls. */
-  @media (min-width: 768px) {
-    .site-header.has-hero:not(.is-scrolled) {
-      background-color: transparent;
-    }
-    .site-header.has-hero:not(.is-scrolled) a > :global(img) {
-      filter: invert(1) brightness(1.6);
-      transition: filter 0.2s ease;
-    }
-    .site-header.has-hero:not(.is-scrolled) .menu-btn-bar {
-      background-color: #fff;
-    }
+  /* Over the home hero reel (all viewports): fully transparent bar with
+     the logo and burger inverted to white until the user scrolls. When
+     the menu takeover is open, revert to ink over the paper panel. */
+  .site-header.has-hero:not(.is-scrolled) {
+    background-color: transparent;
+    border-bottom-color: transparent;
+  }
+  .site-header.has-hero:not(.is-scrolled) a > :global(img) {
+    filter: invert(1) brightness(1.6);
+    transition: filter 0.2s ease;
+  }
+  .site-header.has-hero:not(.is-scrolled) .menu-btn-bar {
+    background-color: #fff;
+  }
+  .site-header.has-hero:has(.menu-panel[data-open="true"]) a > :global(img) {
+    filter: none;
+  }
+  .site-header.has-hero:has(.menu-panel[data-open="true"]) .menu-btn-bar {
+    background-color: var(--color-ink);
   }
   @media (max-width: 767px) {
     .site-header {
@@ -156,6 +162,9 @@ const menuItems = [
     top: 100%;
     background-color: var(--color-paper);
     border-bottom: 1px solid transparent;
+    /* Keep the paper bg from painting under the transparent border —
+       it rendered as a 1px light line under the header when closed. */
+    background-clip: padding-box;
     max-height: 0;
     overflow: hidden;
     transition:
@@ -200,14 +209,14 @@ const menuItems = [
       gap: 0;
       padding-block: 0;
     }
-    /* Reference typography: restrained ~20px semibold rows with wide
-       vertical rhythm — not display-size headlines. */
+    /* Reference typography: ~20px MEDIUM weight — lighter than the
+       display links, matching the restrained reference rows. */
     .menu-panel .menu-link {
       border-bottom: none;
       padding: 1.5rem 0;
       font-size: 1.25rem;
-      font-weight: 600;
-      letter-spacing: -0.005em;
+      font-weight: 500;
+      letter-spacing: 0;
     }
     .menu-panel .menu-link :global(svg) {
       opacity: 1;
