@@ -58,13 +58,23 @@ const menuItems = [
               aria-current={isActive(item.href) ? "page" : undefined}
             >
               <span>{item.label}</span>
-              <ArrowIcon size={18} />
+              <svg
+                class="menu-chevron"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
             </a>
           </li>
         ))
       }
       <li class="sm:hidden mt-3">
-        <a href="/contact" class="btn-primary w-fit">
+        <a href="/contact" class="btn-primary w-full justify-center">
           Contact Us
           <span class="arrow"><ArrowIcon /></span>
         </a>
@@ -152,7 +162,7 @@ const menuItems = [
       z-index: -1;
       max-height: none;
       height: 100dvh;
-      padding-top: 6.5rem;
+      padding-top: 8.5rem;
       overflow-y: auto;
       border-bottom: none;
       opacity: 0;
@@ -177,8 +187,8 @@ const menuItems = [
     }
     .menu-panel .menu-link {
       border-bottom: none;
-      padding: 1.4rem 0;
-      font-size: 1.625rem;
+      padding: 2.25rem 0;
+      font-size: 1.75rem;
       letter-spacing: -0.01em;
     }
     .menu-panel .menu-link :global(svg) {
@@ -188,8 +198,12 @@ const menuItems = [
       height: 22px;
       color: var(--color-ink);
     }
+    /* Reference look: no strike-through treatment on the active item. */
+    .menu-panel .menu-link.is-active > span {
+      text-decoration: none;
+    }
     .menu-panel .mt-3 {
-      margin-top: 2.5rem;
+      margin-top: 3rem;
     }
   }
 

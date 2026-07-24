@@ -49,6 +49,38 @@ const ROUNDS = {
         }
       </script>
 
+      <button
+        class="hero-pause"
+        id="heroPause"
+        type="button"
+        aria-label="Pause video"
+        aria-pressed="false"
+      >
+        <svg class="icon-pause" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <rect x="3" y="2" width="3.5" height="12" rx="1" />
+          <rect x="9.5" y="2" width="3.5" height="12" rx="1" />
+        </svg>
+        <svg class="icon-play" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M4.5 2.7a1 1 0 0 1 1.53-.85l8.1 5.3a1 1 0 0 1 0 1.7l-8.1 5.3a1 1 0 0 1-1.53-.85V2.7Z" />
+        </svg>
+      </button>
+      <script>
+        const pauseBtn = document.getElementById("heroPause");
+        const heroVideo = document.querySelector<HTMLVideoElement>(".hero-video");
+        if (pauseBtn && heroVideo) {
+          pauseBtn.addEventListener("click", () => {
+            const paused = heroVideo.paused;
+            if (paused) heroVideo.play().catch(() => {});
+            else heroVideo.pause();
+            pauseBtn.setAttribute("aria-pressed", String(!paused));
+            pauseBtn.setAttribute(
+              "aria-label",
+              paused ? "Pause video" : "Play video",
+            );
+          });
+        }
+      </script>
+
       <a class="hero-brand" id="heroBrand" href="/projects/">
         <img id="heroBrandLogo" src="" alt="" height="14" />
         <span id="heroBrandLabel"></span>
@@ -120,12 +152,10 @@ const ROUNDS = {
   }
   @media (min-width: 768px) {
     .hero-frame {
-      padding: 0 1rem;
+      padding: 0;
     }
   }
 
-  /* Reference proportion: card ≈ 74% of the viewport height so the next
-     section (clients strip) peeks above the fold. */
   .hero-media {
     position: relative;
     overflow: hidden;
@@ -134,10 +164,12 @@ const ROUNDS = {
     display: flex;
     align-items: flex-end;
   }
+  /* Desktop: full-bleed, device-height takeover — the 5rem header plus
+     the video fill exactly the first screen, Tesla-style. */
   @media (min-width: 768px) {
     .hero-media {
-      min-height: calc(74svh + 115px);
-      border-radius: 20px;
+      min-height: calc(100svh - 5rem);
+      border-radius: 0;
     }
   }
 
@@ -172,9 +204,12 @@ const ROUNDS = {
     margin-inline: auto;
     padding: 2rem 0.5rem 2.5rem;
   }
+  /* Frame padding is 0 on desktop, so the content mirrors .container-page
+     exactly (max-width 1200 + 2rem inline padding) to stay on the grid. */
   @media (min-width: 768px) {
     .hero-content {
-      padding: 3rem 1rem 3.5rem;
+      max-width: 1200px;
+      padding: 3rem 2rem 3.5rem;
     }
   }
 
@@ -240,6 +275,50 @@ const ROUNDS = {
     border-bottom-color: #fff;
   }
 
+  /* Pause/play control — bottom-right cluster with the brand chip (our
+     copy owns the bottom-left corner, unlike the reference) */
+  .hero-pause {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 2;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.88);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .hero-pause:hover {
+    transform: scale(1.06);
+  }
+  .hero-pause .icon-play {
+    display: none;
+  }
+  .hero-pause[aria-pressed="true"] .icon-pause {
+    display: none;
+  }
+  .hero-pause[aria-pressed="true"] .icon-play {
+    display: block;
+  }
+  @media (min-width: 768px) {
+    .hero-pause {
+      right: 1.5rem;
+      bottom: 1.5rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-pause {
+      display: none;
+    }
+  }
+
   /* Brand chip — which client round is playing, links to its case study */
   .hero-brand {
     position: absolute;
@@ -277,7 +356,7 @@ const ROUNDS = {
     .hero-brand {
       top: auto;
       bottom: 1.5rem;
-      right: 1.5rem;
+      right: calc(1.5rem + 52px);
       font-size: 0.82rem;
       padding: 0.5rem 1rem;
     }
