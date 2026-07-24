@@ -113,11 +113,16 @@ const menuItems = [
   .site-header.has-hero:not(.is-scrolled) .menu-btn-bar {
     background-color: #fff;
   }
-  .site-header.has-hero:has(.menu-panel[data-open="true"]) a > :global(img) {
-    filter: none;
-  }
+  /* Menu open: the X must read over the paper panel (all widths); the
+     logo reverts to ink only on mobile, where the panel covers it —
+     on desktop the drawer leaves the logo over the video. */
   .site-header.has-hero:has(.menu-panel[data-open="true"]) .menu-btn-bar {
     background-color: var(--color-ink);
+  }
+  @media (max-width: 767px) {
+    .site-header.has-hero:has(.menu-panel[data-open="true"]) a > :global(img) {
+      filter: none;
+    }
   }
   @media (max-width: 767px) {
     .site-header {
@@ -157,41 +162,54 @@ const menuItems = [
 
   .menu-panel {
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 100%;
+    position: fixed;
+    z-index: -1;
     background-color: var(--color-paper);
-    border-bottom: 1px solid transparent;
-    /* Keep the paper bg from painting under the transparent border —
-       it rendered as a 1px light line under the header when closed. */
-    background-clip: padding-box;
-    max-height: 0;
-    overflow: hidden;
-    transition:
-      max-height 0.35s ease,
-      border-color 0.2s ease;
+    overflow-y: auto;
+    visibility: hidden;
+    pointer-events: none;
   }
   .menu-panel[data-open="true"] {
-    max-height: 80vh;
-    border-bottom-color: var(--color-border);
+    visibility: visible;
+    pointer-events: auto;
   }
 
-  /* Mobile: full-screen takeover — airy rows, always-visible chevrons.
-     Negative z-index keeps the overlay under the header row inside the
-     header's stacking context, so the logo and the X stay on top. */
+  /* Shared takeover rows — reference typography: ~20px medium weight,
+     airy rhythm, always-visible chevrons, no dividers. */
+  .menu-panel ul {
+    gap: 0;
+    padding-block: 0;
+  }
+  .menu-panel .menu-link {
+    border-bottom: none;
+    padding: 1.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .menu-panel .menu-link :global(svg) {
+    opacity: 1;
+    transform: none;
+    width: 18px;
+    height: 18px;
+    color: var(--color-ink);
+  }
+  .menu-panel .menu-link.is-active > span {
+    text-decoration: none;
+  }
+  .menu-panel .mt-3 {
+    margin-top: 3rem;
+  }
+
+  /* Mobile: full-screen takeover. Negative z-index keeps the overlay
+     under the header row inside the header's stacking context, so the
+     logo and the X stay on top. */
   @media (max-width: 767px) {
     .menu-panel {
-      position: fixed;
       inset: 0;
-      z-index: -1;
-      max-height: none;
       height: 100dvh;
       padding-top: 7.5rem;
-      overflow-y: auto;
-      border-bottom: none;
       opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
       transform: translateY(6px);
       transition:
         opacity 0.25s ease,
@@ -199,38 +217,36 @@ const menuItems = [
         visibility 0.25s;
     }
     .menu-panel[data-open="true"] {
-      max-height: none;
       opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
       transform: translateY(0);
     }
+  }
+
+  /* Desktop: right-side drawer with the same rows — slides in over a
+     dimmed backdrop (spread shadow), mobile-like proportions. */
+  @media (min-width: 768px) {
+    .menu-panel {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: auto;
+      width: min(420px, 90vw);
+      height: 100dvh;
+      padding-top: 7.5rem;
+      transform: translateX(100%);
+      transition:
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.4s ease,
+        visibility 0.4s;
+    }
+    .menu-panel[data-open="true"] {
+      transform: translateX(0);
+      box-shadow:
+        0 0 0 100vmax rgb(0 0 0 / 0.35),
+        -32px 0 64px rgb(0 0 0 / 0.18);
+    }
     .menu-panel ul {
-      gap: 0;
-      padding-block: 0;
-    }
-    /* Reference typography: ~20px MEDIUM weight — lighter than the
-       display links, matching the restrained reference rows. */
-    .menu-panel .menu-link {
-      border-bottom: none;
-      padding: 1.5rem 0;
-      font-size: 1.25rem;
-      font-weight: 500;
-      letter-spacing: 0;
-    }
-    .menu-panel .menu-link :global(svg) {
-      opacity: 1;
-      transform: none;
-      width: 18px;
-      height: 18px;
-      color: var(--color-ink);
-    }
-    /* Reference look: no strike-through treatment on the active item. */
-    .menu-panel .menu-link.is-active > span {
-      text-decoration: none;
-    }
-    .menu-panel .mt-3 {
-      margin-top: 3rem;
+      padding-inline: 2.5rem;
     }
   }
 
