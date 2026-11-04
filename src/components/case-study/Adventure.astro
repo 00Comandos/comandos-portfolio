@@ -38,7 +38,7 @@ const renderProse = (body: string) =>
     .join("");
 
 type Props = { content: CaseStudyContent["adventure"] };
-const { content } = Astro.props;
+const { content } = Astro.props as Props;
 const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-media", "two-col-media", "before-after"];
 ---
 
