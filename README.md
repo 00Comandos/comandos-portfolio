@@ -96,7 +96,7 @@ src/
 │   ├── projects/index.astro       /projects/  — prerendered
 │   ├── projects/[slug].astro                  — 16 case studies, prerendered
 │   ├── contact.astro              /contact/   — SSR (reads ?status= for banners)
-│   ├── north-face-growth.astro                — prerendered long-form essay
+│   ├── method.astro (+ es/)       /method/    — prerendered; 301 from /north-face-growth/
 │   ├── api/contact.ts             POST        — SSR Resend handler
 │   ├── goods/[...slug].ts         GET → 410   — deindex spam from old WP
 │   ├── b/[...slug].ts             GET → 410   — deindex spam from old WP

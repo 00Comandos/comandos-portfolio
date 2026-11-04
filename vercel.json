@@ -2,6 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "trailingSlash": true,
   "redirects": [
+    { "source": "/north-face-growth/", "destination": "/method/", "permanent": true },
+    { "source": "/north-face-growth", "destination": "/method/", "permanent": true },
     {
       "source": "/:path((?!goods/|b/).*)",
       "has": [{ "type": "host", "value": "comandos.me" }],

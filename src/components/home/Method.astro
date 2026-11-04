@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { ui, type Lang } from "~/i18n";
+import { localizedPath, ui, type Lang } from "~/i18n";
 // One visual per step, pulled from real case-study work (no stock).
 import imgResearch from "~/assets/images/karta/Karta-GlobalApp-Interviews-2048x1026.webp";
 import imgStrategy from "~/assets/images/mipos-dark-kitchen/mipOS-DarkKitchen-UserJourney-comados-studio.png";
@@ -83,7 +83,7 @@ const STEP_SECONDS = 6;
     </ol>
 
     <div class="method-foot">
-      <a href="/north-face-growth/" class="method-cta">{t.method.cta}</a>
+      <a href={localizedPath("/method/", Astro.props.lang)} class="method-cta">{t.method.cta}</a>
       <button
         type="button"
         class="method-toggle"
