@@ -9,6 +9,18 @@ const { content } = Astro.props;
 // hairline cells with a huge number + label + caption. Icons/illustrations
 // are intentionally omitted here for a clean typographic band.
 const statCols = content.stats.length === 2 ? "res-cols-2" : "res-cols-3";
+
+// Split "+477%" → prefix "+", number 477, unit "%" so the numeral can be
+// set huge and thin with a small superscript unit (Karta "100+"), and so a
+// count-up has a clean target. Non-numeric values ("ROKU") stay whole.
+const splitValue = (v: string) => {
+  const m = v.match(/^([^\d]*?)(\d+(?:[.,]\d+)?)(.*)$/);
+  if (!m) return { pre: "", num: v, unit: "", count: null as number | null, decimals: 0 };
+  const [, pre, num, unit] = m;
+  const decimals = num.includes(".") ? num.split(".")[1].length : 0;
+  const count = num.includes(",") ? null : Number(num);
+  return { pre, num, unit, count, decimals };
+};
 const cardCols =
   content.cards && content.cards.length === 2 ? "res-cols-2" : "res-cols-3";
 ---
@@ -23,7 +35,26 @@ const cardCols =
       {
         content.stats.map((s) => (
           <div class="res-cell">
-            <dt class="res-value">{s.value}</dt>
+            {(() => {
+              const v = splitValue(s.value);
+              return (
+                <dt class="res-value">
+                  <span class="sr-only">{s.value}</span>
+                  <span aria-hidden="true" class="res-value-inner">
+                    {v.pre && <span class="res-unit res-pre">{v.pre}</span>}
+                    <span
+                      class="res-num"
+                      data-count={v.count ?? undefined}
+                      data-decimals={v.decimals || undefined}
+                      style={v.count !== null ? `min-width: ${v.num.length * 0.56}em;` : undefined}
+                    >
+                      {v.num}
+                    </span>
+                    {v.unit && <span class="res-unit">{v.unit}</span>}
+                  </span>
+                </dt>
+              );
+            })()}
             <dd class="res-text">
               <span class="res-stat-label">{s.label}</span>
               {s.caption && <span class="res-caption">{s.caption}</span>}
@@ -125,13 +156,37 @@ const cardCols =
     }
   }
 
+  /* Giant thin numerals (Karta "100+"): one per hairline column, sized to
+     the cell so 3–4 glyphs never overflow it. */
+  .res-cell {
+    container-type: inline-size;
+  }
   .res-value {
-    font-size: clamp(3rem, 6vw, 5.5rem);
-    font-weight: 500;
-    line-height: 0.95;
-    letter-spacing: -0.05em;
-    font-variant-numeric: tabular-nums;
+    font-size: clamp(4.5rem, 34cqi, 12rem);
+    font-weight: 300;
+    line-height: 0.85;
+    letter-spacing: -0.06em;
     color: var(--color-ink);
+    white-space: nowrap;
+  }
+  .res-value-inner {
+    display: flex;
+    align-items: flex-start;
+  }
+  .res-num {
+    font-variant-numeric: tabular-nums;
+  }
+  .res-unit {
+    font-size: 0.32em;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-top: 0.12em;
+    margin-left: 0.08em;
+  }
+  .res-pre {
+    margin-left: 0;
+    margin-right: 0.06em;
   }
   .res-text {
     display: flex;
@@ -176,3 +231,42 @@ const cardCols =
     background: var(--color-paper-soft);
   }
 </style>
+
+<script>
+  // One-time count-up when the band enters. The final value is in the
+  // HTML (no-JS / SEO); skipped under reduced motion or if already on screen.
+  const nums = document.querySelectorAll<HTMLElement>("#result .res-num[data-count]");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (nums.length && !reduce && "IntersectionObserver" in window) {
+    const run = (el: HTMLElement) => {
+      const target = Number(el.dataset.count);
+      const dec = Number(el.dataset.decimals || 0);
+      const t0 = performance.now();
+      const D = 1400;
+      const tick = (t: number) => {
+        const k = Math.min((t - t0) / D, 1);
+        const e = 1 - Math.pow(1 - k, 3);
+        el.textContent = (target * e).toFixed(dec);
+        if (k < 1) requestAnimationFrame(tick);
+        else el.textContent = el.dataset.final!;
+      };
+      requestAnimationFrame(tick);
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          io.unobserve(e.target);
+          run(e.target as HTMLElement);
+        });
+      },
+      { threshold: 0.6 },
+    );
+    nums.forEach((el) => {
+      if (el.getBoundingClientRect().top < window.innerHeight) return;
+      el.dataset.final = el.textContent ?? "";
+      el.textContent = (0).toFixed(Number(el.dataset.decimals || 0));
+      io.observe(el);
+    });
+  }
+</script>
