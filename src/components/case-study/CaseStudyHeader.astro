@@ -213,6 +213,14 @@ const heroWidths = [640, 960, 1280, 1600, 1920];
     line-height: 1.02;
     letter-spacing: -0.045em;
     color: var(--color-ink);
+    overflow-wrap: break-word;
+  }
+  /* Smallest phones: long single-word names ("RebajaTusCuentas") are
+     wider than a 320px column at the 2.5rem floor. */
+  @media (max-width: 359px) {
+    .csh-title {
+      font-size: 2.125rem;
+    }
   }
   .csh-desc {
     margin-top: 1.5rem;
