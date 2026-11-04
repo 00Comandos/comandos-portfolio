@@ -80,8 +80,8 @@ const link = (x: number) =>
       TEAM.map((n, i) => (
         <g class="a pv-pop" style={`--d:${0.7 + i * 0.12}s`}>
           <circle cx={n.x} cy={n.y} r="9" class="node" />
-          <circle cx={n.x} cy={n.y - 2} r="2.6" class="ink" />
-          <path d={`M${n.x - 4.5} ${n.y + 5} Q${n.x} ${n.y - 0.5} ${n.x + 4.5} ${n.y + 5}`} class="head" />
+          <circle cx={n.x} cy={n.y - 2.6} r="2.4" class="ink" />
+          <path d={`M${n.x - 4.6} ${n.y + 5.4} C${n.x - 4.6} ${n.y + 1} ${n.x + 4.6} ${n.y + 1} ${n.x + 4.6} ${n.y + 5.4}Z`} class="ink" />
         </g>
       ))
     }
@@ -182,12 +182,6 @@ const link = (x: number) =>
     fill: var(--color-paper);
     stroke: var(--color-ink);
     stroke-width: 0.9;
-  }
-  .head {
-    fill: none;
-    stroke: var(--color-ink);
-    stroke-width: 0.9;
-    stroke-linecap: round;
   }
   .svv-link {
     fill: none;

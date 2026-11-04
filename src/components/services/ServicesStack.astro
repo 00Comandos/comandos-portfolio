@@ -6,7 +6,10 @@
 //
 // Pattern: disclosure buttons (aria-expanded/aria-controls), one open at a
 // time. Panels are server-rendered (images go through astro:assets); JS
-// only toggles `hidden`. Desktop: stack left, panel right. Mobile: each
+// only toggles `.is-open`. Closed panels collapse with visibility:hidden
+// (out of the a11y tree and tab order) rather than display:none, which
+// would cancel the visuals' CSS animations that PhaseVisual's script
+// holds on to. Desktop: stack left, panel right. Mobile: each
 // panel opens inline under its layer. Without JS the first layer is open.
 import { Image } from "astro:assets";
 import { projects } from "~/data/projects";
@@ -85,11 +88,10 @@ const rowSm = (i: number) => (n - 1 - i) * 3 + 1;
             )}
 
             <div
-              class="ss-panel"
+              class:list={["ss-panel", { "is-open": l.i === 0 }]}
               id={`ss-panel-${l.id}`}
               role="region"
               aria-labelledby={`ss-layer-${l.id}`}
-              hidden={l.i !== 0}
               data-ss-panel={l.i}
               style={`--row-sm:${rowSm(l.i) + 1}`}
             >
@@ -165,7 +167,7 @@ const rowSm = (i: number) => (n - 1 - i) * 3 + 1;
           const on = k === i;
           b.setAttribute("aria-expanded", String(on));
           b.classList.toggle("is-active", on);
-          panels[k].hidden = !on;
+          panels[k].classList.toggle("is-open", on);
         });
         current = i;
         // Replay the panel's visual from its first frame.
@@ -454,8 +456,11 @@ const rowSm = (i: number) => (n - 1 - i) * 3 + 1;
     background: var(--color-paper);
     overflow: hidden;
   }
-  .ss-panel[hidden] {
-    display: none;
+  .ss-panel:not(.is-open) {
+    visibility: hidden;
+    height: 0;
+    margin: 0;
+    border-width: 0;
   }
   @media (min-width: 1024px) {
     .ss-panel {
