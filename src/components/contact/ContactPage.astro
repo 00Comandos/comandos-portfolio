@@ -252,6 +252,18 @@ const socials = [
     gap: 0.5rem 1.1rem;
     margin: 0;
   }
+  /* Invisible hit area so the small text links/button are easier to tap;
+     sized to stay inside the row/column gaps (no overlap). */
+  .contact-link,
+  .contact-copy {
+    position: relative;
+  }
+  .contact-link::after,
+  .contact-copy::after {
+    content: "";
+    position: absolute;
+    inset: -0.55rem -0.5rem;
+  }
   .contact-link {
     color: var(--color-ink);
     font-weight: 500;
