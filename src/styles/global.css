@@ -144,6 +144,20 @@
       padding-inline: 1.5rem;
     }
   }
+  /* Wide screens: case-study body sits in the right 61% column of the
+     1440 container (same split as the header / home hero); the left 39%
+     holds the sticky section nav. */
+  @media (min-width: 1200px) {
+    .cs-body {
+      max-width: 1440px;
+      padding-right: 2.375rem;
+      padding-left: calc(2.375rem + (min(100%, 1440px) - 4.75rem) * 0.39);
+    }
+  }
+  /* Readable measure for prose; media and headings use the full column. */
+  .cs-body :where(p) {
+    max-width: 42rem;
+  }
 
   /* Riotters pill: compact black capsule with a leading dot. The legacy
      `.arrow` child is hidden so existing markup keeps working. */

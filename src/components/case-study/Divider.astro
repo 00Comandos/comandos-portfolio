@@ -1,26 +1,17 @@
 ---
+/* Plain 1px hairline. `variant` is accepted for backwards compatibility
+   with content data ("hatched" | "line") but always renders the hairline. */
 type Props = {
   tone?: "dark" | "light";
   variant?: "hatched" | "line";
 };
-const { tone = "light", variant = "hatched" } = Astro.props;
+const { tone = "light" } = Astro.props;
 
-const hatchColor = tone === "dark" ? "rgba(255,255,255,0.35)" : "rgba(11,11,11,0.35)";
 const lineColor = tone === "dark" ? "rgba(255,255,255,0.2)" : "var(--color-border)";
 ---
 
-{
-  variant === "hatched" ? (
-    <div
-      class="my-10 md:my-14 h-[10px] w-full"
-      aria-hidden="true"
-      style={`background-image: repeating-linear-gradient(-45deg, ${hatchColor} 0 1px, transparent 1px 8px);`}
-    />
-  ) : (
-    <hr
-      class="my-10 md:my-14 border-0 h-px w-full"
-      aria-hidden="true"
-      style={`background-color: ${lineColor};`}
-    />
-  )
-}
+<hr
+  class="my-10 md:my-14 border-0 h-px w-full"
+  aria-hidden="true"
+  style={`background-color: ${lineColor};`}
+/>

@@ -69,13 +69,15 @@ const linkIconPath =
   .cs-nav {
     display: none;
   }
-  @media (min-width: 1100px) {
+  /* Sits in the left 39% column of the 1440 container; the body copy
+     (.cs-body) occupies the right 61% from the same breakpoint. */
+  @media (min-width: 1200px) {
     .cs-nav {
       display: block;
       position: fixed;
       top: 140px;
-      left: max(1.75rem, calc((100vw - 786px) / 2 - 180px));
-      width: 150px;
+      left: max(2.375rem, calc((100vw - 1440px) / 2 + 2.375rem));
+      width: 180px;
       z-index: 20;
       opacity: 0;
       pointer-events: none;
@@ -95,17 +97,19 @@ const linkIconPath =
     gap: 0.45rem;
     font-size: 0.8125rem;
     font-weight: 500;
-    color: var(--color-ink);
+    letter-spacing: -0.01em;
+    color: var(--color-muted);
     background: transparent;
     border: none;
     padding: 0;
     cursor: pointer;
     border-bottom: 1px solid transparent;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
     transition: color 0.25s ease;
   }
   .cs-copy:hover,
   .cs-copy:focus-visible {
+    color: var(--color-ink);
     border-bottom-color: currentColor;
   }
 
@@ -123,26 +127,28 @@ const linkIconPath =
     display: block;
     font-size: 0.875rem;
     font-weight: 500;
+    letter-spacing: -0.01em;
     color: var(--color-muted);
-    padding: 0.45rem 0 0.45rem 0.85rem;
+    padding: 0.4rem 0 0.4rem 0.875rem;
     margin-left: -1px;
-    border-left: 2px solid transparent;
+    border-left: 1px solid transparent;
     transition:
       color 0.18s ease,
-      border-color 0.2s ease,
-      font-weight 0.2s ease;
+      border-color 0.2s ease;
   }
   .cs-anchor:hover {
     color: var(--color-ink);
   }
   .cs-anchor[data-active="true"] {
     color: var(--color-ink);
-    font-weight: 600;
     border-left-color: var(--color-ink);
   }
 
   /* Dark theme (when sidebar sits over the Challenge section) */
-  .cs-nav[data-theme="dark"] .cs-copy,
+  .cs-nav[data-theme="dark"] .cs-copy {
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .cs-nav[data-theme="dark"] .cs-copy:hover,
   .cs-nav[data-theme="dark"] .cs-anchor:hover {
     color: #ffffff;
   }
@@ -187,7 +193,7 @@ const linkIconPath =
     transform: translate(-50%, 0);
     pointer-events: auto;
   }
-  @media (min-width: 1100px) {
+  @media (min-width: 1200px) {
     .cs-nav-mobile {
       display: none;
     }
