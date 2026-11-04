@@ -208,7 +208,7 @@ const LOGO_PATH =
 
   /* Pages that already carry the contact form don't need a
      second "Let's talk" in the footer. */
-  :global(body:has(form[action^="/api/contact"])) .footer-cta {
+  :global(body:has(form[action^="/api/contact"], .cta-case)) .footer-cta {
     display: none;
   }
   .footer-clock {
