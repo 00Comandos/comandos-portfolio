@@ -434,6 +434,10 @@ const STEP_SECONDS = 6;
     }
     .step-panel {
       display: block;
+      /* The body keeps a fixed width so it doesn't reflow while the card
+         grows; clip it so the hidden body of a narrow card (last one at
+         900–1100px) can't push the page sideways. */
+      overflow: hidden;
       opacity: 0;
       visibility: hidden;
       transition:
