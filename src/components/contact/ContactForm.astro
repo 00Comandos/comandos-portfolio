@@ -1,271 +1,317 @@
 ---
-import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+import type { Lang } from "~/i18n";
+import { contactCopy } from "~/i18n/contact";
 import {
   PROJECT_TYPES,
   PROJECT_TYPE_PRESETS,
   REFERRAL_SOURCES,
 } from "~/lib/contact";
 
+type Props = { lang: Lang };
+const { lang } = Astro.props;
+const t = contactCopy[lang];
+
 const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 const params = new URL(Astro.request.url).searchParams;
 const status = params.get("status");
+const reason = params.get("reason");
 const presetType = PROJECT_TYPE_PRESETS[params.get("type") ?? ""];
 
-const fieldClass =
-  "w-full rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-paper)] px-4 py-3 text-[0.95rem] focus:border-[color:var(--color-ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ink)]/15 transition-colors data-[invalid]:border-red-400 data-[invalid]:focus:ring-red-200";
-const labelClass =
-  "block text-xs font-semibold tracking-[0.12em] uppercase text-[color:var(--color-muted)]";
-const errorClass =
-  "hidden text-xs text-red-700 mt-0.5 leading-snug";
+// Client validation copy travels as JSON — the bundled script reads it.
+const clientCopy = JSON.stringify(t.errors);
+const action = lang === "es" ? "/api/contact?lang=es" : "/api/contact";
 ---
 
 {
   status === "success" && (
-    <div
-      role="status"
-      class="mb-8 rounded-md border border-[color:var(--color-accent-mint)] bg-[color:var(--color-accent-mint)]/10 p-4 text-sm"
-    >
-      <strong class="block">Thanks — your message is on its way.</strong>
-      We usually reply within one business day.
+    <div role="status" class="cf-banner">
+      <strong>
+        <span class="hl">{t.status.successTitle}</span>
+      </strong>
+      <span>{t.status.successBody}</span>
     </div>
   )
 }
 {
   status === "error" && (
-    <div
-      role="alert"
-      class="mb-8 rounded-md border border-red-300 bg-red-50 p-4 text-sm"
-    >
-      <strong class="block">Something went wrong.</strong>
-      <span class="block mt-1">
-        Please try again in a moment. If it keeps happening, ping us on the
-        social links in the footer and we'll sort it out.
-      </span>
+    <div role="alert" class="cf-banner cf-banner--error">
+      <strong>{t.status.errorTitle}</strong>
+      <span>{reason === "captcha" ? t.status.captchaBody : t.status.errorBody}</span>
     </div>
   )
 }
 
 <form
   method="POST"
-  action="/api/contact"
+  action={action}
   novalidate
-  class="grid gap-5"
+  class="cf"
+  data-contact-form
+  data-copy={clientCopy}
 >
-  <div class="grid gap-1.5">
-    <label class={labelClass} for="name">Name</label>
-    <input
-      class={fieldClass}
-      id="name"
-      name="name"
-      type="text"
-      required
-      minlength="2"
-      maxlength="120"
-      autocomplete="name"
-      aria-describedby="name-error"
-    />
-    <span id="name-error" data-error class={errorClass} />
+  <fieldset class="cf-field cf-chips-field" data-group="projectType">
+    <legend class="cf-label">{t.form.projectType}</legend>
+    <div class="cf-chips">
+      {
+        PROJECT_TYPES.map((value) => (
+          <label class="cf-chip">
+            <input
+              type="radio"
+              name="projectType"
+              value={value}
+              required
+              checked={value === presetType}
+              aria-describedby="projectType-error"
+            />
+            <span>{t.projectTypeLabels[value]}</span>
+          </label>
+        ))
+      }
+    </div>
+    <span id="projectType-error" data-error class="cf-error" hidden></span>
+  </fieldset>
+
+  <div class="cf-row">
+    <div class="cf-field">
+      <label class="cf-label" for="name">{t.form.name}</label>
+      <input
+        class="cf-input"
+        id="name"
+        name="name"
+        type="text"
+        required
+        minlength="2"
+        maxlength="120"
+        autocomplete="name"
+        aria-describedby="name-error"
+      />
+      <span id="name-error" data-error class="cf-error" hidden></span>
+    </div>
+
+    <div class="cf-field">
+      <label class="cf-label" for="email">{t.form.email}</label>
+      <input
+        class="cf-input"
+        id="email"
+        name="email"
+        type="email"
+        required
+        maxlength="200"
+        autocomplete="email"
+        aria-describedby="email-error"
+      />
+      <span id="email-error" data-error class="cf-error" hidden></span>
+    </div>
   </div>
 
-  <div class="grid gap-1.5">
-    <label class={labelClass} for="email">Email</label>
-    <input
-      class={fieldClass}
-      id="email"
-      name="email"
-      type="email"
-      required
-      maxlength="200"
-      autocomplete="email"
-      aria-describedby="email-error"
-    />
-    <span id="email-error" data-error class={errorClass} />
+  <div class="cf-row">
+    <div class="cf-field">
+      <label class="cf-label" for="whatsapp">{t.form.whatsapp}</label>
+      <input
+        class="cf-input"
+        id="whatsapp"
+        name="whatsapp"
+        type="tel"
+        required
+        maxlength="24"
+        inputmode="tel"
+        autocomplete="tel"
+        placeholder="+52 55 1234 5678"
+        aria-describedby="whatsapp-hint whatsapp-error"
+      />
+      <span id="whatsapp-hint" class="cf-hint">{t.form.whatsappHint}</span>
+      <span id="whatsapp-error" data-error class="cf-error" hidden></span>
+    </div>
+
+    <div class="cf-field">
+      <label class="cf-label" for="company">{t.form.company}</label>
+      <input
+        class="cf-input"
+        id="company"
+        name="company"
+        type="text"
+        required
+        minlength="2"
+        maxlength="200"
+        autocomplete="organization"
+        aria-describedby="company-error"
+      />
+      <span id="company-error" data-error class="cf-error" hidden></span>
+    </div>
   </div>
 
-  <div class="grid gap-1.5">
-    <label class={labelClass} for="whatsapp">WhatsApp</label>
-    <input
-      class={fieldClass}
-      id="whatsapp"
-      name="whatsapp"
-      type="tel"
-      required
-      maxlength="24"
-      inputmode="tel"
-      autocomplete="tel"
-      placeholder="+52 55 1234 5678"
-      aria-describedby="whatsapp-hint whatsapp-error"
-    />
-    <span
-      id="whatsapp-hint"
-      class="text-xs text-[color:var(--color-muted)] leading-snug"
-    >
-      Include your country code — we'll reach out on WhatsApp.
-    </span>
-    <span id="whatsapp-error" data-error class={errorClass} />
+  <div class="cf-field">
+    <label class="cf-label" for="referralSource">{t.form.referralSource}</label>
+    <div class="cf-select-wrap">
+      <select
+        class="cf-input cf-select"
+        id="referralSource"
+        name="referralSource"
+        required
+        aria-describedby="referralSource-error"
+      >
+        <option value="">{t.form.referralPlaceholder}</option>
+        {
+          REFERRAL_SOURCES.map((value) => (
+            <option value={value}>{t.referralLabels[value]}</option>
+          ))
+        }
+      </select>
+    </div>
+    <span id="referralSource-error" data-error class="cf-error" hidden></span>
   </div>
 
-  <div class="grid gap-1.5">
-    <label class={labelClass} for="company">Company</label>
-    <input
-      class={fieldClass}
-      id="company"
-      name="company"
-      type="text"
-      required
-      minlength="2"
-      maxlength="200"
-      autocomplete="organization"
-      aria-describedby="company-error"
-    />
-    <span id="company-error" data-error class={errorClass} />
-  </div>
-
-  <div class="grid gap-1.5">
-    <label class={labelClass} for="projectType">Project type</label>
-    <select
-      class={fieldClass}
-      id="projectType"
-      name="projectType"
-      required
-      aria-describedby="projectType-error"
-    >
-      <option value="">Choose one…</option>
-      {PROJECT_TYPES.map((t) => (
-        <option value={t} selected={t === presetType}>{t}</option>
-      ))}
-    </select>
-    <span id="projectType-error" data-error class={errorClass} />
-  </div>
-
-  <div class="grid gap-1.5">
-    <label class={labelClass} for="referralSource">How did you hear about us?</label>
-    <select
-      class={fieldClass}
-      id="referralSource"
-      name="referralSource"
-      required
-      aria-describedby="referralSource-error"
-    >
-      <option value="">Choose one…</option>
-      {REFERRAL_SOURCES.map((s) => <option value={s}>{s}</option>)}
-    </select>
-    <span id="referralSource-error" data-error class={errorClass} />
-  </div>
-
-  <div class="grid gap-1.5">
-    <label class={labelClass} for="message">Message</label>
+  <div class="cf-field">
+    <label class="cf-label" for="message">{t.form.message}</label>
     <textarea
-      class={`${fieldClass} min-h-[160px] resize-y`}
+      class="cf-input cf-textarea"
       id="message"
       name="message"
       required
       minlength="10"
       maxlength="4000"
-      aria-describedby="message-error"
-    />
-    <span id="message-error" data-error class={errorClass} />
+      rows="4"
+      placeholder={t.form.messagePlaceholder}
+      aria-describedby="message-error"></textarea>
+    <span id="message-error" data-error class="cf-error" hidden></span>
   </div>
 
   <div aria-hidden="true" class="hidden">
     <label>
-      Website
+      {t.form.honeypot}
       <input name="website" type="text" tabindex="-1" autocomplete="off" />
     </label>
   </div>
 
-  {
-    turnstileKey && (
-      <>
-        <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="light" />
-        <script
-          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-          async
-          defer
-        />
-      </>
-    )
-  }
-
-  <button
-    type="submit"
-    class="btn-primary justify-center w-fit disabled:opacity-50 disabled:cursor-not-allowed"
-    data-submit
-  >
-    Send message
-    <ArrowIcon />
-  </button>
+  <div class="cf-footer">
+    {
+      turnstileKey && (
+        <>
+          <div
+            class="cf-turnstile"
+            data-sitekey={turnstileKey}
+            data-theme="light"
+            data-language={lang}
+          />
+          <script
+            src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+            async
+            defer
+          />
+        </>
+      )
+    }
+    <button type="submit" class="btn-primary cf-submit" data-submit>
+      {t.form.submit}
+    </button>
+  </div>
 </form>
 
 <script>
   type FieldEl = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
 
-  // Friendly, field-aware microcopy — no "this field is required" walls.
-  const REQUIRED_COPY: Record<string, string> = {
-    name: "We'd love to know who we're talking to.",
-    email: "Leave us an email so the reply has somewhere to land.",
-    whatsapp: "Drop your WhatsApp — it's the fastest way to reach us.",
-    company: "Which company or project is this for?",
-    projectType: "Pick the closest match — it helps us route your project.",
-    referralSource: "We're curious — how did you land here?",
-    message: "Tell us about your project — that's the important part.",
+  type Copy = {
+    required: Record<string, string>;
+    requiredFallback: string;
+    email: string;
+    tooShort: string;
+    tooLong: string;
+    pattern: string;
+    generic: string;
+    whatsappPlus: string;
+    whatsappChars: string;
+    whatsappLength: string;
   };
 
-  function messageFor(field: FieldEl): string {
-    const v = field.validity;
-    if (v.valueMissing)
-      return REQUIRED_COPY[field.id] ?? "A quick answer here helps us help you.";
-    if (v.customError) return field.validationMessage;
-    if (v.typeMismatch && field.type === "email")
-      return "That email looks off — mind double-checking it?";
-    if (v.tooShort)
-      return `A few more characters, please — at least ${field.minLength} (you're at ${field.value.trim().length}).`;
-    if (v.tooLong)
-      return `Love the detail, but let's keep it under ${field.maxLength} characters.`;
-    if (v.patternMismatch) return "That format doesn't look quite right.";
-    return "Something looks off here — mind taking another look?";
+  /** One validated control per field name — a radio group counts once. */
+  type Control = {
+    name: string;
+    /** Element whose validity we read (any radio of a group works). */
+    el: FieldEl;
+    /** Elements that carry aria-invalid. */
+    targets: FieldEl[];
+    /** Wrapper flagged with data-invalid for styling. */
+    wrap: HTMLElement | null;
+    errEl: HTMLElement | null;
+    focus: () => void;
+  };
+
+  function fill(tpl: string, vars: Record<string, string | number>): string {
+    return tpl.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ""));
   }
 
-  function setError(field: FieldEl, msg: string | null) {
-    // aria-describedby may list several ids (hint + error) — pick the
-    // element flagged as the error slot.
-    const describedBy = field.getAttribute("aria-describedby");
-    const errEl =
-      describedBy
-        ?.split(/\s+/)
-        .map((id) => document.getElementById(id))
-        .find((el) => el?.hasAttribute("data-error")) ?? null;
+  function messageFor(c: Control, copy: Copy): string {
+    const field = c.el;
+    const v = field.validity;
+    if (v.valueMissing) return copy.required[c.name] ?? copy.requiredFallback;
+    if (v.customError) return field.validationMessage;
+    if (v.typeMismatch && field.type === "email") return copy.email;
+    if (v.tooShort && "minLength" in field)
+      return fill(copy.tooShort, {
+        min: field.minLength,
+        count: field.value.trim().length,
+      });
+    if (v.tooLong && "maxLength" in field)
+      return fill(copy.tooLong, { max: field.maxLength });
+    if (v.patternMismatch) return copy.pattern;
+    return copy.generic;
+  }
+
+  function setError(c: Control, msg: string | null) {
     if (msg) {
-      field.dataset.invalid = "true";
-      field.setAttribute("aria-invalid", "true");
-      if (errEl) {
-        errEl.textContent = msg;
-        errEl.classList.remove("hidden");
+      c.wrap?.setAttribute("data-invalid", "");
+      c.targets.forEach((t) => t.setAttribute("aria-invalid", "true"));
+      if (c.errEl) {
+        c.errEl.textContent = msg;
+        c.errEl.hidden = false;
       }
     } else {
-      delete field.dataset.invalid;
-      field.removeAttribute("aria-invalid");
-      if (errEl) {
-        errEl.textContent = "";
-        errEl.classList.add("hidden");
+      c.wrap?.removeAttribute("data-invalid");
+      c.targets.forEach((t) => t.removeAttribute("aria-invalid"));
+      if (c.errEl) {
+        c.errEl.textContent = "";
+        c.errEl.hidden = true;
       }
     }
   }
 
   function init() {
     const form = document.querySelector<HTMLFormElement>(
-      'form[action="/api/contact"]',
+      "form[data-contact-form]",
     );
     if (!form) return;
+    const copy = JSON.parse(form.dataset.copy ?? "{}") as Copy;
 
-    const submitBtn = form.querySelector<HTMLButtonElement>("[data-submit]");
-    if (!submitBtn) return;
-
-    const fields = Array.from(
-      form.querySelectorAll<FieldEl>(
+    // Build one control per field name, in DOM order.
+    const controls: Control[] = [];
+    const seen = new Set<string>();
+    form
+      .querySelectorAll<FieldEl>(
         "input[required], select[required], textarea[required]",
-      ),
-    );
+      )
+      .forEach((el) => {
+        if (seen.has(el.name)) return;
+        seen.add(el.name);
+        const isRadio = el instanceof HTMLInputElement && el.type === "radio";
+        const group = isRadio
+          ? Array.from(
+              form.querySelectorAll<HTMLInputElement>(
+                `input[type="radio"][name="${el.name}"]`,
+              ),
+            )
+          : [el];
+        controls.push({
+          name: el.name,
+          el,
+          targets: group,
+          wrap: isRadio
+            ? el.closest<HTMLElement>("fieldset")
+            : el.closest<HTMLElement>(".cf-field"),
+          errEl: document.getElementById(`${el.name}-error`),
+          focus: () =>
+            (group.find((r) => (r as HTMLInputElement).checked) ?? group[0]).focus(),
+        });
+      });
 
     // WhatsApp: E.164-style check — must start with a country code (+),
     // 7–15 digits, separators allowed. Registered before the generic
@@ -277,17 +323,11 @@ const errorClass =
         const digits = v.replace(/\D/g, "");
         if (!v) whatsapp.setCustomValidity("");
         else if (!v.startsWith("+"))
-          whatsapp.setCustomValidity(
-            "Start with your country code — +52, +57, +1…",
-          );
+          whatsapp.setCustomValidity(copy.whatsappPlus);
         else if (!/^\+[0-9\s().-]+$/.test(v))
-          whatsapp.setCustomValidity(
-            "Numbers only — spaces, dashes and parentheses are fine.",
-          );
+          whatsapp.setCustomValidity(copy.whatsappChars);
         else if (digits.length < 7 || digits.length > 15)
-          whatsapp.setCustomValidity(
-            "That looks incomplete — a full number runs 7 to 15 digits.",
-          );
+          whatsapp.setCustomValidity(copy.whatsappLength);
         else whatsapp.setCustomValidity("");
       };
       whatsapp.addEventListener("input", validateWhatsapp);
@@ -295,38 +335,43 @@ const errorClass =
       validateWhatsapp();
     }
 
-    function refreshSubmitState() {
-      const allValid = fields.every((f) => f.validity.valid);
-      submitBtn!.disabled = !allValid;
-    }
+    const check = (c: Control) =>
+      setError(c, c.el.validity.valid ? null : messageFor(c, copy));
 
-    fields.forEach((field) => {
-      field.addEventListener("blur", () => {
-        field.dataset.touched = "true";
-        setError(field, field.validity.valid ? null : messageFor(field));
-      });
-      field.addEventListener("input", () => {
-        if (field.dataset.touched === "true") {
-          setError(field, field.validity.valid ? null : messageFor(field));
-        }
-        refreshSubmitState();
-      });
-      field.addEventListener("change", refreshSubmitState);
-    });
-
-    form.addEventListener("submit", (e) => {
-      const firstInvalid = fields.find((f) => !f.validity.valid);
-      if (firstInvalid) {
-        e.preventDefault();
-        fields.forEach((f) => {
-          f.dataset.touched = "true";
-          setError(f, f.validity.valid ? null : messageFor(f));
+    controls.forEach((c) => {
+      const touched = () => c.wrap?.dataset.touched === "true";
+      c.targets.forEach((t) => {
+        t.addEventListener("input", () => {
+          if (touched()) check(c);
         });
-        firstInvalid.focus();
-      }
+        t.addEventListener("change", () => {
+          // Picking a chip / option is a deliberate answer — validate now.
+          if (c.wrap) c.wrap.dataset.touched = "true";
+          check(c);
+        });
+      });
+      // Text fields validate on blur; radio groups only once the focus
+      // leaves the whole group (arrowing between chips isn't a blur).
+      c.wrap?.addEventListener("focusout", (e) => {
+        const next = (e as FocusEvent).relatedTarget as Node | null;
+        if (next && c.wrap!.contains(next)) return;
+        c.wrap!.dataset.touched = "true";
+        check(c);
+      });
     });
 
-    refreshSubmitState();
+    // Submit stays enabled: an attempt paints every error and focuses the
+    // first invalid field (a disabled button explains nothing).
+    form.addEventListener("submit", (e) => {
+      const firstInvalid = controls.find((c) => !c.el.validity.valid);
+      if (!firstInvalid) return;
+      e.preventDefault();
+      controls.forEach((c) => {
+        if (c.wrap) c.wrap.dataset.touched = "true";
+        check(c);
+      });
+      firstInvalid.focus();
+    });
   }
 
   if (document.readyState === "loading") {
@@ -335,3 +380,203 @@ const errorClass =
     init();
   }
 </script>
+
+<style>
+  .cf {
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 640px) {
+    .cf {
+      gap: 2.25rem;
+    }
+  }
+
+  .cf-field {
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+    min-width: 0;
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+  .cf-row {
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 640px) {
+    .cf-row {
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+  }
+
+  .cf-label {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+    padding: 0;
+  }
+
+  /* Underline-only inputs (Tubik). */
+  .cf-input {
+    width: 100%;
+    appearance: none;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    border-radius: 0;
+    padding: 0.45rem 0 0.7rem;
+    font: inherit;
+    font-size: 1.0625rem;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+    transition: border-color 0.15s ease;
+  }
+  .cf-input::placeholder {
+    color: var(--color-muted-soft);
+  }
+  .cf-input:hover {
+    border-bottom-color: var(--color-muted-soft);
+  }
+  .cf-input:focus,
+  .cf-input:focus-visible {
+    outline: none;
+    border-bottom-color: var(--color-ink);
+    box-shadow: 0 1px 0 0 var(--color-ink);
+  }
+  .cf-field[data-invalid] .cf-input {
+    border-bottom-color: var(--color-accent-crimson);
+  }
+  .cf-field[data-invalid] .cf-input:focus {
+    box-shadow: 0 1px 0 0 var(--color-accent-crimson);
+  }
+
+  .cf-textarea {
+    min-height: 7.5rem;
+    resize: vertical;
+    line-height: 1.5;
+  }
+
+  .cf-select-wrap {
+    position: relative;
+  }
+  .cf-select {
+    padding-right: 2rem;
+    cursor: pointer;
+  }
+  .cf-select:invalid {
+    color: var(--color-muted);
+  }
+  .cf-select-wrap::after {
+    content: "";
+    position: absolute;
+    right: 0.3rem;
+    top: 45%;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 1.5px solid var(--color-ink);
+    border-bottom: 1.5px solid var(--color-ink);
+    transform: translateY(-50%) rotate(45deg);
+    pointer-events: none;
+  }
+
+  .cf-hint {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--color-muted);
+  }
+  .cf-error {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--color-accent-crimson);
+  }
+  .cf-error[hidden] {
+    display: none;
+  }
+
+  /* Selectable pill chips (Tubik) — real radios, visually hidden. */
+  .cf-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+  .cf-chips-field .cf-label {
+    margin-bottom: 0.5rem;
+  }
+  .cf-chip {
+    position: relative;
+    display: inline-flex;
+  }
+  .cf-chip input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .cf-chip span {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.95rem;
+    border-radius: var(--radius-full);
+    background: var(--color-grey);
+    color: var(--color-ink);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    border: 1px solid transparent;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+    pointer-events: none;
+  }
+  .cf-chip:hover span {
+    background: var(--color-border);
+  }
+  .cf-chip input:checked + span {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .cf-chip input:focus-visible + span {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+
+  .cf-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+  .cf-submit {
+    margin-left: auto;
+    padding: 0.8rem 1.6rem 0.8rem 1.4rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  /* Server-round-trip status banners. */
+  .cf-banner {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 2.5rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-sm);
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+  .cf-banner strong {
+    font-weight: 500;
+    font-size: 1.0625rem;
+  }
+  .cf-banner--error {
+    border-color: var(--color-accent-crimson);
+  }
+</style>

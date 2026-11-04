@@ -7,16 +7,21 @@ import {
 
 export const prerender = false;
 
-function redirect(url: string) {
-  return new Response(null, { status: 303, headers: { Location: url } });
-}
-
 export const POST: APIRoute = async ({ request, clientAddress }) => {
+  // The ES form posts to `/api/contact?lang=es` so the visitor lands back
+  // on the Spanish page. Field names and validation are unchanged.
+  const page =
+    new URL(request.url).searchParams.get("lang") === "es"
+      ? "/es/contact"
+      : "/contact";
+  const redirect = (query: string) =>
+    new Response(null, { status: 303, headers: { Location: `${page}?${query}` } });
+
   let form: FormData;
   try {
     form = await request.formData();
   } catch {
-    return redirect("/contact?status=error&reason=bad-request");
+    return redirect("status=error&reason=bad-request");
   }
 
   const payload = {
@@ -34,22 +39,22 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (!parsed.success) {
     const firstIssue = parsed.error.issues[0]?.message ?? "Invalid input.";
     return redirect(
-      `/contact?status=error&reason=${encodeURIComponent(firstIssue)}`,
+      `status=error&reason=${encodeURIComponent(firstIssue)}`,
     );
   }
 
   const token = form.get("cf-turnstile-response")?.toString() ?? null;
   const human = await verifyTurnstile(token, clientAddress ?? null);
   if (!human) {
-    return redirect("/contact?status=error&reason=captcha");
+    return redirect("status=error&reason=captcha");
   }
 
   try {
     await sendContactEmail(parsed.data);
   } catch (err) {
     console.error("[contact] send failed:", err);
-    return redirect("/contact?status=error&reason=send");
+    return redirect("status=error&reason=send");
   }
 
-  return redirect("/contact?status=success");
+  return redirect("status=success");
 };
