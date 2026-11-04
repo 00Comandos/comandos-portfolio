@@ -9,6 +9,7 @@ import Adventure from "~/components/case-study/Adventure.astro";
 import Worth from "~/components/case-study/Worth.astro";
 import Result from "~/components/case-study/Result.astro";
 import RelatedCases from "~/components/case-study/RelatedCases.astro";
+import CaseCTA from "~/components/case-study/CaseCTA.astro";
 import { projects, getProjectBySlug, getRelatedProjects } from "~/data/projects";
 import { getCaseStudy } from "~/data/case-studies";
 import {
@@ -197,6 +198,7 @@ const jsonLd = [
         <Adventure content={caseStudy.adventure} />
         <Worth content={caseStudy.worth} />
         <Result content={caseStudy.result} />
+        <CaseCTA brand={project.brand} />
         <RelatedCases cases={related} />
       </>
     ) : (
