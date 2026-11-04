@@ -1,0 +1,354 @@
+---
+// "The reality today" — four founder pains before the services, each with
+// a small isometric line illustration (1px ink, greys, one teal accent).
+import { ui, type Lang } from "~/i18n";
+import { box, fitViewBox, pt, type Faces, type IsoGrid } from "./iso";
+
+type Props = { lang: Lang };
+const { lang } = Astro.props;
+const p = ui[lang].servicesPage.pains;
+const num = (i: number) => String(i + 1).padStart(2, "0");
+
+type Shape = Faces & { kind?: "solid" | "acc" | "ghost" | "dash"; cls?: string };
+
+// 01 · steps to value, the ball stalls before the third step.
+const g1: IsoGrid = { ox: 64, oy: 70, w: 20, h: 11.5 };
+const steps: Shape[] = [0, 1, 2, 3, 4].map((i) => ({
+  ...box(g1, i, 0, 6 + i * 7, { gap: 0.04 }),
+  kind: i < 2 ? "acc" : i === 2 ? "solid" : "dash",
+}));
+const [bx, by] = pt(g1, 2.5, 0.5, 6 + 2 * 7);
+
+// 02 · a 3×3 grid of tiles with one lifted out of place and one skewed.
+const g2: IsoGrid = { ox: 120, oy: 52, w: 20, h: 11.5 };
+const grid2: Shape[] = [];
+for (let s = 0; s <= 4; s++) {
+  for (let i = 0; i < 3; i++) {
+    const j = s - i;
+    if (j < 0 || j > 2) continue;
+    if (i === 1 && j === 0) {
+      grid2.push({ ...box(g2, i, j, 4), kind: "ghost" });
+      continue;
+    }
+    const off = i === 2 && j === 2 ? 0.18 : 0;
+    grid2.push({ ...box(g2, i + off, j - off / 2, 4), kind: "solid" });
+  }
+}
+const floater: Shape = { ...box(g2, 1.35, -0.25, 34, { z0: 30 }), kind: "solid" };
+
+// 03 · three slabs stacked, the top layer (leadership) is missing.
+const g3: IsoGrid = { ox: 120, oy: 78, w: 22, h: 12.7 };
+const slabs: Shape[] = [0, 1, 2].map((k) => ({
+  ...box(g3, 0, 0, k * 15 + 5, { di: 2, dj: 2, z0: k * 15, gap: 0 }),
+  kind: "solid",
+}));
+const missing: Shape = { ...box(g3, 0, 0, 50, { di: 2, dj: 2, z0: 45, gap: 0 }), kind: "ghost" };
+const posts = ([[0, 2], [2, 2], [2, 0]] as const).flatMap(([i, j]) =>
+  [0, 1, 2].map((k) => {
+    const a = pt(g3, i, j, k * 15 + 5);
+    const b = pt(g3, i, j, (k + 1) * 15);
+    return `M${a.join(" ")} L${b.join(" ")}`;
+  }),
+);
+
+// 04 · bars nobody measured (dashed), one open question.
+const g4: IsoGrid = { ox: 88, oy: 84, w: 18, h: 10.4 };
+const heights = [22, 46, 30, 58];
+const bars: Shape[] = heights.map((z, i) => ({ ...box(g4, i, 0, z, { gap: 0.18 }), kind: "dash" }));
+const [qx, qy] = pt(g4, 3.5, 0.5, 58 + 16);
+
+const art: { shapes: Shape[]; extra?: [number, number][] }[] = [
+  { shapes: steps, extra: [[bx, by - 13]] },
+  { shapes: [...grid2, floater] },
+  { shapes: [...slabs, missing] },
+  { shapes: bars, extra: [[qx, qy - 10]] },
+];
+// Each drawing is cropped to its own bounds so all four share one height.
+const views = art.map((a) =>
+  fitViewBox(
+    a.shapes.flatMap((s) => [s.top, s.left, s.right]),
+    a.extra,
+  ),
+);
+---
+
+<section class="sp" aria-labelledby="sp-heading">
+  <div class="container-page">
+    <div class="sp-head">
+      <p class="eyebrow">{p.eyebrow}</p>
+      <div>
+        <h2 id="sp-heading" class="sp-h2">
+          {p.title} <span class="hl">{p.titleHl}</span>
+        </h2>
+        <p class="sp-sub">{p.sub}</p>
+      </div>
+    </div>
+
+    <ol class="sp-grid">
+      {
+        p.items.map((item, n) => (
+          <li class="sp-cell">
+            <svg class={`sp-art sp-art-${n + 1}`} viewBox={views[n]} aria-hidden="true" focusable="false">
+              {n === 2 && posts.map((d) => <path d={d} class="sp-post" />)}
+              {art[n].shapes.map((s, k) => (
+                <g
+                  class:list={[
+                    "sp-shape",
+                    `is-${s.kind}`,
+                    { "sp-float": n === 1 && k === art[n].shapes.length - 1 },
+                    { "sp-missing": n === 2 && k === art[n].shapes.length - 1 },
+                  ]}
+                >
+                  <path d={s.left} class="f-left" />
+                  <path d={s.right} class="f-right" />
+                  <path d={s.top} class="f-top" />
+                </g>
+              ))}
+              {n === 0 && (
+                <g class="sp-ball">
+                  <circle cx={bx} cy={by - 6} r="6" class="sp-ball-c" />
+                </g>
+              )}
+              {n === 3 && (
+                <g class="sp-q">
+                  <rect x={qx - 11} y={qy - 10} width="22" height="18" rx="9" class="sp-q-pill" />
+                  <text x={qx} y={qy + 3.5} text-anchor="middle" class="sp-q-t">?</text>
+                </g>
+              )}
+            </svg>
+            <span class="sp-num mono">{num(n)}</span>
+            <h3 class="sp-title">{item.title}</h3>
+            <p class="sp-body">{item.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .sp {
+    background: var(--color-paper-soft);
+    padding-block: 4.5rem 4rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  @media (min-width: 768px) {
+    .sp {
+      padding-block: 7rem 5.5rem;
+    }
+  }
+  .sp-head {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  @media (min-width: 1024px) {
+    .sp-head {
+      display: grid;
+      grid-template-columns: 39fr 61fr;
+      align-items: baseline;
+      margin-bottom: 4rem;
+    }
+  }
+  .sp-h2 {
+    font-size: clamp(2rem, 4.2vw, 3.75rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    color: var(--color-ink);
+    max-width: 18ch;
+    text-wrap: balance;
+  }
+  .sp-sub {
+    margin-top: 1.5rem;
+    max-width: 34rem;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+
+  .sp-grid {
+    display: grid;
+    border-top: 1px solid var(--color-ink);
+  }
+  @media (min-width: 640px) {
+    .sp-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .sp-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .sp-cell {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 0 2rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  @media (min-width: 640px) {
+    .sp-cell {
+      padding: 1.5rem 1.5rem 2.25rem;
+    }
+    .sp-cell:nth-child(odd) {
+      padding-left: 0;
+      border-right: 1px solid var(--color-border);
+    }
+  }
+  @media (min-width: 1100px) {
+    .sp-cell {
+      border-bottom: 0;
+      border-right: 1px solid var(--color-border);
+    }
+    .sp-cell:nth-child(odd) {
+      padding-left: 1.5rem;
+    }
+    .sp-cell:first-child {
+      padding-left: 0;
+    }
+    .sp-cell:last-child {
+      border-right: 0;
+    }
+  }
+  .sp-art {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 8.5rem;
+    margin: 0.75rem auto 2rem;
+    overflow: visible;
+  }
+  @media (min-width: 1100px) {
+    .sp-art {
+      height: 9.5rem;
+    }
+  }
+  .sp-num {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .sp-title {
+    margin-top: 0.75rem;
+    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    max-width: 16ch;
+  }
+  .sp-body {
+    margin-top: 0.85rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    max-width: 30ch;
+  }
+
+  /* ---------- Isometric vocabulary ---------- */
+  .sp-art path,
+  .sp-art rect,
+  .sp-art circle {
+    vector-effect: non-scaling-stroke;
+    stroke-width: 1;
+    stroke-linejoin: round;
+  }
+  .sp-shape path {
+    stroke: var(--color-ink);
+  }
+  .f-top {
+    fill: var(--color-paper);
+  }
+  .f-left {
+    fill: var(--color-paper-soft);
+  }
+  .f-right {
+    fill: var(--color-grey);
+  }
+  .is-acc .f-top {
+    fill: color-mix(in srgb, var(--color-accent) 30%, var(--color-paper));
+  }
+  .is-acc .f-left,
+  .is-acc .f-right {
+    fill: color-mix(in srgb, var(--color-accent) 12%, var(--color-paper));
+  }
+  .is-dash path {
+    stroke: var(--color-muted);
+    stroke-dasharray: 3 3;
+  }
+  .is-dash .f-top {
+    fill: var(--color-paper);
+  }
+  .is-dash .f-left,
+  .is-dash .f-right {
+    fill: transparent;
+  }
+  .is-ghost path {
+    fill: transparent;
+    stroke: var(--color-accent);
+    stroke-dasharray: 3 3;
+  }
+  .is-ghost .f-top {
+    fill: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  }
+  .sp-art-1 .is-dash .f-top {
+    fill: transparent;
+  }
+  .sp-post {
+    stroke: var(--color-ink);
+    fill: none;
+  }
+  .sp-ball-c {
+    fill: var(--color-paper);
+    stroke: var(--color-ink);
+  }
+  .sp-q-pill {
+    fill: var(--color-paper);
+    stroke: var(--color-ink);
+  }
+  .sp-q-t {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    fill: var(--color-ink);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .sp-ball,
+    .sp-float,
+    .sp-q {
+      animation: sp-bob 3.2s ease-in-out infinite;
+    }
+    .sp-ball {
+      animation-name: sp-try;
+    }
+    .sp-missing {
+      animation: sp-blink 2.6s ease-in-out infinite;
+    }
+  }
+  @keyframes sp-bob {
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+  /* The ball tries the next step and rolls back. */
+  @keyframes sp-try {
+    0%,
+    30%,
+    100% {
+      transform: none;
+    }
+    55% {
+      transform: translate(7px, -2px);
+    }
+    70% {
+      transform: translate(1px, 0);
+    }
+  }
+  @keyframes sp-blink {
+    50% {
+      opacity: 0.35;
+    }
+  }
+</style>
