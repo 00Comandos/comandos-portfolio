@@ -178,7 +178,7 @@ const en = {
       titleEnd: "of your product.",
       sub: "From the first research sprint to a design team that runs on its own — we plug in where your product needs it most.",
       cta: "Book a discovery call",
-      secondary: "Compare engagements",
+      secondary: "See the services",
       indexLabel: "What we do",
     },
     pains: {
@@ -772,7 +772,7 @@ const es: UI = {
       titleEnd: "de tu producto.",
       sub: "Del primer sprint de research a un equipo de diseño que camina solo — entramos donde tu producto más lo necesita.",
       cta: "Agenda una discovery call",
-      secondary: "Compara esquemas",
+      secondary: "Ver los servicios",
       indexLabel: "Qué hacemos",
     },
     pains: {

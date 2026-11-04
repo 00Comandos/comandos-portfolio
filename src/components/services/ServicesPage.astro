@@ -3,7 +3,6 @@ import { Image } from "astro:assets";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import FinalCTA from "~/components/home/FinalCTA.astro";
 import ServicesPains from "./ServicesPains.astro";
-import ServicesStack from "./ServicesStack.astro";
 import ServicesTools from "./ServicesTools.astro";
 import { projects } from "~/data/projects";
 import { homeImpact, homeWorkCopy } from "~/data/home-work-i18n";
@@ -117,7 +116,7 @@ const jsonLd = [
         <p class="sv-hero-sub">{p.hero.sub}</p>
         <div class="sv-hero-actions">
           <a href={t.links.discovery} class="btn-primary">{p.hero.cta}</a>
-          <a href="#engagements" class="sv-link">{p.hero.secondary}</a>
+          <a href="#services-detail" class="sv-link">{p.hero.secondary}</a>
         </div>
       </div>
       <nav class="sv-hero-index" aria-label={p.hero.indexLabel}>
@@ -154,11 +153,9 @@ const jsonLd = [
   <!-- The reality today: founder pains before the services. -->
   <ServicesPains lang={lang} />
 
-  <!-- The services as a stack, with a preview panel per layer. -->
-  <ServicesStack lang={lang} />
 
   <!-- Service detail rows: number | title | body + fit | included + deliverables. -->
-  <section class="sv-detail" aria-labelledby="sv-detail-heading">
+  <section id="services-detail" class="sv-detail" aria-labelledby="sv-detail-heading">
     <div class="container-page">
       <div class="sv-head sv-head--rows">
         <p class="eyebrow">{p.detail.eyebrow}</p>
@@ -204,40 +201,6 @@ const jsonLd = [
                   ))}
                 </ul>
               </div>
-            </li>
-          ))
-        }
-      </ol>
-    </div>
-  </section>
-
-  <!-- Engagement models: black band, hairline 3-col grid. -->
-  <section id="engagements" class="sv-models" aria-labelledby="sv-models-heading">
-    <div class="container-page">
-      <p class="sv-models-eyebrow">{p.models.eyebrow}</p>
-      <div class="sv-models-head">
-        <h2 id="sv-models-heading" class="sv-h2 sv-on-dark">
-          {p.models.title} {p.models.titleHl}
-        </h2>
-        <span class="sv-models-rule" aria-hidden="true"></span>
-      </div>
-      <p class="sv-models-sub">{p.models.sub}</p>
-
-      <ol class="sv-models-grid">
-        {
-          p.models.items.map((m, i) => (
-            <li class="sv-model">
-              <span class="sv-model-num">{num(i)}</span>
-              <h3 class="sv-model-name">{m.name}</h3>
-              <p class="sv-model-body">{m.body}</p>
-              <ul class="sv-model-points">
-                {m.points.map((pt) => (
-                  <li>{pt}</li>
-                ))}
-              </ul>
-              <a href={`${t.links.contact}?type=${m.type}`} class="sv-btn-invert">
-                {m.cta}
-              </a>
             </li>
           ))
         }
@@ -582,6 +545,7 @@ const jsonLd = [
 
   /* ---------- Service detail rows ---------- */
   .sv-detail {
+    scroll-margin-top: 5.5rem;
     padding-block: 4.5rem 5rem;
     border-top: 1px solid var(--color-border);
   }
@@ -706,154 +670,6 @@ const jsonLd = [
     height: 0.3rem;
     border-radius: 9999px;
     background: var(--color-ink);
-  }
-
-  /* ---------- Engagement models (black band) ---------- */
-  .sv-models {
-    background: #000;
-    color: #fff;
-    padding-block: 5rem 4rem;
-    scroll-margin-top: 5rem;
-  }
-  @media (min-width: 768px) {
-    .sv-models {
-      padding-block: 7.5rem 5rem;
-    }
-  }
-  .sv-models-eyebrow {
-    margin-bottom: 1rem;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    color: var(--color-muted-soft);
-  }
-  .sv-models-head {
-    display: flex;
-    align-items: center;
-    gap: 2.5rem;
-  }
-  .sv-on-dark {
-    color: #fff;
-    max-width: 52rem;
-  }
-  .sv-models-rule {
-    display: none;
-    flex: 1;
-    min-width: 6rem;
-    height: 1px;
-    background: rgb(255 255 255 / 0.35);
-  }
-  @media (min-width: 900px) {
-    .sv-models-rule {
-      display: block;
-    }
-  }
-  .sv-models-sub {
-    margin-top: 1.75rem;
-    max-width: 30rem;
-    font-size: 1rem;
-    line-height: 1.55;
-    color: var(--color-muted-soft);
-  }
-  .sv-models-grid {
-    margin-top: 3rem;
-    display: grid;
-    border-top: 1px solid rgb(255 255 255 / 0.25);
-  }
-  @media (min-width: 900px) {
-    .sv-models-grid {
-      margin-top: 4.5rem;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  .sv-model {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1.75rem 0 2.25rem;
-    border-bottom: 1px solid rgb(255 255 255 / 0.25);
-  }
-  @media (min-width: 900px) {
-    .sv-model {
-      padding: 1.75rem 1.75rem 0.5rem;
-      border-bottom: 0;
-      border-left: 1px solid rgb(255 255 255 / 0.25);
-    }
-    .sv-model:first-child {
-      border-left: 0;
-      padding-left: 0;
-    }
-  }
-  .sv-model-num {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--color-muted);
-  }
-  .sv-model-name {
-    margin-top: 1rem;
-    font-size: clamp(1.5rem, 2.2vw, 2rem);
-    font-weight: 500;
-    letter-spacing: -0.035em;
-    line-height: 1.1;
-    color: #fff;
-  }
-  @media (min-width: 900px) {
-    .sv-model-name {
-      margin-top: 2.5rem;
-    }
-  }
-  .sv-model-body {
-    font-size: 0.9375rem;
-    line-height: 1.55;
-    color: var(--color-muted-soft);
-  }
-  .sv-model-points {
-    flex: 1;
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-  .sv-model-points li {
-    padding: 0.55rem 0;
-    font-size: 0.9375rem;
-    color: #fff;
-    border-top: 1px solid rgb(255 255 255 / 0.18);
-  }
-
-  /* Inverted pill for the black band (mirrors home Services). */
-  .sv-btn-invert {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.5rem 1.15rem 0.5rem 1rem;
-    border-radius: 9999px;
-    background: #fff;
-    color: var(--color-ink);
-    border: 1px solid #fff;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    line-height: 1.4;
-    transition:
-      background-color 0.2s ease,
-      color 0.2s ease;
-  }
-  .sv-btn-invert::before {
-    content: "";
-    width: 0.375rem;
-    height: 0.375rem;
-    border-radius: 9999px;
-    background: currentColor;
-    transition: background-color 0.2s ease;
-  }
-  .sv-btn-invert:hover {
-    background: transparent;
-    color: #fff;
-  }
-  .sv-btn-invert:hover::before {
-    background: var(--color-accent);
-  }
-  .sv-btn-invert:focus-visible {
-    outline-color: #fff;
   }
 
   /* ---------- Audience ---------- */
