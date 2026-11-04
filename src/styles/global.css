@@ -15,7 +15,8 @@
 
   --color-accent: #12dcd4;
   --color-accent-lime: #d4fe68;
-  --color-accent-mint: #7ee0c6;
+  /* Legacy alias — mint retired; everything maps to the single teal. */
+  --color-accent-mint: var(--color-accent);
   --color-accent-sun: #ffcf40;
   --color-accent-sky: #3b82f6;
   --color-accent-crimson: #e4413b;

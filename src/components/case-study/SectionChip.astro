@@ -18,31 +18,36 @@ type Props = {
 
 const { variant, label, tone = "light" } = Astro.props;
 
-const styles: Record<ChipVariant, { bg: string; fg: string; glyph: string }> = {
-  challenge: { bg: "#FF4E88", fg: "#ffffff", glyph: "!" },
-  adventure: { bg: "#1CCB89", fg: "#0b0b0b", glyph: "✦" },
-  worth: { bg: "#1CCB89", fg: "#0b0b0b", glyph: "✓" },
-  result: { bg: "#FFCF40", fg: "#0b0b0b", glyph: "★" },
-  "seeing-mountain": { bg: "#FFD2D2", fg: "#0b0b0b", glyph: "⛰" },
-  "making-top": { bg: "#C9DCFF", fg: "#0b0b0b", glyph: "▲" },
-  nps: { bg: "#C6F0D9", fg: "#0b0b0b", glyph: "⚡" },
-  interview: { bg: "#FFD2D2", fg: "#0b0b0b", glyph: "👤" },
-  signature: { bg: "#C6F0D9", fg: "#0b0b0b", glyph: "✎" },
+// Monochrome chips (riotters language): ink disc on paper, paper disc on
+// dark bands. Only the glyph distinguishes variants — no per-section colors.
+const glyphs: Record<ChipVariant, string> = {
+  challenge: "!",
+  adventure: "✦",
+  worth: "✓",
+  result: "★",
+  "seeing-mountain": "⛰",
+  "making-top": "▲",
+  nps: "⚡",
+  interview: "👤",
+  signature: "✎",
 };
 
-const s = styles[variant];
-const textColor = tone === "dark" ? "#ffffff" : "#0b0b0b";
+const glyph = glyphs[variant];
+const dark = tone === "dark";
+const discBg = dark ? "var(--color-paper)" : "var(--color-ink)";
+const discFg = dark ? "var(--color-ink)" : "var(--color-paper)";
+const textColor = dark ? "var(--color-paper)" : "var(--color-ink)";
 ---
 
 <div class="flex items-center gap-3">
   <span
     aria-hidden="true"
-    class="h-8 w-8 rounded-full flex items-center justify-center text-[0.95rem] font-bold"
-    style={`background-color: ${s.bg}; color: ${s.fg};`}
+    class="h-7 w-7 rounded-full flex items-center justify-center text-[0.8rem] font-medium"
+    style={`background-color: ${discBg}; color: ${discFg};`}
   >
-    {s.glyph}
+    {glyph}
   </span>
-  <span class="text-sm font-semibold" style={`color: ${textColor};`}>
+  <span class="text-[0.9375rem] font-medium" style={`color: ${textColor};`}>
     {label}
   </span>
 </div>
