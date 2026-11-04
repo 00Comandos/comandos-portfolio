@@ -74,8 +74,8 @@ const en = {
       {
         id: "design-systems",
         title: "Design Systems",
-        body: "One source of truth so your team ships faster without drifting. Tokens, component libraries, clean handoff.",
-        tags: ["Figma tokens", "Components", "Handoff"],
+        body: "One source of truth so your team ships faster without drifting. Tokens and components in Figma — or delivered straight in code when your team needs it.",
+        tags: ["Tokens", "Components", "Figma or code"],
       },
       {
         id: "growth",
@@ -85,9 +85,9 @@ const en = {
       },
       {
         id: "leadership",
-        title: "Fractional Head of Design",
-        body: "Senior design leadership without the full-time hire — vision, rituals, hiring and a team that scales. Full-time on request.",
-        tags: ["Fractional", "Team building", "Roadmap"],
+        title: "VP / Director / Head of Product Design",
+        body: "Senior design leadership at the level you need — vision, rituals, hiring and a team that scales. Fractional to start, full-time on request.",
+        tags: ["Fractional", "Full-time", "Team building"],
       },
     ],
   },
@@ -148,7 +148,7 @@ const en = {
       },
       {
         title: "Flexible engagement",
-        body: "Project, retainer, fractional or full-time Head of Design.",
+        body: "Project, retainer, or a fractional or full-time VP, Director or Head of Product Design.",
       },
     ],
     imageAlt:
@@ -164,7 +164,7 @@ const en = {
   servicesPage: {
     metaTitle: "Product Design Services for Startup Founders",
     metaDescription:
-      "Product design, design systems, product-led growth and a Fractional or Full-time Head of Design — engagements for founders taking a product from fit to growth. Book a discovery call.",
+      "Product design, design systems, product-led growth and fractional or full-time design leadership (VP, Director or Head of Product Design) — engagements for founders taking a product from fit to growth. Book a discovery call.",
     breadcrumbHome: "Home",
     breadcrumb: "Services",
     hero: {
@@ -208,12 +208,13 @@ const en = {
             "Inventory of the existing UI",
             "Tokens for color, type and spacing",
             "Component library in Figma",
+            "Coded components in your stack, when the team needs them",
             "Usage guidelines and documentation",
             "Adoption plan with engineering",
           ],
           deliverables: [
-            "Figma token set",
-            "Component library",
+            "Token set (Figma and/or code)",
+            "Component library — Figma, code or both",
             "System documentation",
             "Rollout roadmap",
           ],
@@ -271,7 +272,7 @@ const en = {
           type: "discovery",
         },
         {
-          name: "Head of Design",
+          name: "VP / Director / Head of Product Design",
           body: "Senior design leadership on your org chart — vision, team, rituals and hiring. Fractional to start, full-time when you're ready.",
           points: ["Fractional or full-time", "Builds and leads your design team", "Partners with product and engineering"],
           cta: "Discuss design leadership",
@@ -337,7 +338,7 @@ const en = {
         },
         {
           q: "What tools do you use?",
-          a: "Figma for design, prototypes and design systems. For research and experimentation we work inside your stack — your analytics and testing tools — so everything stays with your team.",
+          a: "Figma for design and prototypes. Design systems can live in Figma or ship straight in code, in your stack, when your team needs it. For research and experimentation we work inside your stack — your analytics and testing tools — so everything stays with your team.",
         },
         {
           q: "Can we start small?",
@@ -384,8 +385,8 @@ const es: UI = {
     langSwitch: "View in English",
   },
   links: {
-    discovery: DISCOVERY,
-    contact: "/contact/",
+    discovery: "/es/contact/?type=discovery",
+    contact: "/es/contact/",
   },
   hero: {
     line1: "Tu producto funciona.",
@@ -433,8 +434,8 @@ const es: UI = {
       {
         id: "design-systems",
         title: "Design Systems",
-        body: "Una sola fuente de verdad para que tu equipo lance más rápido sin perder consistencia. Tokens, librerías de componentes, handoff limpio.",
-        tags: ["Figma tokens", "Componentes", "Handoff"],
+        body: "Una sola fuente de verdad para que tu equipo lance más rápido sin perder consistencia. Tokens y componentes en Figma — o entregados directo en código si tu equipo lo requiere.",
+        tags: ["Tokens", "Componentes", "Figma o código"],
       },
       {
         id: "growth",
@@ -444,9 +445,9 @@ const es: UI = {
       },
       {
         id: "leadership",
-        title: "Head of Design fraccional",
-        body: "Liderazgo de diseño senior sin la contratación full-time — visión, rituales, hiring y un equipo que escala. Full-time si lo necesitas.",
-        tags: ["Fraccional", "Equipo", "Roadmap"],
+        title: "VP / Director / Head of Product Design",
+        body: "Liderazgo de diseño senior al nivel que necesitas — visión, rituales, hiring y un equipo que escala. Fraccional para empezar, full-time si lo necesitas.",
+        tags: ["Fraccional", "Full-time", "Equipo"],
       },
     ],
   },
@@ -507,7 +508,7 @@ const es: UI = {
       },
       {
         title: "Esquema flexible",
-        body: "Proyecto, retainer, Head of Design fraccional o full-time.",
+        body: "Proyecto, retainer, o un VP, Director o Head of Product Design fraccional o full-time.",
       },
     ],
     imageAlt:
@@ -523,7 +524,7 @@ const es: UI = {
   servicesPage: {
     metaTitle: "Servicios de product design para founders de startups",
     metaDescription:
-      "Product design, design systems, product-led growth y Head of Design fraccional o full-time — esquemas de trabajo para founders que llevan su producto de fit a crecimiento. Agenda una discovery call.",
+      "Product design, design systems, product-led growth y liderazgo de diseño fraccional o full-time (VP, Director o Head of Product Design) — esquemas de trabajo para founders que llevan su producto de fit a crecimiento. Agenda una discovery call.",
     breadcrumbHome: "Inicio",
     breadcrumb: "Servicios",
     hero: {
@@ -567,12 +568,13 @@ const es: UI = {
             "Inventario de la UI actual",
             "Tokens de color, tipografía y espaciado",
             "Librería de componentes en Figma",
+            "Componentes en código en tu stack, si el equipo lo requiere",
             "Guías de uso y documentación",
             "Plan de adopción con ingeniería",
           ],
           deliverables: [
-            "Set de tokens en Figma",
-            "Librería de componentes",
+            "Set de tokens (Figma y/o código)",
+            "Librería de componentes — en Figma, en código o ambos",
             "Documentación del sistema",
             "Roadmap de implementación",
           ],
@@ -630,7 +632,7 @@ const es: UI = {
           type: "discovery",
         },
         {
-          name: "Head of Design",
+          name: "VP / Director / Head of Product Design",
           body: "Liderazgo de diseño senior dentro de tu organigrama — visión, equipo, rituales y hiring. Fraccional para empezar, full-time cuando estés listo.",
           points: ["Fraccional o full-time", "Arma y lidera tu equipo de diseño", "Trabaja codo a codo con producto e ingeniería"],
           cta: "Habla de liderazgo de diseño",
@@ -696,7 +698,7 @@ const es: UI = {
         },
         {
           q: "¿Qué herramientas usan?",
-          a: "Figma para diseño, prototipos y design systems. Para research y experimentación trabajamos dentro de tu stack — tus herramientas de analytics y testing — para que todo se quede con tu equipo.",
+          a: "Figma para diseño y prototipos. Los design systems pueden vivir en Figma o entregarse directo en código, en tu stack, si tu equipo lo requiere. Para research y experimentación trabajamos dentro de tu stack — tus herramientas de analytics y testing — para que todo se quede con tu equipo.",
         },
         {
           q: "¿Podemos empezar con algo pequeño?",
