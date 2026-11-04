@@ -4,130 +4,121 @@ import { ui, type Lang } from "~/i18n";
 
 type Props = { lang: Lang };
 const t = ui[Astro.props.lang];
-
-const mobileTrack = [...clients, ...clients];
 ---
 
-<section
-  aria-label={t.clients.label}
-  class="pt-10 pb-14 md:pt-14 md:pb-16 bg-[color:var(--color-paper-soft)]"
->
+<section aria-label={t.clients.label} class="clients">
   <div class="container-page">
-    <p class="clients-title">
-      {t.clients.title}
-    </p>
+    <div class="clients-head">
+      <p class="eyebrow">{t.clients.label}</p>
+      <p class="clients-note">{t.clients.title}</p>
+    </div>
 
-    <ul
-      class="clients-desktop hidden md:flex flex-wrap items-center justify-center gap-x-12 md:gap-x-16 gap-y-8"
-    >
+    <ul class="clients-grid">
       {
-        clients.map((c) => (
-          <li class="flex items-center justify-center h-10">
-            {c.website ? (
-              <a
-                href={c.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={c.name}
-                class="flex items-center justify-center h-10 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition duration-200"
-              >
-                <img
-                  src={c.logo}
-                  alt={c.name}
-                  loading="lazy"
-                  decoding="async"
-                  class={`${c.maxHeightClass ?? "max-h-6 md:max-h-7"} w-auto object-contain`}
-                />
-              </a>
-            ) : (
-              <img
-                src={c.logo}
-                alt={c.name}
-                loading="lazy"
-                decoding="async"
-                class={`${c.maxHeightClass ?? "max-h-6 md:max-h-7"} w-auto object-contain grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition duration-200`}
-              />
-            )}
-          </li>
-        ))
+        clients.map((c) => {
+          const img = (
+            <img
+              src={c.logo}
+              alt={c.name}
+              loading="lazy"
+              decoding="async"
+              class={`clients-logo ${c.maxHeightClass ?? ""}`}
+            />
+          );
+          return (
+            <li class="clients-cell">
+              {c.website ? (
+                <a
+                  href={c.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="clients-link"
+                >
+                  {img}
+                </a>
+              ) : (
+                img
+              )}
+            </li>
+          );
+        })
       }
     </ul>
-
-    <div class="clients-marquee md:hidden" aria-hidden="true">
-      <ul class="clients-track" data-clients-track>
-        {
-          mobileTrack.map((c) => (
-            <li class="clients-item">
-              <img
-                src={c.logo}
-                alt=""
-                loading="lazy"
-                decoding="async"
-                class={`${c.maxHeightClass?.split(" ")[0] ?? "max-h-7"} w-auto object-contain grayscale opacity-80`}
-              />
-            </li>
-          ))
-        }
-      </ul>
-    </div>
   </div>
 </section>
 
 <style>
-  .clients-title {
-    margin: 0 auto 1.75rem;
-    max-width: 54rem;
-    text-align: center;
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
-    line-height: 1.55;
-    color: color-mix(in srgb, var(--color-ink) 60%, transparent);
+  .clients {
+    padding-block: 4rem 4.5rem;
+    background: var(--color-paper);
+  }
+  @media (min-width: 768px) {
+    .clients {
+      padding-block: 7rem 9rem;
+    }
   }
 
-  .clients-marquee {
-    position: relative;
-    overflow: hidden;
-    mask-image: linear-gradient(
-      90deg,
-      transparent 0,
-      black 8%,
-      black 92%,
-      transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(
-      90deg,
-      transparent 0,
-      black 8%,
-      black 92%,
-      transparent 100%
-    );
-  }
-  .clients-track {
+  .clients-head {
     display: flex;
-    align-items: center;
-    gap: 3rem;
-    width: max-content;
-    animation: clients-scroll 34s linear infinite;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 2.5rem;
   }
-  .clients-item {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 2.5rem;
-  }
-  @keyframes clients-scroll {
-    from {
-      transform: translate3d(0, 0, 0);
-    }
-    to {
-      transform: translate3d(-50%, 0, 0);
+  @media (min-width: 768px) {
+    .clients-head {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-bottom: 4.25rem;
     }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .clients-track {
-      animation: none;
+  .clients-note {
+    font-size: 0.9375rem;
+    letter-spacing: -0.01em;
+    color: var(--color-muted);
+    max-width: 40ch;
+  }
+
+  .clients-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 2.5rem;
+    column-gap: 1.25rem;
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .clients-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      column-gap: 2rem;
+    }
+  }
+  .clients-cell {
+    display: flex;
+    align-items: center;
+    height: 2.25rem;
+  }
+  .clients-link {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    transition: opacity 0.2s ease;
+  }
+  .clients-link:hover {
+    opacity: 0.55;
+  }
+  .clients-logo {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: 1.375rem;
+    object-fit: contain;
+    object-position: left center;
+    filter: brightness(0);
+  }
+  @media (min-width: 768px) {
+    .clients-logo {
+      max-height: 1.625rem;
     }
   }
 </style>

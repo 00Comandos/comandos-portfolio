@@ -5,8 +5,21 @@
 
 import type { Lang } from "~/i18n";
 
+/** Cases shown in the home grid, in editorial order (also feeds the ItemList JSON-LD). */
+export const HOME_CASE_SLUGS = [
+  "stori-inversion-plus",
+  "karta-card",
+  "truora-report",
+  "legalario-e-signature",
+  "mipos-kiosk",
+  "yaydoo-design-system",
+  "rebajatuscuentas",
+] as const;
+
 type CaseCopy = {
   tags: readonly string[];
+  /** Short metric line for the home case grid (ES only; EN uses home-before-after). */
+  impact?: string;
   duringCaption?: string;
   nowCaption?: string;
 };
@@ -25,6 +38,7 @@ export const homeWorkCopy: Record<Lang, Record<string, CaseCopy>> = {
   },
   es: {
     "stori-inversion-plus": {
+      impact: "+477% de activación · 90 días",
       tags: ["Product Design", "Growth"],
       duringCaption:
         "Un flujo de ahorro que los usuarios abrían y abandonaban a mitad del onboarding.",
@@ -32,6 +46,7 @@ export const homeWorkCopy: Record<Lang, Record<string, CaseCopy>> = {
         "Inversión guiada a plazo fijo. +477% de activación en 90 días.",
     },
     "truora-report": {
+      impact: "-50% de tiempo de lectura · +85% de satisfacción",
       tags: ["UX Research", "Product Design"],
       duringCaption:
         "Reporte legacy en bruto. 8 minutos de lectura. Los analistas nunca entendieron el score de confianza.",
@@ -39,6 +54,7 @@ export const homeWorkCopy: Record<Lang, Record<string, CaseCopy>> = {
         "Un solo score de un vistazo. 50% más rápido. 85% de satisfacción en equipos de HR en LATAM.",
     },
     "karta-card": {
+      impact: "1k clientes · metal de 17 gramos",
       tags: ["Product Design", "Brand"],
       duringCaption:
         "Tarjeta genérica de la industria. Banda magnética simple. Ninguna señal premium.",
@@ -46,6 +62,7 @@ export const homeWorkCopy: Record<Lang, Record<string, CaseCopy>> = {
         "Visa Infinite negra de 17 gramos. 1,000 clientes en los primeros 12 meses.",
     },
     "legalario-e-signature": {
+      impact: "99% de firmas completadas · +24% NPS",
       tags: ["UX Research", "Product Design"],
       duringCaption:
         "Abandono a mitad del flujo. Firma dibujada con el dedo en un rectángulo diminuto.",
@@ -53,6 +70,7 @@ export const homeWorkCopy: Record<Lang, Record<string, CaseCopy>> = {
         "99% de firmas completadas. Identidad biométrica certificada por iBeta de punta a punta.",
     },
     "mipos-kiosk": {
+      impact: "+155% de conversión",
       tags: ["Product Design", "Growth"],
       duringCaption:
         "Tabs moradas de Android. Listas planas de precios. Kioscos que nadie usaba.",
@@ -60,6 +78,7 @@ export const homeWorkCopy: Record<Lang, Record<string, CaseCopy>> = {
         "Kiosco de Chili's nativo en ROKU. +155% de conversión. Cualquier dispositivo touch.",
     },
     "stadio-apple-watch": {
+      impact: "+30% boca a boca · MVP en 4 semanas",
       tags: ["MVP", "Product Design"],
       duringCaption:
         "Primeros bocetos de una app social de running para Apple Watch.",
@@ -67,6 +86,7 @@ export const homeWorkCopy: Record<Lang, Record<string, CaseCopy>> = {
         "MVP lanzado en 4 semanas. +30% de recomendación boca a boca. 45% de retención.",
     },
     "mipos-dark-kitchen": {
+      impact: "+400% de productividad",
       tags: ["Product Design", "SaaS"],
       duringCaption:
         "Diez tablets de apps de delivery clavadas en una pared de madera.",
@@ -74,12 +94,14 @@ export const homeWorkCopy: Record<Lang, Record<string, CaseCopy>> = {
         "Un dashboard unificado. 99% de integración. +400% de productividad.",
     },
     "yaydoo-design-system": {
+      impact: "+40% de productividad del equipo",
       tags: ["Design System"],
       duringCaption: "Ocho logos inconsistentes en siete productos.",
       nowCaption:
         "Grill Design System. +40% de productividad del equipo. Adquisición por Paystand.",
     },
     rebajatuscuentas: {
+      impact: "+300% de crecimiento · 3 países",
       tags: ["Product Design", "Growth"],
       duringCaption:
         "Un comparador hipotecario de 2018 atorado en un solo país.",

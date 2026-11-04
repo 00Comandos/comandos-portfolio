@@ -4,7 +4,8 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import Hero from "~/components/home/Hero.astro";
 import ClientsStrip from "~/components/home/ClientsStrip.astro";
 import Impact from "~/components/home/Impact.astro";
-import BeforeAfter from "~/components/home/BeforeAfter.astro";
+import CaseGrid from "~/components/home/CaseGrid.astro";
+import { HOME_CASE_SLUGS } from "~/data/home-work-i18n";
 import Services from "~/components/home/Services.astro";
 import Method from "~/components/home/Method.astro";
 import Testimonials from "~/components/home/Testimonials.astro";
@@ -23,7 +24,8 @@ const homeUrl = lang === "es" ? `${site.url}/es/` : `${site.url}/`;
 // Resolve every showcased project's after-image to a stable WebP URL so
 // Google can index it directly from the home ItemList.
 const listItems = await Promise.all(
-  homeBeforeAfter.map(async (it, i) => {
+  HOME_CASE_SLUGS.map((slug) => homeBeforeAfter.find((it) => it.slug === slug)!)
+    .map(async (it, i) => {
     const project = projects.find((p) => p.slug === it.slug);
     const variant = await getImage({
       src: it.after,
@@ -131,7 +133,7 @@ const jsonLd = [
   <Hero lang={lang} />
   <ClientsStrip lang={lang} />
   <Impact lang={lang} />
-  <BeforeAfter lang={lang} />
+  <CaseGrid lang={lang} />
   <Services lang={lang} />
   <Method lang={lang} />
   <Testimonials lang={lang} />

@@ -10,46 +10,63 @@ const t = ui[Astro.props.lang];
 
 <section aria-labelledby="testimonials-heading" class="testimonials">
   <div class="container-page">
-    <div class="testimonials-head">
+    <div class="tm-head">
       <p class="eyebrow">{t.testimonials.eyebrow}</p>
-      <h2 id="testimonials-heading" class="display-serif testimonials-title">
-        {t.testimonials.title}<br /><em>{t.testimonials.titleEm}</em>
+      <h2 id="testimonials-heading" class="sr-only">
+        {t.testimonials.title} {t.testimonials.titleEm}
       </h2>
     </div>
 
-    <ul class="testimonials-grid">
+    <div class="tm-stage" data-testimonials>
       {
-        testimonials.map((q) => (
-          <li>
-            <figure class="quote-card">
-              <svg class="quote-mark" width="28" height="22" viewBox="0 0 28 22" aria-hidden="true">
-                <path
-                  fill="currentColor"
-                  d="M0 22V13.2C0 5.9 4.1 1.4 11 0l1.3 3.1C8.4 4.4 6.4 7 6.2 10.4H12V22H0Zm16 0V13.2C16 5.9 20.1 1.4 27 0l1 3.1c-3.9 1.3-5.9 3.9-6.1 7.3H28V22H16Z"
+        testimonials.map((q, i) => (
+          <figure
+            class="tm-slide"
+            data-slide-index={i}
+            data-active={i === 0 ? "true" : "false"}
+            aria-hidden={i === 0 ? "false" : "true"}
+          >
+            <blockquote class="tm-quote" lang="en">
+              <p>&ldquo;{q.quote}&rdquo;</p>
+            </blockquote>
+            <figcaption class="tm-author">
+              {q.avatar && (
+                <Image
+                  src={q.avatar}
+                  alt=""
+                  width={112}
+                  height={112}
+                  loading="lazy"
+                  class="tm-avatar"
                 />
-              </svg>
-              <blockquote class="quote-text" lang="en">{q.quote}</blockquote>
-              <figcaption class="quote-author">
-                {q.avatar && (
-                  <Image
-                    src={q.avatar}
-                    alt=""
-                    width={48}
-                    height={48}
-                    loading="lazy"
-                    class="quote-avatar"
-                  />
-                )}
-                <span>
-                  <span class="quote-name">{q.name}</span>
-                  <span class="quote-role">{q.role}</span>
-                </span>
-              </figcaption>
-            </figure>
-          </li>
+              )}
+              <span class="tm-name">{q.name}</span>
+              <span class="tm-role">{q.role}</span>
+            </figcaption>
+          </figure>
         ))
       }
-    </ul>
+    </div>
+
+    {
+      testimonials.length > 1 && (
+        <div class="tm-tabs-wrap">
+          <div class="tm-tabs" data-tablist role="tablist" aria-label={t.testimonials.tabs}>
+            {testimonials.map((q, i) => (
+              <button
+                type="button"
+                class="tm-tab"
+                data-tab-index={i}
+                aria-selected={i === 0 ? "true" : "false"}
+                role="tab"
+              >
+                {q.tabLabel}
+              </button>
+            ))}
+          </div>
+        </div>
+      )
+    }
   </div>
 </section>
 
@@ -60,83 +77,222 @@ const t = ui[Astro.props.lang];
   }
   @media (min-width: 768px) {
     .testimonials {
-      padding-block: 7.5rem;
+      padding-block: 8rem 7rem;
     }
   }
-  .testimonials-head {
-    margin-bottom: 3rem;
-  }
-  .testimonials-title {
-    margin-top: 0.85rem;
-    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
-  }
-
-  .testimonials-grid {
-    display: grid;
-    gap: 1rem;
+  .tm-head {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2.5rem;
   }
   @media (min-width: 768px) {
-    .testimonials-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1.25rem;
+    .tm-head {
+      margin-bottom: 3.5rem;
     }
   }
-  .testimonials-grid > li {
-    display: flex;
-  }
 
-  .quote-card {
+  .tm-stage {
+    position: relative;
+    display: grid;
+  }
+  .tm-stage > .tm-slide {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .tm-slide {
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    width: 100%;
-    padding: 2rem;
-    border-radius: var(--radius-lg);
-    background: var(--color-paper-soft);
-    border: 1px solid var(--color-border);
-  }
-  @media (min-width: 768px) {
-    .quote-card {
-      padding: 2.5rem;
-    }
-  }
-  .quote-mark {
-    color: var(--color-accent);
-  }
-  .quote-text {
-    flex: 1;
-    font-size: 1.0625rem;
-    line-height: 1.6;
-    color: var(--color-ink-soft);
-  }
-  @media (min-width: 768px) {
-    .quote-text {
-      font-size: 1.125rem;
-    }
-  }
-  .quote-author {
-    display: flex;
     align-items: center;
-    gap: 0.9rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--color-border);
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.5s ease-out,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
   }
-  .quote-author :global(.quote-avatar) {
-    width: 48px;
-    height: 48px;
+  .tm-slide[data-active="true"] {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .tm-quote {
+    margin: 0;
+    max-width: 58rem;
+    text-align: center;
+  }
+  .tm-quote p {
+    font-size: clamp(1.375rem, 2.6vw, 2.25rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.035em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
+  .tm-author {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  @media (min-width: 768px) {
+    .tm-author {
+      margin-top: 3rem;
+    }
+  }
+  .tm-author :global(.tm-avatar) {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 0.9rem;
     border-radius: 9999px;
     object-fit: cover;
-    flex-shrink: 0;
+    filter: grayscale(1);
   }
-  .quote-name {
-    display: block;
+  .tm-name {
     font-size: 0.9375rem;
-    font-weight: 600;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
   }
-  .quote-role {
-    display: block;
-    font-size: 0.8125rem;
+  .tm-role {
+    font-size: 0.875rem;
+    line-height: 1.4;
     color: var(--color-muted);
   }
+
+  .tm-tabs-wrap {
+    margin-top: 3.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  @media (min-width: 768px) {
+    .tm-tabs-wrap {
+      margin-top: 5rem;
+    }
+  }
+  .tm-tabs {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2rem;
+    overflow-x: auto;
+    padding: 1.5rem 1.5rem 0.5rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    mask-image: linear-gradient(90deg, transparent 0, black 6%, black 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, black 6%, black 94%, transparent 100%);
+  }
+  .tm-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .tm-tabs {
+      justify-content: center;
+      gap: 3rem;
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+  }
+  .tm-tab {
+    position: relative;
+    padding: 0.5rem 0;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-muted-soft);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    scroll-snap-align: center;
+    transition: color 0.2s ease;
+  }
+  .tm-tab:hover {
+    color: var(--color-muted);
+  }
+  .tm-tab[aria-selected="true"] {
+    color: var(--color-ink);
+  }
+  .tm-tab::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.5rem;
+    height: 2px;
+    background: var(--color-ink);
+    transform: scaleX(0);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .tm-tab[aria-selected="true"]::after {
+    transform: scaleX(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tm-slide,
+    .tm-tab::after {
+      transition: none;
+      transform: none;
+    }
+  }
 </style>
+
+<script>
+  const ROTATE_MS = 8000;
+
+  document.querySelectorAll<HTMLElement>("[data-testimonials]").forEach((stage) => {
+    const slides = Array.from(stage.querySelectorAll<HTMLElement>(".tm-slide"));
+    if (slides.length <= 1) return;
+
+    const scope = stage.closest("section") ?? document;
+    const tabList = scope.querySelector<HTMLElement>("[data-tablist]");
+    const tabs = Array.from(scope.querySelectorAll<HTMLButtonElement>("[data-tab-index]"));
+
+    let current = 0;
+    let timer: number | null = null;
+    let paused = false;
+
+    const show = (index: number) => {
+      const next = (index + slides.length) % slides.length;
+      slides.forEach((s, i) => {
+        const isActive = i === next;
+        s.setAttribute("data-active", isActive ? "true" : "false");
+        s.setAttribute("aria-hidden", isActive ? "false" : "true");
+      });
+      tabs.forEach((d, i) => d.setAttribute("aria-selected", i === next ? "true" : "false"));
+      const activeTab = tabs[next];
+      if (activeTab && tabList && tabList.scrollWidth > tabList.clientWidth + 2) {
+        const target = activeTab.offsetLeft - tabList.clientWidth / 2 + activeTab.clientWidth / 2;
+        tabList.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+      }
+      current = next;
+    };
+
+    const start = () => {
+      if (timer !== null) return;
+      timer = window.setInterval(() => {
+        if (!paused) show(current + 1);
+      }, ROTATE_MS);
+    };
+    const stop = () => {
+      if (timer !== null) {
+        window.clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    tabs.forEach((tab, i) =>
+      tab.addEventListener("click", () => {
+        show(i);
+        stop();
+        start();
+      }),
+    );
+    stage.addEventListener("pointerenter", () => (paused = true));
+    stage.addEventListener("pointerleave", () => (paused = false));
+
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) start();
+  });
+</script>
