@@ -89,6 +89,8 @@
     letter-spacing: -0.04em;
     line-height: 1.04;
     color: inherit;
+    /* Even line lengths — avoids one-word last lines in big type. */
+    text-wrap: balance;
   }
   /* Former italic accent → plain grotesk, same weight (Riotters keeps
      both headline lines identical). */
