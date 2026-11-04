@@ -51,6 +51,13 @@
     scroll-behavior: smooth;
   }
 
+  /* Guard against sideways scroll site-wide. `clip` (not `hidden`) keeps
+     position: sticky working and creates no scroll container. */
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   body {
     background-color: var(--color-paper);
     color: var(--color-ink);

@@ -104,7 +104,7 @@ const jsonLd = [
   <!-- Hero: label left, headline right, hairline grid below. -->
   <section class="sv-hero" aria-labelledby="sv-hero-heading">
     <div class="container-page sv-hero-top">
-      <p class="eyebrow">{p.hero.label}</p>
+      <span class="col-spacer" aria-hidden="true"></span>
       <h1 id="sv-hero-heading" class="sv-hero-title">
         {p.hero.title} <span class="hl">{p.hero.titleHl}</span>
         {p.hero.titleEnd}
@@ -158,7 +158,7 @@ const jsonLd = [
   <section id="services-detail" class="sv-detail" aria-labelledby="sv-detail-heading">
     <div class="container-page">
       <div class="sv-head sv-head--rows">
-        <p class="eyebrow">{p.detail.eyebrow}</p>
+        <span class="col-spacer" aria-hidden="true"></span>
         <div class="sv-head-copy">
           <h2 id="sv-detail-heading" class="sv-h2">
             {p.detail.title} <span class="hl">{p.detail.titleHl}</span>
@@ -212,7 +212,7 @@ const jsonLd = [
   <section class="sv-audience" aria-labelledby="sv-audience-heading" data-glyphs>
     <div class="container-page">
       <div class="sv-head">
-        <p class="eyebrow">{p.audience.eyebrow}</p>
+        <span class="col-spacer" aria-hidden="true"></span>
         <h2 id="sv-audience-heading" class="sv-h2">
           {p.audience.title} <span class="hl">{p.audience.titleHl}</span> {p.audience.titleEnd}
         </h2>
@@ -236,7 +236,7 @@ const jsonLd = [
   <!-- Process teaser — the full method lives on /method/. -->
   <section class="sv-process" aria-labelledby="sv-process-heading">
     <div class="container-page sv-process-grid">
-      <p class="eyebrow">{p.process.eyebrow}</p>
+      <span class="col-spacer" aria-hidden="true"></span>
       <div>
         <h2 id="sv-process-heading" class="sv-h2">
           {p.process.title} <span class="hl">{p.process.titleHl}</span>
@@ -264,7 +264,6 @@ const jsonLd = [
     <div class="container-page">
       <div class="sv-proof-head">
         <div class="sv-proof-copy">
-          <p class="eyebrow">{p.proof.eyebrow}</p>
           <h2 id="sv-proof-heading" class="sv-h2">
             {p.proof.title} <span class="hl">{p.proof.titleHl}</span> {p.proof.titleEnd}
           </h2>
@@ -312,7 +311,7 @@ const jsonLd = [
   <section class="sv-faq" aria-labelledby="sv-faq-heading">
     <div class="container-page sv-faq-grid">
       <div>
-        <p class="eyebrow">{p.faq.eyebrow}</p>
+        <span class="col-spacer" aria-hidden="true"></span>
         <h2 id="sv-faq-heading" class="sv-h2 sv-faq-title">
           {p.faq.title} <span class="hl">{p.faq.titleHl}</span> {p.faq.titleEnd}
         </h2>
@@ -355,6 +354,16 @@ const jsonLd = [
 </script>
 
 <style>
+  /* Empty left column that keeps the asymmetric grid once the small
+     section labels are gone (desktop only). */
+  .col-spacer {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .col-spacer {
+      display: block;
+    }
+  }
   /* ---------- Shared ---------- */
   .sv-h2 {
     font-size: clamp(2rem, 4.2vw, 3.75rem);
@@ -393,7 +402,7 @@ const jsonLd = [
       grid-template-columns: 4rem minmax(0, 3fr) minmax(0, 4fr) minmax(0, 4fr);
       column-gap: 2.5rem;
     }
-    .sv-head--rows .eyebrow {
+    .sv-head--rows .col-spacer {
       grid-column: 1 / 3;
     }
     .sv-head--rows .sv-head-copy {
@@ -441,9 +450,7 @@ const jsonLd = [
       padding-top: 4rem;
       padding-bottom: 2.25rem;
     }
-    .sv-hero-top .eyebrow {
-      padding-bottom: 0.6rem;
-    }
+
   }
   .sv-hero-title {
     font-size: clamp(2.75rem, 5.4vw, 5.25rem);
@@ -693,94 +700,81 @@ const jsonLd = [
   }
 
   /* ---------- Audience ---------- */
-  /* Dark band: the one black moment between the light sections. */
+  /* Dark band: the one black moment between the light sections.
+     2×2 grid with generous cells so the four profiles can breathe. */
   .sv-audience {
-    padding-block: 4.5rem 4.5rem;
+    padding-block: 5rem;
     background: var(--color-ink);
     color: var(--color-paper);
   }
-  .sv-audience .eyebrow {
-    color: var(--color-muted-soft);
+  @media (min-width: 768px) {
+    .sv-audience {
+      padding-block: 8rem 8.5rem;
+    }
   }
   .sv-audience :global(.sv-h2) {
     color: var(--color-paper);
-  }
-  .sv-audience-glyph {
-    margin-bottom: 1.75rem;
-    height: 5.5rem;
-    display: flex;
-    align-items: flex-end;
-  }
-  @media (min-width: 768px) {
-    .sv-audience {
-      padding-block: 7rem 6rem;
-    }
   }
   .sv-audience-grid {
     display: grid;
     border-top: 1px solid rgb(255 255 255 / 0.5);
   }
-  @media (min-width: 640px) {
+  @media (min-width: 768px) {
     .sv-audience-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
-  @media (min-width: 1100px) {
-    .sv-audience-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
   .sv-audience-cell {
-    padding: 2rem 0 2rem;
+    display: grid;
+    gap: 1.25rem;
+    padding: 2.5rem 0 2.75rem;
     border-bottom: 1px solid rgb(255 255 255 / 0.16);
   }
-  @media (min-width: 640px) {
+  @media (min-width: 768px) {
     .sv-audience-cell {
-      padding: 1.5rem 1.5rem 2rem;
+      grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+      column-gap: 2.5rem;
+      align-items: start;
+      padding: 3.5rem 3rem 3.75rem;
     }
     .sv-audience-cell:nth-child(odd) {
       padding-left: 0;
       border-right: 1px solid rgb(255 255 255 / 0.16);
+    }
+    .sv-audience-cell:nth-child(n + 3) {
+      border-bottom: 0;
     }
   }
-  @media (min-width: 1100px) {
+  @media (min-width: 768px) and (max-width: 1099px) {
     .sv-audience-cell {
-      border-bottom: 0;
-      border-right: 1px solid rgb(255 255 255 / 0.16);
+      grid-template-columns: 1fr;
     }
-    .sv-audience-cell:nth-child(odd) {
-      padding-left: 1.5rem;
-    }
-    .sv-audience-cell:first-child {
-      padding-left: 0;
-    }
-    .sv-audience-cell:last-child {
-      border-right: 0;
+  }
+  .sv-audience-glyph {
+    height: 6rem;
+    display: flex;
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .sv-audience-glyph {
+      grid-row: span 2;
+      height: 7rem;
     }
   }
   .sv-audience-cell h3 {
-    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+    font-size: clamp(1.375rem, 1.9vw, 1.75rem);
     font-weight: 500;
     letter-spacing: -0.03em;
     line-height: 1.15;
-    max-width: 16ch;
+    max-width: 18ch;
   }
   .sv-audience-cell p {
-    margin-top: 1rem;
-    font-size: 0.9375rem;
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 32rem;
     color: rgb(255 255 255 / 0.66);
   }
-  @media (min-width: 1100px) {
-    .sv-audience-cell h3 {
-      min-height: 2.3em;
-    }
-    .sv-audience-cell p {
-      margin-top: 2.5rem;
-    }
-  }
 
-  /* ---------- Process teaser ---------- */
   /* Grey band with a faint dot grid — the "map" behind the method. */
   .sv-process {
     background-color: var(--color-grey);
