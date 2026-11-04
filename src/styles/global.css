@@ -110,10 +110,15 @@
     background: color-mix(in srgb, var(--color-accent) 14%, transparent);
     border: max(1.5px, 0.05em) solid var(--color-accent);
     border-radius: 9999px;
-    padding: 0 0.34em;
+    padding: 0.06em 0.34em 0;
     margin-inline: 0.04em;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
+    /* Trim the pill to cap-height → descender so it fits tight display
+       leading: without this the ~1.3em-tall inline box overlaps the line
+       above and, when the phrase wraps, its own second line. (Browsers
+       without text-box support keep the untrimmed pill.) */
+    text-box: trim-both cap text;
   }
 
   .hairline-t {
