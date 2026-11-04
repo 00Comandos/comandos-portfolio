@@ -158,4 +158,17 @@ const stats = homeImpact[lang];
       margin-top: 1.75rem;
     }
   }
+  /* Smallest phones: the 2-col cells are ~140px — "+155%" / "+300%" and
+     "REBAJATUSCUENTAS" at the default floor get clipped. */
+  @media (max-width: 359px) {
+    .impact-cell {
+      padding-right: 0.5rem;
+    }
+    .impact-value {
+      font-size: 2.25rem;
+    }
+    .impact-brand {
+      font-size: 0.6875rem;
+    }
+  }
 </style>
