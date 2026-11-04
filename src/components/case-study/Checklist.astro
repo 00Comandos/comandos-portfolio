@@ -3,33 +3,193 @@ import type { ChecklistItem } from "~/data/case-studies/types";
 
 type Props = { items: readonly ChecklistItem[] };
 const { items } = Astro.props;
+
+// Items carrying quotes (`sub`) are research sources — rendered as columns
+// with the users' own words as chat bubbles (Karta concierge pattern).
+// Everything else stays a clean hairline list.
+const isResearch = items.length > 0 && items.every((i) => i.sub && i.sub.length > 0);
+
+type Icon = "chat" | "user" | "shield" | "dot";
+const iconFor = (label: string): Icon => {
+  if (/nps|call|support|soporte/i.test(label)) return "chat";
+  if (/interview|entrevista|user|usuario/i.test(label)) return "user";
+  if (/confiden|trust|survey|encuesta|segur/i.test(label)) return "shield";
+  return "dot";
+};
+// A leading body-less item followed by detailed ones acts as the list title
+// (e.g. "First Insights").
+const hasTitle = !isResearch && items.length > 1 && !items[0].body && items.slice(1).some((i) => i.body);
+const listTitle = hasTitle ? items[0].label : null;
+const rows = hasTitle ? items.slice(1) : items;
+const unquote = (s: string) => s.replace(/^[“"]\s*|\s*[”"]$/g, "");
+const trimColon = (s: string) => s.replace(/:\s*$/, ".");
 ---
 
-<ul class="space-y-4 max-w-2xl">
-  {
-    items.map((item) => (
-      <li class="text-[1rem] leading-[1.6] text-[color:var(--color-ink-soft)]">
-        <div class="flex gap-2">
-          <span aria-hidden="true" class="mt-[2px]">✓</span>
-          <div>
-            <span class="font-medium text-[color:var(--color-ink)]">
+{
+  isResearch ? (
+    <ul class="research not-prose">
+      {items.map((item) => {
+        const icon = iconFor(item.label);
+        return (
+          <li class="research-col">
+            <p class="research-title">
+              <span class="research-icon" aria-hidden="true">
+                {icon === "chat" && (
+                  <svg viewBox="0 0 20 20"><path d="M3 4.5h14v9H8l-4 3v-3H3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /></svg>
+                )}
+                {icon === "user" && (
+                  <svg viewBox="0 0 20 20"><circle cx="10" cy="7" r="3.2" fill="none" stroke="currentColor" stroke-width="1.4" /><path d="M3.5 17c.8-3.4 3.4-5 6.5-5s5.7 1.6 6.5 5" fill="none" stroke="currentColor" stroke-width="1.4" /></svg>
+                )}
+                {icon === "shield" && (
+                  <svg viewBox="0 0 20 20"><path d="M10 2.5l6 2.3v4.6c0 4-2.6 6.7-6 8.1-3.4-1.4-6-4.1-6-8.1V4.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /></svg>
+                )}
+                {icon === "dot" && <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="currentColor" /></svg>}
+              </span>
               {item.label}
-              {item.body ? ":" : ""}
-            </span>
-            {item.body && <span class="ml-1">{item.body}</span>}
-            {item.sub && (
-              <ul class="mt-1 space-y-1 pl-4 text-[color:var(--color-muted)]">
-                {item.sub.map((s) => (
-                  <li class="flex gap-2">
-                    <span aria-hidden="true">–</span>
-                    <span>{s}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-      </li>
-    ))
+            </p>
+            {item.body && <p class="research-body">{trimColon(item.body)}</p>}
+            <ul class="research-quotes">
+              {item.sub!.map((q) => (
+                <li>
+                  <q class="bubble">{unquote(q)}</q>
+                </li>
+              ))}
+            </ul>
+          </li>
+        );
+      })}
+    </ul>
+  ) : (
+    <div class="not-prose">
+    {listTitle && <p class="checklist-title">{listTitle}</p>}
+    <ul class="checklist">
+      {rows.map((item) => (
+        <li>
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 12 12"><path d="M2.5 6.2l2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="1.4" /></svg>
+          </span>
+          <span>
+            <span class="check-label">{item.label}</span>
+            {item.body && <span class="check-body">{" "}{item.body}</span>}
+          </span>
+        </li>
+      ))}
+    </ul>
+    </div>
+  )
+}
+
+<style>
+  /* ---------- Research columns ---------- */
+  .research {
+    display: grid;
+    gap: 2.5rem;
   }
-</ul>
+  @media (min-width: 900px) {
+    .research {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+  .research-col {
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-ink);
+  }
+  .research-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+  .research-icon {
+    display: inline-grid;
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .research-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+  .research-body {
+    margin-top: 0.6rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-muted);
+  }
+  .research-quotes {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  /* Incoming-message bubble: the user's words, verbatim. */
+  .bubble {
+    display: inline-block;
+    max-width: 100%;
+    padding: 0.6rem 0.85rem;
+    border-radius: 1rem 1rem 1rem 0.25rem;
+    background: var(--color-paper-soft);
+    border: 1px solid var(--color-border);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    color: var(--color-ink);
+    quotes: "“" "”";
+  }
+  .research-quotes li:nth-child(2) .bubble {
+    margin-left: 0.75rem;
+  }
+  .research-quotes li:nth-child(3) .bubble {
+    margin-left: 1.5rem;
+  }
+
+  /* ---------- Plain list ---------- */
+  .checklist-title {
+    margin-bottom: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .checklist {
+    max-width: 42rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .checklist li {
+    display: flex;
+    gap: 0.75rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+  .check {
+    flex-shrink: 0;
+    display: inline-grid;
+    place-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.1rem;
+    border-radius: 9999px;
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .check svg {
+    width: 0.7rem;
+    height: 0.7rem;
+  }
+  .check-label {
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .check-body {
+    color: var(--color-muted);
+  }
+</style>

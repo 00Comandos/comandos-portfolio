@@ -39,6 +39,7 @@ const renderProse = (body: string) =>
 
 type Props = { content: CaseStudyContent["adventure"] };
 const { content } = Astro.props;
+const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-media", "two-col-media", "before-after"];
 ---
 
 <section id="adventure" class="pt-20 md:pt-28 pb-8 md:pb-10">
@@ -51,8 +52,14 @@ const { content } = Astro.props;
 
     <div class="adventure-blocks mt-10 space-y-8">
       {
-        content.blocks.map((block) => {
-          if (block.kind === "divider") return <Divider variant={block.variant ?? "hatched"} />;
+        content.blocks.map((block, bi) => {
+          if (block.kind === "divider") {
+            // A divider straight after media is redundant — the image already
+            // closes the section.
+            const prev = content.blocks[bi - 1];
+            if (prev && AFTER_MEDIA_SKIP.includes(prev.kind)) return null;
+            return <Divider variant={block.variant ?? "hatched"} />;
+          }
           if (block.kind === "spacer") {
             const h =
               block.size === "lg"

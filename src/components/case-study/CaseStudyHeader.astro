@@ -31,8 +31,9 @@ const meta = [
   { label: "Impact", value: impact },
 ].filter((m) => m.value && m.value.trim().length > 0);
 
-const heroSizes = "(min-width: 1440px) 1364px, calc(100vw - 2.5rem)";
-const heroWidths = [640, 960, 1280, 1600, 1920];
+// Full-bleed hero: edge to edge at every width.
+const heroSizes = "100vw";
+const heroWidths = [640, 960, 1280, 1600, 1920, 2560];
 ---
 
 <section class="csh">
@@ -86,7 +87,7 @@ const heroWidths = [640, 960, 1280, 1600, 1920];
     </dl>
   </div>
 
-  <div class="container-page csh-media">
+  <div class="csh-media">
     {
       content.hero.mobileStack && content.hero.mobileStack.length > 0 ? (
         <>
@@ -293,8 +294,14 @@ const heroWidths = [640, 960, 1280, 1600, 1920];
   }
   .csh-frame {
     overflow: hidden;
-    border-radius: var(--radius-xs);
     background: var(--color-grey);
+  }
+  /* Full-bleed: no radius, image fills the viewport width. */
+  .csh-frame :global(img),
+  .csh-frame :global(video) {
+    display: block;
+    width: 100%;
+    border-radius: 0 !important;
   }
 
   .csh-intro {

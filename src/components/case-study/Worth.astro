@@ -10,14 +10,21 @@ import type { CaseStudyContent } from "~/data/case-studies/types";
 
 type Props = { content: CaseStudyContent["worth"] };
 const { content } = Astro.props;
+const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-media", "two-col-media", "before-after"];
 ---
 
 <section id="worth" class="pb-10 md:pb-12">
   <div class="cs-body">
     <div class="worth-blocks space-y-14 md:space-y-16">
       {
-        content.blocks.map((block) => {
-          if (block.kind === "divider") return <Divider variant={block.variant ?? "hatched"} />;
+        content.blocks.map((block, bi) => {
+          if (block.kind === "divider") {
+            // A divider straight after media is redundant — the image already
+            // closes the section.
+            const prev = content.blocks[bi - 1];
+            if (prev && AFTER_MEDIA_SKIP.includes(prev.kind)) return null;
+            return <Divider variant={block.variant ?? "hatched"} />;
+          }
           if (block.kind === "chip") {
             return (
               <div data-chip="true">
