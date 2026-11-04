@@ -144,6 +144,35 @@ const switchHref = alternatePath(pathname, otherLang);
     backdrop-filter: blur(14px) saturate(1.1);
   }
 
+  /* Over the black closing block (dark form + footer) the header inverts
+     so the whole end of the page reads as one dark surface. Swapping the
+     palette tokens flips links, lang switch, burger, CTA and drawer. */
+  .site-header.is-dark {
+    --color-ink: #ffffff;
+    --color-paper: #060606;
+    --color-border: rgb(255 255 255 / 0.14);
+    --color-muted: #8c8c8c;
+    color-scheme: dark;
+  }
+  .site-header.is-dark.is-scrolled {
+    background-color: color-mix(in srgb, #060606 88%, transparent);
+  }
+  .site-header :global(img) {
+    transition: filter 0.2s ease;
+  }
+  .site-header.is-dark :global(img) {
+    filter: invert(1);
+  }
+  .site-header .nav-inline-link,
+  .site-header .lang-switch,
+  .site-header .menu-btn-bar {
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease,
+      opacity 0.2s ease,
+      transform 0.25s ease;
+  }
+
   @media (max-width: 767px) {
     .site-header {
       border-bottom: 1px solid var(--color-border);
@@ -384,9 +413,17 @@ const switchHref = alternatePath(pathname, otherLang);
   // paper after so content sliding underneath stays readable.
   const header = document.querySelector<HTMLElement>(".site-header");
   if (header) {
+    // Dark when the header's midline sits over a [data-dark-zone] block.
+    const zones = Array.from(document.querySelectorAll<HTMLElement>("[data-dark-zone]"));
     const onScroll = () => {
       if (window.scrollY > 32) header.classList.add("is-scrolled");
       else header.classList.remove("is-scrolled");
+      const mid = header.offsetHeight / 2;
+      const dark = zones.some((z) => {
+        const r = z.getBoundingClientRect();
+        return r.top <= mid && r.bottom > mid;
+      });
+      header.classList.toggle("is-dark", dark);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -402,7 +439,7 @@ const switchHref = alternatePath(pathname, otherLang);
         (open ? toggle.dataset.labelClose : toggle.dataset.labelOpen) ?? "",
       );
       panel.setAttribute("data-open", open ? "true" : "false");
-      document.body.style.overflow = open ? "hidden" : "";
+      document.documentElement.style.overflow = open ? "hidden" : "";
     };
     toggle.addEventListener("click", () => {
       const open = toggle.getAttribute("aria-expanded") === "true";

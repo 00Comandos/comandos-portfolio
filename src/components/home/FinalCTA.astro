@@ -6,16 +6,17 @@ import ContactForm from "~/components/contact/ContactForm.astro";
 import { ui, type Lang } from "~/i18n";
 import { contactCopy } from "~/i18n/contact";
 
-// `tone="dark"` inverts the section so it runs straight into the black
-// footer as one closing block (used on /services).
+// Dark by default: the section runs straight into the black footer as one
+// closing block (and the header turns black over it). `tone="light"` keeps
+// the old paper version.
 type Props = { lang: Lang; tone?: "light" | "dark" };
-const { lang, tone = "light" } = Astro.props;
+const { lang, tone = "dark" } = Astro.props;
 const t = ui[lang];
 const c = contactCopy[lang];
 const EMAIL = "c@comandos.me";
 ---
 
-<section id="contact" aria-labelledby="final-cta-heading" class:list={["final-cta", { "final-cta--dark": tone === "dark" }]}>
+<section id="contact" aria-labelledby="final-cta-heading" class:list={["final-cta", { "final-cta--dark": tone === "dark" }]} data-dark-zone={tone === "dark" ? "" : undefined}>
   <div class="container-page final-grid">
     <div class="final-copy">
       <h2 id="final-cta-heading" class="final-title">
