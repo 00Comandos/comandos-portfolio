@@ -165,9 +165,16 @@ const EMAIL = "c@comandos.me";
     color: var(--color-muted);
   }
   .final-link {
+    position: relative;
     color: var(--color-ink);
     border-bottom: 1px solid var(--color-ink);
     padding-bottom: 1px;
+  }
+  /* Invisible 44px hit area around the small inline email link. */
+  .final-link::after {
+    content: "";
+    position: absolute;
+    inset: -0.75rem -0.25rem;
   }
   .final-link:hover {
     border-bottom-color: var(--color-accent);
@@ -175,8 +182,8 @@ const EMAIL = "c@comandos.me";
   .final-copy-btn {
     background: none;
     border: 0;
-    padding: 0.5rem 0.25rem;
-    margin: -0.5rem 0;
+    padding: 0.75rem 0.25rem;
+    margin: -0.75rem 0;
     font: inherit;
     font-size: 0.8125rem;
     color: var(--color-muted);

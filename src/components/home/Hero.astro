@@ -238,6 +238,9 @@ const ROUNDS = {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
+    /* 44px tap target without moving anything. */
+    padding-block: 0.7rem;
+    margin-block: -0.7rem;
     font-size: 0.9375rem;
     font-weight: 500;
     color: var(--color-ink);
@@ -317,7 +320,14 @@ const ROUNDS = {
     width: auto;
     filter: brightness(0);
   }
+  /* 36px visual, 44px hit area. */
+  .hero-pause::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+  }
   .hero-pause {
+    position: relative;
     width: 36px;
     height: 36px;
     display: grid;
