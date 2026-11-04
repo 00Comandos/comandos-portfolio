@@ -509,6 +509,9 @@ const en = {
     social: "Social",
     contact: "Contact",
     rights: "All rights reserved.",
+    explore: "Explore",
+    trust: "Products used by millions across Latin America.",
+    home: "Comandos — home",
   },
 };
 
@@ -1019,6 +1022,9 @@ const es: UI = {
     social: "Social",
     contact: "Contacto",
     rights: "Todos los derechos reservados.",
+    explore: "Explora",
+    trust: "Productos usados por millones en Latinoamérica.",
+    home: "Comandos — inicio",
   },
 };
 

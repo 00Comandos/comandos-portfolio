@@ -7,9 +7,8 @@ const t = ui[lang];
 const L = (href: string) => localizedPath(href, lang);
 const year = new Date().getFullYear();
 
-const navItems = [
+const exploreItems = [
   { label: t.nav.work, href: "/projects/" },
-  { label: t.nav.services, href: L("/services/") },
   { label: t.nav.method, href: L("/method/") },
   { label: t.nav.studio, href: L("/#studio") },
   { label: t.footer.contact, href: t.links.contact },
@@ -29,196 +28,258 @@ const LOGO_PATH =
 ---
 
 <footer class="footer">
-  <div class="footer-grid">
-    <div class="footer-left">
+  <div class="footer-inner">
+    <div class="footer-cta">
+      <p class="footer-cta-title">
+        {t.footer.ctaTitle} <span class="hl">{t.footer.ctaHighlight}</span>.
+      </p>
+      <div class="footer-cta-side">
+        <p class="footer-cta-sub">{t.footer.ctaSub}</p>
+        <a href={t.links.discovery} class="btn-primary footer-btn">{t.footer.cta}</a>
+      </div>
+    </div>
+
+    <div class="footer-top">
+      <a href={L("/")} class="footer-logo" aria-label={t.footer.home}>
+        <svg viewBox="0 0 38.6 35" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <path fill-rule="evenodd" clip-rule="evenodd" d={LOGO_PATH} fill="currentColor"></path>
+        </svg>
+      </a>
+
       <div class="footer-cols">
-        <div class="footer-info">
-          <p>Comandos — Product Design Studio</p>
-          <p>{t.footer.location}</p>
+        <nav class="footer-col" aria-labelledby="footer-h-services">
+          <h2 id="footer-h-services" class="footer-h">{t.nav.services}</h2>
+          <ul class="footer-list">
+            {serviceItems.map((i) => (
+              <li><a href={i.href} class="footer-link">{i.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-labelledby="footer-h-explore">
+          <h2 id="footer-h-explore" class="footer-h">{t.footer.explore}</h2>
+          <ul class="footer-list">
+            {exploreItems.map((i) => (
+              <li><a href={i.href} class="footer-link">{i.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+        <div class="footer-col">
+          <h2 class="footer-h">{t.footer.contact}</h2>
+          <ul class="footer-list">
+            <li><a href={site.social.email} class="footer-link">c@comandos.me</a></li>
+            <li><a href={t.links.discovery} class="footer-link">{t.footer.cta}</a></li>
+          </ul>
+          <p class="footer-meta">{t.footer.location}</p>
           <p class="footer-clock mono" data-clock>
             <span class="footer-clock-dot" aria-hidden="true"></span>
             CDMX <time data-clock-time>—</time> <span data-clock-zone>GMT-6</span>
           </p>
-          <p class="mt-4">
-            <a href={site.social.email} class="footer-link">c@comandos.me</a>
-          </p>
         </div>
-        <ul class="footer-list">
-          {serviceItems.map((i) => (
-            <li><a href={i.href} class="footer-link">{i.label}</a></li>
-          ))}
-        </ul>
-        <ul class="footer-list">
-          {navItems.map((i) => (
-            <li><a href={i.href} class="footer-link">{i.label}</a></li>
-          ))}
-        </ul>
+        <div class="footer-col">
+          <h2 class="footer-h">{t.footer.social}</h2>
+          <ul class="footer-list">
+            {socials.map((s) => (
+              <li>
+                <a href={s.href} target="_blank" rel="me noopener noreferrer" class="footer-link">
+                  {s.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-      <p class="footer-legal">© {year} Comandos. {t.footer.rights}</p>
     </div>
 
-    <div class="footer-right">
-      <div class="footer-cta">
-        <p class="footer-cta-title">
-          {t.footer.ctaTitle} <span class="hl">{t.footer.ctaHighlight}</span>.
-        </p>
-        <p class="footer-cta-sub">{t.footer.ctaSub}</p>
-        <a href={t.links.discovery} class="btn-primary mt-7">{t.footer.cta}</a>
-      </div>
-      <ul class="footer-social">
-        {socials.map((s) => (
-          <li>
-            <a href={s.href} target="_blank" rel="me noopener noreferrer" class="footer-link">
-              {s.label}
-            </a>
-          </li>
-        ))}
-      </ul>
+    <div class="footer-bottom">
+      <p>© {year} Comandos. {t.footer.rights}</p>
+      <p class="footer-trust">{t.footer.trust}</p>
     </div>
   </div>
 
   <div class="footer-mark" aria-hidden="true">
-    <svg viewBox="0 0 161 35" xmlns="http://www.w3.org/2000/svg" role="presentation">
-      <path fill-rule="evenodd" clip-rule="evenodd" d={LOGO_PATH} fill="currentColor"></path>
-    </svg>
+    <div class="footer-mark-clip">
+      <svg viewBox="0 0 161 35" xmlns="http://www.w3.org/2000/svg" role="presentation">
+        <path fill-rule="evenodd" clip-rule="evenodd" d={LOGO_PATH} fill="currentColor"></path>
+      </svg>
+    </div>
   </div>
 </footer>
 
 <style>
+  /* Black closing band (Handle-style): the page ends on a strong dark
+     block, ordered mono-headed columns, and the wordmark sinking off the
+     bottom edge. */
   .footer {
-    background: var(--color-paper);
-    color: var(--color-ink);
-    border-top: 1px solid var(--color-border);
+    --f-fg: var(--color-paper);
+    --f-link: #d6d6d6;
+    --f-muted: #8c8c8c;
+    --f-line: rgba(255, 255, 255, 0.12);
+    background: var(--color-ink);
+    color: var(--f-fg);
     font-size: 0.9375rem;
     letter-spacing: -0.01em;
+    overflow: hidden;
+  }
+  .footer :focus-visible {
+    outline-color: var(--color-paper);
   }
 
-  .footer-grid {
-    display: grid;
-    border-bottom: 1px solid var(--color-border);
-  }
-  @media (min-width: 1024px) {
-    .footer-grid {
-      grid-template-columns: 1fr 1fr;
-      min-height: 30rem;
-    }
-  }
-
-  .footer-left,
-  .footer-right {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 3rem;
-    padding: 3rem 1.25rem 2rem;
-  }
-  @media (min-width: 768px) {
-    .footer-left,
-    .footer-right {
-      padding: 3rem 2.375rem 2rem;
-    }
-  }
-  @media (min-width: 1024px) {
-    .footer-left {
-      border-right: 1px solid var(--color-border);
-      padding-left: max(2.375rem, calc((100vw - 1440px) / 2 + 2.375rem));
-    }
-    .footer-right {
-      padding-right: max(2.375rem, calc((100vw - 1440px) / 2 + 2.375rem));
-    }
-  }
-  @media (max-width: 1023px) {
-    .footer-right {
-      border-top: 1px solid var(--color-border);
-    }
-  }
-
-  .footer-cols {
-    display: grid;
-    gap: 2rem;
-  }
-  @media (min-width: 640px) {
-    .footer-cols {
-      grid-template-columns: 1.4fr 1fr 0.8fr;
-    }
-  }
-  .footer-info p {
-    line-height: 1.45;
-  }
-  .footer-list {
-    display: grid;
-    gap: 0.35rem;
-    align-content: start;
-  }
-  .footer-link {
-    color: var(--color-ink);
-    transition: color 0.15s ease;
-  }
-  .footer-link:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .footer-legal {
-    font-size: 0.875rem;
-    color: var(--color-ink);
-  }
-
-  .footer-cta-title {
-    font-size: clamp(1.75rem, 2.4vw, 2.25rem);
-    font-weight: 500;
-    letter-spacing: -0.035em;
-    line-height: 1.1;
-    text-wrap: balance;
-  }
-  .footer-cta-sub {
-    margin-top: 1rem;
-    max-width: 34rem;
-    font-size: 1.125rem;
-    line-height: 1.45;
-    color: var(--color-muted);
-  }
-  .footer-social {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 0;
-    font-size: 0.875rem;
-  }
-  .footer-social li + li::before {
-    content: "•";
-    margin-inline: 0.6rem;
-  }
-
-  .footer-mark {
-    padding: 2.5rem 1.25rem 2rem;
+  .footer-inner {
     max-width: 1440px;
     margin-inline: auto;
-    /* Faint, not solid: the wordmark signs the page without shouting. */
-    color: var(--color-grey);
+    padding: 4rem 1.25rem 0;
   }
   @media (min-width: 768px) {
-    .footer-mark {
-      padding: 3rem 2.375rem 2.375rem;
+    .footer-inner {
+      padding: 5.5rem 2.375rem 0;
     }
   }
-  .footer-mark svg {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
 
-  /* Pages that already carry the contact form don't need a
-     second "Let's talk" in the footer. */
+  /* Conditional "Let's talk" row — a full-width band on top, so hiding
+     it leaves no empty column. */
+  .footer-cta {
+    display: grid;
+    gap: 1.5rem 3rem;
+    padding-bottom: 3.5rem;
+    margin-bottom: 3.5rem;
+    border-bottom: 1px solid var(--f-line);
+  }
+  @media (min-width: 1024px) {
+    .footer-cta {
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      padding-bottom: 4.5rem;
+      margin-bottom: 4.5rem;
+    }
+  }
   :global(body:has(form[action^="/api/contact"], .cta-case)) .footer-cta {
     display: none;
   }
+  .footer-cta-title {
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+  .footer-cta-sub {
+    max-width: 30rem;
+    font-size: 1.125rem;
+    line-height: 1.45;
+    color: var(--f-muted);
+  }
+  .footer-btn {
+    margin-top: 1.75rem;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    border-color: var(--color-paper);
+    min-height: 44px;
+  }
+
+  .footer-top {
+    display: flex;
+    flex-direction: column;
+    gap: 2.75rem;
+  }
+  @media (min-width: 1024px) {
+    .footer-top {
+      flex-direction: row-reverse;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 3rem;
+    }
+  }
+  .footer-logo {
+    display: inline-flex;
+    align-self: flex-start;
+    color: var(--color-paper);
+    transition: color 0.15s ease;
+  }
+  .footer-logo:hover {
+    color: var(--color-accent);
+  }
+  .footer-logo svg {
+    display: block;
+    width: 2.25rem;
+    height: auto;
+  }
+
+  .footer-cols {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem 2rem;
+  }
+  @media (min-width: 360px) {
+    .footer-cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .footer-cols {
+      grid-template-columns: 1.25fr 1fr 1.25fr 0.75fr;
+      max-width: 62rem;
+    }
+  }
+
+  .footer-h {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    color: var(--f-muted);
+    margin-bottom: 1.25rem;
+  }
+  .footer-list {
+    display: grid;
+    gap: 0.65rem;
+    align-content: start;
+  }
+  .footer-link {
+    color: var(--f-link);
+    line-height: 1.4;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    transition:
+      color 0.15s ease,
+      text-decoration-color 0.15s ease;
+  }
+  .footer-link:hover {
+    color: var(--color-paper);
+    text-decoration-color: var(--color-accent);
+  }
+  /* Comfortable tap targets on touch layouts. */
+  @media (max-width: 1023px) {
+    .footer-list {
+      gap: 0;
+    }
+    .footer-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+    .footer-h {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .footer-meta {
+    margin-top: 1.25rem;
+    color: var(--f-muted);
+    line-height: 1.45;
+  }
   .footer-clock {
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.75rem;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--f-muted);
   }
   .footer-clock-dot {
     width: 6px;
@@ -236,6 +297,47 @@ const LOGO_PATH =
     .footer-clock-dot {
       animation: none;
     }
+  }
+
+  .footer-bottom {
+    margin-top: 4rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--f-line);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--f-link);
+  }
+  @media (min-width: 1024px) {
+    .footer-bottom {
+      margin-top: 6rem;
+    }
+  }
+  .footer-trust {
+    color: var(--f-muted);
+  }
+
+  /* Giant wordmark, low contrast, sunk below the bottom edge: the negative
+     margin (% of width; glyph box is 161×35) hides the lowest 13 units, so
+     the letters show ~70% of their height and the mark is cut too. */
+  .footer-mark {
+    max-width: 1440px;
+    margin-inline: auto;
+    padding: 3rem 1.25rem 0;
+    color: #1a1a1a;
+  }
+  @media (min-width: 768px) {
+    .footer-mark {
+      padding: 4rem 2.375rem 0;
+    }
+  }
+  .footer-mark-clip {
+    overflow: hidden;
+  }
+  .footer-mark svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-bottom: -8.07%;
   }
 </style>
 
