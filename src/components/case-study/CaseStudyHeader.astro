@@ -191,7 +191,14 @@ const heroWidths = [640, 960, 1280, 1600, 1920];
     gap: 2rem;
   }
   .csh-back {
+    position: relative;
     font-size: 0.875rem;
+  }
+  /* Invisible 44px hit area around the small text link (touch). */
+  .csh-back::after {
+    content: "";
+    position: absolute;
+    inset: -0.75rem -0.5rem;
   }
   .csh-logo {
     display: block;
