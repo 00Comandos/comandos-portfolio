@@ -58,26 +58,42 @@ const t = ui[Astro.props.lang];
     }
   }
 
+  /* Label and note sit side by side, joined by a small dot. */
   .clients-head {
     display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
     margin-bottom: 2.5rem;
   }
   @media (min-width: 768px) {
     .clients-head {
-      flex-direction: row;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 2rem;
       margin-bottom: 4.25rem;
     }
+  }
+  .clients-head .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .clients-head .eyebrow::after {
+    content: none;
+  }
+  @media (min-width: 768px) {
+    .clients-head .eyebrow::after {
+      content: "";
+    }
+  }
+  .clients-head .eyebrow::after {
+    width: 4px;
+    height: 4px;
+    border-radius: 9999px;
+    background: var(--color-muted-soft);
   }
   .clients-note {
     font-size: 0.9375rem;
     letter-spacing: -0.01em;
     color: var(--color-muted);
-    max-width: 40ch;
   }
 
   .clients-grid {
