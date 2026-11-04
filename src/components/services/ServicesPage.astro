@@ -2,6 +2,9 @@
 import { Image } from "astro:assets";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import FinalCTA from "~/components/home/FinalCTA.astro";
+import ServicesPains from "./ServicesPains.astro";
+import ServicesStack from "./ServicesStack.astro";
+import ServicesTools from "./ServicesTools.astro";
 import { projects } from "~/data/projects";
 import { homeImpact, homeWorkCopy } from "~/data/home-work-i18n";
 import { site } from "~/lib/site";
@@ -147,6 +150,12 @@ const jsonLd = [
       </nav>
     </div>
   </section>
+
+  <!-- The reality today: founder pains before the services. -->
+  <ServicesPains lang={lang} />
+
+  <!-- The services as a stack, with a preview panel per layer. -->
+  <ServicesStack lang={lang} />
 
   <!-- Service detail rows: number | title | body + fit | included + deliverables. -->
   <section class="sv-detail" aria-labelledby="sv-detail-heading">
@@ -331,6 +340,9 @@ const jsonLd = [
     </div>
   </section>
 
+  <!-- Tools we plug into. -->
+  <ServicesTools lang={lang} />
+
   <!-- FAQ: native disclosures, mirrored 1:1 in the FAQPage JSON-LD. -->
   <section class="sv-faq" aria-labelledby="sv-faq-heading">
     <div class="container-page sv-faq-grid">
@@ -461,6 +473,12 @@ const jsonLd = [
   .sv-hero-title .hl {
     padding-block: 0.02em;
   }
+  /* Keep the short pills whole on phones too (global .hl only pins them
+     from 640px); both fit a 320px line at these sizes. */
+  .sv-hero-title .hl,
+  .sv-h2 .hl {
+    white-space: nowrap;
+  }
 
   .sv-hero-grid {
     display: grid;
@@ -565,6 +583,7 @@ const jsonLd = [
   /* ---------- Service detail rows ---------- */
   .sv-detail {
     padding-block: 4.5rem 5rem;
+    border-top: 1px solid var(--color-border);
   }
   @media (min-width: 768px) {
     .sv-detail {
@@ -1091,7 +1110,6 @@ const jsonLd = [
   /* ---------- FAQ ---------- */
   .sv-faq {
     padding-block: 4.5rem 2rem;
-    border-top: 1px solid var(--color-border);
   }
   @media (min-width: 768px) {
     .sv-faq {
