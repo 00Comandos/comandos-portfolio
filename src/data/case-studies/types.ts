@@ -49,12 +49,6 @@ export type ChecklistItem = {
   label: string;
   body?: string;
   sub?: readonly string[];
-  /** Research variant only: our reply to the quotes, rendered as a final
-      right-aligned ink bubble. Leave empty unless the case has real copy. */
-  answer?: string;
-  /** Research variant only: one theme per quote (same order as `sub`).
-      Quotes sharing a theme converge into one insight under the cards. */
-  tags?: readonly string[];
 };
 
 /** One beat of a sticky scroll scene (Worth `scene` block). */

@@ -160,7 +160,6 @@ export const storiInversionPlus: CaseStudyContent = {
               "“Deposit limit is not enough”",
               "“Transfer does not arrive quickly”",
             ],
-            tags: ["Value", "Value", "Liquidity"],
           },
           {
             label: "Interviews with Users",
@@ -170,7 +169,6 @@ export const storiInversionPlus: CaseStudyContent = {
               "“Can I withdraw my money?”",
               "“What are the benefits of investing?”",
             ],
-            tags: ["Liquidity", "Liquidity", "Value"],
           },
           {
             label: "Increase Confidence",
@@ -180,7 +178,6 @@ export const storiInversionPlus: CaseStudyContent = {
               "“Is Stori 100% secure?”",
               "“Is my money protected?”",
             ],
-            tags: ["Trust", "Trust", "Trust"],
           },
         ],
       },
