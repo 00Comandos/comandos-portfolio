@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import FinalCTA from "~/components/home/FinalCTA.astro";
 import ServicesPains from "./ServicesPains.astro";
-import ServicesTools from "./ServicesTools.astro";
+import AudienceGlyph from "./AudienceGlyph.astro";
 import { projects } from "~/data/projects";
 import { homeImpact, homeWorkCopy } from "~/data/home-work-i18n";
 import { site } from "~/lib/site";
@@ -209,7 +209,7 @@ const jsonLd = [
   </section>
 
   <!-- Who it's for. -->
-  <section class="sv-audience" aria-labelledby="sv-audience-heading">
+  <section class="sv-audience" aria-labelledby="sv-audience-heading" data-glyphs>
     <div class="container-page">
       <div class="sv-head">
         <p class="eyebrow">{p.audience.eyebrow}</p>
@@ -219,8 +219,11 @@ const jsonLd = [
       </div>
       <ul class="sv-audience-grid">
         {
-          p.audience.items.map((a) => (
-            <li class="sv-audience-cell">
+          p.audience.items.map((a, i) => (
+            <li class="sv-audience-cell" style={`--d:${i * 0.18}s`}>
+              <div class="sv-audience-glyph">
+                <AudienceGlyph kind={(i + 1) as 1 | 2 | 3 | 4} />
+              </div>
               <h3>{a.title}</h3>
               <p>{a.body}</p>
             </li>
@@ -304,7 +307,6 @@ const jsonLd = [
   </section>
 
   <!-- Tools we plug into. -->
-  <ServicesTools lang={lang} />
 
   <!-- FAQ: native disclosures, mirrored 1:1 in the FAQPage JSON-LD. -->
   <section class="sv-faq" aria-labelledby="sv-faq-heading">
@@ -333,6 +335,24 @@ const jsonLd = [
 
   <FinalCTA lang={lang} />
 </BaseLayout>
+
+<script>
+  // Arm + play the audience glyphs when the dark band scrolls into view.
+  document.querySelectorAll<HTMLElement>("[data-glyphs]").forEach((el) => {
+    if (!("IntersectionObserver" in window)) return;
+    el.setAttribute("data-armed", "");
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          el.setAttribute("data-play", "");
+          io.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(el);
+  });
+</script>
 
 <style>
   /* ---------- Shared ---------- */
@@ -673,8 +693,23 @@ const jsonLd = [
   }
 
   /* ---------- Audience ---------- */
+  /* Dark band: the one black moment between the light sections. */
   .sv-audience {
     padding-block: 4.5rem 4.5rem;
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .sv-audience .eyebrow {
+    color: var(--color-muted-soft);
+  }
+  .sv-audience :global(.sv-h2) {
+    color: var(--color-paper);
+  }
+  .sv-audience-glyph {
+    margin-bottom: 1.75rem;
+    height: 5.5rem;
+    display: flex;
+    align-items: flex-end;
   }
   @media (min-width: 768px) {
     .sv-audience {
@@ -683,7 +718,7 @@ const jsonLd = [
   }
   .sv-audience-grid {
     display: grid;
-    border-top: 1px solid var(--color-ink);
+    border-top: 1px solid rgb(255 255 255 / 0.5);
   }
   @media (min-width: 640px) {
     .sv-audience-grid {
@@ -696,8 +731,8 @@ const jsonLd = [
     }
   }
   .sv-audience-cell {
-    padding: 1.5rem 0 2rem;
-    border-bottom: 1px solid var(--color-border);
+    padding: 2rem 0 2rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.16);
   }
   @media (min-width: 640px) {
     .sv-audience-cell {
@@ -705,13 +740,13 @@ const jsonLd = [
     }
     .sv-audience-cell:nth-child(odd) {
       padding-left: 0;
-      border-right: 1px solid var(--color-border);
+      border-right: 1px solid rgb(255 255 255 / 0.16);
     }
   }
   @media (min-width: 1100px) {
     .sv-audience-cell {
       border-bottom: 0;
-      border-right: 1px solid var(--color-border);
+      border-right: 1px solid rgb(255 255 255 / 0.16);
     }
     .sv-audience-cell:nth-child(odd) {
       padding-left: 1.5rem;
@@ -734,7 +769,7 @@ const jsonLd = [
     margin-top: 1rem;
     font-size: 0.9375rem;
     line-height: 1.55;
-    color: var(--color-ink-soft);
+    color: rgb(255 255 255 / 0.66);
   }
   @media (min-width: 1100px) {
     .sv-audience-cell h3 {
@@ -746,8 +781,12 @@ const jsonLd = [
   }
 
   /* ---------- Process teaser ---------- */
+  /* Grey band with a faint dot grid — the "map" behind the method. */
   .sv-process {
-    background: var(--color-grey);
+    background-color: var(--color-grey);
+    background-image: radial-gradient(circle, rgb(6 6 6 / 0.13) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+    background-position: center;
     padding-block: 4.5rem;
   }
   @media (min-width: 768px) {
@@ -926,6 +965,7 @@ const jsonLd = [
   /* ---------- FAQ ---------- */
   .sv-faq {
     padding-block: 4.5rem 2rem;
+    background: var(--color-paper-soft);
   }
   @media (min-width: 768px) {
     .sv-faq {
