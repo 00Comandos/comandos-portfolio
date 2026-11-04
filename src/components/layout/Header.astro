@@ -27,7 +27,7 @@ const switchHref = alternatePath(pathname, otherLang);
 
 <header class="site-header">
   <div class="container-page flex items-center justify-between h-[5.5rem]">
-    <a href={L("/")} class="flex items-center" aria-label={`${site.name} — Home`}>
+    <a href={L("/")} class="flex items-center py-2" aria-label={`${site.name} — Home`}>
       <Logo height={30} />
     </a>
 
@@ -414,6 +414,11 @@ const switchHref = alternatePath(pathname, otherLang);
     });
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") setOpen(false);
+    });
+    // The burger disappears at 1024px — don't leave the drawer (and the
+    // body scroll lock) stuck open if the viewport grows past it.
+    window.matchMedia("(min-width: 1024px)").addEventListener("change", (e) => {
+      if (e.matches) setOpen(false);
     });
   }
 </script>
