@@ -87,8 +87,8 @@ const steps = [
         class="nfg-reveal display-serif nfg-headline mt-3 mx-auto"
         style="--d: 0.15s"
       >
-        Growing a product is like
-        <em>climbing a mountain.</em>
+        <span class="nfg-line">Growing a product is like</span>
+        <em class="nfg-line">climbing a mountain.</em>
       </h1>
       <p
         class="nfg-reveal mt-7 mx-auto max-w-2xl text-[1.0625rem] md:text-[1.1875rem] leading-[1.55] text-[color:var(--color-ink-soft)]"
@@ -217,6 +217,17 @@ const steps = [
   .nfg-headline {
     font-size: clamp(3.25rem, 9vw, 4.5rem);
     max-width: 22ch;
+  }
+  /* Exactly two lines from tablet up: one phrase per line. */
+  @media (min-width: 768px) {
+    .nfg-headline {
+      max-width: none;
+      font-size: clamp(2.5rem, 7.6vw, 4.5rem);
+    }
+    .nfg-line {
+      display: block;
+      white-space: nowrap;
+    }
   }
 
   .nfg-step-media {

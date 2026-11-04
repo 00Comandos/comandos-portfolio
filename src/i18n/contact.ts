@@ -87,7 +87,7 @@ const en = {
     "UX Research": "UX research",
     "Growth / Experimentation": "Growth / Experimentation",
     "Full Product Redesign": "Full product redesign",
-    "Fractional / Full-time Head of Design": "Fractional / Full-time Head of Design",
+    "Fractional / Full-time Head of Design": "VP / Director / Head of Product Design",
     Other: "Other",
   } satisfies Record<ProjectType, string>,
   referralLabels: {
@@ -184,7 +184,7 @@ const es: ContactCopy = {
     "UX Research": "UX research",
     "Growth / Experimentation": "Growth / Experimentación",
     "Full Product Redesign": "Rediseño completo",
-    "Fractional / Full-time Head of Design": "Head of Design fractional / full-time",
+    "Fractional / Full-time Head of Design": "VP / Director / Head of Product Design",
     Other: "Otro",
   },
   referralLabels: {
