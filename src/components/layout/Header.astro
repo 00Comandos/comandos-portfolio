@@ -12,11 +12,11 @@ const L = (href: string) => localizedPath(href, lang);
 const isActive = (href: string) =>
   !href.includes("#") && href !== "/" && pathname.startsWith(href);
 
-// Anchors point at home sections until their dedicated pages ship
-// (/services is next in the redesign roadmap).
+// Services has its own page (EN + ES); Studio still anchors to the home
+// section until its dedicated page ships.
 const menuItems = [
   { label: t.nav.work, href: "/projects/" },
-  { label: t.nav.services, href: L("/#services") },
+  { label: t.nav.services, href: L("/services/") },
   { label: t.nav.method, href: "/north-face-growth/" },
   { label: t.nav.studio, href: L("/#studio") },
 ];

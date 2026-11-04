@@ -9,14 +9,14 @@ const year = new Date().getFullYear();
 
 const navItems = [
   { label: t.nav.work, href: "/projects/" },
-  { label: t.nav.services, href: L("/#services") },
+  { label: t.nav.services, href: L("/services/") },
   { label: t.nav.method, href: "/north-face-growth/" },
   { label: t.nav.studio, href: L("/#studio") },
   { label: t.footer.contact, href: t.links.contact },
 ];
 const serviceItems = t.services.items.map((s) => ({
   label: s.title,
-  href: L(`/#service-${s.id}`),
+  href: L(`/services/#service-${s.id}`),
 }));
 const socials = [
   { label: "LinkedIn", href: site.social.linkedin },
