@@ -38,7 +38,7 @@ const en = {
     play: "Play video",
   },
   clients: {
-    title: "Used by millions across Mexico, Brazil, Colombia, Peru and Puerto Rico.",
+    title: "Used by millions across Latin America.",
     label: "Products shipped with",
   },
   impact: {
@@ -202,7 +202,7 @@ const es: UI = {
     play: "Reproducir video",
   },
   clients: {
-    title: "Usados por millones en México, Brasil, Colombia, Perú y Puerto Rico.",
+    title: "Usados por millones en Latinoamérica.",
     label: "Productos lanzados con",
   },
   impact: {
