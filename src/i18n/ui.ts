@@ -151,6 +151,191 @@ const en = {
     primary: "Book a 30-min discovery call",
     secondary: "Send a project brief",
   },
+  servicesPage: {
+    metaTitle: "Product Design Services for Startup Founders",
+    metaDescription:
+      "Product design, design systems, product-led growth and a Fractional or Full-time Head of Design — engagements for founders taking a product from fit to growth. Book a discovery call.",
+    breadcrumbHome: "Home",
+    breadcrumb: "Services",
+    hero: {
+      label: "Services",
+      title: "Design leadership for",
+      titleHl: "every stage",
+      titleEnd: "of your product.",
+      sub: "From the first research sprint to a design team that runs on its own — we plug in where your product needs it most.",
+      cta: "Book a discovery call",
+      secondary: "Compare engagements",
+      indexLabel: "What we do",
+    },
+    detail: {
+      eyebrow: "What we do",
+      title: "Four services.",
+      titleHl: "One climb.",
+      sub: "Each one works on its own, and they're designed to stack as your product grows.",
+      fit: "When it fits",
+      included: "What's included",
+      deliverables: "Typical deliverables",
+      byId: {
+        "product-design": {
+          fit: "You're shipping an MVP, or the product works but users get lost on the way to value.",
+          included: [
+            "UX audit of the product and its funnels",
+            "User interviews and usability testing",
+            "End-to-end flows for web and mobile",
+            "High-fidelity UI and prototypes",
+            "Handoff and design QA with engineering",
+          ],
+          deliverables: [
+            "Audit with prioritized fixes",
+            "Research synthesis",
+            "Clickable prototypes",
+            "Production-ready Figma files",
+          ],
+        },
+        "design-systems": {
+          fit: "Several squads or products, and the UI is drifting — every new feature takes longer than it should.",
+          included: [
+            "Inventory of the existing UI",
+            "Tokens for color, type and spacing",
+            "Component library in Figma",
+            "Usage guidelines and documentation",
+            "Adoption plan with engineering",
+          ],
+          deliverables: [
+            "Figma token set",
+            "Component library",
+            "System documentation",
+            "Rollout roadmap",
+          ],
+        },
+        growth: {
+          fit: "You have traction, but activation, conversion or retention has plateaued.",
+          included: [
+            "Funnel and analytics review",
+            "Onboarding and activation redesign",
+            "Hypotheses and experiment backlog",
+            "A/B test design",
+            "Iteration on the results",
+          ],
+          deliverables: [
+            "Prioritized experiment roadmap",
+            "Test-ready design variants",
+            "Experiment readouts",
+          ],
+        },
+        leadership: {
+          fit: "You need senior design leadership now, but a full-time hire is premature — or you're building the team that will take over.",
+          included: [
+            "Design vision and roadmap",
+            "Rituals, critiques and quality bar",
+            "Hiring and onboarding designers",
+            "Process with product and engineering",
+            "Design narrative for leadership and board",
+          ],
+          deliverables: [
+            "Design strategy",
+            "Team structure and hiring plan",
+            "Operating rituals",
+          ],
+        },
+      },
+    },
+    models: {
+      eyebrow: "Engagements",
+      title: "Three ways to work together.",
+      titleHl: "Pick the one that fits your stage.",
+      sub: "Scope and timeline are defined together on the discovery call.",
+      items: [
+        {
+          name: "Project sprint",
+          body: "A defined scope with a clear outcome — an audit, an MVP, a design system or a redesign. Timeline agreed up front.",
+          points: ["Scoped on the discovery call", "Weekly reviews with your team", "A handoff your team can run with"],
+          cta: "Scope a project",
+          type: "discovery",
+        },
+        {
+          name: "Growth retainer",
+          body: "Embedded with your product team month to month, working on the metrics that matter: activation, conversion, retention.",
+          points: ["Joins your rituals and roadmap", "Continuous experimentation", "Capacity sized to your roadmap"],
+          cta: "Talk about a retainer",
+          type: "discovery",
+        },
+        {
+          name: "Head of Design",
+          body: "Senior design leadership on your org chart — vision, team, rituals and hiring. Fractional to start, full-time when you're ready.",
+          points: ["Fractional or full-time", "Builds and leads your design team", "Partners with product and engineering"],
+          cta: "Discuss design leadership",
+          type: "fractional",
+        },
+      ],
+    },
+    audience: {
+      eyebrow: "Who it's for",
+      title: "Built for founders",
+      titleHl: "and the teams around them.",
+      items: [
+        {
+          title: "Founders before product-market fit",
+          body: "You need to validate fast: research, an MVP and a test plan — without hiring a full design team.",
+        },
+        {
+          title: "Founders after fit",
+          body: "The product works. Now it needs growth, consistency and a system that keeps up with the team.",
+        },
+        {
+          title: "Companies maturing their product",
+          body: "Several products or squads that need one experience, one design system and a process that holds.",
+        },
+        {
+          title: "Teams without a design lead",
+          body: "Designers or engineers shipping UI without senior direction — and a founder who wants that to change.",
+        },
+      ],
+    },
+    process: {
+      eyebrow: "Method",
+      title: "Every engagement runs on",
+      titleHl: "North Face Growth.",
+      body: "The same four-step climb behind every case on this site. We start at the step your product is on.",
+      cta: "Explore the method",
+    },
+    proof: {
+      eyebrow: "Proof",
+      title: "Outcomes,",
+      titleHl: "not just deliverables.",
+    },
+    faq: {
+      eyebrow: "FAQ",
+      title: "Questions founders ask",
+      titleHl: "before the first call.",
+      items: [
+        {
+          q: "Who will I actually work with?",
+          a: "With Carlos, directly — the Head of Design behind products at Stori, Karta, Truora and Yaydoo. Comandos is an independent studio: some engagements are just him, others add hand-picked specialists in research, UI, motion or engineering for the length of the project. No account managers, no hand-offs to juniors.",
+        },
+        {
+          q: "Do you work with teams outside Mexico?",
+          a: "Yes. We're based in Mexico City on Central Time, which overlaps with business hours across the Americas. Everything runs remote-first, with teams in Latin America, the US or anywhere else.",
+        },
+        {
+          q: "How does the discovery call work?",
+          a: "Send the contact form and we'll reply within one business day to book 30 minutes on video. You tell us where the product is and what's blocking it; we tell you honestly whether we're a fit and which engagement makes sense. If there's a fit, you get a proposal with scope and timeline.",
+        },
+        {
+          q: "Do you work in English and Spanish?",
+          a: "Both. Workshops, research, documentation and design files run in whichever language your team and your users speak.",
+        },
+        {
+          q: "What tools do you use?",
+          a: "Figma for design, prototypes and design systems. For research and experimentation we work inside your stack — your analytics and testing tools — so everything stays with your team.",
+        },
+        {
+          q: "Can we start small?",
+          a: "Yes. An audit or a single sprint is a good way to test the fit before a longer engagement or a Head of Design role.",
+        },
+      ],
+    },
+  },
   footer: {
     description:
       "Product design studio for founders moving from product-market fit to growth — from Mexico City to the world.",
@@ -314,6 +499,191 @@ const es: UI = {
     sub: "Cuéntanos dónde está tu producto y a dónde necesita llegar. Te respondemos en máximo un día hábil.",
     primary: "Agenda una discovery call de 30 min",
     secondary: "Envía un brief del proyecto",
+  },
+  servicesPage: {
+    metaTitle: "Servicios de product design para founders de startups",
+    metaDescription:
+      "Product design, design systems, product-led growth y Head of Design fraccional o full-time — esquemas de trabajo para founders que llevan su producto de fit a crecimiento. Agenda una discovery call.",
+    breadcrumbHome: "Inicio",
+    breadcrumb: "Servicios",
+    hero: {
+      label: "Servicios",
+      title: "Liderazgo de diseño para",
+      titleHl: "cada etapa",
+      titleEnd: "de tu producto.",
+      sub: "Del primer sprint de research a un equipo de diseño que camina solo — entramos donde tu producto más lo necesita.",
+      cta: "Agenda una discovery call",
+      secondary: "Compara esquemas",
+      indexLabel: "Qué hacemos",
+    },
+    detail: {
+      eyebrow: "Qué hacemos",
+      title: "Cuatro servicios.",
+      titleHl: "Un solo ascenso.",
+      sub: "Cada uno funciona por sí solo, y están pensados para sumarse conforme crece tu producto.",
+      fit: "Cuándo encaja",
+      included: "Qué incluye",
+      deliverables: "Entregables típicos",
+      byId: {
+        "product-design": {
+          fit: "Vas a lanzar un MVP, o el producto ya funciona pero los usuarios se pierden antes de llegar al valor.",
+          included: [
+            "UX audit del producto y sus funnels",
+            "Entrevistas con usuarios y pruebas de usabilidad",
+            "Flujos end-to-end para web y mobile",
+            "UI en alta fidelidad y prototipos",
+            "Handoff y QA de diseño con ingeniería",
+          ],
+          deliverables: [
+            "Auditoría con fixes priorizados",
+            "Síntesis de research",
+            "Prototipos navegables",
+            "Archivos de Figma listos para producción",
+          ],
+        },
+        "design-systems": {
+          fit: "Tienes varios squads o productos y la UI se está desalineando — cada feature nueva tarda más de lo que debería.",
+          included: [
+            "Inventario de la UI actual",
+            "Tokens de color, tipografía y espaciado",
+            "Librería de componentes en Figma",
+            "Guías de uso y documentación",
+            "Plan de adopción con ingeniería",
+          ],
+          deliverables: [
+            "Set de tokens en Figma",
+            "Librería de componentes",
+            "Documentación del sistema",
+            "Roadmap de implementación",
+          ],
+        },
+        growth: {
+          fit: "Ya tienes tracción, pero la activación, la conversión o la retención se estancaron.",
+          included: [
+            "Revisión de funnels y analytics",
+            "Rediseño de onboarding y activación",
+            "Hipótesis y backlog de experimentos",
+            "Diseño de A/B tests",
+            "Iteración sobre los resultados",
+          ],
+          deliverables: [
+            "Roadmap de experimentos priorizado",
+            "Variantes de diseño listas para probar",
+            "Reportes de resultados",
+          ],
+        },
+        leadership: {
+          fit: "Necesitas liderazgo de diseño senior ya, pero contratar a alguien full-time todavía es prematuro — o estás armando el equipo que va a tomar la estafeta.",
+          included: [
+            "Visión y roadmap de diseño",
+            "Rituales, critiques y estándar de calidad",
+            "Hiring y onboarding de diseñadores",
+            "Proceso con producto e ingeniería",
+            "Narrativa de diseño para dirección y board",
+          ],
+          deliverables: [
+            "Estrategia de diseño",
+            "Estructura del equipo y plan de hiring",
+            "Rituales de operación",
+          ],
+        },
+      },
+    },
+    models: {
+      eyebrow: "Esquemas",
+      title: "Tres formas de trabajar juntos.",
+      titleHl: "Elige la que va con tu etapa.",
+      sub: "El alcance y los tiempos los definimos juntos en la discovery call.",
+      items: [
+        {
+          name: "Proyecto por sprint",
+          body: "Un alcance definido con un resultado claro — una auditoría, un MVP, un design system o un rediseño. Tiempos acordados desde el inicio.",
+          points: ["Alcance definido en la discovery call", "Revisiones semanales con tu equipo", "Un handoff con el que tu equipo puede seguir solo"],
+          cta: "Platiquemos de tu proyecto",
+          type: "discovery",
+        },
+        {
+          name: "Retainer de crecimiento",
+          body: "Integrados a tu equipo de producto mes a mes, trabajando sobre las métricas que importan: activación, conversión, retención.",
+          points: ["Nos sumamos a tus rituales y roadmap", "Experimentación continua", "Capacidad a la medida de tu roadmap"],
+          cta: "Platiquemos de un retainer",
+          type: "discovery",
+        },
+        {
+          name: "Head of Design",
+          body: "Liderazgo de diseño senior dentro de tu organigrama — visión, equipo, rituales y hiring. Fraccional para empezar, full-time cuando estés listo.",
+          points: ["Fraccional o full-time", "Arma y lidera tu equipo de diseño", "Trabaja codo a codo con producto e ingeniería"],
+          cta: "Habla de liderazgo de diseño",
+          type: "fractional",
+        },
+      ],
+    },
+    audience: {
+      eyebrow: "Para quién",
+      title: "Pensado para founders",
+      titleHl: "y los equipos que los rodean.",
+      items: [
+        {
+          title: "Founders antes del product-market fit",
+          body: "Necesitas validar rápido: research, un MVP y un plan de pruebas — sin contratar un equipo de diseño completo.",
+        },
+        {
+          title: "Founders después del fit",
+          body: "El producto ya funciona. Ahora necesita crecimiento, consistencia y un sistema que siga el ritmo del equipo.",
+        },
+        {
+          title: "Empresas que están madurando su producto",
+          body: "Varios productos o squads que necesitan una sola experiencia, un design system y un proceso que se sostenga.",
+        },
+        {
+          title: "Equipos sin líder de diseño",
+          body: "Diseñadores o ingenieros sacando UI sin dirección senior — y un founder que quiere cambiar eso.",
+        },
+      ],
+    },
+    process: {
+      eyebrow: "Método",
+      title: "Cada proyecto corre sobre",
+      titleHl: "North Face Growth.",
+      body: "El mismo ascenso de cuatro pasos detrás de cada caso de este sitio. Empezamos en el paso en el que está tu producto.",
+      cta: "Conoce el método",
+    },
+    proof: {
+      eyebrow: "Casos",
+      title: "Resultados,",
+      titleHl: "no solo entregables.",
+    },
+    faq: {
+      eyebrow: "Preguntas frecuentes",
+      title: "Lo que preguntan los founders",
+      titleHl: "antes de la primera llamada.",
+      items: [
+        {
+          q: "¿Con quién voy a trabajar realmente?",
+          a: "Con Carlos, directo — el Head of Design detrás de productos de Stori, Karta, Truora y Yaydoo. Comandos es un estudio independiente: en algunos proyectos trabaja solo y en otros suma especialistas en research, UI, motion o ingeniería elegidos para ese proyecto. Sin account managers y sin delegar a juniors.",
+        },
+        {
+          q: "¿Trabajan con equipos fuera de México?",
+          a: "Sí. Estamos en la Ciudad de México, en horario del Centro, que coincide con el horario laboral de todo el continente. Trabajamos remote-first con equipos en Latinoamérica, Estados Unidos o donde estén.",
+        },
+        {
+          q: "¿Cómo funciona la discovery call?",
+          a: "Llena el formulario de contacto y te respondemos en máximo un día hábil para agendar 30 minutos por videollamada. Nos cuentas dónde está tu producto y qué lo está frenando; te decimos con honestidad si hacemos match y qué esquema tiene sentido. Si hay fit, te mandamos una propuesta con alcance y tiempos.",
+        },
+        {
+          q: "¿Trabajan en inglés y en español?",
+          a: "En los dos. Workshops, research, documentación y archivos de diseño en el idioma que hablen tu equipo y tus usuarios.",
+        },
+        {
+          q: "¿Qué herramientas usan?",
+          a: "Figma para diseño, prototipos y design systems. Para research y experimentación trabajamos dentro de tu stack — tus herramientas de analytics y testing — para que todo se quede con tu equipo.",
+        },
+        {
+          q: "¿Podemos empezar con algo pequeño?",
+          a: "Claro. Una auditoría o un solo sprint es buena forma de probar el fit antes de un esquema más largo o de un rol de Head of Design.",
+        },
+      ],
+    },
   },
   footer: {
     description:
