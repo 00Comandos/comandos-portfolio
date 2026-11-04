@@ -25,6 +25,9 @@
     "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   --font-display: "Geist", var(--font-sans);
+  /* Mono for micro-labels, numerals and meta — Comandos' own voice. */
+  --font-mono:
+    "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   /* Serif tokens now resolve to the grotesk — one typeface site-wide. */
   --font-serif: var(--font-display);
   --font-display-serif: var(--font-display);
@@ -97,10 +100,16 @@
   }
 
   /* Teal highlighter behind a key word — Riotters' signature accent. */
+  /* Key phrase wrapped in an outlined pill (Comandos signature): teal
+     outline + faint teal tint, text keeps the surrounding color so it
+     works on paper and on black bands alike. */
   .hl {
-    background: var(--color-accent);
-    color: var(--color-ink);
-    padding: 0 0.12em;
+    color: inherit;
+    background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+    border: max(1.5px, 0.05em) solid var(--color-accent);
+    border-radius: 9999px;
+    padding: 0 0.34em;
+    margin-inline: 0.04em;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
   }
@@ -115,10 +124,40 @@
   /* Small sentence-case section label (Riotters: "Currently working with"). */
   .eyebrow {
     display: inline-block;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    letter-spacing: -0.01em;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--color-ink);
+  }
+  .mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+
+  /* Micro-labels, numerals and meta across components share the mono
+     voice (selectors match the components' class names). */
+  .step-num,
+  .service-num,
+  .point-num,
+  .sv-row-num,
+  .sv-step-num,
+  .sv-model-num,
+  .sv-index-num,
+  .impact-brand,
+  .sv-proof-brand,
+  .services-eyebrow,
+  .method-eyebrow,
+  .csh-meta dt,
+  .cg-tag,
+  .service-tags li,
+  .sv-label {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
   }
 
   .container-page {

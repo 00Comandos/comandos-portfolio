@@ -30,7 +30,8 @@ const en = {
   },
   hero: {
     line1: "Your product works.",
-    line2: "Let's make it grow.",
+    line2: "Let's make it",
+    line2Hl: "grow",
     sub: "Strategy. UX. Design systems. Experimentation. Everything a founder needs to take a product from fit to growth.",
     cta: "Book a discovery call",
     secondary: "See the work",
@@ -57,6 +58,8 @@ const en = {
     now: "Now",
     readCase: (brand: string) => `Read the ${brand} case study`,
     all: "See all case studies",
+    viewCase: "View case",
+    preview: "Preview",
   },
   services: {
     eyebrow: "Services",
@@ -390,7 +393,8 @@ const es: UI = {
   },
   hero: {
     line1: "Tu producto funciona.",
-    line2: "Hagámoslo crecer.",
+    line2: "Hagámoslo",
+    line2Hl: "crecer",
     sub: "Estrategia. UX. Design systems. Experimentación. Todo lo que un founder necesita para llevar su producto de product-market fit a crecimiento.",
     cta: "Agenda una discovery call",
     secondary: "Ver el trabajo",
@@ -417,6 +421,8 @@ const es: UI = {
     now: "Ahora",
     readCase: (brand: string) => `Ver el caso de ${brand}`,
     all: "Ver todos los casos",
+    viewCase: "Ver caso",
+    preview: "Preview",
   },
   services: {
     eyebrow: "Servicios",

@@ -20,6 +20,12 @@ const sizesAttr = {
   f: "100vw",
 };
 
+// Hover previews (Tubik-style "quick view") for cases that have footage.
+const previews: Record<string, string> = {
+  "stori-inversion-plus": "/videos/stori-inversion-plus-confident-investor-after-desktop.mp4",
+  "karta-card": "/videos/karta-card-black-card-reveal-after.mp4",
+};
+
 const tiles = slugs.flatMap((slug, i) => {
   const p = projects.find((x) => x.slug === slug);
   if (!p) return [];
@@ -36,17 +42,18 @@ const tiles = slugs.flatMap((slug, i) => {
       image: p.image,
       impact,
       tags: copy?.tags ?? [],
+      preview: previews[slug],
     },
   ];
 });
 ---
 
-<section id="work" aria-labelledby="work-heading" class="case-grid">
+<section id="work" aria-labelledby="work-heading" class="case-grid" data-case-grid>
   <div class="container-page">
     <div class="cg-head">
       <div class="cg-head-copy">
         <h2 id="work-heading" class="display-serif cg-title">
-          {t.work.title} <em>{t.work.titleEm}</em>
+          {t.work.title} <span class="hl">{t.work.titleEm}</span>
         </h2>
       </div>
       <a href="/projects/" class="btn-outline cg-all">{t.work.all}</a>
@@ -66,6 +73,24 @@ const tiles = slugs.flatMap((slug, i) => {
                   loading={i < 2 ? "eager" : "lazy"}
                   class="cg-img"
                 />
+                {tile.preview && (
+                  <>
+                    <video
+                      class="cg-video"
+                      data-src={tile.preview}
+                      muted
+                      loop
+                      playsinline
+                      preload="none"
+                      aria-hidden="true"
+                      tabindex="-1"
+                    />
+                    <span class="cg-badge mono" aria-hidden="true">
+                      <svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 0.5v7L7.5 4z" fill="currentColor" /></svg>
+                      {t.work.preview}
+                    </span>
+                  </>
+                )}
               </span>
               <span class="cg-meta">
                 <span class="cg-name">{tile.name}</span>
@@ -84,7 +109,63 @@ const tiles = slugs.flatMap((slug, i) => {
       }
     </ul>
   </div>
+  <span class="cg-cursor mono" aria-hidden="true">{t.work.viewCase}</span>
 </section>
+
+<script>
+  /*
+   * Desktop-only niceties: a circular "View case" cursor that follows the
+   * pointer over case media (Aerolab), and muted video previews that load
+   * and play on hover (Tubik "quick view"). Touch devices get neither.
+   */
+  function initCaseGrid() {
+    const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    document.querySelectorAll<HTMLElement>("[data-case-grid]").forEach((grid) => {
+      if (grid.dataset.ready || !fine.matches) return;
+      grid.dataset.ready = "1";
+      grid.setAttribute("data-cursor", "");
+      const cursor = grid.querySelector<HTMLElement>(".cg-cursor");
+
+      let x = 0, y = 0, cx = 0, cy = 0, raf = 0;
+      const loop = () => {
+        const k = reduced.matches ? 1 : 0.22;
+        cx += (x - cx) * k;
+        cy += (y - cy) * k;
+        if (cursor) cursor.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+        raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.3 ? requestAnimationFrame(loop) : 0;
+      };
+
+      grid.querySelectorAll<HTMLElement>(".cg-media").forEach((media) => {
+        const video = media.querySelector<HTMLVideoElement>(".cg-video");
+        media.addEventListener("pointerenter", (e) => {
+          x = cx = e.clientX;
+          y = cy = e.clientY;
+          loop();
+          cursor?.classList.add("is-on");
+          if (video && !reduced.matches) {
+            if (!video.src && video.dataset.src) video.src = video.dataset.src;
+            video.play().then(() => media.classList.add("is-playing")).catch(() => {});
+          }
+        });
+        media.addEventListener("pointermove", (e) => {
+          x = e.clientX;
+          y = e.clientY;
+          if (!raf) raf = requestAnimationFrame(loop);
+        });
+        media.addEventListener("pointerleave", () => {
+          cursor?.classList.remove("is-on");
+          if (video) {
+            video.pause();
+            media.classList.remove("is-playing");
+          }
+        });
+      });
+    });
+  }
+  initCaseGrid();
+  document.addEventListener("astro:page-load", initCaseGrid);
+</script>
 
 <style>
   .case-grid {
@@ -215,6 +296,73 @@ const tiles = slugs.flatMap((slug, i) => {
     border-radius: var(--radius-xs);
     color: var(--color-ink);
   }
+  /* Video preview layered over the still; fades in once playing. */
+  .cg-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  .cg-media.is-playing .cg-video {
+    opacity: 1;
+  }
+  .cg-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 0.9);
+    color: var(--color-ink);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    transition: opacity 0.25s ease;
+  }
+  .cg-media.is-playing .cg-badge {
+    opacity: 0;
+  }
+
+  /* Circular cursor (desktop, fine pointer only). */
+  .cg-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 30;
+    display: none;
+    place-items: center;
+    width: 6.5rem;
+    height: 6.5rem;
+    border-radius: 9999px;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    pointer-events: none;
+    opacity: 0;
+    scale: 0.4;
+    transition:
+      opacity 0.2s ease,
+      scale 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  [data-cursor] .cg-cursor {
+    display: grid;
+  }
+  [data-cursor] .cg-media {
+    cursor: none;
+  }
+  .cg-cursor.is-on {
+    opacity: 1;
+    scale: 1;
+  }
+
   .cg-name::after {
     content: "";
     display: inline-block;
