@@ -29,7 +29,7 @@ const { content } = Astro.props;
             return (
               <div>
                 {block.label && (
-                  <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--color-muted)]">
+                  <p class="text-[0.9375rem] font-medium tracking-[-0.01em] text-[color:var(--color-muted)]">
                     {block.label}
                   </p>
                 )}
@@ -61,7 +61,7 @@ const { content } = Astro.props;
             return (
               <div>
                 {block.heading && (
-                  <p class="mb-3 text-[0.95rem] font-bold">{block.heading}</p>
+                  <p class="mb-3 text-[0.95rem] font-medium">{block.heading}</p>
                 )}
                 <Checklist items={block.items} />
               </div>
@@ -84,10 +84,10 @@ const { content } = Astro.props;
             return (
               <div>
                 <div class="flex items-center justify-between mb-3 text-sm">
-                  <span class="inline-flex items-center bg-[color:var(--color-paper-soft)] border border-[color:var(--color-border)] rounded-full px-4 py-1.5 font-semibold">
+                  <span class="inline-flex items-center bg-[color:var(--color-paper-soft)] border border-[color:var(--color-border)] rounded-full px-4 py-1.5 font-medium">
                     Before
                   </span>
-                  <span class="inline-flex items-center gap-2 bg-[color:var(--color-paper-soft)] border border-[color:var(--color-border)] rounded-full px-4 py-1.5 font-semibold">
+                  <span class="inline-flex items-center gap-2 bg-[color:var(--color-paper-soft)] border border-[color:var(--color-border)] rounded-full px-4 py-1.5 font-medium">
                     New
                     <span class="hl">{block.impact}</span>
                   </span>
