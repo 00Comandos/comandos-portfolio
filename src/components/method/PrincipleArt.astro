@@ -1,0 +1,192 @@
+---
+/*
+ * Isometric line illustration per method principle ("The rules we climb
+ * by"). Same vocabulary as the services "reality today" drawings: 1px ink
+ * strokes, paper/grey faces, one teal accent.
+ *   1 Numbers, not opinions   — measured bars, the winner marked in teal
+ *   2 No black box            — a glass box: you can see the work inside
+ *   3 Your stage, this order  — four steps, a pin where we start
+ *   4 Built to be extended    — a base with one block snapping into place
+ */
+import { box, fitViewBox, pt, type IsoGrid } from "~/components/services/iso";
+
+type Props = { kind: 1 | 2 | 3 | 4 };
+const { kind } = Astro.props;
+
+type Kind = "solid" | "acc" | "ghost" | "glass";
+type Piece = { i: number; j: number; z0: number; z1: number; di?: number; dj?: number; gap?: number; kind: Kind; cls?: string; layer?: number };
+
+const g: IsoGrid = { ox: 100, oy: 40, w: 18, h: 10.4 };
+
+const scenes: Record<1 | 2 | 3 | 4, Piece[]> = {
+  1: [22, 34, 52, 28].map((z, i) => ({ i, j: 0, z0: 0, z1: z, gap: 0.2, kind: (i === 2 ? "acc" : "solid") as Kind })),
+  2: [
+    { i: 0.3, j: 0.3, z0: 0, z1: 10, kind: "solid" },
+    { i: 1.2, j: 0.4, z0: 0, z1: 16, kind: "acc", cls: "pa-bob" },
+    { i: 0.5, j: 1.3, z0: 0, z1: 7, kind: "solid" },
+    { i: 0, j: 0, z0: 0, z1: 30, di: 2.4, dj: 2.4, gap: 0, kind: "glass", layer: 1 },
+  ],
+  3: [0, 1, 2, 3].map((i) => ({ i, j: 0, z0: 0, z1: 8 + i * 9, dj: 1.6, gap: 0.04, kind: "solid" as Kind })),
+  4: [
+    { i: 0, j: 0, z0: 0, z1: 8, di: 3, dj: 2, gap: 0, kind: "solid" },
+    { i: 0.15, j: 0.2, z0: 8, z1: 22, kind: "solid" },
+    { i: 1.05, j: 0.2, z0: 8, z1: 18, kind: "solid" },
+    { i: 1.95, j: 0.9, z0: 8, z1: 20, kind: "ghost" },
+    { i: 1.95, j: 0.9, z0: 30, z1: 42, kind: "acc", cls: "pa-snap", layer: 1 },
+  ],
+};
+
+// Painter's order: layer, then back rows first, then bottom to top.
+const pieces = [...scenes[kind]].sort((a, b) => (a.layer ?? 0) - (b.layer ?? 0) || a.i + a.j - (b.i + b.j) || a.z0 - b.z0);
+const shapes = pieces.map((p) => ({ ...p, ...box(g, p.i, p.j, p.z1, { di: p.di, dj: p.dj, z0: p.z0, gap: p.gap }) }));
+
+// Extras: ruler across the winning bar (1), start pin on step 2 (3).
+const winTop = kind === 1 ? pt(g, 2.2, 0.2, 52) : null;
+const ruler: [number, number][] | null = winTop ? [[winTop[0] - 70, winTop[1]], [winTop[0] + 46, winTop[1]]] : null;
+// Hidden back edges of the glass box (2), drawn first and faint.
+const back =
+  kind === 2
+    ? [
+        [pt(g, 0, 0, 0), pt(g, 0, 0, 30)],
+        [pt(g, 0, 0, 0), pt(g, 2.4, 0, 0)],
+        [pt(g, 0, 0, 0), pt(g, 0, 2.4, 0)],
+      ]
+    : [];
+const pinBase = kind === 3 ? pt(g, 1.5, 0.8, 17) : null;
+const pinTop: [number, number] | null = pinBase ? [pinBase[0], pinBase[1] - 22] : null;
+
+const extra: [number, number][] = [...(ruler ?? []), ...(pinTop ? [[pinTop[0], pinTop[1] - 6] as [number, number]] : [])];
+const view = fitViewBox(
+  shapes.flatMap((s) => [s.top, s.left, s.right]),
+  extra,
+);
+---
+
+<svg class={`pa pa-${kind}`} viewBox={view} aria-hidden="true" focusable="false">
+  {back.map(([a, b]) => <path class="pa-back" d={`M${a.join(" ")} L${b.join(" ")}`} />)}
+  {
+    shapes.map((s) => (
+      <g class:list={["pa-shape", `is-${s.kind}`, s.cls]}>
+        <path d={s.left} class="f-left" />
+        <path d={s.right} class="f-right" />
+        <path d={s.top} class="f-top" />
+      </g>
+    ))
+  }
+  {ruler && <path class="pa-ruler" d={`M${ruler[0].join(" ")} L${ruler[1].join(" ")}`} />}
+  {
+    pinBase && pinTop && (
+      <g class="pa-pin">
+        <path class="pa-pin-line" d={`M${pinBase.join(" ")} L${pinTop.join(" ")}`} />
+        <circle class="pa-pin-head" cx={pinTop[0]} cy={pinTop[1]} r="4.5" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .pa {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 8.5rem;
+    margin: 0.75rem auto 2rem;
+    overflow: visible;
+  }
+  @media (min-width: 1100px) {
+    .pa {
+      height: 9.5rem;
+    }
+  }
+  .pa path,
+  .pa circle {
+    vector-effect: non-scaling-stroke;
+    stroke-width: 1;
+    stroke-linejoin: round;
+  }
+  .pa-shape path {
+    stroke: var(--color-ink);
+  }
+  .f-top {
+    fill: var(--color-paper);
+  }
+  .f-left {
+    fill: var(--color-paper-soft);
+  }
+  .f-right {
+    fill: var(--color-grey);
+  }
+  .is-acc .f-top {
+    fill: color-mix(in srgb, var(--color-accent) 30%, var(--color-paper));
+  }
+  .is-acc .f-left,
+  .is-acc .f-right {
+    fill: color-mix(in srgb, var(--color-accent) 12%, var(--color-paper));
+  }
+  .is-ghost path {
+    fill: transparent;
+    stroke: var(--color-accent);
+    stroke-dasharray: 3 3;
+  }
+  .is-ghost .f-top {
+    fill: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  }
+  /* Glass box: faint faces, the work inside stays visible. */
+  .is-glass path {
+    stroke: color-mix(in srgb, var(--color-ink) 70%, transparent);
+  }
+  .is-glass .f-top {
+    fill: color-mix(in srgb, var(--color-paper) 30%, transparent);
+  }
+  .is-glass .f-left,
+  .is-glass .f-right {
+    fill: color-mix(in srgb, var(--color-accent) 5%, transparent);
+  }
+  .pa-ruler {
+    fill: none;
+    stroke: var(--color-muted);
+    stroke-dasharray: 3 3;
+  }
+  .pa-back {
+    fill: none;
+    stroke: var(--color-muted-soft);
+    stroke-dasharray: 2 3;
+  }
+  .pa-pin-line {
+    fill: none;
+    stroke: var(--color-ink);
+  }
+  .pa-pin-head {
+    fill: var(--color-accent);
+    stroke: var(--color-ink);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pa-bob,
+    .pa-pin {
+      animation: pa-bob 3.2s ease-in-out infinite;
+    }
+    .pa-snap {
+      animation: pa-snap 3.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    }
+  }
+  @keyframes pa-bob {
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+  /* The new block drops into its slot, holds, then lifts again. */
+  @keyframes pa-snap {
+    0%,
+    15% {
+      transform: none;
+    }
+    45%,
+    80% {
+      transform: translateY(22px);
+    }
+    100% {
+      transform: none;
+    }
+  }
+</style>
