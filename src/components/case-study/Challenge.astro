@@ -105,6 +105,10 @@ const contactHref = `/contact?project=${encodeURIComponent(`Like ${brand}`)}`;
   .btn-dark-outline > :global(svg) {
     display: none;
   }
+  /* Global focus ring is ink — invisible on this black band. */
+  .btn-dark-outline:focus-visible {
+    outline-color: var(--color-paper);
+  }
   .btn-dark-outline:hover {
     background-color: var(--color-paper);
     color: var(--color-ink);
