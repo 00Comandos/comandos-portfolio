@@ -117,7 +117,7 @@ const stats = homeImpact[lang];
     font-size: 0.9375rem;
     line-height: 1.4;
     color: var(--color-ink-soft);
-    max-width: 16ch;
+    max-width: 20ch;
   }
   .impact-foot {
     margin-top: auto;
@@ -134,6 +134,15 @@ const stats = homeImpact[lang];
     text-transform: uppercase;
     color: var(--color-muted);
     transition: color 0.2s ease;
+  }
+  @media (max-width: 639px) {
+    .impact-brand {
+      letter-spacing: 0.06em;
+      font-size: 0.6875rem;
+    }
+    .impact-link {
+      display: none !important;
+    }
   }
   .impact-link {
     display: inline-flex;
