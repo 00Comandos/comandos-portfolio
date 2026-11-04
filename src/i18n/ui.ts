@@ -44,8 +44,9 @@ const en = {
   },
   impact: {
     eyebrow: "Impact",
-    title: "Design measured",
-    titleEm: "in business metrics.",
+    title: "Design measured in",
+    titleEm: "business metrics.",
+    titleEnd: "",
     readCase: "Read the case",
   },
   work: {
@@ -285,8 +286,9 @@ const en = {
     },
     audience: {
       eyebrow: "Who it's for",
-      title: "Built for founders",
-      titleHl: "and the teams around them.",
+      title: "Built for",
+      titleHl: "founders",
+      titleEnd: "and the teams around them.",
       items: [
         {
           title: "Founders before product-market fit",
@@ -315,13 +317,15 @@ const en = {
     },
     proof: {
       eyebrow: "Proof",
-      title: "Outcomes,",
-      titleHl: "not just deliverables.",
+      title: "",
+      titleHl: "Outcomes,",
+      titleEnd: "not just deliverables.",
     },
     faq: {
       eyebrow: "FAQ",
-      title: "Questions founders ask",
-      titleHl: "before the first call.",
+      title: "Questions founders ask before the",
+      titleHl: "first call.",
+      titleEnd: "",
       items: [
         {
           q: "Who will I actually work with?",
@@ -407,14 +411,15 @@ const es: UI = {
   },
   impact: {
     eyebrow: "Impacto",
-    title: "Diseño medido",
-    titleEm: "en métricas de negocio.",
+    title: "Diseño medido en",
+    titleEm: "métricas",
+    titleEnd: "de negocio.",
     readCase: "Ver el caso",
   },
   work: {
     eyebrow: "Trabajo seleccionado",
-    title: "Problemas de producto,",
-    titleEm: "resueltos con métricas.",
+    title: "Problemas de producto, resueltos",
+    titleEm: "con métricas.",
     sub: "Productos que pasaron de atorados a lanzados — lo que heredamos, lo que lanzamos y la métrica que movimos con el equipo.",
     before: "Antes",
     beforeLong: "Antes de Comandos",
@@ -648,8 +653,9 @@ const es: UI = {
     },
     audience: {
       eyebrow: "Para quién",
-      title: "Pensado para founders",
-      titleHl: "y los equipos que los rodean.",
+      title: "Pensado para",
+      titleHl: "founders",
+      titleEnd: "y los equipos que los rodean.",
       items: [
         {
           title: "Founders antes del product-market fit",
@@ -678,13 +684,15 @@ const es: UI = {
     },
     proof: {
       eyebrow: "Casos",
-      title: "Resultados,",
-      titleHl: "no solo entregables.",
+      title: "",
+      titleHl: "Resultados,",
+      titleEnd: "no solo entregables.",
     },
     faq: {
       eyebrow: "Preguntas frecuentes",
-      title: "Lo que preguntan los founders",
-      titleHl: "antes de la primera llamada.",
+      title: "Lo que preguntan los founders antes de la",
+      titleHl: "primera llamada.",
+      titleEnd: "",
       items: [
         {
           q: "¿Con quién voy a trabajar realmente?",

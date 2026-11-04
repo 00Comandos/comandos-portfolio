@@ -120,6 +120,14 @@
        without text-box support keep the untrimmed pill.) */
     text-box: trim-both cap text;
   }
+  /* Pills are 1–2 words and never split across lines (a pill broken in
+     two reads as two pills). On narrow phones they may wrap instead of
+     overflowing. */
+  @media (min-width: 640px) {
+    .hl {
+      white-space: nowrap;
+    }
+  }
 
   .hairline-t {
     border-top: 1px solid var(--color-border);

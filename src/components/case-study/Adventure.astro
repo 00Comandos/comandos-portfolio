@@ -205,9 +205,13 @@ const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-
           if (block.kind === "step") {
             return (
               <div>
-                <p class="text-[0.9375rem] font-medium tracking-[-0.01em] text-[color:var(--color-muted)]">
-                  {block.step}
-                </p>
+                {/* A chip right before the step already labels it ("Seeing the
+                    mountain") — don't stack "STEP 02" on top of it. */}
+                {content.blocks[bi - 1]?.kind !== "chip" && (
+                  <p class="text-[0.9375rem] font-medium tracking-[-0.01em] text-[color:var(--color-muted)]">
+                    {block.step}
+                  </p>
+                )}
                 <h3 class="display-serif mt-2 text-[2rem] md:text-[2.375rem]">
                   {block.heading}
                 </h3>

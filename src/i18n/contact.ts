@@ -19,7 +19,8 @@ const en = {
   },
   intro: {
     title: "Let's build something",
-    titleEm: "millions of people use.",
+    titleEm: "millions",
+    titleEnd: "of people use.",
     sub: "Tell us where your product is and what's blocking it. We'll take it from there.",
   },
   bullets: [
@@ -117,7 +118,8 @@ const es: ContactCopy = {
   },
   intro: {
     title: "Construyamos algo que",
-    titleEm: "millones de personas usen.",
+    titleEm: "millones",
+    titleEnd: "de personas usen.",
     sub: "Cuéntanos dónde está tu producto y qué lo está frenando. Nosotros nos encargamos del resto.",
   },
   bullets: [

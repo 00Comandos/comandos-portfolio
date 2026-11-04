@@ -58,7 +58,7 @@ const LOGO_PATH =
     </div>
 
     <div class="footer-right">
-      <div>
+      <div class="footer-cta">
         <p class="footer-cta-title">
           {t.footer.ctaTitle} <span class="hl">{t.footer.ctaHighlight}</span>.
         </p>
@@ -206,6 +206,11 @@ const LOGO_PATH =
     height: auto;
   }
 
+  /* Pages that already carry the contact form don't need a
+     second "Let's talk" in the footer. */
+  :global(body:has(form[action^="/api/contact"])) .footer-cta {
+    display: none;
+  }
   .footer-clock {
     margin-top: 0.75rem;
     display: inline-flex;
