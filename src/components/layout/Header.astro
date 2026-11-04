@@ -2,26 +2,69 @@
 import Logo from "~/components/ui/Logo.astro";
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 import { site } from "~/lib/site";
+import { alternatePath, getLang, localizedPath, ui } from "~/i18n";
 
-const pathname = new URL(Astro.request.url).pathname;
+const lang = getLang(Astro.url);
+const t = ui[lang];
+const pathname = Astro.url.pathname;
+const L = (href: string) => localizedPath(href, lang);
+
 const isActive = (href: string) =>
-  href === "/" ? pathname === "/" : pathname.startsWith(href);
+  !href.includes("#") && href !== "/" && pathname.startsWith(href);
 
+// Anchors point at home sections until their dedicated pages ship
+// (/services is next in the redesign roadmap).
 const menuItems = [
-  ...site.nav,
-  { label: "North Face Growth", href: "/north-face-growth" },
+  { label: t.nav.work, href: "/projects/" },
+  { label: t.nav.services, href: L("/#services") },
+  { label: t.nav.method, href: "/north-face-growth/" },
+  { label: t.nav.studio, href: L("/#studio") },
 ];
+
+const otherLang = lang === "en" ? "es" : "en";
+const switchHref = alternatePath(pathname, otherLang);
 ---
 
 <header class="site-header">
   <div class="container-page flex items-center justify-between h-20">
-    <a href="/" class="flex items-center" aria-label={`${site.name} — Home`}>
+    <a href={L("/")} class="flex items-center" aria-label={`${site.name} — Home`}>
       <Logo height={32} />
     </a>
 
+    <nav class="nav-inline" aria-label="Primary">
+      <ul>
+        {
+          menuItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={["nav-inline-link", isActive(item.href) && "is-active"]}
+                aria-current={isActive(item.href) ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
     <div class="flex items-center gap-3">
-      <a href="/contact" class="btn-primary hidden sm:inline-flex">
-        Contact Us
+      <a
+        href={switchHref}
+        class="lang-switch"
+        hreflang={otherLang}
+        lang={otherLang}
+        aria-label={t.nav.langSwitch}
+        title={t.nav.langSwitch}
+      >
+        <span class:list={[lang === "en" && "is-current"]}>EN</span>
+        <span aria-hidden="true">/</span>
+        <span class:list={[lang === "es" && "is-current"]}>ES</span>
+      </a>
+
+      <a href={t.links.discovery} class="btn-primary header-cta hidden sm:inline-flex">
+        {t.nav.cta}
         <span class="arrow"><ArrowIcon /></span>
       </a>
 
@@ -30,7 +73,9 @@ const menuItems = [
         id="menuToggle"
         aria-expanded="false"
         aria-controls="primaryMenu"
-        aria-label="Open menu"
+        aria-label={t.nav.menuOpen}
+        data-label-open={t.nav.menuOpen}
+        data-label-close={t.nav.menuClose}
         class="menu-btn"
       >
         <span class="menu-btn-bar"></span>
@@ -41,7 +86,7 @@ const menuItems = [
 
   <nav
     id="primaryMenu"
-    aria-label="Primary"
+    aria-label="Primary (menu)"
     class="menu-panel"
     data-open="false"
   >
@@ -74,8 +119,8 @@ const menuItems = [
         ))
       }
       <li class="sm:hidden mt-3">
-        <a href="/contact" class="btn-primary w-full justify-center">
-          Contact Us
+        <a href={t.links.discovery} class="btn-primary w-full justify-center">
+          {t.nav.cta}
           <span class="arrow"><ArrowIcon /></span>
         </a>
       </li>
@@ -288,6 +333,89 @@ const menuItems = [
   }
 </style>
 
+<style>
+  /* Inline primary nav (lg+) — replaces the burger on wide screens. */
+  .nav-inline {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .nav-inline {
+      display: block;
+    }
+    .menu-btn {
+      display: none !important;
+    }
+  }
+  .nav-inline ul {
+    display: flex;
+    gap: 2.25rem;
+  }
+  .nav-inline-link {
+    position: relative;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    padding-block: 0.4rem;
+    transition: opacity 0.2s ease;
+  }
+  .nav-inline-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1.5px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-inline-link:hover::after,
+  .nav-inline-link.is-active::after {
+    transform: scaleX(1);
+  }
+
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+    padding: 0.5rem 0.25rem;
+    transition: color 0.2s ease;
+  }
+  .lang-switch:hover {
+    color: var(--color-ink);
+  }
+  .lang-switch .is-current {
+    color: var(--color-ink);
+  }
+
+  /* Over the hero reel: everything inverts to white until scroll. */
+  .site-header.has-hero:not(.is-scrolled) .nav-inline-link {
+    color: #fff;
+  }
+  .site-header.has-hero:not(.is-scrolled) .lang-switch {
+    color: rgb(255 255 255 / 0.6);
+  }
+  .site-header.has-hero:not(.is-scrolled) .lang-switch .is-current,
+  .site-header.has-hero:not(.is-scrolled) .lang-switch:hover {
+    color: #fff;
+  }
+  .site-header.has-hero:not(.is-scrolled) .header-cta {
+    background-color: #fff;
+    color: var(--color-ink);
+  }
+  @media (max-width: 767px) {
+    .site-header.has-hero:has(.menu-panel[data-open="true"]) .lang-switch,
+    .site-header.has-hero:has(.menu-panel[data-open="true"]) .lang-switch .is-current {
+      color: var(--color-ink);
+    }
+  }
+</style>
+
 <script>
   // Toggle solid paper background once the user scrolls past the hero —
   // transparent at the top so the hero's cream bg shows through, tinted
@@ -309,7 +437,10 @@ const menuItems = [
   if (toggle && panel) {
     const setOpen = (open: boolean) => {
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      toggle.setAttribute(
+        "aria-label",
+        (open ? toggle.dataset.labelClose : toggle.dataset.labelOpen) ?? "",
+      );
       panel.setAttribute("data-open", open ? "true" : "false");
       document.body.style.overflow = open ? "hidden" : "";
     };

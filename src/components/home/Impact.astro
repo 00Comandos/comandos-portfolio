@@ -1,0 +1,152 @@
+---
+import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+import { homeImpact } from "~/data/home-work-i18n";
+import { ui, type Lang } from "~/i18n";
+
+type Props = { lang: Lang };
+const { lang } = Astro.props;
+const t = ui[lang];
+const stats = homeImpact[lang];
+---
+
+<section aria-labelledby="impact-heading" class="impact">
+  <div class="container-page">
+    <div class="impact-head">
+      <p class="eyebrow">{t.impact.eyebrow}</p>
+      <h2 id="impact-heading" class="display-serif impact-title">
+        {t.impact.title} <em>{t.impact.titleEm}</em>
+      </h2>
+    </div>
+
+    <ul class="impact-grid">
+      {
+        stats.map((s) => (
+          <li>
+            <a href={`/projects/${s.slug}/`} class="impact-card">
+              <span class="impact-value">{s.value}</span>
+              <span class="impact-label">{s.label}</span>
+              <span class="impact-foot">
+                <span class="impact-brand">{s.brand}</span>
+                <span class="impact-link" aria-hidden="true">
+                  <ArrowIcon />
+                </span>
+                <span class="sr-only">— {t.impact.readCase}</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .impact {
+    padding-block: 5rem 4rem;
+    background: var(--color-paper);
+  }
+  @media (min-width: 768px) {
+    .impact {
+      padding-block: 7rem 5rem;
+    }
+  }
+  .impact-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+  }
+  .impact-title {
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    max-width: 22ch;
+  }
+
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--color-border);
+  }
+  @media (min-width: 1024px) {
+    .impact-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .impact-grid > li {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .impact-grid > li:nth-child(odd) {
+    border-right: 1px solid var(--color-border);
+  }
+  @media (min-width: 1024px) {
+    .impact-grid > li {
+      border-bottom: none;
+      border-right: 1px solid var(--color-border);
+    }
+    .impact-grid > li:last-child {
+      border-right: none;
+    }
+  }
+
+  .impact-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.75rem 1rem 1.5rem 0;
+    transition: background-color 0.25s ease;
+  }
+  .impact-grid > li:nth-child(even) .impact-card {
+    padding-left: 1rem;
+  }
+  @media (min-width: 1024px) {
+    .impact-card,
+    .impact-grid > li:nth-child(even) .impact-card {
+      padding: 2.25rem 1.75rem 1.75rem;
+    }
+    .impact-grid > li:first-child .impact-card {
+      padding-left: 0;
+    }
+  }
+  .impact-value {
+    font-family: var(--font-display-serif);
+    font-size: clamp(3rem, 6vw, 4.75rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .impact-label {
+    margin-top: 0.75rem;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    color: var(--color-ink-soft);
+    max-width: 16ch;
+  }
+  .impact-foot {
+    margin-top: auto;
+    padding-top: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .impact-brand {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    transition: color 0.2s ease;
+  }
+  .impact-link {
+    display: inline-flex;
+    color: var(--color-muted);
+    transition:
+      transform 0.3s cubic-bezier(0.65, 0, 0.35, 1),
+      color 0.2s ease;
+  }
+  .impact-card:hover .impact-brand,
+  .impact-card:hover .impact-link {
+    color: var(--color-accent);
+  }
+  .impact-card:hover .impact-link {
+    transform: translateX(4px);
+  }
+</style>

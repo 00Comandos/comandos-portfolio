@@ -1,14 +1,22 @@
 import { z } from "zod";
 
 export const PROJECT_TYPES = [
+  "Discovery call (30 min)",
   "MVP / Pilot",
   "Product Strategy",
   "Design System",
   "UX Research",
   "Growth / Experimentation",
   "Full Product Redesign",
+  "Fractional / Full-time Head of Design",
   "Other",
 ] as const;
+
+/** `/contact/?type=<key>` preselects a project type (home CTAs use it). */
+export const PROJECT_TYPE_PRESETS: Record<string, (typeof PROJECT_TYPES)[number]> = {
+  discovery: "Discovery call (30 min)",
+  fractional: "Fractional / Full-time Head of Design",
+};
 
 export const REFERRAL_SOURCES = [
   "Google search",

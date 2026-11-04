@@ -2,30 +2,43 @@
 import { Image } from "astro:assets";
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 import { homeBeforeAfter } from "~/data/home-before-after";
+import { homeWorkCopy } from "~/data/home-work-i18n";
+import { ui, type Lang } from "~/i18n";
 
-const items = homeBeforeAfter;
+type Props = { lang: Lang };
+const { lang } = Astro.props;
+const t = ui[lang];
+
+// Layer the per-language captions + service tags over the EN source data.
+const items = homeBeforeAfter.map((it) => {
+  const copy = homeWorkCopy[lang][it.slug];
+  return {
+    ...it,
+    duringCaption: copy?.duringCaption ?? it.duringCaption,
+    nowCaption: copy?.nowCaption ?? it.nowCaption,
+    tags: copy?.tags ?? [],
+  };
+});
 const panelVh = 55;
 ---
 
 <section
-  id="before-after"
+  id="work"
   aria-labelledby="before-after-heading"
   class="ba-section"
 >
   <div class="ba-intro container-page">
     <p class="text-xs font-semibold tracking-[0.18em] uppercase text-[color:var(--color-muted)]">
-      Before / After Comandos
+      {t.work.eyebrow}
     </p>
     <h2
       id="before-after-heading"
       class="display-serif mt-3 text-[2.5rem] md:text-[3.5rem] max-w-3xl"
     >
-      Product problems,<br /><em>measurably solved.</em>
+      {t.work.title}<br /><em>{t.work.titleEm}</em>
     </h2>
     <p class="mt-4 max-w-xl text-[color:var(--color-muted)] leading-[1.6]">
-      Scroll to see eight products go from stuck to shipped — what we
-      inherited on the left, what we shipped on the right, and the metric
-      the team moved.
+      {t.work.sub}
     </p>
   </div>
 
@@ -37,7 +50,7 @@ const panelVh = 55;
     <div class="ba-sticky">
       <div class="container-page ba-grid">
         <div class="ba-col ba-col-before">
-          <span class="ba-label">Before Comandos</span>
+          <span class="ba-label">{t.work.beforeLong}</span>
           <div class="ba-stack">
             {
               items.map((it, i) => (
@@ -45,7 +58,7 @@ const panelVh = 55;
                   class:list={["ba-pic", i === 0 ? "is-active" : ""]}
                   data-idx={i}
                   href={`/projects/${it.slug}`}
-                  aria-label={`Read the ${it.brand} case study`}
+                  aria-label={t.work.readCase(it.brand)}
                 >
                   <div class="ba-media">
                     <Image
@@ -86,7 +99,7 @@ const panelVh = 55;
         </div>
 
         <div class="ba-col ba-col-after">
-          <span class="ba-label">Now</span>
+          <span class="ba-label">{t.work.now}</span>
           <div class="ba-stack">
             {
               items.map((it, i) => (
@@ -94,7 +107,7 @@ const panelVh = 55;
                   class:list={["ba-pic", i === 0 ? "is-active" : ""]}
                   data-idx={i}
                   href={`/projects/${it.slug}`}
-                  aria-label={`Read the ${it.brand} case study`}
+                  aria-label={t.work.readCase(it.brand)}
                 >
                   <div class="ba-media">
                     <Image
@@ -107,7 +120,14 @@ const panelVh = 55;
                       class="ba-img"
                     />
                   </div>
-                  <span class="ba-caption">{it.nowCaption}</span>
+                  <span class="ba-caption">
+                    {it.nowCaption}
+                    {it.tags.length > 0 && (
+                      <span class="ba-tags">
+                        {it.tags.map((tag) => <span class="ba-tag">{tag}</span>)}
+                      </span>
+                    )}
+                  </span>
                 </a>
               ))
             }
@@ -157,6 +177,9 @@ const panelVh = 55;
               </a>
               <div class="ba-m-overlay">
                 <h3 class="ba-m-brand">{it.brand}</h3>
+                {it.tags.length > 0 && (
+                  <p class="ba-m-tags">{it.tags.join(" · ")}</p>
+                )}
                 <p class="ba-m-caption" data-m-caption>{it.duringCaption}</p>
                 <div class="ba-m-toggle" role="tablist">
                   <button
@@ -164,9 +187,9 @@ const panelVh = 55;
                     class="ba-m-toggle-btn is-active"
                     data-m-state="before"
                     role="tab"
-                    aria-label="Show Before Comandos"
+                    aria-label={t.work.beforeLong}
                   >
-                    <span>Before</span>
+                    <span>{t.work.before}</span>
                     <span class="ba-m-toggle-line" aria-hidden="true"></span>
                   </button>
                   <button
@@ -174,10 +197,10 @@ const panelVh = 55;
                     class="ba-m-toggle-btn"
                     data-m-state="after"
                     role="tab"
-                    aria-label="Show Now"
+                    aria-label={t.work.now}
                   >
                     <span class="ba-m-toggle-line" aria-hidden="true"></span>
-                    <span>Now</span>
+                    <span>{t.work.now}</span>
                   </button>
                 </div>
               </div>
@@ -189,8 +212,8 @@ const panelVh = 55;
   </div>
 
   <div class="container-page mt-20 md:mt-0 ba-outlink">
-    <a href="/projects" class="btn-outline">
-      See all case studies
+    <a href="/projects/" class="btn-outline">
+      {t.work.all}
       <ArrowIcon />
     </a>
   </div>
@@ -320,6 +343,31 @@ const panelVh = 55;
   }
   .ba-col-after .ba-caption {
     text-align: right;
+  }
+  .ba-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.375rem;
+    margin-top: 0.625rem;
+  }
+  .ba-tag {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+    padding: 0.25rem 0.6rem;
+    border: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+    border-radius: var(--radius-full);
+  }
+  .ba-m-tags {
+    margin-top: 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.75);
   }
 
   .ba-col-center {

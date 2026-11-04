@@ -1,5 +1,6 @@
 ---
 import { site } from "~/lib/site";
+import { getLang, ui } from "~/i18n";
 
 type Props = {
   title?: string;
@@ -10,6 +11,7 @@ type Props = {
   noindex?: boolean;
   type?: "website" | "article";
   jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
+  alternates?: { en: string; es: string };
 };
 
 const {
@@ -21,7 +23,12 @@ const {
   noindex = false,
   type = "website",
   jsonLd,
+  alternates,
 } = Astro.props;
+
+const lang = getLang(Astro.url);
+const ogLocale = ui[lang].meta.ogLocale;
+const ogLocaleAlt = ui[lang === "en" ? "es" : "en"].meta.ogLocale;
 
 const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
 const url = canonical ?? new URL(Astro.url.pathname, site.url).toString();
@@ -51,7 +58,17 @@ const twitterHandle = "@01Comandos";
 <meta property="og:url" content={url} />
 <meta property="og:image" content={ogImage} />
 <meta property="og:image:alt" content={ogImageAlt} />
-<meta property="og:locale" content="en_US" />
+<meta property="og:locale" content={ogLocale} />
+{alternates && <meta property="og:locale:alternate" content={ogLocaleAlt} />}
+{
+  alternates && (
+    <>
+      <link rel="alternate" hreflang="en" href={new URL(alternates.en, site.url).toString()} />
+      <link rel="alternate" hreflang="es" href={new URL(alternates.es, site.url).toString()} />
+      <link rel="alternate" hreflang="x-default" href={new URL(alternates.en, site.url).toString()} />
+    </>
+  )
+}
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content={twitterHandle} />

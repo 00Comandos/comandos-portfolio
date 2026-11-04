@@ -1,5 +1,9 @@
 ---
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+import { ui, type Lang } from "~/i18n";
+
+type Props = { lang: Lang };
+const t = ui[Astro.props.lang];
 
 const VIDEO_DESKTOP = "/videos/hero-desktop.mp4";
 const VIDEO_MOBILE = "/videos/hero-mobile.mp4";
@@ -53,8 +57,10 @@ const ROUNDS = {
         class="hero-pause"
         id="heroPause"
         type="button"
-        aria-label="Pause video"
+        aria-label={t.hero.pause}
         aria-pressed="false"
+        data-label-pause={t.hero.pause}
+        data-label-play={t.hero.play}
       >
         <svg class="icon-pause" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
           <rect x="3" y="2" width="3.5" height="12" rx="1" />
@@ -75,7 +81,7 @@ const ROUNDS = {
             pauseBtn.setAttribute("aria-pressed", String(!paused));
             pauseBtn.setAttribute(
               "aria-label",
-              paused ? "Pause video" : "Play video",
+              (paused ? pauseBtn.dataset.labelPause : pauseBtn.dataset.labelPlay) ?? "",
             );
           });
         }
@@ -119,24 +125,19 @@ const ROUNDS = {
 
       <div class="hero-content">
         <h1 class="hero-headline">
-          We turn product chaos <br class="hidden md:block" />
-          into <em>measurable growth.</em>
+          {t.hero.line1}<br />
+          <em>{t.hero.line2}</em>
         </h1>
 
-        <p class="hero-sub">
-          Product design for FinTech and SaaS founders shipping from Mexico
-          City to the world. User research, product strategy, design systems,
-          and growth — backed by data and experimentation.
-        </p>
+        <p class="hero-sub">{t.hero.sub}</p>
 
         <div class="hero-cta">
-          <a href="/contact" class="btn-primary">
-            Start a project
+          <a href={t.links.discovery} class="btn-primary">
+            {t.hero.cta}
             <span class="arrow"><ArrowIcon /></span>
           </a>
-          <a href="#before-after" class="hero-scroll">See the work</a>
+          <a href="#work" class="hero-scroll">{t.hero.secondary}</a>
         </div>
-
       </div>
     </div>
   </div>

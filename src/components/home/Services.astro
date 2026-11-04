@@ -1,0 +1,150 @@
+---
+import ArrowIcon from "~/components/ui/ArrowIcon.astro";
+import { ui, type Lang } from "~/i18n";
+
+type Props = { lang: Lang };
+const t = ui[Astro.props.lang];
+---
+
+<section id="services" aria-labelledby="services-heading" class="services">
+  <div class="container-page">
+    <div class="services-head">
+      <div>
+        <p class="eyebrow">{t.services.eyebrow}</p>
+        <h2 id="services-heading" class="display-serif services-title">
+          {t.services.title}<br /><em>{t.services.titleEm}</em>
+        </h2>
+      </div>
+      <p class="services-sub">{t.services.sub}</p>
+    </div>
+
+    <ol class="services-grid">
+      {
+        t.services.items.map((s, i) => (
+          <li class="service-card" id={`service-${s.id}`}>
+            <span class="service-num">{String(i + 1).padStart(2, "0")}</span>
+            <h3 class="service-title">{s.title}</h3>
+            <p class="service-body">{s.body}</p>
+            <ul class="service-tags">
+              {s.tags.map((tag) => (
+                <li>{tag}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="services-foot">
+      <a href={t.links.discovery} class="btn-primary">
+        {t.services.cta}
+        <span class="arrow"><ArrowIcon /></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .services {
+    padding-block: 5rem;
+    background: var(--color-paper-soft);
+    scroll-margin-top: 5rem;
+  }
+  @media (min-width: 768px) {
+    .services {
+      padding-block: 7.5rem;
+    }
+  }
+  .services-head {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    align-items: end;
+  }
+  @media (min-width: 900px) {
+    .services-head {
+      grid-template-columns: 1.4fr 1fr;
+      gap: 4rem;
+    }
+  }
+  .services-title {
+    margin-top: 0.85rem;
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+  }
+  .services-sub {
+    color: var(--color-muted);
+    line-height: 1.6;
+    max-width: 30rem;
+  }
+
+  .services-grid {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 640px) {
+    .services-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .services-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .service-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.75rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    transition:
+      border-color 0.25s ease,
+      transform 0.25s ease,
+      box-shadow 0.3s ease;
+  }
+  .service-card:hover {
+    border-color: var(--color-ink);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card);
+  }
+  .service-num {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: 0.06em;
+  }
+  .service-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-top: 1.5rem;
+  }
+  .service-body {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    flex: 1;
+  }
+  .service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-top: 0.5rem;
+  }
+  .service-tags li {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.3rem 0.65rem;
+    border-radius: var(--radius-full);
+    background: var(--color-paper-soft);
+    color: var(--color-ink-soft);
+  }
+
+  .services-foot {
+    margin-top: 2.5rem;
+  }
+</style>

@@ -1,6 +1,18 @@
 ---
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 import { site } from "~/lib/site";
+import { getLang, localizedPath, ui } from "~/i18n";
+
+const lang = getLang(Astro.url);
+const t = ui[lang];
+const L = (href: string) => localizedPath(href, lang);
+const navItems = [
+  { label: t.nav.work, href: "/projects/" },
+  { label: t.nav.services, href: L("/#services") },
+  { label: t.nav.method, href: "/north-face-growth/" },
+  { label: t.nav.studio, href: L("/#studio") },
+  { label: t.footer.contact, href: t.links.contact },
+];
 
 const year = new Date().getFullYear();
 
@@ -25,19 +37,19 @@ const LOGO_PATH =
           decoding="async"
         />
         <p class="mt-5 max-w-sm text-sm leading-relaxed footer-muted">
-          {site.description}
+          {t.footer.description}
         </p>
-        <a href="/contact" class="footer-cta mt-6">
-          <span>Start a project</span>
+        <a href={t.links.discovery} class="footer-cta mt-6">
+          <span>{t.footer.cta}</span>
           <span class="footer-cta-arrow"><ArrowIcon /></span>
         </a>
       </div>
 
       <div>
-        <h4 class="footer-col-title">Navigation</h4>
+        <h4 class="footer-col-title">{t.footer.nav}</h4>
         <ul class="mt-5 space-y-3 text-sm">
           {
-            site.nav.map((item) => (
+            navItems.map((item) => (
               <li>
                 <a href={item.href} class="footer-link">
                   {item.label}
@@ -45,14 +57,11 @@ const LOGO_PATH =
               </li>
             ))
           }
-          <li>
-            <a href="/north-face-growth" class="footer-link">North Face Growth</a>
-          </li>
         </ul>
       </div>
 
       <div>
-        <h4 class="footer-col-title">Social</h4>
+        <h4 class="footer-col-title">{t.footer.social}</h4>
         <ul class="mt-5 space-y-3 text-sm">
           <li>
             <a
@@ -63,6 +72,9 @@ const LOGO_PATH =
             >
               LinkedIn
             </a>
+          </li>
+          <li>
+            <a href={site.social.email} class="footer-link">c@comandos.me</a>
           </li>
           <li>
             <a
@@ -117,7 +129,7 @@ const LOGO_PATH =
 
   <div class="footer-bottom">
     <div class="container-page text-xs footer-muted">
-      <p>© {year} Comandos. All rights reserved.</p>
+      <p>© {year} Comandos. {t.footer.rights}</p>
     </div>
   </div>
 </footer>

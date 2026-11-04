@@ -1,17 +1,20 @@
 ---
 import { clients } from "~/data/clients";
+import { ui, type Lang } from "~/i18n";
+
+type Props = { lang: Lang };
+const t = ui[Astro.props.lang];
 
 const mobileTrack = [...clients, ...clients];
 ---
 
 <section
-  aria-label="Trusted by"
+  aria-label={t.clients.label}
   class="pt-10 pb-14 md:pt-14 md:pb-16 bg-[color:var(--color-paper-soft)]"
 >
   <div class="container-page">
     <p class="clients-title">
-      Work shipped with these teams — used by millions across Mexico, Brazil,
-      Colombia, Peru and Puerto Rico.
+      {t.clients.title}
     </p>
 
     <ul

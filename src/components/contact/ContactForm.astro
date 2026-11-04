@@ -1,9 +1,15 @@
 ---
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
-import { PROJECT_TYPES, REFERRAL_SOURCES } from "~/lib/contact";
+import {
+  PROJECT_TYPES,
+  PROJECT_TYPE_PRESETS,
+  REFERRAL_SOURCES,
+} from "~/lib/contact";
 
 const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
-const status = new URL(Astro.request.url).searchParams.get("status");
+const params = new URL(Astro.request.url).searchParams;
+const status = params.get("status");
+const presetType = PROJECT_TYPE_PRESETS[params.get("type") ?? ""];
 
 const fieldClass =
   "w-full rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-paper)] px-4 py-3 text-[0.95rem] focus:border-[color:var(--color-ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ink)]/15 transition-colors data-[invalid]:border-red-400 data-[invalid]:focus:ring-red-200";
@@ -125,7 +131,9 @@ const errorClass =
       aria-describedby="projectType-error"
     >
       <option value="">Choose one…</option>
-      {PROJECT_TYPES.map((t) => <option value={t}>{t}</option>)}
+      {PROJECT_TYPES.map((t) => (
+        <option value={t} selected={t === presetType}>{t}</option>
+      ))}
     </select>
     <span id="projectType-error" data-error class={errorClass} />
   </div>

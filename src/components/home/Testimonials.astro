@@ -1,257 +1,142 @@
 ---
+import { Image } from "astro:assets";
 import { testimonials } from "~/data/testimonials";
+import { ui, type Lang } from "~/i18n";
+
+type Props = { lang: Lang };
+const t = ui[Astro.props.lang];
+// Quotes stay verbatim in their original language on both locales.
 ---
 
-<section
-  aria-labelledby="testimonials-heading"
-  class="py-24 md:py-32 bg-[color:var(--color-paper)]"
->
+<section aria-labelledby="testimonials-heading" class="testimonials">
   <div class="container-page">
-    <h2 id="testimonials-heading" class="sr-only">
-      What clients say about Comandos
-    </h2>
-
-    <div class="testimonial-stage" data-testimonials>
-      {
-        testimonials.map((t, i) => (
-          <figure
-            class="testimonial-slide"
-            data-slide-index={i}
-            data-active={i === 0 ? "true" : "false"}
-            aria-hidden={i === 0 ? "false" : "true"}
-          >
-            <blockquote class="mx-auto max-w-3xl text-center text-[1.25rem] md:text-[1.625rem] leading-[1.45] tracking-[-0.01em] text-[color:var(--color-ink-soft)]">
-              &ldquo;{t.quote}&rdquo;
-            </blockquote>
-
-            <figcaption class="mt-8 md:mt-10 text-center text-sm">
-              <span class="font-semibold text-[color:var(--color-ink)]">
-                {t.name},
-              </span>
-              <span class="text-[color:var(--color-muted)]"> {t.role}</span>
-            </figcaption>
-          </figure>
-        ))
-      }
+    <div class="testimonials-head">
+      <p class="eyebrow">{t.testimonials.eyebrow}</p>
+      <h2 id="testimonials-heading" class="display-serif testimonials-title">
+        {t.testimonials.title}<br /><em>{t.testimonials.titleEm}</em>
+      </h2>
     </div>
 
-    {
-      testimonials.length > 1 && (
-        <div class="mt-14 md:mt-20 border-t border-[color:var(--color-border)]">
-          <div
-            class="testimonial-tabs"
-            data-tablist
-            role="tablist"
-            aria-label="Choose a testimonial"
-          >
-            {testimonials.map((t, i) => (
-              <button
-                type="button"
-                class="testimonial-tab"
-                data-tab-index={i}
-                aria-selected={i === 0 ? "true" : "false"}
-                role="tab"
-              >
-                {t.tabLabel}
-              </button>
-            ))}
-          </div>
-        </div>
-      )
-    }
+    <ul class="testimonials-grid">
+      {
+        testimonials.map((q) => (
+          <li>
+            <figure class="quote-card">
+              <svg class="quote-mark" width="28" height="22" viewBox="0 0 28 22" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M0 22V13.2C0 5.9 4.1 1.4 11 0l1.3 3.1C8.4 4.4 6.4 7 6.2 10.4H12V22H0Zm16 0V13.2C16 5.9 20.1 1.4 27 0l1 3.1c-3.9 1.3-5.9 3.9-6.1 7.3H28V22H16Z"
+                />
+              </svg>
+              <blockquote class="quote-text" lang="en">{q.quote}</blockquote>
+              <figcaption class="quote-author">
+                {q.avatar && (
+                  <Image
+                    src={q.avatar}
+                    alt=""
+                    width={48}
+                    height={48}
+                    loading="lazy"
+                    class="quote-avatar"
+                  />
+                )}
+                <span>
+                  <span class="quote-name">{q.name}</span>
+                  <span class="quote-role">{q.role}</span>
+                </span>
+              </figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </section>
 
 <style>
-  .testimonial-stage {
-    position: relative;
+  .testimonials {
+    padding-block: 5rem;
+    background: var(--color-paper);
+  }
+  @media (min-width: 768px) {
+    .testimonials {
+      padding-block: 7.5rem;
+    }
+  }
+  .testimonials-head {
+    margin-bottom: 3rem;
+  }
+  .testimonials-title {
+    margin-top: 0.85rem;
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+  }
+
+  .testimonials-grid {
     display: grid;
+    gap: 1rem;
   }
-  .testimonial-stage > .testimonial-slide {
-    grid-column: 1;
-    grid-row: 1;
+  @media (min-width: 768px) {
+    .testimonials-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+  .testimonials-grid > li {
+    display: flex;
   }
 
-  .testimonial-slide {
-    opacity: 0;
-    transform: translateY(10px);
-    transition:
-      opacity 0.5s ease-out,
-      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-    pointer-events: none;
+  .quote-card {
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    background: var(--color-paper-soft);
+    border: 1px solid var(--color-border);
   }
-  .testimonial-slide[data-active="true"] {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+  @media (min-width: 768px) {
+    .quote-card {
+      padding: 2.5rem;
+    }
   }
-
-  .testimonial-tabs {
+  .quote-mark {
+    color: var(--color-accent);
+  }
+  .quote-text {
+    flex: 1;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  @media (min-width: 768px) {
+    .quote-text {
+      font-size: 1.125rem;
+    }
+  }
+  .quote-author {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 2rem;
-    overflow-x: auto;
-    padding: 1.75rem 1.5rem 0.5rem;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    mask-image: linear-gradient(
-      90deg,
-      transparent 0,
-      black 6%,
-      black 94%,
-      transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(
-      90deg,
-      transparent 0,
-      black 6%,
-      black 94%,
-      transparent 100%
-    );
+    gap: 0.9rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
   }
-  .testimonial-tabs::-webkit-scrollbar {
-    display: none;
-  }
-
-  @media (min-width: 768px) {
-    .testimonial-tabs {
-      justify-content: center;
-      gap: 3rem;
-      mask-image: none;
-      -webkit-mask-image: none;
-    }
-  }
-
-  .testimonial-tab {
-    position: relative;
-    background: transparent;
-    border: 0;
-    padding: 0.5rem 0;
-    font: inherit;
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: color-mix(in srgb, var(--color-ink) 38%, transparent);
-    cursor: pointer;
-    transition: color 0.2s ease;
-    white-space: nowrap;
+  .quote-author :global(.quote-avatar) {
+    width: 48px;
+    height: 48px;
+    border-radius: 9999px;
+    object-fit: cover;
     flex-shrink: 0;
-    scroll-snap-align: center;
   }
-  .testimonial-tab:hover {
-    color: color-mix(in srgb, var(--color-ink) 70%, transparent);
+  .quote-name {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 600;
   }
-  .testimonial-tab[aria-selected="true"] {
-    color: var(--color-ink);
-  }
-  .testimonial-tab::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -9px;
-    height: 2px;
-    background: var(--color-ink);
-    transform: scaleX(0);
-    transform-origin: center;
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .testimonial-tab[aria-selected="true"]::after {
-    transform: scaleX(1);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .testimonial-slide,
-    .testimonial-tab::after {
-      transition: none;
-      transform: none;
-    }
+  .quote-role {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--color-muted);
   }
 </style>
-
-<script>
-  const ROTATE_MS = 8000;
-
-  document
-    .querySelectorAll<HTMLElement>("[data-testimonials]")
-    .forEach((stage) => {
-      const slides = Array.from(
-        stage.querySelectorAll<HTMLElement>(".testimonial-slide"),
-      );
-      if (slides.length <= 1) return;
-
-      const section = stage.closest("section");
-      const scope = section ?? document;
-      const tabList = scope.querySelector<HTMLElement>("[data-tablist]");
-      const tabs = Array.from(
-        scope.querySelectorAll<HTMLButtonElement>("[data-tab-index]"),
-      );
-
-      let current = 0;
-      let timer: number | null = null;
-      let paused = false;
-
-      const show = (index: number) => {
-        const next = (index + slides.length) % slides.length;
-        slides.forEach((s, i) => {
-          const isActive = i === next;
-          s.setAttribute("data-active", isActive ? "true" : "false");
-          s.setAttribute("aria-hidden", isActive ? "false" : "true");
-        });
-        tabs.forEach((d, i) => {
-          d.setAttribute("aria-selected", i === next ? "true" : "false");
-        });
-        const activeTab = tabs[next];
-        if (activeTab && tabList) {
-          const overflows = tabList.scrollWidth > tabList.clientWidth + 2;
-          if (overflows) {
-            const target =
-              activeTab.offsetLeft -
-              tabList.clientWidth / 2 +
-              activeTab.clientWidth / 2;
-            tabList.scrollTo({
-              left: Math.max(0, target),
-              behavior: "smooth",
-            });
-          }
-        }
-        current = next;
-      };
-
-      const start = () => {
-        if (timer !== null) return;
-        timer = window.setInterval(() => {
-          if (!paused) show(current + 1);
-        }, ROTATE_MS);
-      };
-      const stop = () => {
-        if (timer !== null) {
-          window.clearInterval(timer);
-          timer = null;
-        }
-      };
-
-      tabs.forEach((tab, i) => {
-        tab.addEventListener("click", () => {
-          show(i);
-          stop();
-          start();
-        });
-      });
-
-      stage.addEventListener("pointerenter", () => {
-        paused = true;
-      });
-      stage.addEventListener("pointerleave", () => {
-        paused = false;
-      });
-
-      const prefersReduced = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-      if (!prefersReduced) start();
-    });
-</script>

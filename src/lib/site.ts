@@ -16,9 +16,4 @@ export const site = {
     x: "https://x.com/01Comandos",
     email: "mailto:c@comandos.me",
   },
-  nav: [
-    { label: "Home", href: "/" },
-    { label: "Projects", href: "/projects" },
-    { label: "Contact Us", href: "/contact" },
-  ],
 } as const;
