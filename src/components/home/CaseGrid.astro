@@ -171,6 +171,8 @@ const tiles = slugs.flatMap((slug, i) => {
   .case-grid {
     padding-block: 4.5rem 5rem;
     background: var(--color-paper);
+    /* Hero "See the work" jumps here — clear the sticky header. */
+    scroll-margin-top: 5.5rem;
   }
   @media (min-width: 768px) {
     .case-grid {
