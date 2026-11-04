@@ -1,8 +1,24 @@
 ---
+import { Image } from "astro:assets";
 import { ui, type Lang } from "~/i18n";
+// One visual per step, pulled from real case-study work (no stock).
+import imgResearch from "~/assets/images/karta/Karta-GlobalApp-Interviews-2048x1026.webp";
+import imgStrategy from "~/assets/images/mipos-dark-kitchen/mipOS-DarkKitchen-UserJourney-comados-studio.png";
+import imgSystem from "~/assets/images/yaydoo-design-system/GrillDesignSystem-Result-yaydoo-comandos-project.png";
+import imgTesting from "~/assets/images/truora-report/truora-headmap-backgroundCheck-report-2048x1492.webp";
 
 type Props = { lang: Lang };
 const t = ui[Astro.props.lang];
+
+const media = [
+  { src: imgResearch, position: "0% 40%" },
+  { src: imgStrategy, position: "50% 50%" },
+  { src: imgSystem, position: "50% 30%" },
+  { src: imgTesting, position: "50% 20%" },
+];
+
+// Seconds each step stays active while auto-advancing (desktop only).
+const STEP_SECONDS = 6;
 ---
 
 <section id="method" aria-labelledby="method-heading" class="method">
@@ -17,7 +33,13 @@ const t = ui[Astro.props.lang];
       </div>
     </div>
 
-    <ol class="method-steps" data-method>
+    <ol
+      class="method-steps"
+      data-method
+      data-label-pause={t.method.pause}
+      data-label-play={t.method.play}
+      style={`--step-duration: ${STEP_SECONDS}s`}
+    >
       {
         t.method.steps.map((step, i) => (
           <li class="step" data-step data-active={i === 0 ? "" : undefined}>
@@ -28,7 +50,23 @@ const t = ui[Astro.props.lang];
               aria-expanded={i === 0 ? "true" : "false"}
               aria-controls={`method-panel-${i}`}
             >
-              <span class="step-num">{String(i + 1).padStart(2, "0")}</span>
+              <span class="step-media">
+                <Image
+                  src={media[i].src}
+                  alt={step.alt}
+                  widths={[480, 800, 1200]}
+                  sizes="(min-width: 900px) 40vw, 100vw"
+                  loading="lazy"
+                  decoding="async"
+                  class="step-img"
+                  style={`object-position: ${media[i].position}`}
+                />
+                <span class="step-pill">
+                  <span class="step-num">{String(i + 1).padStart(2, "0")}</span>
+                  <span class="step-label">{step.label}</span>
+                </span>
+                <span class="step-progress" aria-hidden="true" />
+              </span>
               <span class="step-title">{step.title}</span>
             </button>
             <div
@@ -39,23 +77,72 @@ const t = ui[Astro.props.lang];
             >
               <p class="step-body">{step.body}</p>
             </div>
-            <span class="step-radio" aria-hidden="true" />
           </li>
         ))
       }
     </ol>
 
-    <a href="/north-face-growth/" class="method-cta">{t.method.cta}</a>
+    <div class="method-foot">
+      <a href="/north-face-growth/" class="method-cta">{t.method.cta}</a>
+      <button
+        type="button"
+        class="method-toggle"
+        data-method-toggle
+        aria-label={t.method.pause}
+        hidden
+      >
+        <svg class="icon-pause" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+          <rect x="2" y="1.5" width="2.5" height="9" fill="currentColor"></rect>
+          <rect x="7.5" y="1.5" width="2.5" height="9" fill="currentColor"></rect>
+        </svg>
+        <svg class="icon-play" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+          <path d="M3 1.5v9l7.5-4.5z" fill="currentColor"></path>
+        </svg>
+      </button>
+    </div>
   </div>
 </section>
 
 <script>
+  /*
+   * Peloton-style stepper: the active card is wide and shows its body; on
+   * desktop it auto-advances, driven by the CSS progress animation (so
+   * pausing the animation pauses the timer). Auto-advance only runs while
+   * the section is on screen, stops while the pointer or focus is inside,
+   * can be paused with the toggle, and never runs under reduced motion or
+   * on touch/narrow screens (there it's a plain accordion).
+   */
   function initMethod() {
     document.querySelectorAll<HTMLElement>("[data-method]").forEach((list) => {
       if (list.dataset.ready) return;
       list.dataset.ready = "1";
+      const section = list.closest("section");
+      const toggle = section?.querySelector<HTMLButtonElement>("[data-method-toggle]");
       const steps = Array.from(list.querySelectorAll<HTMLElement>("[data-step]"));
-      const canHover = window.matchMedia("(hover: hover) and (min-width: 900px)");
+      const desktop = window.matchMedia("(hover: hover) and (min-width: 900px)");
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      let userPaused = false;
+      let hovering = false;
+      let focused = false;
+      let visible = false;
+
+      const autoEnabled = () => desktop.matches && !reduced.matches;
+
+      const sync = () => {
+        const auto = autoEnabled();
+        list.toggleAttribute("data-auto", auto);
+        const running = auto && visible && !userPaused && !hovering && !focused;
+        list.toggleAttribute("data-running", running);
+        if (toggle) {
+          toggle.hidden = !auto;
+          toggle.toggleAttribute("data-paused", userPaused);
+          toggle.setAttribute(
+            "aria-label",
+            (userPaused ? list.dataset.labelPlay : list.dataset.labelPause) ?? "",
+          );
+        }
+      };
 
       const activate = (target: HTMLElement) => {
         steps.forEach((s) => {
@@ -65,17 +152,55 @@ const t = ui[Astro.props.lang];
         });
       };
 
-      steps.forEach((step) => {
+      steps.forEach((step, i) => {
         const trigger = step.querySelector<HTMLButtonElement>(".step-trigger");
         trigger?.addEventListener("click", () => activate(step));
-        trigger?.addEventListener("focus", () => activate(step));
-        step.addEventListener("click", (e) => {
-          if (e.target === step) activate(step);
-        });
         step.addEventListener("mouseenter", () => {
-          if (canHover.matches) activate(step);
+          if (desktop.matches) activate(step);
+        });
+        // When the progress bar fills, move to the next step (loops).
+        step.querySelector(".step-progress")?.addEventListener("animationend", () => {
+          if (!list.hasAttribute("data-running")) return;
+          activate(steps[(i + 1) % steps.length]);
         });
       });
+
+      list.addEventListener("mouseenter", () => {
+        hovering = true;
+        sync();
+      });
+      list.addEventListener("mouseleave", () => {
+        hovering = false;
+        sync();
+      });
+      list.addEventListener("focusin", (e) => {
+        focused = true;
+        const step = (e.target as HTMLElement).closest<HTMLElement>("[data-step]");
+        if (step) activate(step);
+        sync();
+      });
+      list.addEventListener("focusout", (e) => {
+        if (!list.contains(e.relatedTarget as Node)) {
+          focused = false;
+          sync();
+        }
+      });
+      toggle?.addEventListener("click", () => {
+        userPaused = !userPaused;
+        sync();
+      });
+
+      new IntersectionObserver(
+        ([entry]) => {
+          visible = entry.isIntersecting;
+          sync();
+        },
+        { threshold: 0.4 },
+      ).observe(list);
+
+      desktop.addEventListener("change", sync);
+      reduced.addEventListener("change", sync);
+      sync();
     });
   }
   initMethod();
@@ -126,75 +251,133 @@ const t = ui[Astro.props.lang];
     color: var(--color-muted-soft);
   }
 
-  /* ---- Process cards (Riotters) ---- */
+  /* ---- Steps: mobile accordion first ---- */
   .method-steps {
-    margin-top: 3.5rem;
+    margin-top: 3rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1.5rem;
   }
   .step {
     position: relative;
     display: flex;
     flex-direction: column;
-    padding: 1.5rem;
-    border: 1px solid rgb(255 255 255 / 0.35);
-    border-radius: 4px;
-    transition: border-color 0.3s ease;
-    cursor: pointer;
-  }
-  .step[data-active] {
-    border-color: #fff;
-    cursor: default;
+    min-width: 0;
   }
   .step-trigger {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 0.35rem;
+    align-items: stretch;
+    gap: 1rem;
+    width: 100%;
     text-align: left;
     color: inherit;
     background: none;
     border: 0;
     padding: 0;
-    padding-right: 2.5rem;
-    cursor: inherit;
+    cursor: pointer;
     font: inherit;
   }
-  /* Stretch the button's hit area over the whole card. */
-  .step-trigger::after {
-    content: "";
-    position: absolute;
-    inset: 0;
+  .step[data-active] .step-trigger {
+    cursor: default;
   }
   .step-trigger:focus-visible {
     outline: none;
   }
-  .step:has(.step-trigger:focus-visible) {
+  .step-trigger:focus-visible .step-media {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
   }
-  .step-num {
-    font-size: 0.75rem;
+
+  .step-media {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #141414;
+    aspect-ratio: 16 / 10;
+  }
+  .step-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) brightness(0.55);
+    transform: scale(1.02);
+    transition:
+      filter 0.5s ease,
+      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .step[data-active] .step-img {
+    filter: none;
+    transform: scale(1);
+  }
+
+  /* Label pill on the card (Peloton's game-plan cards). Top-left because
+     several case images carry baked-in stat cards at the bottom-left. */
+  .step-pill {
+    position: absolute;
+    left: 0.875rem;
+    top: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: max-content;
+    max-width: calc(100% - 1.75rem);
+    padding: 0.4rem 0.85rem 0.4rem 0.7rem;
+    border-radius: 9999px;
+    background: rgb(0 0 0 / 0.55);
+    border: 1px solid rgb(255 255 255 / 0.45);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    font-size: 0.8125rem;
     font-weight: 500;
-    color: var(--color-muted);
+    line-height: 1.3;
+    color: #fff;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease;
+  }
+  .step-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .step-num {
+    color: rgb(255 255 255 / 0.6);
+    font-variant-numeric: tabular-nums;
+  }
+  .step[data-active] .step-pill {
+    background: #fff;
+    border-color: #fff;
+    color: var(--color-ink);
   }
   .step[data-active] .step-num {
-    color: #fff;
+    color: var(--color-muted);
   }
+
+  /* Progress bar along the bottom edge of the active card. */
+  .step-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
   .step-title {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 500;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.035em;
     line-height: 1.1;
     color: rgb(255 255 255 / 0.42);
-    transition:
-      color 0.3s ease,
-      font-size 0.35s ease;
+    transition: color 0.3s ease;
   }
   .step[data-active] .step-title {
     color: #fff;
-    font-size: 1.75rem;
   }
   .step-panel {
     display: none;
@@ -203,72 +386,54 @@ const t = ui[Astro.props.lang];
     display: block;
   }
   .step-body {
-    margin-top: 1.5rem;
-    max-width: 22rem;
+    margin-top: 0.75rem;
+    max-width: 26rem;
     font-size: 0.9375rem;
     line-height: 1.5;
-    color: #fff;
+    color: var(--color-muted-soft);
   }
 
-  .step-radio {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 1.125rem;
-    height: 1.125rem;
-    border-radius: 9999px;
-    border: 1px solid rgb(255 255 255 / 0.45);
-    display: grid;
-    place-items: center;
-    transition: border-color 0.3s ease;
-  }
-  .step-radio::after {
-    content: "";
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 9999px;
-    background: var(--color-accent);
-    transform: scale(0);
-    transition: transform 0.3s ease;
-  }
-  .step[data-active] .step-radio {
-    border-color: var(--color-accent);
-  }
-  .step[data-active] .step-radio::after {
-    transform: scale(1);
+  /* Mobile: inactive steps collapse to a short media strip + title. */
+  @media (max-width: 899px) {
+    .step:not([data-active]) .step-media {
+      aspect-ratio: 16 / 5;
+    }
   }
 
-  /* Desktop: horizontal row, active card grows wide. */
+  /* ---- Desktop: horizontal row, active card grows wide ---- */
   @media (min-width: 900px) {
     .method-steps {
+      margin-top: 3.5rem;
       flex-direction: row;
       gap: 1rem;
-      min-height: 19rem;
     }
     .step {
       flex: 1 1 0;
-      min-width: 0;
-      overflow: hidden;
-      transition:
-        flex-grow 0.55s cubic-bezier(0.65, 0, 0.35, 1),
-        border-color 0.3s ease;
+      transition: flex-grow 0.6s cubic-bezier(0.65, 0, 0.35, 1);
     }
     .step[data-active] {
-      flex-grow: 2.6;
+      flex-grow: 2.8;
     }
-    .step-trigger {
-      padding-right: 0;
+    .step-media {
+      aspect-ratio: auto;
+      height: clamp(20rem, 30vw, 27rem);
     }
     .step-title {
       font-size: 1.125rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition:
+        color 0.3s ease,
+        font-size 0.35s ease;
     }
     .step[data-active] .step-title {
-      font-size: clamp(2rem, 2.8vw, 2.5rem);
+      font-size: clamp(1.75rem, 2.4vw, 2.25rem);
       letter-spacing: -0.04em;
+      white-space: normal;
     }
     .step-panel {
       display: block;
-      margin-top: auto;
       opacity: 0;
       visibility: hidden;
       transition:
@@ -283,31 +448,77 @@ const t = ui[Astro.props.lang];
         visibility 0s;
     }
     .step-body {
-      width: min(22rem, 28vw);
-      margin-top: 2rem;
+      width: min(26rem, 30vw);
     }
-    .step-radio {
-      position: static;
-      margin-top: 1.5rem;
+
+    /* Auto-advance: the active card's progress bar is the timer. */
+    .method-steps[data-auto] .step[data-active] .step-progress {
+      animation: step-progress var(--step-duration, 6s) linear forwards;
+      animation-play-state: paused;
     }
-    .step:not([data-active]) .step-radio {
-      margin-top: auto;
+    .method-steps[data-running] .step[data-active] .step-progress {
+      animation-play-state: running;
+    }
+  }
+
+  @keyframes step-progress {
+    to {
+      transform: scaleX(1);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .step,
+    .step-img,
     .step-title,
     .step-panel,
-    .step-radio,
-    .step-radio::after {
+    .step-pill {
       transition: none !important;
     }
+    .step-progress {
+      display: none;
+    }
+  }
+
+  .method-foot {
+    margin-top: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .method-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    border: 1px solid rgb(255 255 255 / 0.45);
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+  .method-toggle[hidden] {
+    display: none;
+  }
+  .method-toggle:hover {
+    border-color: #fff;
+  }
+  .method-toggle:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  .method-toggle .icon-play,
+  .method-toggle[data-paused] .icon-pause {
+    display: none;
+  }
+  .method-toggle[data-paused] .icon-play {
+    display: block;
   }
 
   /* White outline pill on black. */
   .method-cta {
-    margin-top: 3rem;
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
