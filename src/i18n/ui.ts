@@ -31,16 +31,15 @@ const en = {
   hero: {
     line1: "Your product works.",
     line2: "Let's make it grow.",
-    sub: "Product design studio for founders moving from product-market fit to growth. Strategy, UX, design systems and experimentation — led by a Head of Design who's done it at LATAM unicorns.",
+    sub: "Strategy. UX. Design systems. Experimentation. Everything a founder needs to take a product from fit to growth.",
     cta: "Book a discovery call",
     secondary: "See the work",
     pause: "Pause video",
     play: "Play video",
   },
   clients: {
-    title:
-      "Products shipped with founders and teams at these companies — used by millions across Mexico, Brazil, Colombia, Peru and Puerto Rico.",
-    label: "Trusted by",
+    title: "Used by millions across Mexico, Brazil, Colombia, Peru and Puerto Rico.",
+    label: "Products shipped with",
   },
   impact: {
     eyebrow: "Impact",
@@ -61,8 +60,8 @@ const en = {
   },
   services: {
     eyebrow: "Services",
-    title: "One studio, from first flow",
-    titleEm: "to growth engine.",
+    title: "Most studios pick a lane.",
+    titleEm: "We cover the whole climb.",
     sub: "Pick a single engagement or combine them. We plug in at the stage you're in.",
     cta: "Talk about your stage",
     items: [
@@ -121,6 +120,7 @@ const en = {
     eyebrow: "Testimonials",
     title: "Founders and operators",
     titleEm: "on working with us.",
+    tabs: "Choose a testimonial",
   },
   studio: {
     eyebrow: "Studio",
@@ -155,6 +155,10 @@ const en = {
     description:
       "Product design studio for founders moving from product-market fit to growth — from Mexico City to the world.",
     cta: "Book a discovery call",
+    location: "Mexico City · Working worldwide",
+    ctaTitle: "Like what you see?",
+    ctaHighlight: "Let's talk",
+    ctaSub: "A 30-minute call. Your product, our process. No pitch deck, no pressure.",
     nav: "Navigation",
     social: "Social",
     contact: "Contact",
@@ -191,16 +195,15 @@ const es: UI = {
   hero: {
     line1: "Tu producto funciona.",
     line2: "Hagámoslo crecer.",
-    sub: "Estudio de product design para founders que pasan de product-market fit a crecimiento. Estrategia, UX, design systems y experimentación — liderado por un Head of Design que ya lo hizo en unicornios de LATAM.",
+    sub: "Estrategia. UX. Design systems. Experimentación. Todo lo que un founder necesita para llevar su producto de product-market fit a crecimiento.",
     cta: "Agenda una discovery call",
     secondary: "Ver el trabajo",
     pause: "Pausar video",
     play: "Reproducir video",
   },
   clients: {
-    title:
-      "Productos lanzados con founders y equipos de estas empresas — usados por millones en México, Brasil, Colombia, Perú y Puerto Rico.",
-    label: "Han confiado en nosotros",
+    title: "Usados por millones en México, Brasil, Colombia, Perú y Puerto Rico.",
+    label: "Productos lanzados con",
   },
   impact: {
     eyebrow: "Impacto",
@@ -221,8 +224,8 @@ const es: UI = {
   },
   services: {
     eyebrow: "Servicios",
-    title: "Un estudio, del primer flujo",
-    titleEm: "al motor de crecimiento.",
+    title: "Casi todos los estudios eligen un carril.",
+    titleEm: "Nosotros cubrimos todo el ascenso.",
     sub: "Elige un solo servicio o combínalos. Entramos en la etapa en la que estás.",
     cta: "Platiquemos de tu etapa",
     items: [
@@ -281,6 +284,7 @@ const es: UI = {
     eyebrow: "Testimonios",
     title: "Founders y operadores",
     titleEm: "sobre trabajar con nosotros.",
+    tabs: "Elige un testimonio",
   },
   studio: {
     eyebrow: "Estudio",
@@ -315,6 +319,10 @@ const es: UI = {
     description:
       "Estudio de product design para founders que pasan de product-market fit a crecimiento — de la Ciudad de México al mundo.",
     cta: "Agenda una discovery call",
+    location: "Ciudad de México · Trabajamos con todo el mundo",
+    ctaTitle: "¿Te gusta lo que ves?",
+    ctaHighlight: "Hablemos",
+    ctaSub: "Una llamada de 30 minutos. Tu producto, nuestro proceso. Sin pitch deck, sin presión.",
     nav: "Navegación",
     social: "Social",
     contact: "Contacto",

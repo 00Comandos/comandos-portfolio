@@ -1,134 +1,343 @@
 ---
-import { Image } from "astro:assets";
-import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 import { ui, type Lang } from "~/i18n";
-import uxAudit from "~/assets/images/methodology/comandos-north-face-growth-UXAudit.svg";
-import strategy from "~/assets/images/methodology/comandos-product-strategy.svg";
-import mvp from "~/assets/images/methodology/comandos-product-mvp.svg";
-import testing from "~/assets/images/methodology/comandos-testing-and-experimentation.svg";
 
 type Props = { lang: Lang };
 const t = ui[Astro.props.lang];
-const art = [uxAudit, strategy, mvp, testing];
 ---
 
 <section id="method" aria-labelledby="method-heading" class="method">
   <div class="container-page">
     <div class="method-head">
-      <p class="eyebrow">{t.method.eyebrow}</p>
-      <h2 id="method-heading" class="display-serif method-title">
-        {t.method.title}<br /><em>{t.method.titleEm}</em>
-      </h2>
-      <p class="method-sub">{t.method.sub}</p>
+      <p class="method-eyebrow">{t.method.eyebrow}</p>
+      <div class="method-head-row">
+        <h2 id="method-heading" class="method-title">
+          {t.method.title} {t.method.titleEm}
+        </h2>
+        <p class="method-sub">{t.method.sub}</p>
+      </div>
     </div>
 
-    <ol class="method-steps">
+    <ol class="method-steps" data-method>
       {
         t.method.steps.map((step, i) => (
-          <li class="method-step">
-            <div class="method-art">
-              <Image src={art[i]} alt="" loading="lazy" class="method-img" />
+          <li class="step" data-step data-active={i === 0 ? "" : undefined}>
+            <button
+              type="button"
+              class="step-trigger"
+              id={`method-step-${i}`}
+              aria-expanded={i === 0 ? "true" : "false"}
+              aria-controls={`method-panel-${i}`}
+            >
+              <span class="step-num">{String(i + 1).padStart(2, "0")}</span>
+              <span class="step-title">{step.title}</span>
+            </button>
+            <div
+              class="step-panel"
+              id={`method-panel-${i}`}
+              role="region"
+              aria-labelledby={`method-step-${i}`}
+            >
+              <p class="step-body">{step.body}</p>
             </div>
-            <span class="method-num">{String(i + 1).padStart(2, "0")}</span>
-            <h3 class="method-step-title">{step.title}</h3>
-            <p class="method-step-body">{step.body}</p>
+            <span class="step-radio" aria-hidden="true" />
           </li>
         ))
       }
     </ol>
 
-    <a href="/north-face-growth/" class="btn-outline method-cta">
-      {t.method.cta}
-      <ArrowIcon />
-    </a>
+    <a href="/north-face-growth/" class="method-cta">{t.method.cta}</a>
   </div>
 </section>
 
+<script>
+  function initMethod() {
+    document.querySelectorAll<HTMLElement>("[data-method]").forEach((list) => {
+      if (list.dataset.ready) return;
+      list.dataset.ready = "1";
+      const steps = Array.from(list.querySelectorAll<HTMLElement>("[data-step]"));
+      const canHover = window.matchMedia("(hover: hover) and (min-width: 900px)");
+
+      const activate = (target: HTMLElement) => {
+        steps.forEach((s) => {
+          const on = s === target;
+          s.toggleAttribute("data-active", on);
+          s.querySelector(".step-trigger")?.setAttribute("aria-expanded", String(on));
+        });
+      };
+
+      steps.forEach((step) => {
+        const trigger = step.querySelector<HTMLButtonElement>(".step-trigger");
+        trigger?.addEventListener("click", () => activate(step));
+        trigger?.addEventListener("focus", () => activate(step));
+        step.addEventListener("click", (e) => {
+          if (e.target === step) activate(step);
+        });
+        step.addEventListener("mouseenter", () => {
+          if (canHover.matches) activate(step);
+        });
+      });
+    });
+  }
+  initMethod();
+  document.addEventListener("astro:page-load", initMethod);
+</script>
+
 <style>
   .method {
-    padding-block: 5rem;
-    background: var(--color-paper);
+    background: #000;
+    color: #fff;
+    padding-block: 4rem 5rem;
     scroll-margin-top: 5rem;
   }
   @media (min-width: 768px) {
     .method {
-      padding-block: 7.5rem;
+      padding-block: 5rem 7.5rem;
     }
   }
-  .method-head {
-    max-width: 44rem;
-    margin-bottom: 3.5rem;
+
+  .method-eyebrow {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-muted-soft);
+  }
+  .method-head-row {
+    margin-top: 1rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 900px) {
+    .method-head-row {
+      grid-template-columns: 1.3fr 1fr;
+      gap: 4rem;
+      align-items: end;
+    }
   }
   .method-title {
-    margin-top: 0.85rem;
-    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    font-size: clamp(2rem, 4.4vw, 4rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.04;
+    color: #fff;
   }
   .method-sub {
-    margin-top: 1.25rem;
-    color: var(--color-muted);
-    line-height: 1.6;
-    max-width: 34rem;
+    max-width: 30rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--color-muted-soft);
   }
 
+  /* ---- Process cards (Riotters) ---- */
   .method-steps {
-    display: grid;
-    gap: 2.5rem;
-    counter-reset: step;
-  }
-  @media (min-width: 640px) {
-    .method-steps {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 3rem 2rem;
-    }
-  }
-  @media (min-width: 1024px) {
-    .method-steps {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 2rem;
-    }
-  }
-
-  .method-step {
-    position: relative;
+    margin-top: 3.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--color-ink);
   }
-  .method-art {
-    aspect-ratio: 4 / 3;
-    border-radius: var(--radius-md);
-    background: var(--color-paper-warm);
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    margin-bottom: 0.75rem;
+  .step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    border: 1px solid rgb(255 255 255 / 0.35);
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+    cursor: pointer;
   }
-  .method-img {
-    width: 70%;
-    height: 70%;
-    object-fit: contain;
+  .step[data-active] {
+    border-color: #fff;
+    cursor: default;
   }
-  .method-num {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--color-accent);
-    letter-spacing: 0.06em;
+  .step-trigger {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    text-align: left;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    padding-right: 2.5rem;
+    cursor: inherit;
+    font: inherit;
   }
-  .method-step-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    line-height: 1.25;
+  /* Stretch the button's hit area over the whole card. */
+  .step-trigger::after {
+    content: "";
+    position: absolute;
+    inset: 0;
   }
-  .method-step-body {
+  .step-trigger:focus-visible {
+    outline: none;
+  }
+  .step:has(.step-trigger:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  .step-num {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-muted);
+  }
+  .step[data-active] .step-num {
+    color: #fff;
+  }
+  .step-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: rgb(255 255 255 / 0.42);
+    transition:
+      color 0.3s ease,
+      font-size 0.35s ease;
+  }
+  .step[data-active] .step-title {
+    color: #fff;
+    font-size: 1.75rem;
+  }
+  .step-panel {
+    display: none;
+  }
+  .step[data-active] .step-panel {
+    display: block;
+  }
+  .step-body {
+    margin-top: 1.5rem;
+    max-width: 22rem;
     font-size: 0.9375rem;
-    line-height: 1.55;
-    color: var(--color-ink-soft);
+    line-height: 1.5;
+    color: #fff;
   }
 
+  .step-radio {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 9999px;
+    border: 1px solid rgb(255 255 255 / 0.45);
+    display: grid;
+    place-items: center;
+    transition: border-color 0.3s ease;
+  }
+  .step-radio::after {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--color-accent);
+    transform: scale(0);
+    transition: transform 0.3s ease;
+  }
+  .step[data-active] .step-radio {
+    border-color: var(--color-accent);
+  }
+  .step[data-active] .step-radio::after {
+    transform: scale(1);
+  }
+
+  /* Desktop: horizontal row, active card grows wide. */
+  @media (min-width: 900px) {
+    .method-steps {
+      flex-direction: row;
+      gap: 1rem;
+      min-height: 19rem;
+    }
+    .step {
+      flex: 1 1 0;
+      min-width: 0;
+      overflow: hidden;
+      transition:
+        flex-grow 0.55s cubic-bezier(0.65, 0, 0.35, 1),
+        border-color 0.3s ease;
+    }
+    .step[data-active] {
+      flex-grow: 2.6;
+    }
+    .step-trigger {
+      padding-right: 0;
+    }
+    .step-title {
+      font-size: 1.125rem;
+    }
+    .step[data-active] .step-title {
+      font-size: clamp(2rem, 2.8vw, 2.5rem);
+      letter-spacing: -0.04em;
+    }
+    .step-panel {
+      display: block;
+      margin-top: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.3s ease,
+        visibility 0s linear 0.3s;
+    }
+    .step[data-active] .step-panel {
+      opacity: 1;
+      visibility: visible;
+      transition:
+        opacity 0.4s ease 0.25s,
+        visibility 0s;
+    }
+    .step-body {
+      width: min(22rem, 28vw);
+      margin-top: 2rem;
+    }
+    .step-radio {
+      position: static;
+      margin-top: 1.5rem;
+    }
+    .step:not([data-active]) .step-radio {
+      margin-top: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .step,
+    .step-title,
+    .step-panel,
+    .step-radio,
+    .step-radio::after {
+      transition: none !important;
+    }
+  }
+
+  /* White outline pill on black. */
   .method-cta {
     margin-top: 3rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 1.15rem 0.5rem 1rem;
+    border-radius: 9999px;
+    border: 1px solid #fff;
+    color: #fff;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+  .method-cta::before {
+    content: "";
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background: currentColor;
+  }
+  .method-cta:hover {
+    background: #fff;
+    color: var(--color-ink);
+  }
+  .method-cta:hover::before {
+    background: var(--color-accent);
+  }
+  .method-cta:focus-visible {
+    outline-color: #fff;
   }
 </style>

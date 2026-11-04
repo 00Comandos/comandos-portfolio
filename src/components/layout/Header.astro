@@ -26,30 +26,30 @@ const switchHref = alternatePath(pathname, otherLang);
 ---
 
 <header class="site-header">
-  <div class="container-page flex items-center justify-between h-20">
+  <div class="container-page flex items-center justify-between h-[5.5rem]">
     <a href={L("/")} class="flex items-center" aria-label={`${site.name} — Home`}>
-      <Logo height={32} />
+      <Logo height={30} />
     </a>
 
-    <nav class="nav-inline" aria-label="Primary">
-      <ul>
-        {
-          menuItems.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                class:list={["nav-inline-link", isActive(item.href) && "is-active"]}
-                aria-current={isActive(item.href) ? "page" : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
 
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3 lg:gap-0">
+      <nav class="nav-inline" aria-label="Primary">
+        <ul>
+          {
+            menuItems.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class:list={["nav-inline-link", isActive(item.href) && "is-active"]}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
       <a
         href={switchHref}
         class="lang-switch"
@@ -133,42 +133,17 @@ const switchHref = alternatePath(pathname, otherLang);
     position: sticky;
     top: 0;
     z-index: 40;
-    background-color: transparent;
+    background-color: var(--color-paper);
     transition:
       background-color 0.2s ease,
       backdrop-filter 0.2s ease;
   }
   .site-header.is-scrolled {
-    background-color: color-mix(in srgb, var(--color-paper) 85%, transparent);
+    background-color: color-mix(in srgb, var(--color-paper) 92%, transparent);
     -webkit-backdrop-filter: blur(14px) saturate(1.1);
     backdrop-filter: blur(14px) saturate(1.1);
   }
 
-  /* Over the home hero reel (all viewports): fully transparent bar with
-     the logo and burger inverted to white until the user scrolls. When
-     the menu takeover is open, revert to ink over the paper panel. */
-  .site-header.has-hero:not(.is-scrolled) {
-    background-color: transparent;
-    border-bottom-color: transparent;
-  }
-  .site-header.has-hero:not(.is-scrolled) a > :global(img) {
-    filter: invert(1) brightness(1.6);
-    transition: filter 0.2s ease;
-  }
-  .site-header.has-hero:not(.is-scrolled) .menu-btn-bar {
-    background-color: #fff;
-  }
-  /* Menu open: the X must read over the paper panel (all widths); the
-     logo reverts to ink only on mobile, where the panel covers it —
-     on desktop the drawer leaves the logo over the video. */
-  .site-header.has-hero:has(.menu-panel[data-open="true"]) .menu-btn-bar {
-    background-color: var(--color-ink);
-  }
-  @media (max-width: 767px) {
-    .site-header.has-hero:has(.menu-panel[data-open="true"]) a > :global(img) {
-      filter: none;
-    }
-  }
   @media (max-width: 767px) {
     .site-header {
       border-bottom: 1px solid var(--color-border);
@@ -346,13 +321,21 @@ const switchHref = alternatePath(pathname, otherLang);
       display: none !important;
     }
   }
+  .nav-inline {
+    margin-right: 3.25rem;
+  }
   .nav-inline ul {
     display: flex;
-    gap: 2.25rem;
+    gap: 3.25rem;
+  }
+  @media (min-width: 1024px) {
+    .lang-switch {
+      margin-right: 1.5rem;
+    }
   }
   .nav-inline-link {
     position: relative;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     font-weight: 500;
     color: var(--color-ink);
     padding-block: 0.4rem;
@@ -393,27 +376,6 @@ const switchHref = alternatePath(pathname, otherLang);
     color: var(--color-ink);
   }
 
-  /* Over the hero reel: everything inverts to white until scroll. */
-  .site-header.has-hero:not(.is-scrolled) .nav-inline-link {
-    color: #fff;
-  }
-  .site-header.has-hero:not(.is-scrolled) .lang-switch {
-    color: rgb(255 255 255 / 0.6);
-  }
-  .site-header.has-hero:not(.is-scrolled) .lang-switch .is-current,
-  .site-header.has-hero:not(.is-scrolled) .lang-switch:hover {
-    color: #fff;
-  }
-  .site-header.has-hero:not(.is-scrolled) .header-cta {
-    background-color: #fff;
-    color: var(--color-ink);
-  }
-  @media (max-width: 767px) {
-    .site-header.has-hero:has(.menu-panel[data-open="true"]) .lang-switch,
-    .site-header.has-hero:has(.menu-panel[data-open="true"]) .lang-switch .is-current {
-      color: var(--color-ink);
-    }
-  }
 </style>
 
 <script>
@@ -422,8 +384,6 @@ const switchHref = alternatePath(pathname, otherLang);
   // paper after so content sliding underneath stays readable.
   const header = document.querySelector<HTMLElement>(".site-header");
   if (header) {
-    if (document.querySelector("[data-hero-overlap]"))
-      header.classList.add("has-hero");
     const onScroll = () => {
       if (window.scrollY > 32) header.classList.add("is-scrolled");
       else header.classList.remove("is-scrolled");

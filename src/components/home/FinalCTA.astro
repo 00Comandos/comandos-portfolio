@@ -1,5 +1,4 @@
 ---
-import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 import { ui, type Lang } from "~/i18n";
 
 type Props = { lang: Lang };
@@ -7,17 +6,29 @@ const t = ui[Astro.props.lang];
 ---
 
 <section aria-labelledby="final-cta-heading" class="final-cta">
-  <div class="container-page">
-    <div class="final-card">
-      <h2 id="final-cta-heading" class="display-serif final-title">
-        {t.finalCta.title}<br /><em>{t.finalCta.titleEm}</em>
+  <div class="container-page final-grid">
+    <!-- Comandos "C" mark (first subpath of /images/Logo-Comandos.svg). -->
+    <svg
+      class="final-mark"
+      viewBox="0 0 38.6 35"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="currentColor"
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M35.5833 25.3854V32.4158H2.58419V12.1988H9.61463V25.3854H35.5833ZM12.1988 9.61462H35.9877V2.58489H12.1988V9.61462ZM38.5719 12.1988V0H9.61463V9.61463H0V35H38.1682V22.8012H12.1988V12.1988H38.5719Z"
+      ></path>
+    </svg>
+
+    <div class="final-copy">
+      <h2 id="final-cta-heading" class="final-title">
+        {t.finalCta.title} <span class="hl">{t.finalCta.titleEm}</span>
       </h2>
       <p class="final-sub">{t.finalCta.sub}</p>
       <div class="final-actions">
-        <a href={t.links.discovery} class="btn-primary final-primary">
-          {t.finalCta.primary}
-          <span class="arrow"><ArrowIcon /></span>
-        </a>
+        <a href={t.links.discovery} class="btn-primary">{t.finalCta.primary}</a>
         <a href={t.links.contact} class="final-secondary">
           {t.finalCta.secondary}
         </a>
@@ -28,77 +39,74 @@ const t = ui[Astro.props.lang];
 
 <style>
   .final-cta {
-    padding-block: 2rem 5rem;
-    background: var(--color-paper-soft);
+    padding-block: 5rem;
+    background: var(--color-paper);
+    overflow: hidden;
   }
   @media (min-width: 768px) {
     .final-cta {
-      padding-block: 2rem 7rem;
+      padding-block: 8rem;
     }
   }
-  .final-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--radius-xl);
-    background: var(--color-ink);
-    color: var(--color-paper);
-    padding: 3.5rem 1.75rem;
-    text-align: center;
+
+  .final-grid {
+    display: grid;
+    gap: 2.5rem;
   }
-  @media (min-width: 768px) {
-    .final-card {
-      padding: 6rem 3rem;
+  @media (min-width: 900px) {
+    .final-grid {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+      gap: 2rem;
+      align-items: start;
     }
   }
-  /* Soft accent glow — the only place the pink goes big. */
-  .final-card::before {
-    content: "";
-    position: absolute;
-    width: 36rem;
-    height: 36rem;
-    left: 50%;
-    bottom: -26rem;
-    transform: translateX(-50%);
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 55%, transparent) 0%,
-      transparent 65%
-    );
-    pointer-events: none;
-  }
-  .final-title {
-    position: relative;
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-  }
-  .final-sub {
-    position: relative;
-    margin: 1.5rem auto 0;
-    max-width: 32rem;
-    line-height: 1.6;
-    color: rgb(255 255 255 / 0.72);
-  }
-  .final-actions {
-    position: relative;
-    margin-top: 2.5rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem 2rem;
-  }
-  .final-cta :global(.final-primary) {
-    background: var(--color-paper);
+
+  .final-mark {
+    width: clamp(4.5rem, 9vw, 8.5rem);
+    height: auto;
     color: var(--color-ink);
   }
-  .final-secondary {
-    font-size: 0.95rem;
+  @media (min-width: 900px) {
+    .final-mark {
+      margin-top: 0.6rem;
+    }
+  }
+
+  .final-title {
+    font-size: clamp(2.5rem, 5.4vw, 5rem);
     font-weight: 500;
-    color: #fff;
-    padding-bottom: 3px;
-    border-bottom: 1px solid rgb(255 255 255 / 0.4);
+    letter-spacing: -0.045em;
+    line-height: 1.1;
+    color: var(--color-ink);
+    max-width: 13em;
+  }
+  .final-sub {
+    margin-top: 1.75rem;
+    max-width: 30rem;
+    font-size: 1.125rem;
+    line-height: 1.45;
+    color: var(--color-ink-soft);
+  }
+  .final-actions {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.75rem;
+  }
+  .final-title .hl {
+    padding-block: 0.02em;
+  }
+  .final-secondary {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--color-ink);
     transition: border-color 0.2s ease;
   }
   .final-secondary:hover {
-    border-bottom-color: #fff;
+    border-bottom-color: var(--color-accent);
   }
+
 </style>
