@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import FinalCTA from "~/components/home/FinalCTA.astro";
 import ServicesPains from "./ServicesPains.astro";
-import AudienceGlyph from "./AudienceGlyph.astro";
+import AudienceArt from "./AudienceArt.astro";
 import { projects } from "~/data/projects";
 import { homeImpact, homeWorkCopy } from "~/data/home-work-i18n";
 import { site } from "~/lib/site";
@@ -222,7 +222,7 @@ const jsonLd = [
           p.audience.items.map((a, i) => (
             <li class="sv-audience-cell" style={`--d:${i * 0.18}s`}>
               <div class="sv-audience-glyph">
-                <AudienceGlyph kind={(i + 1) as 1 | 2 | 3 | 4} />
+                <AudienceArt kind={(i + 1) as 1 | 2 | 3 | 4} />
               </div>
               <h3>{a.title}</h3>
               <p>{a.body}</p>
@@ -332,7 +332,7 @@ const jsonLd = [
     </div>
   </section>
 
-  <FinalCTA lang={lang} />
+  <FinalCTA lang={lang} tone="dark" />
 </BaseLayout>
 
 <script>
@@ -758,7 +758,7 @@ const jsonLd = [
   @media (min-width: 768px) {
     .sv-audience-glyph {
       grid-row: span 2;
-      height: 7rem;
+      height: 8.5rem;
     }
   }
   .sv-audience-cell h3 {

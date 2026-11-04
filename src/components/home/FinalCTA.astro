@@ -6,14 +6,16 @@ import ContactForm from "~/components/contact/ContactForm.astro";
 import { ui, type Lang } from "~/i18n";
 import { contactCopy } from "~/i18n/contact";
 
-type Props = { lang: Lang };
-const { lang } = Astro.props;
+// `tone="dark"` inverts the section so it runs straight into the black
+// footer as one closing block (used on /services).
+type Props = { lang: Lang; tone?: "light" | "dark" };
+const { lang, tone = "light" } = Astro.props;
 const t = ui[lang];
 const c = contactCopy[lang];
 const EMAIL = "c@comandos.me";
 ---
 
-<section id="contact" aria-labelledby="final-cta-heading" class="final-cta">
+<section id="contact" aria-labelledby="final-cta-heading" class:list={["final-cta", { "final-cta--dark": tone === "dark" }]}>
   <div class="container-page final-grid">
     <div class="final-copy">
       <h2 id="final-cta-heading" class="final-title">
@@ -51,7 +53,7 @@ const EMAIL = "c@comandos.me";
     </div>
 
     <div class="final-form">
-      <ContactForm lang={lang} />
+      <ContactForm lang={lang} theme={tone} />
     </div>
   </div>
 </section>
@@ -94,6 +96,41 @@ const EMAIL = "c@comandos.me";
     .final-cta {
       padding-block: 7rem 8rem;
     }
+  }
+
+  /* Dark tone: swap the palette tokens locally so the form, chips, inputs
+     and buttons all invert without touching ContactForm's own styles.
+     No bottom edge — the footer continues the same black. */
+  .final-cta--dark {
+    --color-ink: #ffffff;
+    --color-ink-soft: #d6d6d6;
+    --color-paper: #060606;
+    --color-paper-soft: #111111;
+    --color-grey: #1c1c1c;
+    --color-border: rgb(255 255 255 / 0.16);
+    --color-muted: #8c8c8c;
+    --color-muted-soft: #6a6a6a;
+    color-scheme: dark;
+    background: #060606;
+    color: #ffffff;
+    border-top: 0;
+    padding-bottom: 0;
+  }
+  /* One hairline is all that separates the form from the footer columns. */
+  .final-cta--dark .final-grid {
+    padding-bottom: 4.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  @media (min-width: 768px) {
+    .final-cta--dark {
+      padding-bottom: 0;
+    }
+    .final-cta--dark .final-grid {
+      padding-bottom: 6rem;
+    }
+  }
+  .final-cta--dark :global(:focus-visible) {
+    outline-color: #ffffff;
   }
 
   .final-grid {

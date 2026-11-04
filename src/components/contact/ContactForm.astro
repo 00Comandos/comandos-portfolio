@@ -7,8 +7,8 @@ import {
   REFERRAL_SOURCES,
 } from "~/lib/contact";
 
-type Props = { lang: Lang };
-const { lang } = Astro.props;
+type Props = { lang: Lang; theme?: "light" | "dark" };
+const { lang, theme = "light" } = Astro.props;
 const t = contactCopy[lang];
 
 const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
@@ -190,7 +190,7 @@ const action = lang === "es" ? "/api/contact?lang=es" : "/api/contact";
           <div
             class="cf-turnstile"
             data-sitekey={turnstileKey}
-            data-theme="light"
+            data-theme={theme}
             data-language={lang}
           />
           <script
