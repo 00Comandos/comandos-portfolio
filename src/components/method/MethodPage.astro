@@ -3,17 +3,12 @@
 // (`home/Method.astro`) is the summary; this page is the detail: one
 // block per phase, the principles behind it, proof per phase and how it
 // maps to each service.
-import { Image } from "astro:assets";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import FinalCTA from "~/components/home/FinalCTA.astro";
 import Checklist from "~/components/case-study/Checklist.astro";
+import PhaseVisual from "~/components/method/PhaseVisual.astro";
 import { site } from "~/lib/site";
 import { localizedPath, ui, type Lang } from "~/i18n";
-
-import uxAuditScene from "~/assets/images/methodology/comandos-north-face-growth-UXAudit.svg";
-import productStrategyScene from "~/assets/images/methodology/comandos-product-strategy.svg";
-import productMvpScene from "~/assets/images/methodology/comandos-product-mvp.svg";
-import testingScene from "~/assets/images/methodology/comandos-testing-and-experimentation.svg";
 
 type Props = { lang: Lang };
 const { lang } = Astro.props;
@@ -26,16 +21,13 @@ const homeUrl = `${site.url}${L("/")}`;
 const num = (i: number) => String(i).padStart(2, "0");
 const anchor = (i: number) => `phase-${num(i)}`;
 
-const scenes = [uxAuditScene, productStrategyScene, productMvpScene, testingScene];
-
 // Phase name + goal come from the home stepper copy so both pages agree;
 // the page-only detail lives in `methodPage.phases.items`.
 const phases = t.method.steps.map((step, i) => ({
   ...step,
   ...p.phases.items[i],
-  n: i + 1,
+  n: (i + 1) as 1 | 2 | 3 | 4,
   id: anchor(i + 1),
-  scene: scenes[i],
 }));
 
 const jsonLd = [
@@ -127,20 +119,14 @@ const jsonLd = [
 
         <ol class="mp-phase-list">
           {
-            phases.map((ph, i) => (
+            phases.map((ph) => (
               <li class="mp-phase" id={ph.id} data-mp-phase aria-labelledby={`${ph.id}-title`}>
                 <div class="mp-phase-head">
                   <span class="mp-phase-num">{num(ph.n)}</span>
                   <h3 id={`${ph.id}-title`} class="mp-phase-name">
                     {ph.label}
                   </h3>
-                  <Image
-                    src={ph.scene}
-                    alt={ph.imageAlt}
-                    loading={i === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                    class="mp-phase-img"
-                  />
+                  <PhaseVisual phase={ph.n} lang={lang} label={ph.imageAlt} />
                 </div>
                 <div class="mp-phase-body">
                   <p class="mp-label">{p.phases.goal}</p>
@@ -517,22 +503,6 @@ const jsonLd = [
     line-height: 1.1;
     max-width: 14ch;
     text-wrap: balance;
-  }
-  .mp-phase-head :global(.mp-phase-img) {
-    display: block;
-    margin-top: 1.75rem;
-    width: 100%;
-    max-width: 13rem;
-    height: auto;
-    /* The legacy illustrations carry an off-palette green: keep them in
-       the ink/paper range. */
-    filter: grayscale(1);
-  }
-  @media (max-width: 767px) {
-    .mp-phase-head :global(.mp-phase-img) {
-      margin-top: 1.25rem;
-      max-width: 8.5rem;
-    }
   }
   .mp-phase-goal {
     font-size: clamp(1.25rem, 1.65vw, 1.5rem);

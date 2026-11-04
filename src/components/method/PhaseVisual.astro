@@ -1,0 +1,976 @@
+---
+// Code-drawn, animated illustration for each phase of the method.
+// One SVG per phase in the same system: paper, ink hairlines, Geist Mono
+// micro-labels and a single teal highlight.
+//
+// Motion model: the SSR markup IS the settled composition. Only when
+// scripting is on and motion is allowed do the CSS animations attach —
+// paused on their first frame — and the script flips `data-play` while
+// the figure is ≥35% in view (and drops it off-screen, pausing them).
+// No JS / reduced motion → the final, static composition.
+import type { Lang } from "~/i18n";
+
+type Props = { phase: 1 | 2 | 3 | 4; lang: Lang; label: string };
+const { phase, lang, label } = Astro.props;
+
+const copy = {
+  en: {
+    signals: "SIGNALS",
+    clusters: "CLUSTERS",
+    route: "ROUTE",
+    options: "OPTIONS",
+    base: "BASE",
+    bet: "BET",
+    stages: ["TOKENS", "COMPONENTS", "SCREEN"],
+    grid: "GRID 06",
+    ab: "A/B TEST",
+    week: "W",
+  },
+  es: {
+    signals: "SEÑALES",
+    clusters: "CLÚSTERES",
+    route: "RUTA",
+    options: "OPCIONES",
+    base: "BASE",
+    bet: "APUESTA",
+    stages: ["TOKENS", "COMPONENTES", "PANTALLA"],
+    grid: "RETÍCULA 06",
+    ab: "PRUEBA A/B",
+    week: "S",
+  },
+}[lang];
+
+// ---------- helpers ----------
+type Pt = [number, number];
+const f = (v: number) => Math.round(v * 10) / 10;
+function rng(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+/** Catmull-Rom through the points, as cubic Béziers. */
+function smooth(pts: Pt[], closed = false) {
+  const n = pts.length;
+  const get = (i: number) => (closed ? pts[(i + n) % n] : pts[Math.max(0, Math.min(n - 1, i))]);
+  let d = `M${f(pts[0][0])} ${f(pts[0][1])}`;
+  const segs = closed ? n : n - 1;
+  for (let i = 0; i < segs; i++) {
+    const [p0, p1, p2, p3] = [get(i - 1), get(i), get(i + 1), get(i + 2)];
+    d += ` C${f(p1[0] + (p2[0] - p0[0]) / 6)} ${f(p1[1] + (p2[1] - p0[1]) / 6)} ${f(
+      p2[0] - (p3[0] - p1[0]) / 6,
+    )} ${f(p2[1] - (p3[1] - p1[1]) / 6)} ${f(p2[0])} ${f(p2[1])}`;
+  }
+  return closed ? d + "Z" : d;
+}
+const ms = (s: number) => `${Math.round(s * 1000)}ms`;
+
+// ---------- 01 · research: signals organizing into clusters ----------
+const SCAN_START = 0.35;
+const SCAN_DUR = 1.7;
+const FIELD = { x0: 18, x1: 302, y0: 30, y1: 222 };
+const clusters = [
+  { id: "A", x: 82, y: 148, r: 30, n: 26 },
+  { id: "B", x: 176, y: 86, r: 24, n: 22 },
+  { id: "C", x: 248, y: 170, r: 30, n: 26 },
+];
+type Dot = { x: number; y: number; dx: number; dy: number; jx: number; jy: number; d: string; noise?: boolean };
+const dots: Dot[] = [];
+if (phase === 1) {
+  const r = rng(7);
+  const start = () => [FIELD.x0 + r() * (FIELD.x1 - FIELD.x0), FIELD.y0 + r() * (FIELD.y1 - FIELD.y0)];
+  const capture = (sx: number) => SCAN_START + ((sx - FIELD.x0) / (FIELD.x1 - FIELD.x0)) * SCAN_DUR;
+  for (const c of clusters) {
+    for (let i = 0; i < c.n; i++) {
+      const a = r() * Math.PI * 2;
+      const rad = c.r * 0.92 * Math.sqrt(r());
+      const x = c.x + Math.cos(a) * rad;
+      const y = c.y + Math.sin(a) * rad;
+      const [sx, sy] = start();
+      dots.push({
+        x: f(x), y: f(y), dx: f(sx - x), dy: f(sy - y),
+        jx: f((r() - 0.5) * 16), jy: f((r() - 0.5) * 16),
+        d: ms(capture(sx) - 0.05),
+      });
+    }
+  }
+  for (let i = 0; i < 12; i++) {
+    const [sx, sy] = start();
+    dots.push({ x: f(sx), y: f(sy), dx: 0, dy: 0, jx: f((r() - 0.5) * 18), jy: f((r() - 0.5) * 18), d: "0ms", noise: true });
+  }
+}
+const SIGNALS = dots.length + 54; // abstract tally, not a real metric
+
+// ---------- 02 · strategy: topographic map + chosen route ----------
+const SUMMIT: Pt = [206, 88];
+const contours: { d: string; index: boolean; delay: string }[] = [];
+const ROUTE = "M42 214 C66 210 80 194 98 184 S134 176 142 158 S166 140 172 126 S190 102 206 88";
+const ALTS = [
+  { d: "M42 214 C100 214 168 204 238 176", end: [238, 176] as Pt },
+  { d: "M42 214 C30 184 40 146 64 120", end: [64, 120] as Pt },
+];
+if (phase === 2) {
+  for (let k = 0; k < 9; k++) {
+    const R = 10 + k * 17;
+    const cx = SUMMIT[0] - k * 4.2;
+    const cy = SUMMIT[1] + k * 5.4;
+    const pts: Pt[] = [];
+    for (let i = 0; i < 40; i++) {
+      const t = (i / 40) * Math.PI * 2;
+      const rr =
+        R *
+        (1 +
+          0.1 * Math.sin(2 * t + 0.6 + k * 0.06) +
+          0.05 * Math.sin(3 * t + 1.9 - k * 0.05) +
+          0.03 * Math.sin(5 * t + 0.4 + k * 0.1));
+      pts.push([cx + Math.cos(t) * rr * 1.28, cy + Math.sin(t) * rr * 0.86]);
+    }
+    contours.push({ d: smooth(pts, true), index: k % 4 === 3, delay: ms(0.05 + k * 0.07) });
+  }
+}
+
+// ---------- 03 · MVP + design system: pieces snap into a screen ----------
+type Piece = { kind: "rect" | "circle" | "card"; x: number; y: number; w: number; h: number; cls: string; rx?: number; dx: number; dy: number; rot: number; d: string };
+const pieces: Piece[] = [];
+const SCREEN = { x: 48, y: 26, w: 224, h: 188 };
+if (phase === 3) {
+  const r = rng(23);
+  const cardW = 61.3;
+  const base: Omit<Piece, "dx" | "dy" | "rot" | "d">[] = [
+    { kind: "circle", x: 62, y: 36, w: 7, h: 7, cls: "ink" },
+    { kind: "rect", x: 200, y: 34.5, w: 14, h: 3, cls: "mut", rx: 1.5 },
+    { kind: "rect", x: 220, y: 34.5, w: 14, h: 3, cls: "mut", rx: 1.5 },
+    { kind: "rect", x: 240, y: 34.5, w: 18, h: 3, cls: "mut", rx: 1.5 },
+    { kind: "rect", x: 60, y: 62, w: 128, h: 8, cls: "ink", rx: 1.5 },
+    { kind: "rect", x: 60, y: 75, w: 90, h: 8, cls: "ink", rx: 1.5 },
+    { kind: "rect", x: 60, y: 92, w: 160, h: 3, cls: "mut", rx: 1.5 },
+    { kind: "rect", x: 60, y: 99, w: 116, h: 3, cls: "mut", rx: 1.5 },
+    { kind: "rect", x: 60, y: 112, w: 50, h: 14, cls: "acc", rx: 7 },
+    { kind: "rect", x: 116, y: 112, w: 50, h: 14, cls: "out", rx: 7 },
+    { kind: "card", x: 60, y: 140, w: cardW, h: 62, cls: "" },
+    { kind: "card", x: 60 + cardW + 8, y: 140, w: cardW, h: 62, cls: "" },
+    { kind: "card", x: 60 + (cardW + 8) * 2, y: 140, w: cardW, h: 62, cls: "" },
+  ];
+  base.forEach((p, i) => {
+    const sx = 14 + r() * (306 - 14 - Math.min(p.w, 70));
+    const sy = 14 + r() * (226 - 14 - p.h);
+    pieces.push({ ...p, dx: f(sx - p.x), dy: f(sy - p.y), rot: f((r() - 0.5) * 36), d: ms(0.05 + i * 0.07) });
+  });
+}
+const COL_W = (200 - 8 * 5) / 6;
+const COLS = Array.from({ length: 6 }, (_, i) => 60 + i * (COL_W + 8));
+
+// ---------- 04 · testing: A/B lines ----------
+const PLOT = { x0: 42, x1: 270, y0: 196, y1: 40 };
+const A = [0.3, 0.32, 0.31, 0.35, 0.34, 0.37, 0.36, 0.39];
+const B = [0.3, 0.33, 0.37, 0.42, 0.49, 0.55, 0.6, 0.67];
+const px = (i: number) => PLOT.x0 + (i / (A.length - 1)) * (PLOT.x1 - PLOT.x0);
+const py = (v: number) => PLOT.y0 - (v / 0.8) * (PLOT.y0 - PLOT.y1);
+const lineA = smooth(A.map((v, i) => [px(i), py(v)] as Pt));
+const lineB = smooth(B.map((v, i) => [px(i), py(v)] as Pt));
+const band =
+  smooth(B.map((v, i) => [px(i), py(v + 0.015 + i * 0.008)] as Pt)) +
+  " L" +
+  smooth(
+    B.map((v, i) => [px(i), py(v - 0.015 - i * 0.008)] as Pt).reverse(),
+  ).slice(1) +
+  "Z";
+const endA: Pt = [PLOT.x1, py(A[A.length - 1])];
+const endB: Pt = [PLOT.x1, py(B[B.length - 1])];
+
+const uid = `pv${phase}`;
+---
+
+<figure class="pv" data-pv data-phase={phase} role="img" aria-label={label}>
+  {
+    phase === 1 && (
+      <div class="pv-bar" aria-hidden="true">
+        <span>
+          {copy.signals} <b class="pv-num" data-pv-count data-to={SIGNALS}>{SIGNALS}</b>
+        </span>
+        <span class="a pv-fade" style="--d:2.4s">
+          {copy.clusters} <b class="pv-num">03</b>
+        </span>
+      </div>
+    )
+  }
+  {
+    phase === 2 && (
+      <div class="pv-bar" aria-hidden="true">
+        <span>{copy.route}</span>
+        <span>
+          {copy.options} <b class="pv-num">03</b> → <b class="pv-num a pv-fade" style="--d:1.7s">01</b>
+        </span>
+      </div>
+    )
+  }
+  {
+    phase === 3 && (
+      <div class="pv-bar" aria-hidden="true">
+        <span class="pv-stages">
+          <b class="a pv-stage" style="--d:0s;--len:0.9s">{copy.stages[0]}</b>
+          <i>→</i>
+          <b class="a pv-stage" style="--d:0.9s;--len:1s">{copy.stages[1]}</b>
+          <i>→</i>
+          <b class="a pv-stage is-last" style="--d:1.9s">{copy.stages[2]}</b>
+        </span>
+        <span class="pv-hide-sm">{copy.grid}</span>
+      </div>
+    )
+  }
+  {
+    phase === 4 && (
+      <div class="pv-bar" aria-hidden="true">
+        <span>{copy.ab}</span>
+        <span class="pv-legend">
+          <i class="sw sw-a" />A<i class="sw sw-b" />B
+        </span>
+      </div>
+    )
+  }
+
+  <svg viewBox="0 0 320 240" aria-hidden="true" focusable="false">
+    {
+      phase === 1 && (
+        <Fragment>
+          <defs>
+            <pattern id={`${uid}-grid`} width="16" height="16" patternUnits="userSpaceOnUse" x="2" y="6">
+              <circle cx="8" cy="8" r="0.7" class="grid-dot" />
+            </pattern>
+            <linearGradient id={`${uid}-trail`} x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stop-color="#ebebeb" stop-opacity="0" />
+              <stop offset="1" stop-color="#ebebeb" stop-opacity="0.9" />
+            </linearGradient>
+          </defs>
+          <rect width="320" height="240" fill={`url(#${uid}-grid)`} />
+          {clusters.map((c, i) => (
+            <circle class="a p1-heat" cx={c.x} cy={c.y} r={c.r + 6} style={`--d:${ms(1.9 + i * 0.12)}`} />
+          ))}
+          <g class="a p1-scan">
+            <rect x="-44" y="22" width="44" height="208" fill={`url(#${uid}-trail)`} />
+            <line x1="0" x2="0" y1="22" y2="230" class="scan-line" />
+          </g>
+          {dots.map((d) => (
+            <g class={d.noise ? "noise" : "a p1-org"} style={`--dx:${d.dx}px;--dy:${d.dy}px;--d:${d.d}`}>
+              <circle class="a p1-drift" cx={d.x} cy={d.y} r="1.7" style={`--jx:${d.jx}px;--jy:${d.jy}px`} />
+            </g>
+          ))}
+          {clusters.map((c, i) => {
+            const R = c.r + 10;
+            const lx = c.x + R * Math.cos(-Math.PI / 4);
+            const ly = c.y + R * Math.sin(-Math.PI / 4);
+            return (
+              <Fragment>
+                <circle class="a p1-ring" cx={c.x} cy={c.y} r={R} pathLength="1" style={`--d:${ms(2.1 + i * 0.12)}`} />
+                <g class="a pv-fade" style={`--d:${ms(2.45 + i * 0.12)}`}>
+                  <line x1={f(lx)} y1={f(ly)} x2={f(lx + 8)} y2={f(ly - 8)} class="hair" />
+                  <text x={f(lx + 10)} y={f(ly - 9)} class="pv-t">{c.id}</text>
+                </g>
+              </Fragment>
+            );
+          })}
+          <g class="a pv-pop" style="--d:2.7s">
+            <circle cx={clusters[1].x} cy={clusters[1].y} r="3.2" class="acc-fill" />
+          </g>
+          <circle class="a pv-pulse" cx={clusters[1].x} cy={clusters[1].y} r="3.2" style="--d:3.2s" />
+        </Fragment>
+      )
+    }
+
+    {
+      phase === 2 && (
+        <Fragment>
+          <defs>
+            <pattern id={`${uid}-grid`} width="16" height="16" patternUnits="userSpaceOnUse" x="2" y="6">
+              <circle cx="8" cy="8" r="0.6" class="grid-dot" />
+            </pattern>
+            {ALTS.map((a, i) => (
+              <mask id={`${uid}-alt${i}`} maskUnits="userSpaceOnUse" x="0" y="0" width="320" height="240">
+                <path d={a.d} class="a draw p2-alt" pathLength="1" style={`--d:${ms(0.95 + i * 0.15)}`} />
+              </mask>
+            ))}
+          </defs>
+          <rect width="320" height="240" fill={`url(#${uid}-grid)`} />
+          {contours.map((c) => (
+            <path d={c.d} class={`a draw p2-contour ${c.index ? "is-index" : ""}`} pathLength="1" style={`--d:${c.delay}`} />
+          ))}
+          {ALTS.map((a, i) => (
+            <Fragment>
+              <path d={a.d} class="alt" mask={`url(#${uid}-alt${i})`} />
+              <g class="a pv-fade" style={`--d:${ms(1.55 + i * 0.12)}`}>
+                <path
+                  d={`M${a.end[0] - 3} ${a.end[1] - 3} L${a.end[0] + 3} ${a.end[1] + 3} M${a.end[0] + 3} ${a.end[1] - 3} L${a.end[0] - 3} ${a.end[1] + 3}`}
+                  class="cross"
+                />
+              </g>
+            </Fragment>
+          ))}
+          <g class="a pv-fade" style="--d:0.7s">
+            <rect x="38" y="210" width="8" height="8" class="base-mark" />
+            <text x="52" y="226" class="pv-t mut">{copy.base}</text>
+          </g>
+          <path d={ROUTE} class="a draw p2-route" pathLength="1" style="--d:1.6s" data-pv-route />
+          <g class="a pv-pop" style="--d:3.05s">
+            <circle cx={SUMMIT[0]} cy={SUMMIT[1]} r="8" class="hair-ring" />
+            <line x1={SUMMIT[0] + 6} y1={SUMMIT[1] - 6} x2={SUMMIT[0] + 16} y2={SUMMIT[1] - 16} class="hair" />
+          </g>
+          <g class="a pv-fade" style="--d:3.2s">
+            <rect x={SUMMIT[0] + 16} y={SUMMIT[1] - 30} width={copy.bet.length * 7 + 16} height="16" rx="8" class="pill" />
+            <text x={SUMMIT[0] + 24} y={SUMMIT[1] - 19} class="pv-t">{copy.bet}</text>
+          </g>
+          <circle class="a pv-pulse" cx={SUMMIT[0]} cy={SUMMIT[1]} r="3.4" style="--d:3.4s" />
+          <circle cx={SUMMIT[0]} cy={SUMMIT[1]} r="3.4" class="acc-fill" data-pv-traveler />
+        </Fragment>
+      )
+    }
+
+    {
+      phase === 3 && (
+        <Fragment>
+          {COLS.map((x) => (
+            <rect class="a p3-col" x={f(x)} y={SCREEN.y + 22} width={f(COL_W)} height={SCREEN.h - 30} style="--d:0.4s" />
+          ))}
+          <path
+            class="a p3-head"
+            d={`M${SCREEN.x} ${SCREEN.y + 20} V${SCREEN.y + 6} a6 6 0 0 1 6 -6 H${SCREEN.x + SCREEN.w - 6} a6 6 0 0 1 6 6 V${SCREEN.y + 20} Z`}
+            style="--d:1.85s"
+          />
+          <line class="a draw p3-headline" x1={SCREEN.x} x2={SCREEN.x + SCREEN.w} y1={SCREEN.y + 20} y2={SCREEN.y + 20} pathLength="1" style="--d:1.9s" />
+          <rect class="a draw p3-frame" x={SCREEN.x} y={SCREEN.y} width={SCREEN.w} height={SCREEN.h} rx="6" pathLength="1" style="--d:1.7s" />
+          {pieces.map((p) => (
+            <g class="a p3-piece" style={`--dx:${p.dx}px;--dy:${p.dy}px;--r:${p.rot}deg;--d:${p.d}`}>
+              {p.kind === "circle" && <circle cx={p.x + p.w / 2} cy={p.y + p.h / 2} r={p.w / 2} class={p.cls} />}
+              {p.kind === "rect" && <rect x={p.x} y={p.y} width={p.w} height={p.h} rx={p.rx} class={p.cls} />}
+              {p.kind === "card" && (
+                <Fragment>
+                  <rect x={f(p.x)} y={p.y} width={p.w} height={p.h} rx="3" class="card" />
+                  <rect x={f(p.x + 6)} y={p.y + 6} width={f(p.w - 12)} height="24" rx="1.5" class="img" />
+                  <rect x={f(p.x + 6)} y={p.y + 38} width="30" height="3.5" rx="1.5" class="ink" />
+                  <rect x={f(p.x + 6)} y={p.y + 46} width="22" height="3" rx="1.5" class="mut" />
+                </Fragment>
+              )}
+            </g>
+          ))}
+          <g class="a pv-fade" style="--d:2.2s">
+            <text x={SCREEN.x + SCREEN.w} y={SCREEN.y + SCREEN.h + 16} class="pv-t mut" text-anchor="end">
+              MVP · v1.0
+            </text>
+          </g>
+        </Fragment>
+      )
+    }
+
+    {
+      phase === 4 && (
+        <Fragment>
+          {[0, 0.25, 0.5, 0.75].map((v) => (
+            <Fragment>
+              <line x1={PLOT.x0} x2={PLOT.x1 + 8} y1={f(py(v))} y2={f(py(v))} class={v === 0 ? "axis" : "gridline"} />
+              <text x={PLOT.x0 - 8} y={f(py(v)) + 3} class="pv-t mut" text-anchor="end">
+                {v * 100}
+              </text>
+            </Fragment>
+          ))}
+          {A.map((_, i) => (
+            <text x={f(px(i))} y={PLOT.y0 + 18} class="pv-t mut" text-anchor="middle">
+              {`${copy.week}${i + 1}`}
+            </text>
+          ))}
+          <path d={band} class="a p4-band" style="--d:1.9s" />
+          <path d={lineA} class="a draw p4-a" pathLength="1" style="--d:0.4s" />
+          <path d={lineB} class="a draw p4-b" pathLength="1" style="--d:0.4s" />
+          <g class="a pv-fade" style="--d:2.1s">
+            <line x1={endA[0]} x2={endA[0]} y1={f(endA[1] - 5)} y2={f(endB[1] + 7)} class="delta" />
+            <text x={endA[0] - 6} y={f((endA[1] + endB[1]) / 2 + 3)} class="pv-t mut" text-anchor="end">
+              Δ
+            </text>
+            <circle cx={endA[0]} cy={f(endA[1])} r="2.6" class="mut" />
+            <text x={endA[0] + 10} y={f(endA[1] + 3.5)} class="pv-t mut">
+              A
+            </text>
+          </g>
+          <g class="a pv-fade" style="--d:2.35s">
+            <rect x={endB[0] + 8} y={f(endB[1] - 8)} width="22" height="16" rx="8" class="pill acc-stroke" />
+            <text x={endB[0] + 19} y={f(endB[1] + 3.5)} class="pv-t" text-anchor="middle">
+              B
+            </text>
+          </g>
+          <circle class="a pv-pulse" cx={endB[0]} cy={f(endB[1])} r="3.2" style="--d:2.8s" />
+          <g class="a pv-pop" style="--d:2.2s">
+            <circle cx={endB[0]} cy={f(endB[1])} r="3.2" class="acc-fill" />
+          </g>
+        </Fragment>
+      )
+    }
+  </svg>
+</figure>
+
+<script>
+  function setupVisual(el: HTMLElement) {
+    // JS-driven bits read their CSS animation so they stay in sync,
+    // pause with it and obey scrubbing (`currentTime`) in tests.
+    const counter = el.querySelector<HTMLElement>("[data-pv-count]");
+    const scan = el.querySelector<SVGElement>(".p1-scan");
+    const route = el.querySelector<SVGPathElement>("[data-pv-route]");
+    const traveler = el.querySelector<SVGCircleElement>("[data-pv-traveler]");
+    const refs: Animation[] = [];
+    const updaters: (() => void)[] = [];
+
+    if (counter && scan) {
+      const to = Number(counter.dataset.to) || 0;
+      const anim = scan.getAnimations()[0];
+      if (anim) {
+        refs.push(anim);
+        updaters.push(() => {
+          const p = anim.effect?.getComputedTiming().progress ?? 0;
+          const done = anim.playState === "finished";
+          const v = done ? to : Math.round(to * Math.min(1, (p as number) * 1.08));
+          counter.textContent = String(v).padStart(3, "0");
+        });
+      }
+    }
+    if (route && traveler) {
+      const anim = route.getAnimations()[0];
+      const len = route.getTotalLength();
+      const [sx, sy] = [traveler.cx.baseVal.value, traveler.cy.baseVal.value];
+      if (anim) {
+        refs.push(anim);
+        updaters.push(() => {
+          const off = parseFloat(getComputedStyle(route).strokeDashoffset) || 0;
+          const pt = route.getPointAtLength(Math.max(0, Math.min(1, 1 - off)) * len);
+          traveler.setAttribute("transform", `translate(${pt.x - sx} ${pt.y - sy})`);
+        });
+      }
+    }
+
+    let raf = 0;
+    const tick = () => {
+      updaters.forEach((u) => u());
+      const busy = refs.some((a) => a.playState !== "finished");
+      raf = el.hasAttribute("data-play") && busy ? requestAnimationFrame(tick) : 0;
+    };
+    updaters.forEach((u) => u());
+
+    const play = (on: boolean) => {
+      if (on) el.setAttribute("data-play", "");
+      else el.removeAttribute("data-play");
+      if (on && !raf) raf = requestAnimationFrame(tick);
+    };
+    if (!("IntersectionObserver" in window)) return play(true);
+    new IntersectionObserver(
+      (entries) => entries.forEach((e) => play(e.isIntersecting && e.intersectionRatio >= 0.35)),
+      { threshold: [0, 0.35, 0.6] },
+    ).observe(el);
+  }
+
+  function initPhaseVisuals() {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.querySelectorAll<HTMLElement>("[data-pv]:not([data-pv-ready])").forEach((el) => {
+      el.dataset.pvReady = "1";
+      if (reduce) return;
+      try {
+        setupVisual(el);
+      } catch {
+        el.setAttribute("data-play", "");
+      }
+    });
+  }
+  initPhaseVisuals();
+  document.addEventListener("astro:page-load", initPhaseVisuals);
+</script>
+
+<style>
+  .pv {
+    --pv-ink: var(--color-ink);
+    --pv-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    display: block;
+    margin-top: 1.75rem;
+    width: 100%;
+    border: 1px solid var(--color-border);
+    background: var(--color-paper);
+  }
+  .pv-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 0.65625rem;
+    line-height: 1.2;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
+    white-space: nowrap;
+  }
+  .pv-bar b {
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .pv-num {
+    font-variant-numeric: tabular-nums;
+  }
+  .pv-stages {
+    display: inline-flex;
+    gap: 0.4em;
+    min-width: 0;
+  }
+  .pv-stages b {
+    color: var(--color-muted-soft);
+  }
+  .pv-stages b.is-last {
+    color: var(--color-ink);
+  }
+  .pv-stages i,
+  .pv-legend {
+    font-style: normal;
+  }
+  .pv-legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+  .pv-legend .sw {
+    display: inline-block;
+    width: 0.9rem;
+    height: 2px;
+    margin-left: 0.5em;
+    background: var(--color-muted-soft);
+  }
+  .pv-legend .sw-b {
+    background: var(--color-accent);
+  }
+  .pv svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  /* ---------- SVG vocabulary ---------- */
+  .pv-t {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    fill: var(--color-ink);
+  }
+  @media (min-width: 768px) and (max-width: 1199px) {
+    .pv-t {
+      font-size: 11.5px;
+    }
+  }
+  .pv .mut {
+    fill: var(--color-muted-soft);
+  }
+  .pv text.mut {
+    fill: var(--color-muted);
+  }
+  .pv .ink {
+    fill: var(--color-ink);
+  }
+  .pv .acc,
+  .acc-fill {
+    fill: var(--color-accent);
+  }
+  .grid-dot {
+    fill: var(--color-border);
+  }
+  .hair {
+    stroke: var(--color-ink);
+    stroke-width: 0.75;
+  }
+  .hair-ring {
+    fill: none;
+    stroke: var(--color-ink);
+    stroke-width: 0.75;
+  }
+  .pill {
+    fill: var(--color-paper);
+    stroke: var(--color-ink);
+    stroke-width: 0.9;
+  }
+  .pill.acc-stroke {
+    stroke: var(--color-accent);
+    stroke-width: 1.25;
+  }
+  .pv-pulse {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 1;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* 01 */
+  .p1-heat {
+    fill: var(--color-paper-soft);
+  }
+  .p1-org {
+    fill: var(--color-ink);
+  }
+  .noise {
+    fill: var(--color-muted-soft);
+  }
+  .p1-scan {
+    opacity: 0;
+  }
+  .scan-line {
+    stroke: var(--color-ink);
+    stroke-width: 0.75;
+  }
+  .p1-ring {
+    fill: none;
+    stroke: var(--color-ink);
+    stroke-width: 0.75;
+  }
+
+  /* 02 */
+  .p2-contour {
+    fill: none;
+    stroke: var(--color-border);
+    stroke-width: 0.8;
+  }
+  .p2-contour.is-index {
+    stroke: var(--color-muted-soft);
+    stroke-width: 0.9;
+  }
+  .alt {
+    fill: none;
+    stroke: var(--color-muted-soft);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
+  }
+  .p2-alt {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 6;
+  }
+  .cross {
+    stroke: var(--color-muted);
+    stroke-width: 1;
+  }
+  .base-mark {
+    fill: var(--color-paper);
+    stroke: var(--color-ink);
+    stroke-width: 1;
+  }
+  .p2-route {
+    fill: none;
+    stroke: var(--color-ink);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+
+  /* 03 */
+  .p3-col {
+    fill: var(--color-ink);
+    opacity: 0.025;
+  }
+  .p3-head {
+    fill: var(--color-paper-soft);
+  }
+  .p3-headline {
+    stroke: var(--color-border);
+    stroke-width: 1;
+  }
+  .p3-frame {
+    fill: none;
+    stroke: var(--color-ink);
+    stroke-width: 1;
+  }
+  .pv .out {
+    fill: none;
+    stroke: var(--color-ink);
+    stroke-width: 1;
+  }
+  .pv .card {
+    fill: var(--color-paper);
+    stroke: var(--color-border);
+    stroke-width: 1;
+  }
+  .pv .img {
+    fill: var(--color-grey);
+  }
+  .p3-piece {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* 04 */
+  .gridline {
+    stroke: var(--color-grey);
+    stroke-width: 1;
+  }
+  .axis {
+    stroke: var(--color-muted-soft);
+    stroke-width: 1;
+  }
+  .p4-band {
+    fill: var(--color-paper-soft);
+  }
+  .p4-a {
+    fill: none;
+    stroke: var(--color-muted-soft);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+  .p4-b {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .delta {
+    stroke: var(--color-muted);
+    stroke-width: 0.75;
+    stroke-dasharray: 1.5 2;
+  }
+
+  @media (max-width: 767px) {
+    .pv {
+      margin-top: 1.25rem;
+    }
+  }
+  @media (max-width: 1199px) {
+    .pv-hide-sm {
+      display: none;
+    }
+  }
+
+  /* ---------- Motion (only with JS and motion allowed) ---------- */
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .pv .a {
+      animation-fill-mode: both;
+      animation-play-state: paused;
+      animation-timing-function: var(--pv-ease);
+      animation-delay: var(--d, 0s);
+      animation-duration: 0.6s;
+    }
+    .pv[data-play] .a {
+      animation-play-state: running;
+    }
+    .pv .draw {
+      stroke-dasharray: 1 1;
+      animation-name: pv-draw;
+    }
+    .pv-fade {
+      animation-name: pv-fade;
+    }
+    .pv .pv-pop {
+      animation-name: pv-pop;
+      animation-duration: 0.5s;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .pv .pv-pulse {
+      animation-name: pv-pulse;
+      animation-duration: 2.8s;
+      animation-iteration-count: infinite;
+      animation-timing-function: cubic-bezier(0.2, 0.6, 0.35, 1);
+    }
+
+    /* 01 */
+    .pv .p1-drift {
+      animation-name: pv-drift;
+      animation-duration: 1.8s;
+      animation-delay: 0s;
+      animation-timing-function: ease-in-out;
+    }
+    .pv .p1-org {
+      animation-name: pv-org;
+      animation-duration: 1.1s;
+    }
+    .pv .p1-scan {
+      animation-name: pv-scan;
+      animation-duration: 1.7s;
+      animation-delay: 0.35s;
+      animation-timing-function: linear;
+    }
+    .pv .p1-heat {
+      animation-name: pv-fade;
+      animation-duration: 0.9s;
+    }
+    .pv .p1-ring {
+      animation-name: pv-ring;
+      animation-duration: 0.7s;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    /* 02 */
+    .pv .p2-contour {
+      animation-duration: 1.1s;
+    }
+    .pv .p2-alt {
+      animation-duration: 0.7s;
+    }
+    .pv .p2-route {
+      animation-duration: 1.45s;
+      animation-timing-function: cubic-bezier(0.45, 0, 0.25, 1);
+    }
+
+    /* 03 */
+    .pv .pv-stage {
+      animation-name: pv-stage;
+      animation-duration: var(--len, 1s);
+      animation-timing-function: linear;
+    }
+    .pv .pv-stage.is-last {
+      animation-name: pv-stage-last;
+      animation-duration: 0.01s;
+    }
+    .pv .p3-col {
+      animation-name: pv-col;
+      animation-duration: 1.6s;
+    }
+    .pv .p3-piece {
+      animation-name: pv-snap;
+      animation-duration: 1.6s;
+    }
+    .pv .p3-head {
+      animation-name: pv-fade;
+    }
+    .pv .p3-frame {
+      animation-duration: 0.8s;
+    }
+
+    /* 04 */
+    .pv .p4-a,
+    .pv .p4-b {
+      animation-duration: 1.8s;
+      animation-timing-function: cubic-bezier(0.45, 0, 0.3, 1);
+    }
+    .pv .p4-b {
+      animation-name: pv-draw, pv-win;
+      animation-duration: 1.8s, 0.5s;
+      animation-delay: 0.4s, 2.1s;
+    }
+    .pv .p4-band {
+      animation-name: pv-fade;
+      animation-duration: 0.9s;
+    }
+  }
+
+  @keyframes pv-draw {
+    0% {
+      stroke-dashoffset: 1;
+      opacity: 0;
+    }
+    1% {
+      opacity: 1;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes pv-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes pv-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.2);
+    }
+  }
+  @keyframes pv-pulse {
+    0% {
+      opacity: 0;
+      transform: scale(1);
+    }
+    1% {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+    70%,
+    100% {
+      opacity: 0;
+      transform: scale(4);
+    }
+  }
+  @keyframes pv-drift {
+    50% {
+      transform: translate(var(--jx), var(--jy));
+    }
+  }
+  @keyframes pv-org {
+    from {
+      transform: translate(var(--dx), var(--dy));
+      fill: var(--color-muted-soft);
+    }
+  }
+  @keyframes pv-scan {
+    0% {
+      transform: translateX(18px);
+      opacity: 0;
+    }
+    8%,
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(302px);
+      opacity: 0;
+    }
+  }
+  @keyframes pv-ring {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+  }
+  @keyframes pv-stage {
+    0%,
+    100% {
+      color: var(--color-muted-soft);
+    }
+    1%,
+    99% {
+      color: var(--color-ink);
+    }
+  }
+  @keyframes pv-stage-last {
+    from {
+      color: var(--color-muted-soft);
+    }
+  }
+  @keyframes pv-col {
+    0% {
+      opacity: 0;
+    }
+    30%,
+    70% {
+      opacity: 0.06;
+    }
+    100% {
+      opacity: 0.025;
+    }
+  }
+  @keyframes pv-snap {
+    0% {
+      opacity: 0;
+      transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(0.85);
+    }
+    15%,
+    45% {
+      opacity: 1;
+      transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(1);
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes pv-win {
+    from {
+      stroke: var(--color-ink);
+    }
+  }
+</style>
