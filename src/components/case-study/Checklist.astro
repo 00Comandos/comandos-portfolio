@@ -27,12 +27,12 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
 
 {
   isResearch ? (
-    <ul class="research not-prose">
+    <ul class="research not-prose" data-research>
       {items.map((item) => {
         const icon = iconFor(item.label);
         return (
           <li class="research-col">
-            <p class="research-title">
+            <p class="research-title mono">
               <span class="research-icon" aria-hidden="true">
                 {icon === "chat" && (
                   <svg viewBox="0 0 20 20"><path d="M3 4.5h14v9H8l-4 3v-3H3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /></svg>
@@ -49,11 +49,17 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
             </p>
             {item.body && <p class="research-body">{trimColon(item.body)}</p>}
             <ul class="research-quotes">
-              {item.sub!.map((q) => (
-                <li>
+              {item.sub!.map((q, qi) => (
+                <li style={`--i: ${qi};`}>
                   <q class="bubble">{unquote(q)}</q>
                 </li>
               ))}
+              {item.answer && (
+                <li class="research-answer" style={`--i: ${item.sub!.length};`}>
+                  <span class="sr-only">Our answer: </span>
+                  <span class="bubble bubble-out">{item.answer}</span>
+                </li>
+              )}
             </ul>
           </li>
         );
@@ -79,11 +85,32 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
   )
 }
 
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduce && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          io.unobserve(e.target);
+          (e.target as HTMLElement).setAttribute("data-in", "");
+        });
+      },
+      { threshold: 0.3 },
+    );
+    document.querySelectorAll<HTMLElement>("[data-research]").forEach((el) => {
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.85) return;
+      el.setAttribute("data-armed", "");
+      io.observe(el);
+    });
+  }
+</script>
+
 <style>
   /* ---------- Research columns ---------- */
   .research {
     display: grid;
-    gap: 2.5rem;
+    gap: 1rem;
   }
   @media (min-width: 900px) {
     .research {
@@ -91,32 +118,42 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
       gap: 1.25rem;
     }
   }
+  /* Each source is a small chat card (Karta concierge): mono header,
+     then the users' words arriving one by one. */
   .research-col {
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--color-ink);
+    display: flex;
+    flex-direction: column;
+    padding: 0 1rem 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+    background: var(--color-paper);
   }
   .research-title {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    font-size: 1.25rem;
-    font-weight: 500;
-    letter-spacing: -0.03em;
+    gap: 0.5rem;
+    margin-inline: -1rem;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
     line-height: 1.2;
+    text-transform: uppercase;
     color: var(--color-ink);
   }
   .research-icon {
     display: inline-grid;
     flex-shrink: 0;
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1rem;
+    height: 1rem;
   }
   .research-icon svg {
     width: 100%;
     height: 100%;
   }
   .research-body {
-    margin-top: 0.6rem;
+    margin-top: 0.9rem;
     font-size: 0.9375rem;
     line-height: 1.5;
     color: var(--color-muted);
@@ -146,6 +183,32 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
   }
   .research-quotes li:nth-child(3) .bubble {
     margin-left: 1.5rem;
+  }
+  /* Our reply: right-aligned ink bubble (only when the data has one). */
+  .research-answer {
+    align-self: flex-end;
+    max-width: 90%;
+  }
+  .research-quotes .bubble-out {
+    margin-left: 0;
+    border-radius: 1rem 1rem 0.25rem 1rem;
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+  /* Sequential reveal — only once the script has armed it (final state
+     without JS, under reduced motion, or if already on screen). */
+  .research[data-armed] .research-quotes > li {
+    opacity: 0;
+    transform: translateY(0.5rem);
+    transition:
+      opacity 0.4s ease,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--i, 0) * 180ms + 120ms);
+  }
+  .research[data-armed][data-in] .research-quotes > li {
+    opacity: 1;
+    transform: none;
   }
 
   /* ---------- Plain list ---------- */
