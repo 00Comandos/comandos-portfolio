@@ -34,7 +34,7 @@ export const homeWorkCopy: Record<Lang, Record<string, CaseCopy>> = {
     "truora-report": {
       tags: ["UX Research", "Product Design"],
       duringCaption:
-        "Reporte legacy en bruto. 8 minutos de lectura. Nadie entendía el score de confianza.",
+        "Reporte legacy en bruto. 8 minutos de lectura. Los analistas nunca entendieron el score de confianza.",
       nowCaption:
         "Un solo score de un vistazo. 50% más rápido. 85% de satisfacción en equipos de HR en LATAM.",
     },
@@ -50,7 +50,7 @@ export const homeWorkCopy: Record<Lang, Record<string, CaseCopy>> = {
       duringCaption:
         "Abandono a mitad del flujo. Firma dibujada con el dedo en un rectángulo diminuto.",
       nowCaption:
-        "99% de completion rate. Identidad biométrica certificada por iBeta de punta a punta.",
+        "99% de firmas completadas. Identidad biométrica certificada por iBeta de punta a punta.",
     },
     "mipos-kiosk": {
       tags: ["Product Design", "Growth"],

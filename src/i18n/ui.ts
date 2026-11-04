@@ -39,7 +39,7 @@ const en = {
   },
   clients: {
     title:
-      "Products shipped with founders and teams at — used by millions across Mexico, Brazil, Colombia, Peru and Puerto Rico.",
+      "Products shipped with founders and teams at these companies — used by millions across Mexico, Brazil, Colombia, Peru and Puerto Rico.",
     label: "Trusted by",
   },
   impact: {
@@ -96,7 +96,7 @@ const en = {
     eyebrow: "Method",
     title: "North Face Growth —",
     titleEm: "how we climb.",
-    sub: "Our methodology to create and scale products in turbo mode. Every product needs some of these steps — always in this order.",
+    sub: "Our methodology to create and scale products in turbo mode. Not every product needs every step — but they always run in this order.",
     cta: "Explore the method",
     steps: [
       {
@@ -199,7 +199,7 @@ const es: UI = {
   },
   clients: {
     title:
-      "Productos lanzados con founders y equipos de — usados por millones en México, Brasil, Colombia, Perú y Puerto Rico.",
+      "Productos lanzados con founders y equipos de estas empresas — usados por millones en México, Brasil, Colombia, Perú y Puerto Rico.",
     label: "Han confiado en nosotros",
   },
   impact: {
@@ -212,7 +212,7 @@ const es: UI = {
     eyebrow: "Trabajo seleccionado",
     title: "Problemas de producto,",
     titleEm: "resueltos con métricas.",
-    sub: "Productos que pasaron de atorados a lanzados — lo que heredamos, lo que lanzamos y la métrica que movió el equipo.",
+    sub: "Productos que pasaron de atorados a lanzados — lo que heredamos, lo que lanzamos y la métrica que movimos con el equipo.",
     before: "Antes",
     beforeLong: "Antes de Comandos",
     now: "Ahora",
@@ -256,7 +256,7 @@ const es: UI = {
     eyebrow: "Método",
     title: "North Face Growth —",
     titleEm: "cómo escalamos.",
-    sub: "Nuestra metodología para crear y escalar productos en modo turbo. Todo producto necesita algunos de estos pasos — siempre en este orden.",
+    sub: "Nuestra metodología para crear y escalar productos en modo turbo. No todo producto necesita cada paso — pero siempre van en este orden.",
     cta: "Conoce el método",
     steps: [
       {
@@ -307,7 +307,7 @@ const es: UI = {
   finalCta: {
     title: "¿Listo para la siguiente etapa?",
     titleEm: "Hablemos.",
-    sub: "Cuéntanos dónde está tu producto y a dónde necesita llegar. Respondemos en un día hábil.",
+    sub: "Cuéntanos dónde está tu producto y a dónde necesita llegar. Te respondemos en máximo un día hábil.",
     primary: "Agenda una discovery call de 30 min",
     secondary: "Envía un brief del proyecto",
   },
