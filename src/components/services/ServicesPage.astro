@@ -179,23 +179,21 @@ const jsonLd = [
                 <p class="sv-label">{p.detail.fit}</p>
                 <p class="sv-row-fit">{s.fit}</p>
               </div>
-              <div class="sv-row-lists">
-                <div>
-                  <p class="sv-label">{p.detail.included}</p>
-                  <ul class="sv-list">
-                    {s.included.map((item) => (
-                      <li>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <p class="sv-label">{p.detail.deliverables}</p>
-                  <ul class="sv-list">
-                    {s.deliverables.map((item) => (
-                      <li>{item}</li>
-                    ))}
-                  </ul>
-                </div>
+              <div class="sv-row-inc">
+                <p class="sv-label">{p.detail.included}</p>
+                <ul class="sv-list">
+                  {s.included.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div class="sv-row-deliv">
+                <p class="sv-label">{p.detail.deliverables}</p>
+                <ul class="sv-list">
+                  {s.deliverables.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
               </div>
             </li>
           ))
@@ -556,52 +554,46 @@ const jsonLd = [
   }
   .sv-row {
     display: grid;
-    gap: 1rem;
+    grid-template-areas: "num" "title" "body" "inc" "deliv";
+    row-gap: 1rem;
     padding-block: 2rem 2.5rem;
     border-bottom: 1px solid var(--color-border);
     scroll-margin-top: 5.5rem;
   }
+  .sv-row-num { grid-area: num; }
+  .sv-row-title { grid-area: title; }
+  .sv-row-body { grid-area: body; }
+  .sv-row-inc { grid-area: inc; }
+  .sv-row-deliv { grid-area: deliv; }
   @media (min-width: 768px) {
     .sv-row {
       grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        "num title title"
+        ". body inc"
+        ". body deliv";
+      grid-template-rows: auto auto 1fr;
       column-gap: 2rem;
       row-gap: 0;
     }
-    .sv-row-lists {
-      grid-column: 3;
-    }
-    .sv-row-body {
-      grid-column: 2 / -1;
-      grid-row: 2;
-    }
-    .sv-row-title {
-      grid-column: 2;
-    }
-  }
-  @media (min-width: 768px) and (max-width: 1099px) {
-    .sv-row-lists {
-      grid-row: 1;
-    }
-    .sv-row-body {
-      margin-top: 1rem;
+    .sv-row-body,
+    .sv-row-inc {
+      margin-top: 1.5rem;
     }
   }
   @media (min-width: 1100px) {
     .sv-row {
       grid-template-columns: 4rem minmax(0, 3fr) minmax(0, 4fr) minmax(0, 4fr);
+      grid-template-areas:
+        "num title body inc"
+        "num title deliv inc";
+      grid-template-rows: auto 1fr;
       column-gap: 2.5rem;
       padding-block: 2.5rem 3rem;
     }
-    .sv-row-title {
-      grid-column: 2;
-    }
-    .sv-row-body {
-      grid-column: 3;
-      grid-row: 1;
-    }
-    .sv-row-lists {
-      grid-column: 4;
-      grid-row: 1;
+    .sv-row-body,
+    .sv-row-inc {
+      margin-top: 0;
     }
   }
   .sv-row-num {
@@ -641,21 +633,20 @@ const jsonLd = [
     line-height: 1.55;
     color: var(--color-ink-soft);
   }
-  .sv-row-lists {
-    display: grid;
-    gap: 0 2rem;
+  .sv-row-inc > .sv-label {
+    margin-top: 0.5rem;
   }
-  @media (min-width: 480px) and (max-width: 767px) {
-    .sv-row-lists {
-      grid-template-columns: 1fr 1fr;
+  @media (min-width: 1100px) {
+    .sv-row-inc > .sv-label {
+      margin-top: 0.4rem;
     }
   }
-  .sv-row-lists > div:first-child .sv-label {
-    margin-top: 1.5rem;
+  .sv-row-deliv > .sv-label {
+    margin-top: 0.75rem;
   }
   @media (min-width: 768px) {
-    .sv-row-lists > div:first-child .sv-label {
-      margin-top: 0.4rem;
+    .sv-row-deliv > .sv-label {
+      margin-top: 2rem;
     }
   }
   .sv-list li {
@@ -889,6 +880,9 @@ const jsonLd = [
     color: var(--color-ink-soft);
   }
   @media (min-width: 1100px) {
+    .sv-audience-cell h3 {
+      min-height: 2.3em;
+    }
     .sv-audience-cell p {
       margin-top: 2.5rem;
     }
@@ -1095,7 +1089,7 @@ const jsonLd = [
   .sv-faq-title {
     margin-top: 1rem;
     font-size: clamp(1.75rem, 3vw, 2.75rem);
-    max-width: 14ch;
+    max-width: 15ch;
   }
   .sv-faq-list {
     border-top: 1px solid var(--color-ink);
