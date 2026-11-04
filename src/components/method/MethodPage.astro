@@ -1,0 +1,836 @@
+---
+// North Face Growth — the method deep dive (EN + ES). The home stepper
+// (`home/Method.astro`) is the summary; this page is the detail: one
+// block per phase, the principles behind it, proof per phase and how it
+// maps to each service.
+import { Image } from "astro:assets";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import FinalCTA from "~/components/home/FinalCTA.astro";
+import Checklist from "~/components/case-study/Checklist.astro";
+import { site } from "~/lib/site";
+import { localizedPath, ui, type Lang } from "~/i18n";
+
+import uxAuditScene from "~/assets/images/methodology/comandos-north-face-growth-UXAudit.svg";
+import productStrategyScene from "~/assets/images/methodology/comandos-product-strategy.svg";
+import productMvpScene from "~/assets/images/methodology/comandos-product-mvp.svg";
+import testingScene from "~/assets/images/methodology/comandos-testing-and-experimentation.svg";
+
+type Props = { lang: Lang };
+const { lang } = Astro.props;
+const t = ui[lang];
+const p = t.methodPage;
+const L = (href: string) => localizedPath(href, lang);
+
+const pageUrl = `${site.url}${L("/method/")}`;
+const homeUrl = `${site.url}${L("/")}`;
+const num = (i: number) => String(i).padStart(2, "0");
+const anchor = (i: number) => `phase-${num(i)}`;
+
+const scenes = [uxAuditScene, productStrategyScene, productMvpScene, testingScene];
+
+// Phase name + goal come from the home stepper copy so both pages agree;
+// the page-only detail lives in `methodPage.phases.items`.
+const phases = t.method.steps.map((step, i) => ({
+  ...step,
+  ...p.phases.items[i],
+  n: i + 1,
+  id: anchor(i + 1),
+  scene: scenes[i],
+}));
+
+// Services → phases they cover (from each service's "included" list).
+const servicePhases: Record<string, number[]> = {
+  "product-design": [1, 3],
+  "design-systems": [3],
+  growth: [1, 4],
+  leadership: [1, 2, 3, 4],
+};
+const services = t.services.items.map((s) => ({
+  id: s.id,
+  title: s.title,
+  body: p.services.byId[s.id as keyof typeof p.services.byId],
+  phases: servicePhases[s.id] ?? [],
+}));
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: p.breadcrumbHome, item: homeUrl },
+      { "@type": "ListItem", position: 2, name: p.breadcrumb, item: pageUrl },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: p.metaTitle,
+    description: p.metaDescription,
+    url: pageUrl,
+    inLanguage: lang,
+    author: { "@type": "Person", name: site.person.name, url: site.url },
+    publisher: { "@type": "Organization", name: site.name, url: site.url },
+    step: phases.map((ph) => ({
+      "@type": "HowToStep",
+      position: ph.n,
+      name: ph.label,
+      text: ph.body,
+      url: `${pageUrl}#${ph.id}`,
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title={p.metaTitle}
+  description={p.metaDescription}
+  type="article"
+  alternates={{ en: "/method/", es: "/es/method/" }}
+  jsonLd={jsonLd}
+>
+  <!-- Hero: label left, headline right; thesis below a hairline. -->
+  <section class="mp-hero" aria-labelledby="mp-hero-heading">
+    <div class="container-page mp-split mp-hero-top">
+      <p class="eyebrow">{p.hero.label}</p>
+      <h1 id="mp-hero-heading" class="mp-hero-title">
+        {p.hero.title.replace(" —", "\u00a0—")} <span class="hl">{p.hero.titleHl}</span>
+      </h1>
+    </div>
+    <div class="mp-hero-body">
+      <div class="container-page mp-split">
+        <p class="mp-hero-count mono" aria-hidden="true">01 — {num(phases.length)}</p>
+        <div>
+          <p class="mp-hero-sub">{p.hero.sub}</p>
+          <div class="mp-hero-actions">
+            <a href={t.links.discovery} class="btn-primary">{p.hero.cta}</a>
+            <a href="#phases" class="mp-link">{p.hero.secondary}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Phases: sticky index (desktop) + one block per phase. -->
+  <section id="phases" class="mp-phases" aria-labelledby="mp-phases-heading">
+    <div class="container-page">
+      <div class="mp-split mp-head">
+        <p class="eyebrow">{p.phases.eyebrow}</p>
+        <div>
+          <h2 id="mp-phases-heading" class="mp-h2">
+            {p.phases.title} <span class="hl">{p.phases.titleHl}</span>
+          </h2>
+          <p class="mp-sub">{p.phases.sub}</p>
+        </div>
+      </div>
+
+      <div class="mp-phases-layout">
+        <nav class="mp-index" aria-label={p.phases.indexLabel} data-mp-index>
+          <ol>
+            {
+              phases.map((ph) => (
+                <li>
+                  <a href={`#${ph.id}`} class="mp-index-link" data-mp-link={ph.id}>
+                    <span class="mp-index-num">{num(ph.n)}</span>
+                    <span class="mp-index-label">{ph.label}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </nav>
+
+        <ol class="mp-phase-list">
+          {
+            phases.map((ph, i) => (
+              <li class="mp-phase" id={ph.id} data-mp-phase aria-labelledby={`${ph.id}-title`}>
+                <div class="mp-phase-head">
+                  <span class="mp-phase-num">{num(ph.n)}</span>
+                  <h3 id={`${ph.id}-title`} class="mp-phase-name">
+                    {ph.label}
+                  </h3>
+                  <Image
+                    src={ph.scene}
+                    alt={ph.imageAlt}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                    class="mp-phase-img"
+                  />
+                </div>
+                <div class="mp-phase-body">
+                  <p class="mp-label">{p.phases.goal}</p>
+                  <p class="mp-phase-goal">{ph.title}</p>
+                  <p class="mp-phase-text">{ph.body}</p>
+                  <div class="mp-phase-lists">
+                    <div>
+                      <p class="mp-label">{p.phases.activities}</p>
+                      <ul class="mp-dots">
+                        {ph.activities.map((a) => (
+                          <li>{a}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <p class="mp-label">{p.phases.deliverables}</p>
+                      <Checklist items={ph.deliverables.map((d) => ({ label: d }))} />
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Principles: hairline grid. -->
+  <section class="mp-principles" aria-labelledby="mp-principles-heading">
+    <div class="container-page">
+      <div class="mp-split mp-head">
+        <p class="eyebrow">{p.principles.eyebrow}</p>
+        <h2 id="mp-principles-heading" class="mp-h2">
+          {p.principles.title} <span class="hl">{p.principles.titleHl}</span>
+        </h2>
+      </div>
+      <ul class="mp-grid">
+        {
+          p.principles.items.map((r, i) => (
+            <li class="mp-cell">
+              <span class="mp-cell-num">{num(i + 1)}</span>
+              <h3>{r.title}</h3>
+              <p>{r.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Proof: one case per phase, with the metric it moved. -->
+  <section class="mp-proof" aria-labelledby="mp-proof-heading">
+    <div class="container-page">
+      <div class="mp-split mp-head">
+        <p class="eyebrow">{p.proof.eyebrow}</p>
+        <h2 id="mp-proof-heading" class="mp-h2">
+          {p.proof.title} <span class="hl">{p.proof.titleHl}</span>
+        </h2>
+      </div>
+      <ul class="mp-grid">
+        {
+          p.proof.items.map((c) => (
+            <li class="mp-cell">
+              <a href={`/projects/${c.slug}/`} class="mp-proof-link">
+                <span class="mp-proof-meta">
+                  <span class="mp-chip">
+                    {p.proof.phase} {num(c.phase)}
+                  </span>
+                  <span class="mp-proof-brand">{c.brand}</span>
+                </span>
+                <span class="mp-proof-value">{c.value}</span>
+                <span class="mp-proof-label">{c.label}</span>
+                <span class="mp-proof-why">{c.why}</span>
+                <span class="sr-only">— {t.work.readCase(c.brand)}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Services ↔ phases. -->
+  <section class="mp-services" aria-labelledby="mp-services-heading">
+    <div class="container-page">
+      <div class="mp-split mp-head">
+        <p class="eyebrow">{p.services.eyebrow}</p>
+        <div>
+          <h2 id="mp-services-heading" class="mp-h2">
+            {p.services.title} <span class="hl">{p.services.titleHl}</span>
+          </h2>
+          <p class="mp-sub">{p.services.sub}</p>
+        </div>
+      </div>
+      <ul class="mp-svc-list">
+        {
+          services.map((s) => (
+            <li class="mp-svc">
+              <a href={L(`/services/#service-${s.id}`)} class="mp-svc-title">
+                {s.title}
+              </a>
+              <p class="mp-svc-phases">
+                <span class="sr-only">
+                  {p.services.phases}: {s.phases.map(num).join(", ")}
+                </span>
+                {phases.map((ph) => (
+                  <span
+                    class:list={["mp-chip", s.phases.includes(ph.n) && "is-on"]}
+                    aria-hidden="true"
+                  >
+                    {num(ph.n)}
+                  </span>
+                ))}
+              </p>
+              <p class="mp-svc-body">{s.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <a href={L("/services/")} class="btn-outline mp-svc-cta">{p.services.cta}</a>
+    </div>
+  </section>
+
+  <FinalCTA lang={lang} />
+</BaseLayout>
+
+<script>
+  // Scroll-spy for the phase index: mark the phase nearest the top of the
+  // viewport (below the sticky header) as current.
+  function initMethodIndex() {
+    const nav = document.querySelector<HTMLElement>("[data-mp-index]");
+    if (!nav || nav.dataset.ready) return;
+    nav.dataset.ready = "1";
+    const links = new Map<string, HTMLAnchorElement>();
+    nav.querySelectorAll<HTMLAnchorElement>("[data-mp-link]").forEach((a) => {
+      links.set(a.dataset.mpLink!, a);
+    });
+    const sections = document.querySelectorAll<HTMLElement>("[data-mp-phase]");
+    if (!("IntersectionObserver" in window) || sections.length === 0) return;
+
+    const visible = new Set<string>();
+    const setActive = () => {
+      // First phase (in document order) currently in the band wins.
+      const current = [...sections].find((s) => visible.has(s.id))?.id;
+      links.forEach((a, id) => {
+        if (id === current) a.setAttribute("aria-current", "true");
+        else a.removeAttribute("aria-current");
+      });
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) visible.add(e.target.id);
+          else visible.delete(e.target.id);
+        });
+        setActive();
+      },
+      { rootMargin: "-96px 0px -55% 0px" },
+    );
+    sections.forEach((s) => io.observe(s));
+  }
+  initMethodIndex();
+  document.addEventListener("astro:page-load", initMethodIndex);
+</script>
+
+<style>
+  /* ---------- Shared ---------- */
+  .mp-split {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 1024px) {
+    .mp-split {
+      grid-template-columns: 39fr 61fr;
+      align-items: baseline;
+    }
+  }
+  .mp-head {
+    margin-bottom: 2.5rem;
+  }
+  @media (min-width: 1024px) {
+    .mp-head {
+      margin-bottom: 4rem;
+    }
+  }
+  .mp-h2 {
+    font-size: clamp(2rem, 4.2vw, 3.75rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    color: var(--color-ink);
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+  .mp-sub {
+    margin-top: 1.5rem;
+    max-width: 34rem;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+  .mp-label,
+  .mp-index-num,
+  .mp-phase-num,
+  .mp-cell-num,
+  .mp-chip,
+  .mp-proof-brand,
+  .mp-hero-count {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .mp-label {
+    margin-bottom: 0.6rem;
+    color: var(--color-muted);
+  }
+  .mp-chip {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    line-height: 1;
+    padding: 0.35rem 0.55rem;
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    color: var(--color-muted);
+  }
+  .mp-chip.is-on {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .mp-link {
+    position: relative;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--color-ink);
+    transition: border-color 0.2s ease;
+  }
+  .mp-link::after {
+    content: "";
+    position: absolute;
+    inset: -0.75rem -0.5rem;
+  }
+  .mp-link:hover {
+    border-bottom-color: var(--color-accent);
+  }
+
+  /* ---------- Hero ---------- */
+  .mp-hero-top {
+    padding-top: 3.5rem;
+    padding-bottom: 2rem;
+    gap: 1.5rem;
+  }
+  @media (min-width: 1024px) {
+    .mp-hero-top {
+      align-items: end;
+      min-height: 22rem;
+      padding-top: 4rem;
+      padding-bottom: 2.25rem;
+    }
+    .mp-hero-top .eyebrow {
+      padding-bottom: 0.6rem;
+    }
+  }
+  .mp-hero-title {
+    font-size: clamp(2.75rem, 5.4vw, 5.25rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.045em;
+    color: var(--color-ink);
+    max-width: 18ch;
+    text-wrap: balance;
+  }
+  .mp-hero-title .hl {
+    padding-block: 0.02em;
+  }
+  .mp-hero-body {
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    padding-block: 1.75rem 2.25rem;
+  }
+  @media (min-width: 768px) {
+    .mp-hero-body {
+      padding-block: 2.75rem 3rem;
+    }
+  }
+  .mp-hero-count {
+    color: var(--color-muted);
+  }
+  .mp-hero-sub {
+    font-size: clamp(1.25rem, 1.65vw, 1.5rem);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    max-width: 40rem;
+  }
+  .mp-hero-actions {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.75rem;
+  }
+
+  /* ---------- Phases ---------- */
+  .mp-phases {
+    padding-block: 4.5rem 5rem;
+    scroll-margin-top: 5.5rem;
+  }
+  @media (min-width: 768px) {
+    .mp-phases {
+      padding-block: 7rem 7.5rem;
+    }
+  }
+  .mp-phases-layout {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 1024px) {
+    .mp-phases-layout {
+      grid-template-columns: 13rem minmax(0, 1fr);
+      gap: 3rem;
+      align-items: start;
+    }
+    .mp-index {
+      position: sticky;
+      top: 6.5rem;
+    }
+  }
+  .mp-index ol {
+    border-top: 1px solid var(--color-ink);
+  }
+  .mp-index li {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mp-index-link {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    align-items: baseline;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.75rem 0;
+    color: var(--color-muted);
+    transition: color 0.2s ease;
+  }
+  .mp-index-label {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .mp-index-link:hover,
+  .mp-index-link[aria-current="true"] {
+    color: var(--color-ink);
+  }
+  .mp-index-link[aria-current="true"] .mp-index-num::before {
+    content: "";
+    display: inline-block;
+    width: 0.375rem;
+    height: 0.375rem;
+    margin-right: 0.35rem;
+    border-radius: 9999px;
+    background: var(--color-ink);
+    vertical-align: 0.1em;
+  }
+  /* Mobile: every link reads as ink (no scroll-spy context there). */
+  @media (max-width: 1023px) {
+    .mp-index-link {
+      color: var(--color-ink);
+    }
+    .mp-index-num {
+      color: var(--color-muted);
+    }
+    .mp-index-link[aria-current="true"] .mp-index-num::before {
+      display: none;
+    }
+  }
+
+  .mp-phase-list {
+    border-top: 1px solid var(--color-ink);
+  }
+  .mp-phase {
+    display: grid;
+    gap: 1.5rem;
+    padding-block: 2rem 2.5rem;
+    border-bottom: 1px solid var(--color-border);
+    scroll-margin-top: 5.5rem;
+  }
+  @media (min-width: 768px) {
+    .mp-phase {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      gap: 0;
+      padding-block: 2.5rem 3rem;
+    }
+    .mp-phase-head {
+      padding-right: 2rem;
+    }
+    .mp-phase-body {
+      padding-left: 2rem;
+      border-left: 1px solid var(--color-border);
+    }
+  }
+  .mp-phase-num {
+    display: block;
+    color: var(--color-muted);
+  }
+  .mp-phase-name {
+    margin-top: 0.75rem;
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    max-width: 14ch;
+    text-wrap: balance;
+  }
+  .mp-phase-head :global(.mp-phase-img) {
+    display: block;
+    margin-top: 1.75rem;
+    width: 100%;
+    max-width: 13rem;
+    height: auto;
+    /* The legacy illustrations carry an off-palette green: keep them in
+       the ink/paper range. */
+    filter: grayscale(1);
+  }
+  @media (max-width: 767px) {
+    .mp-phase-head :global(.mp-phase-img) {
+      margin-top: 1.25rem;
+      max-width: 8.5rem;
+    }
+  }
+  .mp-phase-goal {
+    font-size: clamp(1.25rem, 1.65vw, 1.5rem);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    color: var(--color-ink);
+  }
+  .mp-phase-text {
+    margin-top: 1rem;
+    max-width: 38rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  .mp-phase-lists {
+    display: grid;
+    gap: 1.75rem;
+    margin-top: 2rem;
+  }
+  @media (min-width: 1200px) {
+    .mp-phase-lists {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 2rem;
+    }
+  }
+  .mp-dots {
+    border-top: 1px solid var(--color-border);
+  }
+  .mp-dots li {
+    position: relative;
+    padding: 0.85rem 0 0.85rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mp-dots li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1.5em;
+    width: 0.3rem;
+    height: 0.3rem;
+    border-radius: 9999px;
+    background: var(--color-ink);
+  }
+
+  /* ---------- Principles + proof (shared hairline grid) ---------- */
+  .mp-principles,
+  .mp-proof {
+    padding-block: 4.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  @media (min-width: 768px) {
+    .mp-principles,
+    .mp-proof {
+      padding-block: 7rem 6rem;
+    }
+  }
+  .mp-grid {
+    display: grid;
+    border-top: 1px solid var(--color-ink);
+  }
+  @media (min-width: 640px) {
+    .mp-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .mp-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .mp-cell {
+    padding: 1.5rem 0 2rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  @media (min-width: 640px) {
+    .mp-cell {
+      padding: 1.5rem 1.5rem 2rem;
+    }
+    .mp-cell:nth-child(odd) {
+      padding-left: 0;
+      border-right: 1px solid var(--color-border);
+    }
+  }
+  @media (min-width: 1100px) {
+    .mp-cell {
+      border-bottom: 0;
+      border-right: 1px solid var(--color-border);
+    }
+    .mp-cell:nth-child(odd) {
+      padding-left: 1.5rem;
+    }
+    .mp-cell:first-child {
+      padding-left: 0;
+    }
+    .mp-cell:last-child {
+      border-right: 0;
+    }
+  }
+  .mp-cell-num {
+    display: block;
+    color: var(--color-muted);
+  }
+  .mp-cell h3 {
+    margin-top: 1.25rem;
+    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    max-width: 16ch;
+  }
+  .mp-cell p {
+    margin-top: 1rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+
+  .mp-proof-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: var(--color-ink);
+  }
+  .mp-proof-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .mp-proof-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-muted);
+    transition: color 0.2s ease;
+  }
+  .mp-proof-brand::before {
+    content: "";
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background: currentColor;
+    transition: background-color 0.2s ease;
+  }
+  .mp-proof-value {
+    margin-top: 2rem;
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    font-weight: 500;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+  .mp-proof-label {
+    margin-top: 0.75rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .mp-proof-why {
+    margin-top: 1rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+  .mp-proof-link:hover .mp-proof-brand {
+    color: var(--color-ink);
+  }
+  .mp-proof-link:hover .mp-proof-brand::before {
+    background: var(--color-accent);
+  }
+
+  /* ---------- Services ↔ phases ---------- */
+  .mp-services {
+    padding-block: 4.5rem 5rem;
+    background: var(--color-grey);
+  }
+  @media (min-width: 768px) {
+    .mp-services {
+      padding-block: 6.5rem;
+    }
+  }
+  .mp-services .mp-chip {
+    border-color: rgb(6 6 6 / 0.2);
+  }
+  .mp-services .mp-chip.is-on {
+    border-color: var(--color-ink);
+  }
+  .mp-svc-list {
+    border-top: 1px solid var(--color-ink);
+  }
+  .mp-svc {
+    display: grid;
+    gap: 0.85rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid rgb(6 6 6 / 0.15);
+  }
+  @media (min-width: 900px) {
+    .mp-svc {
+      grid-template-columns: minmax(0, 4fr) auto minmax(0, 5fr);
+      align-items: baseline;
+      column-gap: 2.5rem;
+    }
+  }
+  .mp-svc-title {
+    justify-self: start;
+    font-size: clamp(1.25rem, 1.8vw, 1.625rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    color: var(--color-ink);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+  }
+  .mp-svc-title:hover {
+    border-bottom-color: var(--color-ink);
+  }
+  .mp-svc-phases {
+    display: flex;
+    gap: 0.35rem;
+  }
+  .mp-svc-body {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+  .mp-svc-cta {
+    margin-top: 2.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mp-link,
+    .mp-index-link,
+    .mp-svc-title,
+    .mp-proof-brand,
+    .mp-proof-brand::before {
+      transition: none;
+    }
+  }
+</style>

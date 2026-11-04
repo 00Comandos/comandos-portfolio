@@ -11,7 +11,7 @@ export type Lang = (typeof LANGS)[number];
 export const DEFAULT_LANG: Lang = "en";
 
 /** English paths that already have a Spanish twin under `/es`. */
-export const ES_ROUTES = new Set<string>(["/", "/services/", "/contact/"]);
+export const ES_ROUTES = new Set<string>(["/", "/services/", "/method/", "/contact/"]);
 
 export function getLang(url: URL): Lang {
   return url.pathname === "/es" || url.pathname.startsWith("/es/")
