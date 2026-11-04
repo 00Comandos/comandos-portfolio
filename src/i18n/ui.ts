@@ -444,8 +444,8 @@ const en = {
     },
     proof: {
       eyebrow: "Proof",
-      title: "The phase that",
-      titleHl: "moved it.",
+      title: "The method,",
+      titleHl: "in numbers.",
       phase: "Phase",
       items: [
         {
@@ -954,8 +954,8 @@ const es: UI = {
     },
     proof: {
       eyebrow: "Casos",
-      title: "La fase que",
-      titleHl: "lo movió.",
+      title: "El método,",
+      titleHl: "en números.",
       phase: "Fase",
       items: [
         {
