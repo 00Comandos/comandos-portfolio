@@ -58,6 +58,7 @@ const t = ui[Astro.props.lang];
                 class="tm-tab"
                 data-tab-index={i}
                 aria-selected={i === 0 ? "true" : "false"}
+                tabindex={i === 0 ? 0 : -1}
                 role="tab"
               >
                 {q.tabLabel}
@@ -261,7 +262,10 @@ const t = ui[Astro.props.lang];
         s.setAttribute("data-active", isActive ? "true" : "false");
         s.setAttribute("aria-hidden", isActive ? "false" : "true");
       });
-      tabs.forEach((d, i) => d.setAttribute("aria-selected", i === next ? "true" : "false"));
+      tabs.forEach((d, i) => {
+        d.setAttribute("aria-selected", i === next ? "true" : "false");
+        d.tabIndex = i === next ? 0 : -1;
+      });
       const activeTab = tabs[next];
       if (activeTab && tabList && tabList.scrollWidth > tabList.clientWidth + 2) {
         const target = activeTab.offsetLeft - tabList.clientWidth / 2 + activeTab.clientWidth / 2;
@@ -290,6 +294,26 @@ const t = ui[Astro.props.lang];
         start();
       }),
     );
+    // ARIA tabs keyboard pattern: arrows / Home / End move and select.
+    tabList?.addEventListener("keydown", (e) => {
+      const keys: Record<string, number> = {
+        ArrowRight: current + 1,
+        ArrowLeft: current - 1,
+        Home: 0,
+        End: tabs.length - 1,
+      };
+      if (!(e.key in keys)) return;
+      e.preventDefault();
+      show(keys[e.key]);
+      tabs[current]?.focus();
+      stop();
+      start();
+    });
+    // Don't rotate the quote out from under keyboard users.
+    scope.addEventListener("focusin", () => (paused = true));
+    scope.addEventListener("focusout", (e) => {
+      if (!scope.contains((e as FocusEvent).relatedTarget as Node)) paused = false;
+    });
     stage.addEventListener("pointerenter", () => (paused = true));
     stage.addEventListener("pointerleave", () => (paused = false));
 
