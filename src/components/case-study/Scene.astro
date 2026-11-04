@@ -1,0 +1,327 @@
+---
+import ContentImage from "~/components/case-study/ContentImage.astro";
+import type { SceneBeat } from "~/data/case-studies/types";
+
+type Props = {
+  label?: string;
+  heading: string;
+  body?: string;
+  beats: readonly SceneBeat[];
+};
+const { label, heading, body, beats } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, "0");
+const total = pad(beats.length);
+---
+
+<!--
+  Sticky "scene" (Karta concierge pattern). One DOM, two layouts:
+  - ≥900px + motion OK: the wrapper is N × 100svh tall, the stage pins
+    under the header and beats crossfade with scroll progress.
+  - Otherwise (mobile, reduced motion, no JS): beats stack in flow, each
+    with its caption. Nothing is hidden until the script marks it ready.
+-->
+<div class="scene" data-scene style={`--beats: ${beats.length};`}>
+  <div class="scene-stage">
+    <div class="scene-text">
+      {label && <p class="eyebrow scene-label">{label}</p>}
+      <h3 class="display-serif scene-title">{heading}</h3>
+      {body && <p class="scene-body">{body}</p>}
+    </div>
+    <ol class="scene-beats">
+      {
+        beats.map((b, i) => (
+          <li class="scene-beat" data-beat={i} data-active={i === 0 ? "" : undefined}>
+            <div class="scene-media">
+              {b.media.kind === "video" ? (
+                <video
+                  class="scene-video"
+                  poster={b.media.poster}
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  data-scene-video
+                  aria-label={b.media.alt}
+                >
+                  {b.media.mobileSrc && (
+                    <source src={b.media.mobileSrc} media="(max-width: 767px)" />
+                  )}
+                  <source src={b.media.src} />
+                </video>
+              ) : (
+                <ContentImage
+                  image={b.media}
+                  fit="contain"
+                  sizes="(min-width: 1200px) 36vw, (min-width: 900px) 460px, 100vw"
+                />
+              )}
+            </div>
+            <div class="scene-cap">
+              <p class="scene-step">
+                <span class="mono">
+                  {pad(i + 1)} / {total} — {b.label}
+                </span>
+                {b.impact && <span class="hl">{b.impact}</span>}
+              </p>
+              <p class="scene-cap-text">{b.caption}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="scene-progress" aria-hidden="true">
+      {beats.map((_, i) => <span data-tick={i} data-active={i === 0 ? "" : undefined} />)}
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ---------- Stacked (default: mobile, reduced motion, no JS) ---------- */
+  .scene-label {
+    color: var(--color-muted);
+  }
+  .scene-title {
+    margin-top: 0.5rem;
+    font-size: 2rem;
+  }
+  @media (min-width: 768px) {
+    .scene-title {
+      font-size: 2.375rem;
+    }
+  }
+  .scene-body {
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  .scene-beats {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: 2rem;
+  }
+  .scene-media {
+    overflow: hidden;
+    border-radius: var(--radius-xs);
+  }
+  .scene-video {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  .scene-cap {
+    margin-top: 1rem;
+  }
+  .scene-step {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .scene-step .hl {
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    text-transform: none;
+    color: var(--color-ink);
+  }
+  .scene-cap-text {
+    margin-top: 0.5rem;
+    font-size: 1.25rem;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    max-width: 28ch;
+  }
+  .scene-progress {
+    display: none;
+  }
+
+  /* ---------- Pinned stage ---------- */
+  @media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+    .scene[data-ready] {
+      height: calc(var(--beats) * 100svh);
+    }
+    .scene[data-ready] .scene-stage {
+      position: sticky;
+      top: 5.5rem;
+      height: calc(100svh - 5.5rem);
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      grid-template-rows: auto 1fr auto;
+      grid-template-areas:
+        "text media"
+        ". media"
+        "cap media";
+      column-gap: 2rem;
+      /* Below 1200 the floating section-nav pill sits at the bottom. */
+      padding-block: 1.5rem 4.5rem;
+    }
+    .scene[data-ready] .scene-text {
+      grid-area: text;
+    }
+    @media (min-width: 1200px) {
+      .scene[data-ready] .scene-stage {
+        padding-bottom: 2.5rem;
+      }
+    }
+    .scene[data-ready] .scene-title {
+      font-size: clamp(1.625rem, 2.2vw, 2.25rem);
+    }
+    .scene[data-ready] .scene-body {
+      font-size: 0.9375rem;
+      color: var(--color-muted);
+    }
+    .scene[data-ready] .scene-beats,
+    .scene[data-ready] .scene-beat {
+      display: contents;
+    }
+    .scene[data-ready] .scene-media {
+      grid-area: media;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .scene[data-ready] .scene-media :global(figure),
+    .scene[data-ready] .scene-media :global(figure > div),
+    .scene[data-ready] .scene-media :global(picture) {
+      height: 100%;
+      width: 100%;
+    }
+    .scene[data-ready] .scene-media :global(img),
+    .scene[data-ready] .scene-video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .scene[data-ready] .scene-video {
+      object-fit: cover;
+    }
+    .scene[data-ready] .scene-cap {
+      grid-area: cap;
+      margin-top: 0;
+      padding-bottom: 1.25rem;
+    }
+    .scene[data-ready] .scene-cap-text {
+      font-size: clamp(1.375rem, 2vw, 1.75rem);
+    }
+    .scene[data-ready] .scene-media,
+    .scene[data-ready] .scene-cap {
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.6s ease,
+        visibility 0s linear 0.6s;
+    }
+    .scene[data-ready] .scene-cap {
+      transform: translateY(0.5rem);
+      transition:
+        opacity 0.5s ease,
+        transform 0.5s ease,
+        visibility 0s linear 0.5s;
+    }
+    .scene[data-ready] .scene-beat[data-active] > .scene-media,
+    .scene[data-ready] .scene-beat[data-active] > .scene-cap {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition-delay: 0s;
+    }
+    .scene[data-ready] .scene-progress {
+      grid-area: cap;
+      align-self: end;
+      display: flex;
+      gap: 0.35rem;
+    }
+    .scene-progress span {
+      width: 1.5rem;
+      height: 2px;
+      background: var(--color-border);
+      transition: background-color 0.3s ease;
+    }
+    .scene-progress span[data-active] {
+      background: var(--color-ink);
+    }
+  }
+</style>
+
+<script>
+  const PIN = "(min-width: 900px) and (prefers-reduced-motion: no-preference)";
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  document.querySelectorAll<HTMLElement>("[data-scene]").forEach((scene) => {
+    const beats = Array.from(scene.querySelectorAll<HTMLElement>(".scene-beat"));
+    const ticks = Array.from(scene.querySelectorAll<HTMLElement>("[data-tick]"));
+    const stage = scene.querySelector<HTMLElement>(".scene-stage")!;
+    const mq = window.matchMedia(PIN);
+    let active = 0;
+    let inView = false;
+    let raf = 0;
+
+    const syncVideos = () => {
+      beats.forEach((b, i) => {
+        const v = b.querySelector<HTMLVideoElement>("video");
+        if (!v) return;
+        const pinned = mq.matches;
+        const shouldPlay =
+          !reduce.matches && inView && (pinned ? i === active : b.dataset.visible === "1");
+        if (shouldPlay) v.play().catch(() => {});
+        else v.pause();
+      });
+    };
+
+    const setActive = (i: number) => {
+      if (i === active) return;
+      active = i;
+      beats.forEach((b, j) => b.toggleAttribute("data-active", j === i));
+      ticks.forEach((t, j) => t.toggleAttribute("data-active", j === i));
+      syncVideos();
+    };
+
+    const update = () => {
+      raf = 0;
+      if (!mq.matches) return;
+      const rect = scene.getBoundingClientRect();
+      const travel = rect.height - stage.offsetHeight;
+      const p = travel > 0 ? Math.min(Math.max(-rect.top / travel, 0), 0.9999) : 0;
+      setActive(Math.floor(p * beats.length));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    const apply = () => {
+      scene.toggleAttribute("data-ready", mq.matches);
+      if (mq.matches) update();
+      syncVideos();
+    };
+    mq.addEventListener("change", apply);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+
+    // Scene visibility (pinned mode) + per-beat visibility (stacked mode).
+    new IntersectionObserver(
+      ([e]) => {
+        inView = e.isIntersecting;
+        syncVideos();
+      },
+      { rootMargin: "100px 0px" },
+    ).observe(scene);
+    const beatIO = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          (e.target as HTMLElement).dataset.visible = e.isIntersecting ? "1" : "0";
+        });
+        syncVideos();
+      },
+      { threshold: 0.25 },
+    );
+    beats.forEach((b) => beatIO.observe(b));
+
+    apply();
+  });
+</script>

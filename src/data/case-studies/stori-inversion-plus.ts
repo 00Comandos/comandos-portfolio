@@ -101,6 +101,20 @@ const beforeAfterEvolutionImage: ContentImage = {
   alt: "Stori Inversión+ before-and-after — evolution of the time-locked investment product from first internal version to launched release",
 };
 
+// Single-phone stills of the first and last version — beats of the
+// before → after scene (the Evolution composite keeps both side by side).
+const firstVersionScreenImage: ContentImage = {
+  kind: "image",
+  image: img("stori-inversion-before-768x997.webp"),
+  alt: "Stori Inversión+ first version — the original new-investment screen with amount, term chips and investment name on one screen",
+};
+
+const lastVersionScreenImage: ContentImage = {
+  kind: "image",
+  image: img("stori-inversion-after-768x989.webp"),
+  alt: "Stori Inversión+ last version — the redesigned screen showing amount, term options and yields at a glance",
+};
+
 export const storiInversionPlus: CaseStudyContent = {
   slug: "stori-inversion-plus",
   kicker: "Fintech — SaaS",
@@ -206,11 +220,28 @@ export const storiInversionPlus: CaseStudyContent = {
       { kind: "divider" },
       { kind: "chip", icon: "making-top", label: "Making top" },
       {
-        kind: "intro",
+        kind: "scene",
         heading: "Iterations according to metrics: 477% conversion rate",
         body: "By quickly identifying the conversion problem and talking to users, we iterated the flow and improved 477% versus the first week of launch.",
+        beats: [
+          {
+            media: firstVersionScreenImage,
+            label: "Before",
+            caption: "Where we started: the first version of the invest screen.",
+          },
+          {
+            media: deleteStepImage,
+            label: "The removed step",
+            caption: "Amount and term took two screens. We merged them into one.",
+          },
+          {
+            media: lastVersionScreenImage,
+            label: "New",
+            impact: "↑477%",
+            caption: "Terms and yields up front — activation up 477% versus launch week.",
+          },
+        ],
       },
-      { kind: "image", image: deleteStepImage },
       { kind: "divider" },
       {
         kind: "intro",
@@ -219,15 +250,18 @@ export const storiInversionPlus: CaseStudyContent = {
         body: "The impact on our users was greater than expected. Content creators talked about our significant improvements.",
       },
       { kind: "image", image: contentCreatorsImage },
-      { kind: "video", video: confidentAfterVideo, rounded: true },
       { kind: "divider" },
       {
         kind: "intro",
         label: "Awesome Evolution",
         heading: "A great evolution with Stori Investment",
-        body: "The user can enable a metal or plastic card. All additional cards have digital cards.",
       },
       { kind: "image", image: beforeAfterEvolutionImage },
+      {
+        kind: "bleed-video",
+        video: confidentAfterVideo,
+        line: "The same decision, now made with confidence.",
+      },
     ],
   },
   result: {

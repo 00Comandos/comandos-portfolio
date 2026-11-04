@@ -49,6 +49,20 @@ export type ChecklistItem = {
   label: string;
   body?: string;
   sub?: readonly string[];
+  /** Research variant only: our reply to the quotes, rendered as a final
+      right-aligned ink bubble. Leave empty unless the case has real copy. */
+  answer?: string;
+};
+
+/** One beat of a sticky scroll scene (Worth `scene` block). */
+export type SceneBeat = {
+  media: ContentImage | ContentVideo;
+  /** Short mono label for the beat, e.g. "Before" / "New". */
+  label: string;
+  /** Optional 1–2 word figure shown as a `.hl` pill next to the label (e.g. "↑477%"). */
+  impact?: string;
+  /** The line that changes per beat (bottom-left of the stage). */
+  caption: string;
 };
 
 export type FeatureGridItem = {
@@ -241,7 +255,20 @@ export type WorthBlock =
       kind: "responsive-media";
       desktop: ContentImage;
       mobile: readonly ContentImage[];
-    };
+    }
+  /** Sticky before → after scene (max one per case). Pinned stage with
+      crossfading media per beat on ≥900px; stacked beats on mobile and
+      under reduced motion. */
+  | {
+      kind: "scene";
+      label?: string;
+      heading: string;
+      body?: string;
+      beats: readonly SceneBeat[];
+    }
+  /** Edge-to-edge video band with one overlaid line (breaks out of the
+      case-study column). */
+  | { kind: "bleed-video"; video: ContentVideo; line: string };
 
 export type CaseStudyContent = {
   slug: string;

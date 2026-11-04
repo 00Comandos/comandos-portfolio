@@ -289,7 +289,12 @@ const linkIconPath =
     // Visible between: challenge has reached the probe row …
     // … and until result is about to reach it.
     const show = chRect.top <= PROBE_Y && resRect.top > PROBE_Y;
-    const onDark = chRect.top <= PROBE_Y && chRect.bottom > PROBE_Y;
+    const onDark =
+      (chRect.top <= PROBE_Y && chRect.bottom > PROBE_Y) ||
+      Array.from(document.querySelectorAll("[data-bleed]")).some((el) => {
+        const r = el.getBoundingClientRect();
+        return r.top <= PROBE_Y && r.bottom > PROBE_Y;
+      });
 
     navs.forEach((n) => {
       n.setAttribute("data-visible", show ? "true" : "false");

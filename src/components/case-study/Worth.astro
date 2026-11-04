@@ -6,18 +6,43 @@ import Divider from "~/components/case-study/Divider.astro";
 import Checklist from "~/components/case-study/Checklist.astro";
 import ImageGrid from "~/components/case-study/ImageGrid.astro";
 import ResponsiveMedia from "~/components/case-study/ResponsiveMedia.astro";
-import type { CaseStudyContent } from "~/data/case-studies/types";
+import Scene from "~/components/case-study/Scene.astro";
+import BleedVideo from "~/components/case-study/BleedVideo.astro";
+import type { CaseStudyContent, WorthBlock } from "~/data/case-studies/types";
 
 type Props = { content: CaseStudyContent["worth"] };
 const { content } = Astro.props;
-const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-media", "two-col-media", "before-after"];
+const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-media", "two-col-media", "before-after", "scene", "bleed-video"];
+
+// `bleed-video` blocks break out of the case-study column: split the block
+// list into column segments and full-width bands (no 100vw math, so no
+// scrollbar-width overflow and no offset from the ≥1200 left padding).
+type Segment =
+  | { kind: "column"; items: { block: WorthBlock; bi: number }[] }
+  | { kind: "bleed"; block: Extract<WorthBlock, { kind: "bleed-video" }> };
+const segments: Segment[] = [];
+content.blocks.forEach((block, bi) => {
+  if (block.kind === "bleed-video") {
+    segments.push({ kind: "bleed", block });
+    return;
+  }
+  const last = segments[segments.length - 1];
+  if (last && last.kind === "column") last.items.push({ block, bi });
+  else segments.push({ kind: "column", items: [{ block, bi }] });
+});
+const endsWithBleed = segments[segments.length - 1]?.kind === "bleed";
 ---
 
-<section id="worth" class="pb-10 md:pb-12">
+<section id="worth" class:list={[!endsWithBleed && "pb-10 md:pb-12"]}>
+  {segments.map((seg) => seg.kind === "bleed" ? (
+    <div class="worth-bleed">
+      <BleedVideo video={seg.block.video} line={seg.block.line} />
+    </div>
+  ) : (
   <div class="cs-body">
     <div class="worth-blocks space-y-14 md:space-y-16">
       {
-        content.blocks.map((block, bi) => {
+        seg.items.map(({ block, bi }) => {
           if (block.kind === "divider") {
             // A divider straight after media is redundant — the image already
             // closes the section.
@@ -106,14 +131,29 @@ const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-
               </div>
             );
           }
+          if (block.kind === "scene") {
+            return <Scene label={block.label} heading={block.heading} body={block.body} beats={block.beats} />;
+          }
           return null;
         })
       }
     </div>
   </div>
+  ))}
 </section>
 
 <style>
+  .worth-bleed {
+    margin-top: 3.5rem;
+  }
+  @media (min-width: 768px) {
+    .worth-bleed {
+      margin-top: 4rem;
+    }
+  }
+  .worth-bleed + .cs-body {
+    margin-top: 3.5rem;
+  }
   .worth-blocks > [data-chip] {
     margin-block-end: 0.75rem !important;
   }

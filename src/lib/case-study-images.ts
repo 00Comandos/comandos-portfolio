@@ -49,6 +49,10 @@ export function extractCaseStudyImages(cs: CaseStudyContent): Extract<
       block.mobile.forEach(push);
     } else if (block.kind === "image-grid") {
       block.images.forEach(push);
+    } else if (block.kind === "scene") {
+      block.beats.forEach((b) => {
+        if (b.media.kind !== "video") push(b.media);
+      });
     }
   }
 
@@ -62,7 +66,13 @@ export function extractCaseStudyImages(cs: CaseStudyContent): Extract<
 export function extractCaseStudyVideos(cs: CaseStudyContent): ContentVideo[] {
   const out: ContentVideo[] = [];
   for (const block of [...cs.adventure.blocks, ...cs.worth.blocks]) {
-    if (block.kind === "video") out.push(block.video);
+    if (block.kind === "video" || block.kind === "bleed-video") {
+      out.push(block.video);
+    } else if (block.kind === "scene") {
+      block.beats.forEach((b) => {
+        if (b.media.kind === "video") out.push(b.media);
+      });
+    }
   }
   return out;
 }
