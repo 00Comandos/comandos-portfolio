@@ -50,7 +50,9 @@ export const contactSchema = z.object({
       { message: "Enter a valid phone number (7–15 digits)." },
     ),
   company: z.string().trim().min(2, "Please share your company.").max(200),
-  projectType: z.enum(PROJECT_TYPES, { message: "Select a project type." }),
+  projectType: z
+    .array(z.enum(PROJECT_TYPES, { message: "Select a project type." }))
+    .min(1, "Select a project type."),
   referralSource: z
     .enum(REFERRAL_SOURCES, { message: "Let us know how you found us." }),
   message: z
@@ -107,7 +109,7 @@ export async function sendContactEmail(input: ContactInput): Promise<void> {
   const { Resend } = await import("resend");
   const resend = new Resend(apiKey);
 
-  const subject = `New lead — ${input.projectType} — ${input.name}`;
+  const subject = `New lead — ${input.projectType.join(", ")} — ${input.name}`;
   const escape = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -116,7 +118,7 @@ export async function sendContactEmail(input: ContactInput): Promise<void> {
     ["Email", `<a href="mailto:${escape(input.email)}" style="color:#0b0b0b">${escape(input.email)}</a>`],
     ["WhatsApp", `<a href="https://wa.me/${input.whatsapp.replace(/\D/g, "")}" style="color:#0b0b0b">${escape(input.whatsapp)}</a>`],
     ["Company", escape(input.company)],
-    ["Project type", escape(input.projectType)],
+    ["Project type", escape(input.projectType.join(", "))],
     ["Heard via", escape(input.referralSource)],
     ["Message", escape(input.message)],
   ];

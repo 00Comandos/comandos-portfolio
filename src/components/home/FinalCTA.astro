@@ -233,4 +233,13 @@ const EMAIL = "c@comandos.me";
   .final-copy-btn:hover {
     color: var(--color-ink);
   }
+  /* Phones: the sub already promises the reply time; the bullets and the
+     email block only lengthen the way to the form. */
+  /* (Last, so it beats the display rules above.) */
+  @media (max-width: 767px) {
+    .final-bullets,
+    .final-direct {
+      display: none;
+    }
+  }
 </style>

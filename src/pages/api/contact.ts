@@ -29,7 +29,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     email: (form.get("email") ?? "").toString(),
     whatsapp: (form.get("whatsapp") ?? "").toString(),
     company: (form.get("company") ?? "").toString(),
-    projectType: (form.get("projectType") ?? "").toString(),
+    projectType: form.getAll("projectType").map((v) => v.toString()),
     referralSource: (form.get("referralSource") ?? "").toString(),
     message: (form.get("message") ?? "").toString(),
     website: (form.get("website") ?? "").toString(),

@@ -284,9 +284,17 @@ const LOGO_PATH =
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    white-space: nowrap;
     font-size: 0.75rem;
     text-transform: uppercase;
     color: var(--f-muted);
+  }
+  /* Phones: the half-width column fits "● CDMX 10:07 PM" on one line;
+     the zone is the first thing to go. */
+  @media (max-width: 479px) {
+    .footer-clock [data-clock-zone] {
+      display: none;
+    }
   }
   .footer-clock-dot {
     width: 6px;

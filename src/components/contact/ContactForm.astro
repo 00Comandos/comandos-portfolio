@@ -49,25 +49,35 @@ const action = lang === "es" ? "/api/contact?lang=es" : "/api/contact";
   data-contact-form
   data-copy={clientCopy}
 >
-  <fieldset class="cf-field cf-chips-field" data-group="projectType">
+  <fieldset class="cf-field cf-chips-field" data-group="projectType" data-multi>
     <legend class="cf-label">{t.form.projectType}</legend>
-    <div class="cf-chips">
-      {
-        PROJECT_TYPES.map((value) => (
-          <label class="cf-chip">
-            <input
-              type="radio"
-              name="projectType"
-              value={value}
-              required
-              checked={value === presetType}
-              aria-describedby="projectType-error"
-            />
-            <span>{t.projectTypeLabels[value]}</span>
-          </label>
-        ))
-      }
-    </div>
+    {/* Multi-select. Desktop: chips always visible. Phones: collapsed into a
+        dropdown (summary shows what's picked) so the form stays short. */}
+    <details class="cf-pick" open data-pick>
+      <summary class="cf-pick-summary">
+        <span data-pick-label data-empty={lang === "es" ? "Elige una o más…" : "Choose one or more…"}>
+          {presetType ? t.projectTypeLabels[presetType] : lang === "es" ? "Elige una o más…" : "Choose one or more…"}
+        </span>
+        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.4" /></svg>
+      </summary>
+      <div class="cf-chips">
+        {
+          PROJECT_TYPES.map((value) => (
+            <label class="cf-chip">
+              <input
+                type="checkbox"
+                name="projectType"
+                value={value}
+                data-label={t.projectTypeLabels[value]}
+                checked={value === presetType}
+                aria-describedby="projectType-error"
+              />
+              <span>{t.projectTypeLabels[value]}</span>
+            </label>
+          ))
+        }
+      </div>
+    </details>
     <span id="projectType-error" data-error class="cf-error" hidden></span>
   </fieldset>
 
@@ -313,6 +323,47 @@ const action = lang === "es" ? "/api/contact?lang=es" : "/api/contact";
         });
       });
 
+    // Multi-select chip group: valid when at least one box is ticked. The
+    // first box carries the custom validity so the generic flow works.
+    form.querySelectorAll<HTMLFieldSetElement>("fieldset[data-multi]").forEach((fs) => {
+      const boxes = Array.from(fs.querySelectorAll<HTMLInputElement>('input[type="checkbox"]'));
+      if (!boxes.length) return;
+      const name = boxes[0].name;
+      const msg = copy.required[name] ?? copy.requiredFallback;
+      const label = fs.querySelector<HTMLElement>("[data-pick-label]");
+      const sync = () => {
+        const picked = boxes.filter((b) => b.checked);
+        boxes[0].setCustomValidity(picked.length ? "" : msg);
+        if (label) label.textContent = picked.length ? picked.map((b) => b.dataset.label).join(", ") : label.dataset.empty ?? "";
+        label?.toggleAttribute("data-filled", picked.length > 0);
+      };
+      boxes.forEach((b) => b.addEventListener("change", sync));
+      sync();
+      controls.unshift({
+        name,
+        el: boxes[0],
+        targets: boxes,
+        wrap: fs,
+        errEl: document.getElementById(`${name}-error`),
+        focus: () => {
+          const d = fs.querySelector("details");
+          if (d) d.open = true;
+          boxes[0].focus();
+        },
+      });
+      // Collapse into a dropdown on phones; always open from 768px up.
+      const det = fs.querySelector<HTMLDetailsElement>("[data-pick]");
+      if (det) {
+        const mq = window.matchMedia("(min-width: 768px)");
+        const apply = () => {
+          det.open = mq.matches || false;
+          det.toggleAttribute("data-static", mq.matches);
+        };
+        mq.addEventListener("change", apply);
+        apply();
+      }
+    });
+
     // WhatsApp: E.164-style check — must start with a country code (+),
     // 7–15 digits, separators allowed. Registered before the generic
     // listeners so validity is fresh when they read it.
@@ -497,7 +548,49 @@ const action = lang === "es" ? "/api/contact?lang=es" : "/api/contact";
     display: none;
   }
 
-  /* Selectable pill chips (Tubik) — real radios, visually hidden. */
+  /* Multi-select wrapper: a dropdown on phones, invisible on desktop. */
+  .cf-pick-summary {
+    display: none;
+  }
+  .cf-pick:not([data-static]) > .cf-pick-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 0 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 1rem;
+    color: var(--color-muted-soft);
+    cursor: pointer;
+    list-style: none;
+  }
+  .cf-pick-summary::-webkit-details-marker {
+    display: none;
+  }
+  .cf-pick-summary [data-filled] {
+    color: var(--color-ink);
+  }
+  .cf-pick-summary span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cf-pick-summary svg {
+    flex-shrink: 0;
+    width: 0.75rem;
+    height: 0.75rem;
+    color: var(--color-ink);
+    transition: transform 0.2s ease;
+  }
+  .cf-pick[open] .cf-pick-summary svg {
+    transform: rotate(180deg);
+  }
+  .cf-pick:not([data-static])[open] .cf-chips {
+    padding-top: 0.85rem;
+  }
+
+  /* Selectable pill chips (Tubik) — real checkboxes, visually hidden. */
   .cf-chips {
     display: flex;
     flex-wrap: wrap;
