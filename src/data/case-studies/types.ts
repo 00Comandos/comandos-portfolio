@@ -338,7 +338,14 @@ export type CaseStudyContent = {
         below (e.g. a phone poking out of the card) sits on the page. */
     /** `align: "end"`: the image sits flush with the band's right/bottom
         edges (for screenshots already cropped on those sides). */
-    backdrop?: { color: string; until?: number; align?: "center" | "end" };
+    backdrop?: {
+      color: string;
+      until?: number;
+      align?: "center" | "end";
+      /** Soft-fade the image's right and bottom edges into the band
+          (for screenshots cropped on those sides, shown centred). */
+      fade?: boolean;
+    };
     /** Multi-paragraph body; split by \n\n. */
     intro: string;
     /** Optional bulleted list rendered beneath the intro paragraphs. */

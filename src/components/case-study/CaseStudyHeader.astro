@@ -92,7 +92,7 @@ const heroWidths = [640, 960, 1280, 1600, 1920, 2560];
   </div>
 
   <div
-    class:list={["csh-media", backdrop && "csh-media--band", backdrop?.align === "end" && "csh-media--end"]}
+    class:list={["csh-media", backdrop && "csh-media--band", backdrop?.align === "end" && "csh-media--end", backdrop?.fade && "csh-media--fade"]}
     style={backdrop
       ? `--csh-band: ${backdrop.color}; --csh-band-until: ${backdrop.until ?? 100}%;`
       : undefined}
@@ -354,6 +354,26 @@ const heroWidths = [640, 960, 1280, 1600, 1920, 2560];
   .csh-media--band .csh-frame {
     max-width: 860px;
     margin-inline: auto;
+  }
+  /* Centred cropped screenshot: its cut right/bottom edges dissolve into
+     the band instead of ending on a hard line. */
+  .csh-media--fade {
+    padding-top: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .csh-media--fade {
+      padding-top: 3rem;
+    }
+  }
+  .csh-media--fade .csh-frame :global(img) {
+    -webkit-mask-image:
+      linear-gradient(to right, #000 80%, transparent 99%),
+      linear-gradient(to bottom, #000 72%, transparent 99%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to right, #000 80%, transparent 99%),
+      linear-gradient(to bottom, #000 72%, transparent 99%);
+    mask-composite: intersect;
   }
   /* Cropped screenshot: let its cut edges meet the band's right and bottom
      edges so it reads as sliding out of frame, not as a broken image. */
