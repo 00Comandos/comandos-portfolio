@@ -72,8 +72,12 @@ const endsWithBleed = segments[segments.length - 1]?.kind !== "column";
             );
           }
           if (block.kind === "intro") {
+            // A sub-point right under its section intro reads as part of it:
+            // pull it close and tie it with a hairline instead of the 4rem gap.
+            const prevBlock = content.blocks[bi - 1];
+            const attached = block.sub && prevBlock?.kind === "intro" && !prevBlock.sub;
             return (
-              <div>
+              <div class:list={[attached && "intro-attached"]}>
                 {block.label && (
                   <p
                     class:list={[
@@ -234,6 +238,18 @@ const endsWithBleed = segments[segments.length - 1]?.kind !== "column";
   }
   .worth-bleed + .cs-body {
     margin-top: 3.5rem;
+  }
+  /* Tailwind v4 space-y puts the gap as margin-bottom on the previous
+     block (3.5rem / 4rem), so pull up with a negative top margin. */
+  .worth-blocks > .intro-attached {
+    margin-top: -1.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--color-border);
+  }
+  @media (min-width: 768px) {
+    .worth-blocks > .intro-attached {
+      margin-top: -2rem;
+    }
   }
   .worth-blocks > [data-chip] {
     margin-block-end: 0.75rem !important;
