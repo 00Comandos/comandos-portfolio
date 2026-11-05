@@ -47,7 +47,12 @@ export function extractCaseStudyImages(cs: CaseStudyContent): Extract<
 
   for (const block of cs.worth.blocks) {
     if (block.kind === "image") push(block.image);
-    else if (block.kind === "before-after") {
+    else if (block.kind === "compare") {
+      push(block.before);
+      push(block.after);
+    } else if (block.kind === "capture-sequence") {
+      block.frames.forEach((f) => push(f.image));
+    } else if (block.kind === "before-after") {
       push(block.before);
       push(block.after);
     } else if (block.kind === "responsive-media") {

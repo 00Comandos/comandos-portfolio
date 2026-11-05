@@ -2,7 +2,7 @@
 import type { ChecklistItem } from "~/data/case-studies/types";
 import Scene from "~/components/case-study/Scene.astro";
 
-type Props = { items: readonly ChecklistItem[]; layout?: "cards" | "rings" | "chart" };
+type Props = { items: readonly ChecklistItem[]; layout?: "cards" | "rings" | "chart" | "quotes" };
 const { items, layout } = Astro.props;
 
 // Items carrying quotes (`sub`) are research sources — rendered
@@ -41,12 +41,16 @@ const chart = isRatio
         n: r!.n,
         d: r!.d,
         pct: Math.round((r!.n / r!.d) * 100),
+        val: `${r!.n}/${r!.d}`,
+        heroMain: String(r!.n),
+        heroSub: `/${r!.d}`,
+        heroText: r!.text.replace(/^users\s+/i, "").replace(/^./, (c) => c.toUpperCase()),
         name: r!.text.replace(/^users\s+/i, "").replace(/^./, (c) => c.toUpperCase()),
         body: r!.body,
       }))
       .sort((a, b) => b.pct - a.pct)
   : [];
-const sameD = chart.every((r) => r.d === chart[0]?.d);
+const sameD = isRatio && chart.every((r) => r.d === chart[0]?.d);
 
 // "69% less pages:" / "-37% support tickets:" lists → metric rows: the
 // figure set large and thin, the rest of the label + body beside it.
@@ -63,6 +67,29 @@ const metrics =
       })
     : [];
 const isMetric = metrics.length > 1 && metrics.every(Boolean);
+// Percent metrics can feed the chart too ("57% of users …").
+if (layout === "chart" && !isRatio && isMetric && metrics.every((m) => m!.fig.endsWith("%"))) {
+  metrics
+    .map((m) => {
+      const pct = parseFloat(m!.fig.replace(/[^\d.]/g, ""));
+      return {
+        n: pct,
+        d: 100,
+        pct,
+        val: m!.fig,
+        heroMain: m!.fig.replace("%", ""),
+        heroSub: "%",
+        heroText: m!.label.replace(/^./, (c) => c.toLowerCase()),
+        name: m!.label.replace(/^of users\s+/i, "").replace(/^./, (c) => c.toUpperCase()),
+        body: m!.body,
+      };
+    })
+    .sort((a, b) => b.pct - a.pct)
+    .forEach((r) => chart.push(r));
+}
+const isChart = layout === "chart" && chart.length > 0;
+// Quotes: every item is a user's words — label + body read as one quote.
+const quotes = items.map((i) => (i.body ? `${i.label.replace(/:\s*$/, "")} ${i.body}` : i.label));
 
 // Label + body lists (2–4 items: "Activation: How do we…") → pillars: a
 // hairline grid with mono numbers, the label as title, the body beneath.
@@ -92,15 +119,23 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
         }))}
       />
     </div>
-  ) : isRatio && layout === "chart" ? (
+  ) : layout === "quotes" && !isResearch ? (
+    <ul class="qt not-prose">
+      {quotes.map((q) => (
+        <li>
+          <q>{q.replace(/^[“"]|[”"]$/g, "")}</q>
+        </li>
+      ))}
+    </ul>
+  ) : isChart ? (
     <div class="ratio ratio--chart not-prose" data-ratio>
       {listTitle && <p class="checklist-title">{listTitle}</p>}
       <p class="ch-hero">
         <span class="ch-hero-n">
-          {chart[0].n}
-          <span class="ch-hero-d">/{chart[0].d}</span>
+          {chart[0].heroMain}
+          <span class="ch-hero-d">{chart[0].heroSub}</span>
         </span>
-        <span class="ch-hero-text">{chart[0].name}</span>
+        <span class="ch-hero-text">{chart[0].heroText}</span>
       </p>
       <div class="ch">
         <div class="ch-axis" aria-hidden="true">
@@ -119,7 +154,7 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
                 <span class="ch-bar" />
               </span>
               <span class="ch-val">
-                {r.n}/{r.d}
+                {r.val}
                 <span class="sr-only"> ({r.pct}%)</span>
               </span>
               {r.body && <span class="ch-tip">{r.body}</span>}
@@ -392,6 +427,36 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
   .ratio--cards .person {
     width: 1.1rem;
     height: 1.8rem;
+  }
+
+  /* Quotes: users' own words as pull quotes on hairlines. */
+  .qt {
+    border-top: 1px solid var(--color-ink);
+  }
+  .qt li {
+    padding-block: 1.1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .qt li:last-child {
+    border-bottom: 0;
+  }
+  .qt q {
+    display: block;
+    position: relative;
+    padding-left: 1.4rem;
+    font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--color-ink);
+    quotes: none;
+  }
+  .qt q::before {
+    content: "“";
+    position: absolute;
+    left: 0;
+    top: 0;
+    line-height: 1.2;
+    color: var(--color-accent);
   }
 
   /* Chart: Amplitude-style insight — hero finding, then a horizontal bar
@@ -764,6 +829,21 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
     line-height: 1.3;
     letter-spacing: -0.025em;
     color: var(--color-ink);
+  }
+
+  /* No closing hairline on any list: the next divider (or the section's
+     own space) closes it — otherwise two lines stack up. */
+  .ratio-row:last-child,
+  .metric-row:last-child,
+  .ch-row:last-child,
+  .pillar:last-child,
+  .checklist li:last-child {
+    border-bottom: 0;
+  }
+  @media (min-width: 640px) {
+    .pillars-grid.n-4 .pillar:nth-last-child(-n + 2) {
+      border-bottom: 0;
+    }
   }
 
   /* ---------- Plain list ---------- */

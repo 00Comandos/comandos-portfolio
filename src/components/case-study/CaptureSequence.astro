@@ -1,0 +1,169 @@
+---
+/*
+ * Screen-by-screen capture flow (e.g. liveness check). All frames sit in one
+ * row; while the row is on screen they're highlighted in turn — the active
+ * frame at full strength, a thin progress bar filling under it, the others
+ * dimmed. Without JS / under reduced motion: a plain static row.
+ */
+import { Image } from "astro:assets";
+import type { ContentImage } from "~/data/case-studies/types";
+
+type Props = {
+  frames: readonly { image: Extract<ContentImage, { kind: "image" }>; label: string }[];
+};
+const { frames } = Astro.props;
+const n = frames.length;
+const pad = (i: number) => String(i).padStart(2, "0");
+---
+
+<ol class="cap not-prose" data-cap-seq style={`--n: ${n};`} data-n={n}>
+  {
+    frames.map((f, i) => (
+      <li class="cap-frame" data-frame={i}>
+        <Image
+          class="cap-img"
+          src={f.image.image}
+          alt={f.image.alt}
+          widths={[240, 434]}
+          sizes={`(min-width: 768px) ${Math.round(786 / n)}px, ${n === 4 ? "46vw" : "30vw"}`}
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="cap-bar" aria-hidden="true">
+          <span />
+        </span>
+        <p class="cap-label">
+          <span class="mono cap-num">{pad(i + 1)}</span>
+          <span>{f.label}</span>
+        </p>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .cap {
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (max-width: 639px) {
+    .cap[data-n="4"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 1.75rem;
+    }
+    .cap {
+      gap: 0.75rem;
+    }
+  }
+  .cap-frame {
+    min-width: 0;
+    transition: opacity 0.5s ease;
+  }
+  .cap :global(.cap-img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .cap-bar {
+    display: block;
+    height: 1px;
+    margin-top: 0.875rem;
+    background: var(--color-border);
+    overflow: hidden;
+  }
+  .cap-bar > span {
+    display: block;
+    height: 100%;
+    background: var(--color-ink);
+    transform: scaleX(var(--p, 0));
+    transform-origin: left;
+  }
+  .cap-label {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.625rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--color-ink-soft);
+  }
+  .cap-num {
+    flex: none;
+    font-size: 0.6875rem;
+    line-height: 1.75;
+    color: var(--color-muted);
+  }
+
+  /* Live state (JS on, motion allowed). */
+  .cap.is-live .cap-frame {
+    opacity: 0.45;
+  }
+  .cap.is-live .cap-frame.is-active {
+    opacity: 1;
+  }
+  .cap.is-live .cap-frame.is-active .cap-bar > span {
+    background: var(--color-accent);
+  }
+  .cap.is-live .cap-frame.is-active .cap-num {
+    color: var(--color-ink);
+  }
+</style>
+
+<script>
+  const DUR = 2200;
+  const HOLD = 1200;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll<HTMLElement>("[data-cap-seq]").forEach((root) => {
+    if (reduce || !("IntersectionObserver" in window)) return;
+    const frames = Array.from(root.querySelectorAll<HTMLElement>("[data-frame]"));
+    const bars = frames.map((f) => f.querySelector<HTMLElement>(".cap-bar > span"));
+    const n = frames.length;
+    let active = 0;
+    let elapsed = 0;
+    let last = 0;
+    let visible = false;
+    let raf = 0;
+
+    const render = () => {
+      frames.forEach((f, i) => {
+        f.classList.toggle("is-active", i === active);
+        f.classList.toggle("is-done", i < active);
+        const p = i < active ? 1 : i === active ? Math.min(elapsed / DUR, 1) : 0;
+        bars[i]?.style.setProperty("--p", String(p));
+      });
+    };
+
+    const tick = (now: number) => {
+      if (!visible) return;
+      elapsed += now - last;
+      last = now;
+      // The last frame holds a beat once filled, then the run restarts.
+      const limit = active === n - 1 ? DUR + HOLD : DUR;
+      if (elapsed >= limit) {
+        elapsed = 0;
+        active = (active + 1) % n;
+      }
+      render();
+      raf = requestAnimationFrame(tick);
+    };
+
+    root.classList.add("is-live");
+    render();
+    new IntersectionObserver(
+      (entries) => {
+        const v = entries.some((e) => e.isIntersecting);
+        if (v === visible) return;
+        visible = v;
+        cancelAnimationFrame(raf);
+        if (visible) {
+          last = performance.now();
+          raf = requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.35 },
+    ).observe(root);
+  });
+</script>

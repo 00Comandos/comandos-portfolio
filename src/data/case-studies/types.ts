@@ -112,7 +112,7 @@ export type AdventureBlock =
   /** "8/10 users …" rows: `cards` = side-by-side stat cards with people,
       `rings` = columns of progress rings, `chart` = analytics-style bar
       chart (Amplitude/Mixpanel insight) led by the top finding. */
-  | { kind: "checklist"; items: readonly ChecklistItem[]; layout?: "cards" | "rings" | "chart" }
+  | { kind: "checklist"; items: readonly ChecklistItem[]; layout?: "cards" | "rings" | "chart" | "quotes" }
   | { kind: "image"; image: ContentImage; rounded?: boolean }
   | { kind: "video"; video: ContentVideo; rounded?: boolean }
   | { kind: "divider"; variant?: "hatched" | "line" }
@@ -178,6 +178,8 @@ export type AdventureBlock =
       /** Either a rich StatIllustration scene or an Iconify name (e.g. "lucide:scan-face"). */
       scene?: IllustrationScene;
       icon?: string;
+      /** Bespoke animated drawing instead of an icon/scene. */
+      art?: "facescan";
       heading: string;
       body?: string;
     }
@@ -233,6 +235,20 @@ export type WorthBlock =
       before: ContentImage;
       after: ContentImage;
       impact: string;
+    }
+  /** Draggable before/after compare: the two halves stacked, a range handle
+      reveals one over the other. Both images should share one canvas size. */
+  | {
+      kind: "compare";
+      before: Extract<ContentImage, { kind: "image" }>;
+      after: Extract<ContentImage, { kind: "image" }>;
+      label?: string;
+    }
+  /** Screen-by-screen capture flow: frames highlighted in turn while in view.
+      `label` is the short on-screen prompt shown under each frame. */
+  | {
+      kind: "capture-sequence";
+      frames: readonly { image: Extract<ContentImage, { kind: "image" }>; label: string }[];
     }
   | {
       kind: "chip";

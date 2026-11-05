@@ -6,6 +6,7 @@ import Divider from "~/components/case-study/Divider.astro";
 import Checklist from "~/components/case-study/Checklist.astro";
 import Scene from "~/components/case-study/Scene.astro";
 import CardStack from "~/components/case-study/CardStack.astro";
+import FaceScanArt from "~/components/case-study/FaceScanArt.astro";
 import FeatureGrid from "~/components/case-study/FeatureGrid.astro";
 import TwoColMedia from "~/components/case-study/TwoColMedia.astro";
 import ResponsiveMedia from "~/components/case-study/ResponsiveMedia.astro";
@@ -144,7 +145,9 @@ const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-
           if (block.kind === "illustrated-heading") {
             return (
               <div data-adventure-stat data-in-view="false">
-                {block.icon ? (
+                {block.art === "facescan" ? (
+                  <FaceScanArt />
+                ) : block.icon ? (
                   <AnimatedIcon name={block.icon} motion={motionFor(block.icon)} />
                 ) : block.scene ? (
                   <div class="stat inline-block">

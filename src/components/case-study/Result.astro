@@ -144,6 +144,11 @@ const cardCols =
     padding: 1.25rem 0 2rem;
     border-bottom: 1px solid var(--color-border);
   }
+  /* Last cell of each grid: no closing line — the cards' own top border
+     (or the next section) follows, so two lines would stack on phones. */
+  .res-cell:last-child {
+    border-bottom: 0;
+  }
   @media (min-width: 768px) {
     .res-cell {
       padding: 1.25rem 1.5rem 0.75rem;

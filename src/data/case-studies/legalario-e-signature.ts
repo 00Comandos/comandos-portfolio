@@ -61,33 +61,100 @@ const testingImage: ContentImage = {
   alt: "End-to-end testing — desktop identity picker and 30+ facial recognition models with fraud detection",
 };
 
-// ———— Worth: before/after composites ————
-const signedBeforeAfter: ContentImage = {
+// ———— Worth: before/after compares (halves cut from the old composites) ————
+type Img = Extract<ContentImage, { kind: "image" }>;
+const signedBefore: Img = {
   kind: "image",
-  image: img("Legalario-signedDocument-BeforeAfter-2048x1275.webp"),
-  alt: "Signed document before-after — legacy preview screen vs. new success confirmation with Legalario product card",
+  image: img("legalario-signed-document-before-982x1100.webp"),
+  alt: "Signed document, first version — legacy completion screen: an 'Importante' note and a grey '¡Tu proceso de firma está completo!' box above the document preview",
 };
-const biometricBeforeAfter: ContentImage = {
+const signedAfter: Img = {
   kind: "image",
-  image: img("Legalario-biometricVerification-BeforeAfter-2048x1275.webp"),
-  alt: "Biometric verification before-after — basic camera step vs. guided face framing with clear feedback",
+  image: img("legalario-signed-document-after-982x1100.webp"),
+  alt: "Signed document, new version — green success banner 'Has firmado tus documentos correctamente', a Legalario product card and the signed contract below",
 };
-const instructionsBeforeAfter: ContentImage = {
+const biometricBefore: Img = {
   kind: "image",
-  image: img("Legalario-Instructions-BeforeAfter-2048x1275.webp"),
-  alt: "Signing instructions before-after — dense legacy instructions vs. illustrated user-friendly identity capture",
+  image: img("legalario-biometric-verification-before-982x1100.webp"),
+  alt: "Biometric verification, first version — basic camera step with a stepper bar and a plain face oval over the live selfie",
+};
+const biometricAfter: Img = {
+  kind: "image",
+  image: img("legalario-biometric-verification-after-982x1100.webp"),
+  alt: "Biometric verification, new version — guided face framing with an 'Ajusta tu cara aquí' prompt and a progress ring around the selfie oval",
+};
+const instructionsBefore: Img = {
+  kind: "image",
+  image: img("legalario-instructions-before-982x1100.webp"),
+  alt: "Signing instructions, first version — dense text screen 'Información sobre la captura de la identificación' with three small rules for the ID photo",
+};
+const instructionsAfter: Img = {
+  kind: "image",
+  image: img("legalario-instructions-after-982x1100.webp"),
+  alt: "Signing instructions, new version — illustrated identity capture: a photo of a person photographing their ID and the line 'Toma la foto del frente de tu identificación'",
 };
 
-const passiveLifeImage: ContentImage = {
-  kind: "image",
-  image: img("legalario-passive-life-detection-2048x1027.webp"),
-  alt: "Passive life detection — four selfie frames capturing natural body movements to prove liveness",
-};
-const textToSpeechImage: ContentImage = {
-  kind: "image",
-  image: img("legalario-text-to-speech-2048x1108.webp"),
-  alt: "Proof of life with text-to-speech — three selfie frames prompting the user to read a phrase aloud",
-};
+// ———— Worth: capture sequences (frames cut from the old strips) ————
+const passiveLifeFrames: { image: Img; label: string }[] = [
+  {
+    label: "Fit your face inside the silhouette",
+    image: {
+      kind: "image",
+      image: img("legalario-passive-life-frame-1-434x947.webp"),
+      alt: "Passive life detection, step 1 — selfie oval with the prompt 'Ajusta tu cara dentro de la silueta'",
+    },
+  },
+  {
+    label: "Hold this position",
+    image: {
+      kind: "image",
+      image: img("legalario-passive-life-frame-2-434x947.webp"),
+      alt: "Passive life detection, step 2 — selfie oval with the prompt 'Mantén esta posición' and the progress ring advancing",
+    },
+  },
+  {
+    label: "Move closer",
+    image: {
+      kind: "image",
+      image: img("legalario-passive-life-frame-3-433x947.webp"),
+      alt: "Passive life detection, step 3 — selfie oval with the prompt 'Acércate más'",
+    },
+  },
+  {
+    label: "Hold this position",
+    image: {
+      kind: "image",
+      image: img("legalario-passive-life-frame-4-434x947.webp"),
+      alt: "Passive life detection, step 4 — face closer to the camera, prompt 'Mantén esta posición'",
+    },
+  },
+];
+const textToSpeechFrames: { image: Img; label: string }[] = [
+  {
+    label: "Press the button and follow the instructions",
+    image: {
+      kind: "image",
+      image: img("legalario-text-to-speech-frame-1-435x949.webp"),
+      alt: "Proof of life with text-to-speech, step 1 — selfie oval with the prompt 'Presiona el botón y sigue las instrucciones' and a record button",
+    },
+  },
+  {
+    label: "Read the phrase aloud",
+    image: {
+      kind: "image",
+      image: img("legalario-text-to-speech-frame-2-435x949.webp"),
+      alt: "Proof of life with text-to-speech, step 2 — recording: 'Lee fuerte y claro' and the phrase 'Hola soy María Guzmán' with a 00:10 timer",
+    },
+  },
+  {
+    label: "Processing",
+    image: {
+      kind: "image",
+      image: img("legalario-text-to-speech-frame-3-434x949.webp"),
+      alt: "Proof of life with text-to-speech, step 3 — the same phrase on screen with a blue ring and a 'Procesando' button",
+    },
+  },
+];
 
 // ———— Result charts ————
 const completionRateChart: ContentImage = {
@@ -191,44 +258,24 @@ export const legalarioESignature: CaseStudyContent = {
         desktop: legacyDesktop,
         mobile: [legacyMobile01, legacyMobile02, legacyMobile03],
       },
+      { kind: "heading", heading: "Net Promoter Score" },
       {
-        kind: "illustrated-groups",
-        groups: [
-          {
-            icon: "lucide:gauge",
-            heading: "Net Promoter Score",
-            items: [
-              {
-                label: "57% of users",
-                body:
-                  "indicated that their low-end phones do not have support.",
-              },
-              {
-                label: "26% rate the document",
-                body: "signing service with 3 stars.",
-              },
-              {
-                label: "10% of users",
-                body:
-                  "do not understand how to start signing from the invitation email.",
-              },
-            ],
-          },
-          {
-            icon: "lucide:messages-square",
-            heading: "Interview with users",
-            items: [
-              { label: "I don't feel comfortable signing any documents." },
-              {
-                label: "Is it legal",
-                body: "to sign documents electronically?",
-              },
-              {
-                label: "I have large-scale hiring processes",
-                body: "How can I protect myself against identity fraud?",
-              },
-            ],
-          },
+        kind: "checklist",
+        layout: "chart",
+        items: [
+          { label: "57% of users", body: "indicated that their low-end phones do not have support." },
+          { label: "26% rate the document", body: "signing service with 3 stars." },
+          { label: "10% of users", body: "do not understand how to start signing from the invitation email." },
+        ],
+      },
+      { kind: "heading", heading: "Interview with users" },
+      {
+        kind: "checklist",
+        layout: "quotes",
+        items: [
+          { label: "I don't feel comfortable signing any documents." },
+          { label: "Is it legal", body: "to sign documents electronically?" },
+          { label: "I have large-scale hiring processes.", body: "How can I protect myself against identity fraud?" },
         ],
       },
       { kind: "divider" },
@@ -247,7 +294,7 @@ export const legalarioESignature: CaseStudyContent = {
       { kind: "divider" },
       {
         kind: "illustrated-heading",
-        icon: "lucide:scan-face",
+        art: "facescan",
         heading: "Testing the entire product before the first deployment",
       },
       { kind: "image", image: testingImage },
@@ -270,23 +317,23 @@ export const legalarioESignature: CaseStudyContent = {
   worth: {
     blocks: [
       { kind: "big-heading", heading: "Signed Document" },
-      { kind: "image", image: signedBeforeAfter },
+      { kind: "compare", before: signedBefore, after: signedAfter, label: "signed document" },
       { kind: "divider" },
       { kind: "big-heading", heading: "Biometric Verification" },
-      { kind: "image", image: biometricBeforeAfter },
+      { kind: "compare", before: biometricBefore, after: biometricAfter, label: "biometric verification" },
       { kind: "divider" },
       { kind: "big-heading", heading: "Instructions for signing documents" },
-      { kind: "image", image: instructionsBeforeAfter },
+      { kind: "compare", before: instructionsBefore, after: instructionsAfter, label: "signing instructions" },
       { kind: "divider" },
       {
         kind: "intro",
         heading: "We implement Passive Life Detection.",
         body: "Only body movements are necessary.",
       },
-      { kind: "image", image: passiveLifeImage },
+      { kind: "capture-sequence", frames: passiveLifeFrames },
       { kind: "divider" },
       { kind: "big-heading", heading: "Proof of Life: Text to Speech" },
-      { kind: "image", image: textToSpeechImage },
+      { kind: "capture-sequence", frames: textToSpeechFrames },
       { kind: "text", text: "New service implemented." },
     ],
   },

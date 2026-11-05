@@ -8,11 +8,13 @@ import ImageGrid from "~/components/case-study/ImageGrid.astro";
 import ResponsiveMedia from "~/components/case-study/ResponsiveMedia.astro";
 import Scene from "~/components/case-study/Scene.astro";
 import BleedVideo from "~/components/case-study/BleedVideo.astro";
+import BeforeAfterSlider from "~/components/case-study/BeforeAfterSlider.astro";
+import CaptureSequence from "~/components/case-study/CaptureSequence.astro";
 import type { CaseStudyContent, WorthBlock } from "~/data/case-studies/types";
 
 type Props = { content: CaseStudyContent["worth"] };
 const { content } = Astro.props;
-const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-media", "two-col-media", "before-after", "scene", "bleed-video"];
+const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-media", "two-col-media", "before-after", "scene", "bleed-video", "compare", "capture-sequence"];
 
 // `bleed-video` blocks break out of the case-study column: split the block
 // list into column segments and full-width bands (no 100vw math, so no
@@ -130,6 +132,12 @@ const endsWithBleed = segments[segments.length - 1]?.kind === "bleed";
                 </div>
               </div>
             );
+          }
+          if (block.kind === "compare") {
+            return <BeforeAfterSlider before={block.before} after={block.after} label={block.label} />;
+          }
+          if (block.kind === "capture-sequence") {
+            return <CaptureSequence frames={block.frames} />;
           }
           if (block.kind === "scene") {
             return <Scene label={block.label} heading={block.heading} body={block.body} beats={block.beats} />;
