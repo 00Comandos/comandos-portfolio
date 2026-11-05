@@ -88,10 +88,9 @@ export const truoraTruConnect: CaseStudyContent = {
     height: 32,
   },
   hero: {
-    image: heroImage,
-    // Contained and centred; the screenshot is cropped on the right/bottom,
-    // so those edges fade into the image's own green band.
-    backdrop: { color: "rgb(19 212 124)", fade: true },
+    image: challengeImage,
+    // The complete dashboard, centred as a card on Truora's green band.
+    backdrop: { color: "rgb(19 212 124)", card: true },
     intro:
       "Truora TruConnect is a tool that, integrated with the most used messaging chat in the world (WhatsApp), allows you to create conversations with chatbots for the processes you want.\n\nCreating automated onboardings, reactivating users and improving the entire acquisition funnel by including biometric verification services is no longer impossible.",
   },
@@ -110,7 +109,7 @@ export const truoraTruConnect: CaseStudyContent = {
       { label: "1 product designer", badge: "by Comandos" },
       { label: "2 Customer Experience" },
     ],
-    image: challengeImage,
+    image: heroImage,
   },
   adventure: {
     heading: "Where do we stand?",

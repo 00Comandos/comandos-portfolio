@@ -345,6 +345,8 @@ export type CaseStudyContent = {
       /** Soft-fade the image's right and bottom edges into the band
           (for screenshots cropped on those sides, shown centred). */
       fade?: boolean;
+      /** Complete screenshot shown as a centred card (padding + shadow). */
+      card?: boolean;
     };
     /** Multi-paragraph body; split by \n\n. */
     intro: string;
