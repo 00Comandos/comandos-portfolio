@@ -89,7 +89,7 @@ export const projects: readonly Project[] = [
   {
     slug: "truora-report",
     brand: "Truora",
-    title: "Truora Background Check Report Case Study: -50% Reading Time",
+    title: "Truora Background Check Report Case Study: -50% Reading\u00a0Time",
     description:
       "Design case study for Truora's background check PDF report. Redesigned for non-technical users. Results: -50% reading time, +85% satisfaction.",
     impact: "-50% reading time",
@@ -183,7 +183,7 @@ export const projects: readonly Project[] = [
   {
     slug: "mipos-restaurant-pos",
     brand: "mipOS Restaurants",
-    title: "mipOS Restaurant POS: 70% Conversion Rate",
+    title: "mipOS Restaurant POS: 70% Conversion\u00a0Rate",
     description:
       "POS system design for the next generation of restaurants. Modern point-of-sale supporting legacy operating systems.",
     impact: "50.25% new clients",

@@ -87,6 +87,13 @@ const t = ui[Astro.props.lang];
     color: var(--color-ink);
     text-wrap: balance;
   }
+  /* Narrow phones: balance splits "hand-offs" at its hyphen; pretty only
+     lifts the orphaned "juniors." */
+  @media (max-width: 413px) {
+    .studio-title {
+      text-wrap: pretty;
+    }
+  }
 
   .studio-intro {
     margin-top: 2.5rem;
