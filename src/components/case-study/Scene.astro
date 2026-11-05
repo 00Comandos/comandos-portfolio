@@ -70,12 +70,14 @@ const total = pad(beats.length);
               )}
             </div>
             <div class="scene-cap">
-              <p class="scene-step">
-                <span class="mono">
-                  {pad(i + 1)} / {total} — {b.label}
-                </span>
-                {b.impact && <span class="hl">{b.impact}</span>}
-              </p>
+              {b.media && (
+                <p class="scene-step">
+                  <span class="mono">
+                    {pad(i + 1)} / {total} — {b.label}
+                  </span>
+                  {b.impact && <span class="hl">{b.impact}</span>}
+                </p>
+              )}
               <p class="scene-cap-text">{b.caption}</p>
             </div>
           </li>
@@ -160,6 +162,10 @@ const total = pad(beats.length);
     gap: 1.25rem;
   }
   .scene-beat.is-quotes .scene-cap {
+    margin-top: 0;
+  }
+  /* Quote beats carry no step label: the caption itself leads. */
+  .scene-beat.is-quotes .scene-cap-text {
     margin-top: 0;
   }
   .scene-quotes {
