@@ -1,6 +1,7 @@
 ---
 import type { ChecklistItem } from "~/data/case-studies/types";
 import Scene from "~/components/case-study/Scene.astro";
+import PillarArt from "~/components/case-study/PillarArt.astro";
 
 type Props = { items: readonly ChecklistItem[]; layout?: "cards" | "rings" | "chart" | "quotes" };
 const { items, layout } = Astro.props;
@@ -100,8 +101,8 @@ const stripColon = (s: string) => s.replace(/\s*:\s*$/, "");
 // Same rule as above: a lowercase body is the rest of the label's sentence.
 const pillars = rows.map((r) =>
   r.body && /^[a-z]/.test(r.body)
-    ? { title: `${stripColon(r.label)} ${r.body}`, body: undefined }
-    : { title: stripColon(r.label), body: r.body },
+    ? { title: `${stripColon(r.label)} ${r.body}`, body: undefined, art: r.art }
+    : { title: stripColon(r.label), body: r.body, art: r.art },
 );
 // Questions get the large setting only when every body is one.
 const allQuestions = pillars.every((p) => !p.body || /\?\s*$/.test(p.body)) && pillars.some((p) => p.body);
@@ -240,6 +241,7 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
       <ol class:list={["pillars-grid", `n-${rows.length}`]}>
         {pillars.map((pl, i) => (
           <li class="pillar">
+            {pl.art && <PillarArt kind={pl.art} />}
             <span class="pillar-num mono">{String(i + 1).padStart(2, "0")}</span>
             <h4 class="pillar-title">{pl.title}</h4>
             {pl.body && <p class:list={["pillar-body", { "is-question": allQuestions }]}>{pl.body}</p>}

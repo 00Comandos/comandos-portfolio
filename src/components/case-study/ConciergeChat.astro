@@ -1,0 +1,222 @@
+---
+/**
+ * Concierge conversation card: a light chat surface (hairline border,
+ * xs radius) with a "<name>" header + online dot, each topic arriving as an
+ * incoming message one after another once the card is in view.
+ * Without JS / under reduced motion every message is shown at once.
+ */
+type Props = {
+  /** Lead-in line shown beside/above the card ("Karta Concierge helps you with:"). */
+  heading: string;
+  /** Name in the chat header ("Karta Concierge"). */
+  title: string;
+  /** Small mono channel tag in the header ("WhatsApp"). */
+  channel?: string;
+  items: readonly string[];
+};
+const { heading, title, channel, items } = Astro.props;
+---
+
+<div class="cc">
+  <p class="cc-heading display-serif">{heading}</p>
+
+  <div class="cc-card" data-cc>
+    <div class="cc-head">
+      <span class="cc-avatar" aria-hidden="true">{title.charAt(0)}</span>
+      <span class="cc-name">
+        {title}
+        <span class="cc-dot" aria-hidden="true"></span>
+      </span>
+      {channel && <span class="cc-channel mono">{channel}</span>}
+    </div>
+
+    <div class="cc-body">
+    <ul class="cc-thread" aria-label={heading}>
+      {
+        items.map((t) => (
+          <li class="cc-msg">
+            {t}
+          </li>
+        ))
+      }
+    </ul>
+    <div class="cc-typing" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STEP = 650;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll<HTMLElement>("[data-cc]").forEach((card) => {
+    if (reduce) return;
+    const msgs = Array.from(card.querySelectorAll<HTMLElement>(".cc-msg"));
+    card.setAttribute("data-armed", "");
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        obs.disconnect();
+        card.setAttribute("data-typing", "");
+        msgs.forEach((m, i) => {
+          window.setTimeout(() => {
+            m.setAttribute("data-in", "");
+            if (i === msgs.length - 1) card.removeAttribute("data-typing");
+          }, 350 + i * STEP);
+        });
+      },
+      { threshold: 0.35 },
+    );
+    obs.observe(card);
+  });
+</script>
+
+<style>
+  .cc {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 900px) {
+    .cc {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 28rem);
+      gap: 2.5rem;
+      align-items: center;
+    }
+  }
+  .cc-heading {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--color-ink);
+  }
+  @media (min-width: 768px) {
+    .cc-heading {
+      font-size: 1.75rem;
+    }
+  }
+
+  .cc-card {
+    background: var(--color-paper);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+    overflow: hidden;
+  }
+  .cc-head {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .cc-avatar {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--radius-full);
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    flex: none;
+  }
+  .cc-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+  .cc-dot {
+    width: 0.4375rem;
+    height: 0.4375rem;
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+  }
+  .cc-channel {
+    margin-left: auto;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .cc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: var(--color-paper-soft);
+  }
+  .cc-thread {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .cc-msg {
+    max-width: 85%;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem 0.75rem 0.75rem 0.1875rem;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: var(--color-ink-soft);
+  }
+
+  .cc-typing {
+    display: none;
+    align-items: center;
+    gap: 0.25rem;
+    width: max-content;
+    height: 1.75rem;
+    padding: 0 0.75rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem 0.75rem 0.75rem 0.1875rem;
+  }
+  .cc-typing i {
+    width: 0.3125rem;
+    height: 0.3125rem;
+    border-radius: var(--radius-full);
+    background: var(--color-muted-soft);
+    animation: cc-blink 1s infinite ease-in-out;
+  }
+  .cc-typing i:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .cc-typing i:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  /* Armed by JS (motion allowed): messages wait, then arrive in turn. */
+  .cc-card[data-armed] .cc-msg {
+    opacity: 0;
+    transform: translateY(0.5rem);
+    transition:
+      opacity 0.35s ease,
+      transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .cc-card[data-armed] .cc-msg[data-in] {
+    opacity: 1;
+    transform: none;
+  }
+  .cc-card[data-typing] .cc-typing {
+    display: flex;
+  }
+  @keyframes cc-blink {
+    0%,
+    80%,
+    100% {
+      opacity: 0.35;
+    }
+    40% {
+      opacity: 1;
+    }
+  }
+</style>

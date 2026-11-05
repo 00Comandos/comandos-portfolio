@@ -1,0 +1,154 @@
+---
+/*
+ * Small isometric drawing for a pillar (Checklist pillars layout). Same
+ * vocabulary as the /method principles and the services "reality today"
+ * drawings: 1px ink strokes, paper/grey faces, one teal accent.
+ *   ready — a watch and a phone standing by, the watch lit (always ready)
+ *   race  — three lanes, the teal runner pulling ahead
+ *   refer — one block passing the word to three others
+ */
+import { box, fitViewBox, pt, type IsoGrid } from "~/components/services/iso";
+
+type Props = { kind: "ready" | "race" | "refer" };
+const { kind } = Astro.props;
+
+type Kind = "solid" | "acc" | "ghost" | "floor";
+type Piece = { i: number; j: number; z0: number; z1: number; di?: number; dj?: number; gap?: number; kind: Kind; cls?: string };
+const g: IsoGrid = { ox: 100, oy: 40, w: 18, h: 10.4 };
+
+const scenes: Record<Props["kind"], Piece[]> = {
+  // Phone slab (tall, thin) + watch (small, lit) on a shared base.
+  ready: [
+    { i: 0, j: 0, z0: 0, z1: 4, di: 3, dj: 2, gap: 0, kind: "floor" },
+    { i: 0.4, j: 0.5, z0: 4, z1: 34, di: 0.35, dj: 1.1, gap: 0, kind: "solid" },
+    { i: 1.7, j: 0.6, z0: 4, z1: 16, di: 0.8, dj: 0.8, gap: 0, kind: "acc", cls: "pa-bob" },
+  ],
+  // Three lanes; runners at different distances, the teal one ahead.
+  race: [
+    { i: 0, j: 0, z0: 0, z1: 2, di: 4.2, dj: 0.7, gap: 0, kind: "floor" },
+    { i: 0, j: 0.9, z0: 0, z1: 2, di: 4.2, dj: 0.7, gap: 0, kind: "floor" },
+    { i: 0, j: 1.8, z0: 0, z1: 2, di: 4.2, dj: 0.7, gap: 0, kind: "floor" },
+    { i: 1.6, j: 0.1, z0: 2, z1: 12, di: 0.5, dj: 0.5, gap: 0, kind: "solid" },
+    { i: 3.3, j: 1.0, z0: 2, z1: 12, di: 0.5, dj: 0.5, gap: 0, kind: "acc", cls: "pa-run" },
+    { i: 2.2, j: 1.9, z0: 2, z1: 12, di: 0.5, dj: 0.5, gap: 0, kind: "solid" },
+  ],
+  // One teal block, three listeners around it.
+  refer: [
+    { i: 1.2, j: 1.2, z0: 0, z1: 18, kind: "acc" },
+    { i: -0.2, j: 2.6, z0: 0, z1: 8, kind: "solid", cls: "pa-hear" },
+    { i: 2.6, j: -0.2, z0: 0, z1: 8, kind: "solid", cls: "pa-hear" },
+    { i: 2.9, j: 2.9, z0: 0, z1: 8, kind: "solid", cls: "pa-hear" },
+  ],
+};
+
+const pieces = [...scenes[kind]].sort(
+  (a, b) => (a.kind === "floor" ? -1 : 0) - (b.kind === "floor" ? -1 : 0) || a.i + a.j - (b.i + b.j) || a.z0 - b.z0,
+);
+const shapes = pieces.map((p) => ({ ...p, ...box(g, p.i, p.j, p.z1, { di: p.di, dj: p.dj, z0: p.z0, gap: p.gap }) }));
+
+// "Word of mouth" lines from the teal block's top to each listener (refer).
+const links =
+  kind === "refer"
+    ? [
+        [0.3, 3.1, 8],
+        [3.1, 0.3, 8],
+        [3.4, 3.4, 8],
+      ].map(([i, j, z]) => [pt(g, 1.7, 1.7, 18), pt(g, i, j, z)])
+    : [];
+const view = fitViewBox(shapes.flatMap((s) => [s.top, s.left, s.right]));
+---
+
+<svg class={`pa pa-${kind}`} viewBox={view} aria-hidden="true" focusable="false">
+  {
+    shapes.map((s, k) => (
+      <g class:list={["pa-shape", `is-${s.kind}`, s.cls]} style={`--k:${k}`}>
+        {s.kind !== "floor" && <path d={s.left} class="f-left" />}
+        {s.kind !== "floor" && <path d={s.right} class="f-right" />}
+        <path d={s.top} class="f-top" />
+      </g>
+    ))
+  }
+  {links.map(([a, b], k) => <path class="pa-link" d={`M${a.join(" ")} L${b.join(" ")}`} style={`--k:${k}`} />)}
+</svg>
+
+<style>
+  .pa {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 7.5rem;
+    margin: 0.5rem 0 1.75rem;
+    overflow: visible;
+  }
+  .pa path {
+    vector-effect: non-scaling-stroke;
+    stroke-width: 1;
+    stroke-linejoin: round;
+  }
+  .pa-shape path {
+    stroke: var(--color-ink);
+  }
+  .f-top {
+    fill: var(--color-paper);
+  }
+  .f-left {
+    fill: var(--color-paper-soft);
+  }
+  .f-right {
+    fill: var(--color-grey);
+  }
+  .is-acc .f-top {
+    fill: color-mix(in srgb, var(--color-accent) 30%, var(--color-paper));
+  }
+  .is-acc .f-left,
+  .is-acc .f-right {
+    fill: color-mix(in srgb, var(--color-accent) 12%, var(--color-paper));
+  }
+  .is-floor path {
+    fill: transparent;
+    stroke: var(--color-muted-soft);
+    stroke-dasharray: 2 3;
+  }
+  .pa-link {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-dasharray: 3 3;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pa-bob {
+      animation: pa-bob 3.2s ease-in-out infinite;
+    }
+    .pa-run {
+      animation: pa-run 2.8s ease-in-out infinite;
+    }
+    .pa-hear {
+      animation: pa-hear 2.4s ease-in-out infinite;
+      animation-delay: calc(var(--k) * 0.25s);
+    }
+    .pa-link {
+      animation: pa-flow 1.2s linear infinite;
+    }
+  }
+  @keyframes pa-bob {
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+  /* The leader edges forward along its lane and back. */
+  @keyframes pa-run {
+    50% {
+      transform: translate(6px, 3.5px);
+    }
+  }
+  @keyframes pa-hear {
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+  @keyframes pa-flow {
+    to {
+      stroke-dashoffset: -12;
+    }
+  }
+</style>

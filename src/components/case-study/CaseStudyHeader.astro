@@ -31,8 +31,10 @@ const meta = [
   { label: "Impact", value: impact },
 ].filter((m) => m.value && m.value.trim().length > 0);
 
-// Full-bleed hero: edge to edge at every width.
-const heroSizes = "100vw";
+// Full-bleed hero: edge to edge at every width — unless the case opts into a
+// contained hero on a colour band (`hero.backdrop`).
+const backdrop = content.hero.backdrop;
+const heroSizes = backdrop ? "(min-width: 1024px) 860px, 100vw" : "100vw";
 const heroWidths = [640, 960, 1280, 1600, 1920, 2560];
 ---
 
@@ -87,7 +89,12 @@ const heroWidths = [640, 960, 1280, 1600, 1920, 2560];
     </dl>
   </div>
 
-  <div class="csh-media">
+  <div
+    class:list={["csh-media", backdrop && "csh-media--band"]}
+    style={backdrop
+      ? `--csh-band: ${backdrop.color}; --csh-band-until: ${backdrop.until ?? 100}%;`
+      : undefined}
+  >
     {
       content.hero.mobileStack && content.hero.mobileStack.length > 0 ? (
         <>
@@ -303,6 +310,27 @@ const heroWidths = [640, 960, 1280, 1600, 1920, 2560];
     display: block;
     width: 100%;
     border-radius: 0 !important;
+  }
+
+  /* Contained hero on a full-width colour band (opt-in via hero.backdrop).
+     The band is the image's own backdrop colour, so the picture's coloured
+     area runs edge to edge; it stops at --csh-band-until (% of the image
+     height), letting whatever sits below (the phone) rest on the page. */
+  .csh-media--band {
+    position: relative;
+    isolation: isolate;
+  }
+  .csh-media--band::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: var(--csh-band-until);
+    background: var(--csh-band);
+    z-index: -1;
+  }
+  .csh-media--band .csh-frame {
+    max-width: 860px;
+    margin-inline: auto;
   }
 
   .csh-intro {

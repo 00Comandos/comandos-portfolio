@@ -119,14 +119,17 @@ export const stadioAppleWatch: CaseStudyContent = {
         items: [
           {
             label: "Product adoption:",
+            art: "ready",
             body: "Apple Watch or Strava, always ready to run.",
           },
           {
             label: "Retention:",
+            art: "race",
             body: "How to make the race more exciting?",
           },
           {
             label: "Refer:",
+            art: "refer",
             body:
               "Make a memorable race so that runners would recommend it by word of mouth.",
           },

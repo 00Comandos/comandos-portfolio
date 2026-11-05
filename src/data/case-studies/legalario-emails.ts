@@ -6,7 +6,7 @@ const img = (filename: string) => requireImage(legalarioEmailsImages, filename);
 // ———— Hero ————
 const heroImage: ContentImage = {
   kind: "image",
-  image: img("legalario-first-email.webp"),
+  image: img("legalario-first-email-band-crop.webp"),
   alt: "Legalario redesigned transactional email opened on an iPhone — Mexican SMB signer previewing the list of documents to sign with the multilingual notification template, the NPS-saving customer-success rewrite that replaced the legacy one-size-fits-all mail across LATAM",
 };
 
@@ -89,6 +89,9 @@ export const legalarioEmails: CaseStudyContent = {
   },
   hero: {
     image: heroImage,
+    // Coral sampled from the image backdrop; the band ends where the card
+    // does (974 / 1370 px) so the phone's lower half sits on the page.
+    backdrop: { color: "rgb(255 123 106)", until: 100 },
     intro:
       "The first impression of a digital product influences 70% of the likelihood that the user will use your product.\n\nWe serve a wide range of users—from fast food chain waiters to investors who use Legalario—so invitations to sign are not always understood or trigger the main JTBD: signing documents.",
   },
@@ -203,8 +206,11 @@ export const legalarioEmails: CaseStudyContent = {
         body:
           "The restructuring allowed us to identify frequent use cases in certain user segments that were not covered.",
       },
-      { kind: "divider", variant: "line" },
-      { kind: "big-heading", heading: "Mass signing of documents" },
+      {
+        kind: "intro",
+        label: "New",
+        heading: "Mass signing of documents",
+      },
       { kind: "image", image: massSigningImage },
       { kind: "divider" },
       {

@@ -55,7 +55,7 @@ const task03Image: ContentImage = {
 const report01Image: ContentImage = {
   kind: "image",
   image: img("Yaydoo-porCobrar-report01-comandos-studio-resultOfUsability-test.png"),
-  alt: "Yaydoo porCobrar usability-test report — Portal de clientes mission 2: 80% direct success, 0% indirect, 20% rebote and a 31.6-second average completion time across four users",
+  alt: "Yaydoo porCobrar usability-test report — Portal de clientes mission 2: 80% direct success, 0% indirect, 20% rebote and a 31.6-second average completion time across five users",
   caption:
     "Mission-2 usability test — 80% direct success on the invoice-registration task.",
 };
@@ -184,9 +184,26 @@ export const yaydooPorCobrar: CaseStudyContent = {
         text:
           "Metrics can mislead you if you don't know how to approach them or focus on vanity metrics. Some of our key metrics are measured by tasks we needed the user to do to discover the Aha moment in less than 30 days. Here is a random example from the extensive iteration process of this product.",
       },
-      { kind: "image", image: report01Image },
-      { kind: "image", image: report02Image },
-      { kind: "image", image: report03Image },
+      {
+        kind: "scene",
+        beats: [
+          {
+            media: report01Image,
+            label: "Results",
+            caption: "Mission 2 usability test: 80% direct success, 20% bounce.",
+          },
+          {
+            media: report02Image,
+            label: "Time vs. errors",
+            caption: "Manual receipt upload: time to complete against errors per attempt.",
+          },
+          {
+            media: report03Image,
+            label: "Ease of use",
+            caption: "Rated from 1 to 5, ease of use averaged 3.8.",
+          },
+        ],
+      },
     ],
   },
   worth: {

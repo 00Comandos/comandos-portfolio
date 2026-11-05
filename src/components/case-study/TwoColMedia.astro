@@ -6,31 +6,56 @@ type Props = { items: readonly TwoColMediaItem[] };
 const { items } = Astro.props;
 ---
 
-<div class="grid gap-10 md:grid-cols-2 md:gap-6">
+<!-- ≥768: each column is a 3-row subgrid (title · media · detail), so a
+     title that wraps to two lines doesn't push its image below its
+     neighbour's — images and captions share one baseline. -->
+<div class="tcm grid gap-10 md:grid-cols-2 md:gap-x-6 md:gap-y-4">
   {
     items.map((it) => (
-      <div>
-        {it.kicker && (
-          <p class="text-[0.9375rem] font-medium tracking-[-0.01em] text-[color:var(--color-ink)]">
-            {it.kicker}
+      <div class="tcm-item">
+        <div>
+          {it.kicker && (
+            <p class="text-[0.9375rem] font-medium tracking-[-0.01em] text-[color:var(--color-ink)]">
+              {it.kicker}
+            </p>
+          )}
+          <p class:list={[
+            it.kicker ? "mt-1" : "",
+            "text-[1.0625rem] leading-[1.4] text-[color:var(--color-ink)]",
+          ]}>
+            {it.title}
           </p>
-        )}
-        <p class:list={[
-          it.kicker ? "mt-1" : "",
-          "text-[1.0625rem] leading-[1.4] text-[color:var(--color-ink)]",
-        ]}>
-          {it.title}
-        </p>
-        <div class="mt-4">
+        </div>
+        <div class="tcm-media">
           <ContentImage image={it.image} />
         </div>
-        {it.detail && (
-          <p class="mt-4 text-[0.95rem] leading-[1.6] text-[color:var(--color-ink-soft)]">
+        {it.detail ? (
+          <p class="tcm-detail text-[0.95rem] leading-[1.6] text-[color:var(--color-ink-soft)]">
             {!it.kicker && <span aria-hidden="true" class="mr-1.5">✓</span>}
             {it.detail}
           </p>
-        )}
+        ) : <span />}
       </div>
     ))
   }
 </div>
+
+<style>
+  .tcm-item {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+  }
+  @media (min-width: 768px) {
+    .tcm-item {
+      grid-row: span 3;
+      grid-template-rows: subgrid;
+      gap: normal; /* subgrid → parent row gap */
+    }
+  }
+  /* One shared frame for both media so mismatched sources still line up. */
+  .tcm-media :global(img) {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+</style>

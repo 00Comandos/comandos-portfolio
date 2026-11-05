@@ -47,6 +47,9 @@ export type ContentVideo = {
 
 export type ChecklistItem = {
   label: string;
+  /** Pillars layout only: small isometric drawing above the item
+      (same vocabulary as the /method principles). */
+  art?: "ready" | "race" | "refer";
   body?: string;
   sub?: readonly string[];
 };
@@ -263,6 +266,23 @@ export type WorthBlock =
     }
   | { kind: "divider"; variant?: "hatched" | "line" }
   | { kind: "text"; text: string }
+  /** Section heading + intro with one labelled sub-point directly beneath
+      (label · title · optional lead + list rendered as hairline chips). */
+  | {
+      kind: "lead-point";
+      heading: string;
+      body?: string;
+      point: { label: string; heading: string; lead?: string; items?: readonly string[] };
+    }
+  /** Concierge conversation card: each topic arrives as an incoming
+      message once in view (all shown under reduced motion). */
+  | {
+      kind: "concierge-chat";
+      heading: string;
+      title: string;
+      channel?: string;
+      items: readonly string[];
+    }
   | {
       kind: "checklist";
       heading?: string;
@@ -301,6 +321,12 @@ export type CaseStudyContent = {
     image?: ContentImage;
     /** Optional stack of images rendered on mobile instead of `image`. */
     mobileStack?: readonly ContentImage[];
+    /** Opt-in contained hero: the image renders narrower and centred on a
+        full-width band of `color` (the image's own backdrop colour), so its
+        coloured area runs edge to edge. `until` = how far down the image the
+        band reaches, in % of the image height (default 100) — anything
+        below (e.g. a phone poking out of the card) sits on the page. */
+    backdrop?: { color: string; until?: number };
     /** Multi-paragraph body; split by \n\n. */
     intro: string;
     /** Optional bulleted list rendered beneath the intro paragraphs. */

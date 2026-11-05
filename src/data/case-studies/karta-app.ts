@@ -247,26 +247,6 @@ export const kartaApp: CaseStudyContent = {
           },
         ],
       },
-      {
-        kind: "checklist",
-        items: [
-          {
-            label: "A Card Optimized for Travel",
-            body:
-              "We will not compete for everyday use. We will be the best option when travelling, where users are willing to pay a little more for unforgettable memories when paying with Karta.",
-          },
-          {
-            label: "An Assistant that can do almost anything on WhatsApp",
-            body:
-              "80% of users have had an unpleasant experience when calling a call center and waiting for hours. Karta automates everything from transaction reviews to VAT refunds in Europe and more.",
-          },
-          {
-            label: "Ease of paying off credit card debt",
-            body:
-              "92% of users have liquidity in investment accounts (e.g. Webull or Interaudi), not just at their bank.",
-          },
-        ],
-      },
       { kind: "divider" },
       {
         kind: "callout",
@@ -317,18 +297,22 @@ export const kartaApp: CaseStudyContent = {
       { kind: "divider" },
       { kind: "chip", icon: "making-top", label: "Making top" },
       {
-        kind: "intro",
+        kind: "lead-point",
         heading: "A Bank App For People Without Borders",
         body:
           "For high-net-worth clients, we raise the standard. The past is history; the future is Karta.",
-      },
-      { kind: "divider", variant: "line" },
-      {
-        kind: "intro",
-        label: "Facilitate Payments",
-        heading: "Up To 5 Ways to Pay your Credit Card Bill",
-        body:
-          "Payment methods: US bank account, Brazilian bank account, Pix, investments, and cryptocurrencies.",
+        point: {
+          label: "Facilitate Payments",
+          heading: "Up To 5 Ways to Pay your Credit Card Bill",
+          lead: "Payment methods:",
+          items: [
+            "US bank account",
+            "Brazilian bank account",
+            "Pix",
+            "Investments",
+            "Cryptocurrencies",
+          ],
+        },
       },
       {
         kind: "image-grid",
@@ -380,14 +364,16 @@ export const kartaApp: CaseStudyContent = {
         mobile: [conciergeFlightMobile, conciergeTransactionsMobile],
       },
       {
-        kind: "checklist",
+        kind: "concierge-chat",
         heading: "Karta Concierge helps you with:",
+        title: "Karta Concierge",
+        channel: "WhatsApp",
         items: [
-          { label: "Transaction disputes." },
-          { label: "Your Priority Pass code." },
-          { label: "Sending money to another Karta user." },
-          { label: "Cut-off date and outstanding balance." },
-          { label: "Among others." },
+          "Transaction disputes.",
+          "Your Priority Pass code.",
+          "Sending money to another Karta user.",
+          "Cut-off date and outstanding balance.",
+          "Among others.",
         ],
       },
       { kind: "divider" },
