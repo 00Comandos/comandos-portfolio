@@ -9,7 +9,9 @@
  */
 import { box, fitViewBox, pt, type IsoGrid } from "~/components/services/iso";
 
-type Props = { kind: "ready" | "race" | "refer" };
+import type { PillarArtKind } from "~/data/case-studies/types";
+
+type Props = { kind: PillarArtKind };
 const { kind } = Astro.props;
 
 type Kind = "solid" | "acc" | "ghost" | "floor";
@@ -32,6 +34,40 @@ const scenes: Record<Props["kind"], Piece[]> = {
     { i: 3.3, j: 1.0, z0: 2, z1: 12, di: 0.5, dj: 0.5, gap: 0, kind: "acc", cls: "pa-run" },
     { i: 2.2, j: 1.9, z0: 2, z1: 12, di: 0.5, dj: 0.5, gap: 0, kind: "solid" },
   ],
+  // A flat card on a travel case: built for the trip.
+  travel: [
+    { i: 0, j: 0, z0: 0, z1: 2, di: 3.2, dj: 2.2, gap: 0, kind: "floor" },
+    { i: 0.3, j: 0.4, z0: 0, z1: 20, di: 1.5, dj: 1.2, gap: 0, kind: "solid" },
+    { i: 0.75, j: 0.65, z0: 20, z1: 24, di: 0.6, dj: 0.7, gap: 0, kind: "solid" },
+    { i: 1.9, j: 0.9, z0: 6, z1: 8, di: 1.3, dj: 0.85, gap: 0, kind: "acc", cls: "pa-bob" },
+  ],
+  // A phone base with two message tiles floating above it.
+  assistant: [
+    { i: 0, j: 0, z0: 0, z1: 4, di: 1.4, dj: 2.6, gap: 0, kind: "solid" },
+    { i: 0.15, j: 0.2, z0: 14, z1: 17, di: 1.1, dj: 1.3, gap: 0, kind: "solid", cls: "pa-hear" },
+    { i: 0.15, j: 1.2, z0: 26, z1: 29, di: 1.1, dj: 1.2, gap: 0, kind: "acc", cls: "pa-bob" },
+  ],
+  // Three sources (bank, investments, wallet) feeding one teal balance.
+  liquidity: [
+    { i: 0, j: 0, z0: 0, z1: 8, di: 0.8, dj: 0.8, gap: 0, kind: "solid" },
+    { i: 0, j: 1.2, z0: 0, z1: 14, di: 0.8, dj: 0.8, gap: 0, kind: "solid" },
+    { i: 0, j: 2.4, z0: 0, z1: 6, di: 0.8, dj: 0.8, gap: 0, kind: "solid" },
+    { i: 2.4, j: 1.0, z0: 0, z1: 22, di: 1.2, dj: 1.2, gap: 0, kind: "acc" },
+  ],
+  // Message tiles rising along a thread, the latest one teal.
+  conversation: [
+    { i: 0, j: 0, z0: 0, z1: 2, di: 3.6, dj: 1.4, gap: 0, kind: "floor" },
+    { i: 0.2, j: 0.25, z0: 6, z1: 10, di: 1.1, dj: 0.9, gap: 0, kind: "solid", cls: "pa-hear" },
+    { i: 1.35, j: 0.25, z0: 16, z1: 20, di: 0.9, dj: 0.9, gap: 0, kind: "solid", cls: "pa-hear" },
+    { i: 2.4, j: 0.25, z0: 27, z1: 31, di: 1, dj: 0.9, gap: 0, kind: "acc", cls: "pa-bob" },
+  ],
+  // Many contacts narrowing, layer by layer, to one teal lead on top.
+  leads: [
+    { i: 0, j: 0, z0: 0, z1: 4, di: 2.8, dj: 2.8, gap: 0, kind: "solid" },
+    { i: 0.4, j: 0.4, z0: 10, z1: 14, di: 2, dj: 2, gap: 0, kind: "solid" },
+    { i: 0.8, j: 0.8, z0: 20, z1: 24, di: 1.2, dj: 1.2, gap: 0, kind: "solid" },
+    { i: 1.1, j: 1.1, z0: 30, z1: 38, di: 0.6, dj: 0.6, gap: 0, kind: "acc", cls: "pa-bob" },
+  ],
   // One teal block, three listeners around it.
   refer: [
     { i: 1.2, j: 1.2, z0: 0, z1: 18, kind: "acc" },
@@ -41,14 +77,24 @@ const scenes: Record<Props["kind"], Piece[]> = {
   ],
 };
 
-const pieces = [...scenes[kind]].sort(
-  (a, b) => (a.kind === "floor" ? -1 : 0) - (b.kind === "floor" ? -1 : 0) || a.i + a.j - (b.i + b.j) || a.z0 - b.z0,
+// Painter's order: floor first, then back-to-front; stacked scenes (the
+// funnel) go strictly bottom-to-top instead.
+const pieces = [...scenes[kind]].sort((a, b) =>
+  kind === "leads"
+    ? a.z0 - b.z0
+    : (a.kind === "floor" ? -1 : 0) - (b.kind === "floor" ? -1 : 0) || a.i + a.j - (b.i + b.j) || a.z0 - b.z0,
 );
 const shapes = pieces.map((p) => ({ ...p, ...box(g, p.i, p.j, p.z1, { di: p.di, dj: p.dj, z0: p.z0, gap: p.gap }) }));
 
 // "Word of mouth" lines from the teal block's top to each listener (refer).
 const links =
-  kind === "refer"
+  kind === "liquidity"
+    ? [
+        [0.4, 0.4, 8],
+        [0.4, 1.6, 14],
+        [0.4, 2.8, 6],
+      ].map(([i, j, z]) => [pt(g, i, j, z), pt(g, 3.0, 1.6, 22)])
+    : kind === "refer"
     ? [
         [0.3, 3.1, 8],
         [3.1, 0.3, 8],

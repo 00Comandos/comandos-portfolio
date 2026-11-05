@@ -48,9 +48,11 @@ const endsWithBleed = segments[segments.length - 1]?.kind === "bleed";
         seg.items.map(({ block, bi }) => {
           if (block.kind === "divider") {
             // A divider straight after media is redundant — the image already
-            // closes the section.
+            // closes the section — but keep the section break's air so the
+            // next heading doesn't sit tight under the picture.
             const prev = content.blocks[bi - 1];
-            if (prev && AFTER_MEDIA_SKIP.includes(prev.kind)) return null;
+            if (prev && AFTER_MEDIA_SKIP.includes(prev.kind))
+              return <div class="h-8 md:h-12" aria-hidden="true" />;
             return <Divider variant={block.variant ?? "hatched"} />;
           }
           if (block.kind === "chip") {
@@ -91,18 +93,12 @@ const endsWithBleed = segments[segments.length - 1]?.kind === "bleed";
                     {block.body}
                   </p>
                 )}
-                <div class="lead-point mt-10 md:mt-12 border-t border-[color:var(--color-border)] pt-6 md:pt-8">
-                  <p class="text-[0.9375rem] font-medium tracking-[-0.01em] text-[color:var(--color-muted)]">
-                    {pt.label}
-                  </p>
-                  <h4 class="mt-2 text-[1.375rem] md:text-[1.625rem] font-medium tracking-[-0.03em] leading-[1.2] text-[color:var(--color-ink)]">
+                {/* Fused: the point continues the heading's paragraph — no
+                    divider, no extra label; just the sentence and its chips. */}
+                <div class="lead-point mt-6">
+                  <p class="text-[1.0625rem] font-medium tracking-[-0.015em] leading-[1.4] text-[color:var(--color-ink)]">
                     {pt.heading}
-                  </h4>
-                  {pt.lead && (
-                    <p class="mt-3 text-[1rem] leading-[1.7] text-[color:var(--color-ink-soft)]">
-                      {pt.lead}
-                    </p>
-                  )}
+                  </p>
                   {pt.items && pt.items.length > 0 && (
                     <ul class="mt-4 flex flex-wrap gap-2" role="list">
                       {pt.items.map((t, i) => (
@@ -123,6 +119,7 @@ const endsWithBleed = segments[segments.length - 1]?.kind === "bleed";
                 heading={block.heading}
                 title={block.title}
                 channel={block.channel}
+                backdrop={block.backdrop}
                 items={block.items}
               />
             );

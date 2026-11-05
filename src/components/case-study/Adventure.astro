@@ -58,9 +58,11 @@ const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-
         content.blocks.map((block, bi) => {
           if (block.kind === "divider") {
             // A divider straight after media is redundant — the image already
-            // closes the section.
+            // closes the section — but keep the section break's air so the
+            // next heading doesn't sit tight under the picture.
             const prev = content.blocks[bi - 1];
-            if (prev && AFTER_MEDIA_SKIP.includes(prev.kind)) return null;
+            if (prev && AFTER_MEDIA_SKIP.includes(prev.kind))
+              return <div class="h-8 md:h-12" aria-hidden="true" />;
             return <Divider variant={block.variant ?? "hatched"} />;
           }
           if (block.kind === "spacer") {

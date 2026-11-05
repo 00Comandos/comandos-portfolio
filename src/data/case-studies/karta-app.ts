@@ -1,5 +1,5 @@
 import type { CaseStudyContent, ContentImage } from "./types";
-import { kartaImages, requireImage } from "~/lib/image-map";
+import { kartaCardImages, kartaImages, requireImage } from "~/lib/image-map";
 
 const img = (filename: string) => requireImage(kartaImages, filename);
 
@@ -143,28 +143,22 @@ const conciergeTransactionsMobile: ContentImage = {
   image: img("Karta-Concierge-Transactions-768x845.webp"),
   alt: "Karta AI Concierge over WhatsApp — explaining a charge and confirming a payment",
 };
+// Atmospheric backdrop for the concierge chat (from the Karta Card brand shoot).
+const conciergeBackdrop: ContentImage = {
+  kind: "image",
+  image: requireImage(kartaCardImages, "karta-capadocia-741x1024.webp"),
+  alt: "Couple watching hot-air balloons rise over Cappadocia at sunrise",
+};
 
-// ———— Lifestyle closing grid ————
+// ———— Lifestyle closing collage ————
+// One composed image (PIL mosaic of the four "using the card" photos) — a
+// 3-column desktop mosaic and a stacked 2-column mobile variant.
 
-const usingCard01: ContentImage = {
+const closingCollage: ContentImage = {
   kind: "image",
-  image: img("karta-using-credit-card-01-768x892.webp"),
-  alt: "Karta premium metal credit card in hand during a travel moment abroad — the weighty black card the LATAM premium tier ships to every Karta customer as a status signal on trips, hotels and restaurants outside Mexico",
-};
-const usingCard02: ContentImage = {
-  kind: "image",
-  image: img("karta-using-credit-card-02-768x892.webp"),
-  alt: "Karta black metal credit card photographed at a world-class travel destination — the premium card LATAM high-net-worth customers carry across Europe, the US and Asia for Priority Pass lounge access and no-FX-fee spending",
-};
-const usingCard03: ContentImage = {
-  kind: "image",
-  image: img("karta-using-credit-card-03-768x1020.webp"),
-  alt: "Karta welcome kit — card box unboxing with accessories",
-};
-const usingCard04: ContentImage = {
-  kind: "image",
-  image: img("karta-using-credit-card-04-768x1020.webp"),
-  alt: "Karta black metal credit card close-up on a neutral surface",
+  image: img("karta-app-closing-collage-2400x1200.webp"),
+  mobileImage: img("karta-app-closing-collage-mobile-1200x1876.webp"),
+  alt: "Collage of the Karta black metal Visa card in real life — held up in front of Cinderella Castle at Disney with pink flowers in the foreground, unboxed from its black welcome kit ('Anywhere, Anytime', 'Metal looks good on you!') on a wooden table, a close-up of the Karta logo on the matte card resting on a laptop, and several Karta cards spread on a dark table next to a fortune cookie",
 };
 
 export const kartaApp: CaseStudyContent = {
@@ -226,6 +220,7 @@ export const kartaApp: CaseStudyContent = {
           {
             number: "1",
             label: "Business",
+            art: "travel",
             title: "A card optimized for travel",
             body:
               "We will not compete for everyday use. We will be the best option when travelling, where users are willing to pay a little more for unforgettable memories when paying with Karta.",
@@ -233,6 +228,7 @@ export const kartaApp: CaseStudyContent = {
           {
             number: "2",
             label: "User Research",
+            art: "assistant",
             title: "An assistant that can do almost anything on WhatsApp",
             body:
               "80% of users have had an unpleasant experience when calling a call center and waiting for hours. Karta automates everything from transaction reviews to VAT refunds in Europe and more.",
@@ -241,6 +237,7 @@ export const kartaApp: CaseStudyContent = {
           {
             number: "3",
             label: "Product",
+            art: "liquidity",
             title: "Ease of paying off credit card debt",
             body:
               "92% of users have liquidity in investment accounts (e.g. Webull or Interaudi), not just at their bank.",
@@ -368,6 +365,7 @@ export const kartaApp: CaseStudyContent = {
         heading: "Karta Concierge helps you with:",
         title: "Karta Concierge",
         channel: "WhatsApp",
+        backdrop: conciergeBackdrop,
         items: [
           "Transaction disputes.",
           "Your Priority Pass code.",
@@ -381,11 +379,7 @@ export const kartaApp: CaseStudyContent = {
         kind: "big-heading",
         heading: "Designed For People Who Don't Stop At Limits Or Borders.",
       },
-      {
-        kind: "image-grid",
-        columns: 2,
-        images: [usingCard02, usingCard01, usingCard03, usingCard04],
-      },
+      { kind: "image", image: closingCollage },
     ],
   },
   result: {

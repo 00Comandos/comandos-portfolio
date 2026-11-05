@@ -45,11 +45,14 @@ export type ContentVideo = {
   durationSeconds: number;
 };
 
+/** Small isometric drawings available to pillars / feature-grid cells. */
+export type PillarArtKind = "ready" | "race" | "refer" | "travel" | "assistant" | "liquidity" | "conversation" | "leads";
+
 export type ChecklistItem = {
   label: string;
   /** Pillars layout only: small isometric drawing above the item
       (same vocabulary as the /method principles). */
-  art?: "ready" | "race" | "refer";
+  art?: PillarArtKind;
   body?: string;
   sub?: readonly string[];
 };
@@ -74,6 +77,8 @@ export type FeatureGridItem = {
   title: string;
   body: string;
   highlight?: boolean;
+  /** Optional isometric drawing above the cell (see PillarArt). */
+  art?: PillarArtKind;
 };
 
 export type StatAnimation = "spin" | "bob" | "shake";
@@ -281,6 +286,8 @@ export type WorthBlock =
       heading: string;
       title: string;
       channel?: string;
+      /** Optional photo the conversation floats over (decorative). */
+      backdrop?: ContentImage;
       items: readonly string[];
     }
   | {
