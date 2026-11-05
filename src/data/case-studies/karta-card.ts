@@ -107,23 +107,6 @@ const challengeProblem03: ContentImage = {
   alt: "Dancer under a burst of sparks — an extraordinary experience Karta helps create",
 };
 
-// ———— Insights ————
-const insightsDesktop: ContentImage = {
-  kind: "image",
-  image: card("Karta-Insights.webp"),
-  alt: "Conversations with users in 5 countries — metal card perception and no-annual-fee insights",
-};
-const insightsMobile01: ContentImage = {
-  kind: "image",
-  image: card("Karta-Insights-01-768x976.webp"),
-  alt: "User experience insight — 8 out of 10 users associate metal cards with more benefits",
-};
-const insightsMobile02: ContentImage = {
-  kind: "image",
-  image: card("Karta-Insights-02-768x976.webp"),
-  alt: "User experience insight — 10 out of 10 users perceive a card with no annual fee will not meet their needs",
-};
-
 // ———— Manifiesto ————
 const manifiestoImage: ContentImage = {
   kind: "image",
@@ -250,9 +233,12 @@ export const kartaCard: CaseStudyContent = {
         heading: "Conversations with users in 5 countries",
       },
       {
-        kind: "responsive-media",
-        desktop: insightsDesktop,
-        mobile: [insightsMobile01, insightsMobile02],
+        kind: "checklist",
+        layout: "cards",
+        items: [
+          { label: "8/10 users associate metal cards with more benefits than plastic cards." },
+          { label: "10/10 users perceive that a card with no annual fee will not meet their needs." },
+        ],
       },
       {
         kind: "checklist",
@@ -287,22 +273,41 @@ export const kartaCard: CaseStudyContent = {
           "Comandos did not participate in the initial proposal phase. We joined a few days later at the request of Karta's founders.",
       },
       {
-        kind: "image",
-        image: {
-          kind: "image",
-          image: card("karta-firstCards-01-2048x711.webp"),
-          mobileImage: card("karta-firstCards-01-mobile-737x1024.webp"),
-          alt: "Early Karta card design proposals — purple with green diamond, and green with subtle pattern",
-        },
-      },
-      {
-        kind: "image",
-        image: {
-          kind: "image",
-          image: card("karta-firstCard-02-2048x816.webp"),
-          mobileImage: card("karta-firstCard-02-mobile-760x1024.webp"),
-          alt: "Karta Ai.fred technology prototype — dark green metal card with generative line pattern",
-        },
+        kind: "card-stack",
+        cards: [
+          {
+            label: "Proposal · purple",
+            image: {
+              kind: "image",
+              image: card("karta-early-01-purple.webp"),
+              alt: "Early Karta card design proposal — purple with green diamond",
+            },
+          },
+          {
+            label: "Proposal · green",
+            image: {
+              kind: "image",
+              image: card("karta-early-02-green.webp"),
+              alt: "Early Karta card design proposal — green with subtle pattern",
+            },
+          },
+          {
+            label: "Ai.fred prototype · front",
+            image: {
+              kind: "image",
+              image: card("karta-early-03-aifred-front.webp"),
+              alt: "Karta Ai.fred technology prototype — front with generative line pattern",
+            },
+          },
+          {
+            label: "Ai.fred prototype · back",
+            image: {
+              kind: "image",
+              image: card("karta-early-04-aifred-back.webp"),
+              alt: "Karta Ai.fred technology prototype — back with card details and VISA Signature",
+            },
+          },
+        ],
       },
       { kind: "divider" },
       {

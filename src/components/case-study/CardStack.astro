@@ -1,0 +1,172 @@
+---
+/*
+ * Animated deck of design iterations (e.g. Karta's early card proposals).
+ * Cards sit stacked in perspective; the deck deals the next one to the
+ * front every few seconds once it is on screen. Labels underneath double
+ * as controls. Without JS / under reduced motion: a static row of cards.
+ */
+import { Image } from "astro:assets";
+import type { ContentImage } from "~/data/case-studies/types";
+
+type Props = { cards: readonly { image: Extract<ContentImage, { kind: "image" }>; label: string }[] };
+const { cards } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+
+<div class="deck not-prose" data-deck style={`--count: ${cards.length};`}>
+  <div class="deck-stage">
+    {
+      cards.map((c, i) => (
+        <figure class="deck-card" data-card={i} style={`--i: ${i};`}>
+          <Image
+            src={c.image.image}
+            alt={c.image.alt}
+            widths={[480, 760]}
+            sizes="(min-width: 900px) 420px, 70vw"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+      ))
+    }
+  </div>
+  <ol class="deck-labels">
+    {
+      cards.map((c, i) => (
+        <li>
+          <button type="button" class="deck-label" data-go={i} aria-pressed={i === 0 ? "true" : "false"}>
+            <span class="mono">{pad(i + 1)}</span>
+            {c.label}
+          </button>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll<HTMLElement>("[data-deck]").forEach((deck) => {
+    if (reduce) return;
+    const cards = Array.from(deck.querySelectorAll<HTMLElement>("[data-card]"));
+    const labels = Array.from(deck.querySelectorAll<HTMLButtonElement>("[data-go]"));
+    const n = cards.length;
+    let active = 0;
+    let timer = 0;
+    let visible = false;
+    let hover = false;
+
+    const render = () => {
+      cards.forEach((c, i) => c.style.setProperty("--pos", String((i - active + n) % n)));
+      labels.forEach((b, i) => b.setAttribute("aria-pressed", i === active ? "true" : "false"));
+    };
+    const go = (i: number) => {
+      active = (i + n) % n;
+      render();
+    };
+    const loop = () => {
+      window.clearInterval(timer);
+      if (visible && !hover) timer = window.setInterval(() => go(active + 1), 2600);
+    };
+
+    deck.setAttribute("data-live", "");
+    render();
+    labels.forEach((b) =>
+      b.addEventListener("click", () => {
+        go(Number(b.dataset.go));
+        loop();
+      }),
+    );
+    deck.addEventListener("mouseenter", () => ((hover = true), loop()));
+    deck.addEventListener("mouseleave", () => ((hover = false), loop()));
+    new IntersectionObserver(([e]) => ((visible = e.isIntersecting), loop()), { threshold: 0.4 }).observe(deck);
+  });
+</script>
+
+<style>
+  .deck {
+    padding: 1.5rem;
+    border-radius: var(--radius-xs);
+    background-color: var(--color-paper-soft);
+    background-image: radial-gradient(circle, rgb(6 6 6 / 0.08) 1px, transparent 1.2px);
+    background-size: 20px 20px;
+  }
+  @media (min-width: 768px) {
+    .deck {
+      padding: 2.5rem;
+    }
+  }
+
+  /* Static fallback: the cards in a wrapped row. */
+  .deck-stage {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .deck-card {
+    margin: 0;
+  }
+  .deck-card :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 18px 30px rgb(6 6 6 / 0.18));
+  }
+
+  /* Live deck: stacked in perspective, position-driven. */
+  .deck[data-live] .deck-stage {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    perspective: 1400px;
+  }
+  .deck[data-live] .deck-card {
+    --pos: 0;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(62%, 26rem);
+    z-index: calc(10 - var(--pos));
+    transform: translate(-50%, -38%) translateY(calc(var(--pos) * -11%)) scale(calc(1 - var(--pos) * 0.07));
+    opacity: calc(1 - var(--pos) * 0.28);
+    transition:
+      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.6s ease;
+  }
+
+  .deck-labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 1rem;
+  }
+  .deck-label {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    padding: 0.4rem 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 0.9375rem;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  .deck-label .mono {
+    font-size: 0.75rem;
+  }
+  .deck-label:hover,
+  .deck-label[aria-pressed="true"] {
+    color: var(--color-ink);
+  }
+  .deck-label[aria-pressed="true"] .mono {
+    color: var(--color-accent);
+  }
+  .deck:not([data-live]) .deck-label {
+    pointer-events: none;
+    color: var(--color-ink);
+  }
+</style>

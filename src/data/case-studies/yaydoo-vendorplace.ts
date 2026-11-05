@@ -51,7 +51,7 @@ const dashboardConfigImage: ContentImage = {
 const experiment01Image: ContentImage = {
   kind: "image",
   image: img("Yaydoo-Vendorplace-ExperimentResult-01-comandos-project.png"),
-  alt: "Yaydoo Vendorplace redesigned workspace — ¡Hey Antonia! dashboard with total por cobrar / por pagar, cuentas por cobrar and cuentas por pagar bar charts and freemium-upgrade banner",
+  alt: "Yaydoo Vendorplace desktop usability test, Mission 1 results — Prueba A vs Prueba B: direct success 85.7% vs 100%, miss clicks 8.3% vs 5%, bounce 14.3% vs 0%, mean duration 110 s vs 5.4 s, with the time distribution per participant",
 };
 
 const emailImage: ContentImage = {

@@ -5,6 +5,7 @@ import ContentVideo from "~/components/case-study/ContentVideo.astro";
 import Divider from "~/components/case-study/Divider.astro";
 import Checklist from "~/components/case-study/Checklist.astro";
 import Scene from "~/components/case-study/Scene.astro";
+import CardStack from "~/components/case-study/CardStack.astro";
 import FeatureGrid from "~/components/case-study/FeatureGrid.astro";
 import TwoColMedia from "~/components/case-study/TwoColMedia.astro";
 import ResponsiveMedia from "~/components/case-study/ResponsiveMedia.astro";
@@ -40,7 +41,7 @@ const renderProse = (body: string) =>
 
 type Props = { content: CaseStudyContent["adventure"] };
 const { content } = Astro.props as Props;
-const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-media", "two-col-media", "before-after", "scene"];
+const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-media", "two-col-media", "before-after", "scene", "card-stack"];
 ---
 
 <section id="adventure" class="pt-20 md:pt-28 pb-8 md:pb-10">
@@ -89,6 +90,9 @@ const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-
           }
           if (block.kind === "video") {
             return <ContentVideo video={block.video} rounded={block.rounded === true} />;
+          }
+          if (block.kind === "card-stack") {
+            return <CardStack cards={block.cards} />;
           }
           if (block.kind === "scene") {
             return <Scene label={block.label} heading={block.heading} body={block.body} beats={block.beats} />;
@@ -204,7 +208,7 @@ const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-
             );
           }
           if (block.kind === "checklist") {
-            return <Checklist items={block.items} />;
+            return <Checklist items={block.items} layout={block.layout} />;
           }
           if (block.kind === "step") {
             return (

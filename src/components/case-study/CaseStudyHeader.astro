@@ -292,9 +292,10 @@ const heroWidths = [640, 960, 1280, 1600, 1920, 2560];
       margin-top: 3rem;
     }
   }
+  /* No backdrop: transparent heroes (e.g. Karta's floating card) sit
+     straight on the page. */
   .csh-frame {
     overflow: hidden;
-    background: var(--color-grey);
   }
   /* Full-bleed: no radius, image fills the viewport width. */
   .csh-frame :global(img),

@@ -2,8 +2,8 @@
 import type { ChecklistItem } from "~/data/case-studies/types";
 import Scene from "~/components/case-study/Scene.astro";
 
-type Props = { items: readonly ChecklistItem[] };
-const { items } = Astro.props;
+type Props = { items: readonly ChecklistItem[]; layout?: "cards" };
+const { items, layout } = Astro.props;
 
 // Items carrying quotes (`sub`) are research sources — rendered
 // as a pinned scroll scene (same pattern as the iterations block): one beat
@@ -14,7 +14,12 @@ const isResearch = items.length > 0 && items.every((i) => i.sub && i.sub.length 
 // A leading body-less item followed by detailed ones acts as the list title
 // (e.g. "First Insights").
 const hasTitle = !isResearch && items.length > 1 && !items[0].body && items.slice(1).some((i) => i.body);
-const listTitle = hasTitle ? items[0].label : null;
+// …unless that leading line is itself a result ("+20 pilots in less than
+// 3 weeks.") — then it becomes the headline figure above the pillars.
+const LEAD = /^([+\-−]?\d[\d.,]*\s*(?:%|x|×|k)?)\s+(.+)$/;
+const leadMatch = hasTitle ? items[0].label.match(LEAD) : null;
+const lead = leadMatch ? { fig: leadMatch[1].replace(/\s+/g, ""), text: leadMatch[2] } : null;
+const listTitle = hasTitle && !lead ? items[0].label : null;
 const rows = hasTitle ? items.slice(1) : items;
 // "10/10 users" style rows → people pictogram (one figure per person).
 const RATIO = /^(\d+)\s*\/\s*(\d+)\s*(.*)$/;
@@ -37,11 +42,29 @@ const metrics =
   !isResearch && !isRatio
     ? rows.map((r) => {
         const m = r.label.match(METRIC);
-        return m ? { fig: m[1].replace(/\s+/g, ""), label: m[2], body: r.body } : null;
+        if (!m) return null;
+        // Lowercase body continues the label's sentence ("of users" + "indicated…").
+        const joins = !!r.body && /^[a-z]/.test(r.body);
+        const label = m[2].replace(/:\s*$/, "");
+        return { fig: m[1].replace(/\s+/g, ""), label: joins ? `${label} ${r.body}` : label, body: joins ? undefined : r.body };
       })
     : [];
 const isMetric = metrics.length > 1 && metrics.every(Boolean);
 
+// Label + body lists (2–4 items: "Activation: How do we…") → pillars: a
+// hairline grid with mono numbers, the label as title, the body beneath.
+// Bodies that are questions are set larger — they are the point.
+const isPillars =
+  !isResearch && !isRatio && !isMetric && rows.length >= 2 && rows.length <= 4 && rows.every((r) => r.body);
+const stripColon = (s: string) => s.replace(/\s*:\s*$/, "");
+// Same rule as above: a lowercase body is the rest of the label's sentence.
+const pillars = rows.map((r) =>
+  r.body && /^[a-z]/.test(r.body)
+    ? { title: `${stripColon(r.label)} ${r.body}`, body: undefined }
+    : { title: stripColon(r.label), body: r.body },
+);
+// Questions get the large setting only when every body is one.
+const allQuestions = pillars.every((p) => !p.body || /\?\s*$/.test(p.body)) && pillars.some((p) => p.body);
 const trimColon = (s: string) => s.replace(/:\s*$/, ".");
 ---
 
@@ -57,7 +80,7 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
       />
     </div>
   ) : isRatio ? (
-    <div class="ratio not-prose" data-ratio>
+    <div class:list={["ratio not-prose", { "ratio--cards": layout === "cards" }]} data-ratio>
       {listTitle && <p class="checklist-title">{listTitle}</p>}
       <ul class="ratio-list">
         {ratios.map((r) => (
@@ -98,6 +121,25 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
           </li>
         ))}
       </ul>
+    </div>
+  ) : isPillars ? (
+    <div class="pillars not-prose">
+      {listTitle && <p class="checklist-title">{listTitle}</p>}
+      {lead && (
+        <p class="pillars-lead">
+          <span class="metric-fig">{lead.fig}</span>
+          <span class="pillars-lead-text">{lead.text}</span>
+        </p>
+      )}
+      <ol class:list={["pillars-grid", `n-${rows.length}`]}>
+        {pillars.map((pl, i) => (
+          <li class="pillar">
+            <span class="pillar-num mono">{String(i + 1).padStart(2, "0")}</span>
+            <h4 class="pillar-title">{pl.title}</h4>
+            {pl.body && <p class:list={["pillar-body", { "is-question": allQuestions }]}>{pl.body}</p>}
+          </li>
+        ))}
+      </ol>
     </div>
   ) : (
     <div class="not-prose">
@@ -220,6 +262,56 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
     max-width: 38rem;
   }
 
+  /* Cards: side-by-side stat cards (number, sentence, 2×5 people). */
+  .ratio--cards .ratio-list {
+    display: grid;
+    gap: 1rem;
+    border-top: 0;
+  }
+  @media (min-width: 640px) {
+    .ratio--cards .ratio-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .ratio--cards .ratio-row {
+    grid-template-columns: 1fr;
+    grid-template-areas: "num" "text" "people";
+    align-content: start;
+    gap: 1.25rem;
+    padding: 1.75rem;
+    border: 0;
+    border-radius: var(--radius-xs);
+    background: var(--color-paper-soft);
+  }
+  @media (min-width: 900px) {
+    .ratio--cards .ratio-row {
+      grid-template-columns: 1fr;
+      grid-template-areas: "num" "text" "people";
+      padding: 2.25rem;
+    }
+  }
+  .ratio--cards .ratio-num span {
+    font-size: clamp(3rem, 5vw, 4.5rem);
+  }
+  .ratio--cards .ratio-text {
+    max-width: 22ch;
+  }
+  .ratio--cards .metric-label {
+    font-size: 1.375rem;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+  }
+  .ratio--cards .ratio-people {
+    display: grid;
+    grid-template-columns: repeat(5, max-content);
+    gap: 0.6rem 0.9rem;
+    margin-top: 0.5rem;
+  }
+  .ratio--cards .person {
+    width: 1.1rem;
+    height: 1.8rem;
+  }
+
   /* ---------- Metric rows ("69% less pages") ---------- */
   .metric-row {
     display: grid;
@@ -262,6 +354,84 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
     font-size: 1rem;
     line-height: 1.5;
     color: var(--color-muted);
+  }
+
+  /* ---------- Pillars (label + body lists) ---------- */
+  .pillars-lead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1rem;
+    margin-bottom: 1.75rem;
+  }
+  .pillars-lead-text {
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .pillars-grid {
+    display: grid;
+    border-top: 1px solid var(--color-ink);
+  }
+  @media (min-width: 640px) {
+    .pillars-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .pillars-grid.n-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .pillar {
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem 0 1.75rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  @media (min-width: 640px) {
+    .pillar {
+      padding: 1.25rem 1.25rem 1.75rem;
+      border-right: 1px solid var(--color-border);
+    }
+    .pillars-grid:not(.n-3) .pillar:nth-child(2n + 1),
+    .pillars-grid.n-3 .pillar:first-child {
+      padding-left: 0;
+    }
+    .pillars-grid:not(.n-3) .pillar:nth-child(2n),
+    .pillars-grid.n-3 .pillar:last-child {
+      border-right: 0;
+      padding-right: 0;
+    }
+    .pillars-grid.n-2 .pillar,
+    .pillars-grid.n-3 .pillar {
+      border-bottom: 0;
+    }
+  }
+  .pillar-num {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .pillar-title {
+    margin-top: 0.85rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+  .pillar-body {
+    margin-top: 0.6rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-muted);
+  }
+  .pillar-body.is-question {
+    margin-top: 1rem;
+    font-size: 1.25rem;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+    color: var(--color-ink);
   }
 
   /* ---------- Plain list ---------- */
