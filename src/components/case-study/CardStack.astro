@@ -109,7 +109,19 @@ const pad = (n: number) => String(n).padStart(2, "0");
     tabs.forEach((b) => b.addEventListener("click", () => go(Number(b.dataset.go))));
     deck.addEventListener("mouseenter", () => (hover = true));
     deck.addEventListener("mouseleave", () => (hover = false));
-    new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0.4 }).observe(deck);
+    let seen = false;
+    new IntersectionObserver(
+      ([e]) => {
+        visible = e.isIntersecting;
+        // First time on screen: deal the next card almost at once so the
+        // motion is noticed, then settle into the normal rhythm.
+        if (visible && !seen) {
+          seen = true;
+          elapsed = DUR - 700;
+        }
+      },
+      { threshold: 0.15 },
+    ).observe(deck);
     requestAnimationFrame(tick);
   });
 </script>

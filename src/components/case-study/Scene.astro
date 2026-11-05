@@ -10,8 +10,6 @@ type Props = {
 };
 const { label, heading, body, beats } = Astro.props;
 const unquote = (s: string) => s.replace(/^[“"]\s*|\s*[”"]$/g, "");
-const pad = (n: number) => String(n).padStart(2, "0");
-const total = pad(beats.length);
 ---
 
 <!--
@@ -72,9 +70,7 @@ const total = pad(beats.length);
             <div class="scene-cap">
               {b.media && (
                 <p class="scene-step">
-                  <span class="mono">
-                    {pad(i + 1)} / {total} — {b.label}
-                  </span>
+                  <span class="mono">{b.label}</span>
                   {b.impact && <span class="hl">{b.impact}</span>}
                 </p>
               )}
