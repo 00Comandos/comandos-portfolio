@@ -379,7 +379,7 @@ export const kartaApp: CaseStudyContent = {
         kind: "big-heading",
         heading: "Designed For People Who Don't Stop At Limits Or Borders.",
       },
-      { kind: "image", image: closingCollage },
+      { kind: "bleed-image", image: closingCollage },
     ],
   },
   result: {

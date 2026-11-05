@@ -90,8 +90,8 @@ export const truoraTruConnect: CaseStudyContent = {
   hero: {
     image: heroImage,
     // Contained (not full-bleed): the dashboard card read oversized edge
-    // to edge on desktop. The band is the page colour, so it's invisible.
-    backdrop: { color: "var(--color-paper)" },
+    // to edge on desktop. The band is the image's own green.
+    backdrop: { color: "rgb(19 212 124)" },
     intro:
       "Truora TruConnect is a tool that, integrated with the most used messaging chat in the world (WhatsApp), allows you to create conversations with chatbots for the processes you want.\n\nCreating automated onboardings, reactivating users and improving the entire acquisition funnel by including biometric verification services is no longer impossible.",
   },

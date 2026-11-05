@@ -22,24 +22,33 @@ const AFTER_MEDIA_SKIP: string[] = ["image", "video", "image-grid", "responsive-
 // scrollbar-width overflow and no offset from the ≥1200 left padding).
 type Segment =
   | { kind: "column"; items: { block: WorthBlock; bi: number }[] }
-  | { kind: "bleed"; block: Extract<WorthBlock, { kind: "bleed-video" }> };
+  | { kind: "bleed"; block: Extract<WorthBlock, { kind: "bleed-video" }> }
+  | { kind: "bleed-image"; block: Extract<WorthBlock, { kind: "bleed-image" }> };
 const segments: Segment[] = [];
 content.blocks.forEach((block, bi) => {
   if (block.kind === "bleed-video") {
     segments.push({ kind: "bleed", block });
     return;
   }
+  if (block.kind === "bleed-image") {
+    segments.push({ kind: "bleed-image", block });
+    return;
+  }
   const last = segments[segments.length - 1];
   if (last && last.kind === "column") last.items.push({ block, bi });
   else segments.push({ kind: "column", items: [{ block, bi }] });
 });
-const endsWithBleed = segments[segments.length - 1]?.kind === "bleed";
+const endsWithBleed = segments[segments.length - 1]?.kind !== "column";
 ---
 
 <section id="worth" class:list={[!endsWithBleed && "pb-10 md:pb-12"]}>
   {segments.map((seg) => seg.kind === "bleed" ? (
     <div class="worth-bleed">
       <BleedVideo video={seg.block.video} line={seg.block.line} />
+    </div>
+  ) : seg.kind === "bleed-image" ? (
+    <div class="worth-bleed worth-bleed-image">
+      <ContentImage image={seg.block.image} sizes="100vw" />
     </div>
   ) : (
   <div class="cs-body">
@@ -216,6 +225,12 @@ const endsWithBleed = segments[segments.length - 1]?.kind === "bleed";
     .worth-bleed {
       margin-top: 4rem;
     }
+  }
+  .worth-bleed-image :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0 !important;
   }
   .worth-bleed + .cs-body {
     margin-top: 3.5rem;

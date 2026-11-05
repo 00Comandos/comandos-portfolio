@@ -319,7 +319,9 @@ export type WorthBlock =
     }
   /** Edge-to-edge video band with one overlaid line (breaks out of the
       case-study column). */
-  | { kind: "bleed-video"; video: ContentVideo; line: string };
+  | { kind: "bleed-video"; video: ContentVideo; line: string }
+  /** Edge-to-edge closing image (breaks out of the column, no radius). */
+  | { kind: "bleed-image"; image: ContentImage };
 
 export type CaseStudyContent = {
   slug: string;

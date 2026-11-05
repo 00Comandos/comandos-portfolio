@@ -60,6 +60,8 @@ export function extractCaseStudyImages(cs: CaseStudyContent): Extract<
       block.mobile.forEach(push);
     } else if (block.kind === "image-grid") {
       block.images.forEach(push);
+    } else if (block.kind === "bleed-image") {
+      push(block.image);
     } else if (block.kind === "scene") {
       block.beats.forEach((b) => {
         if (b.media && b.media.kind !== "video") push(b.media);
