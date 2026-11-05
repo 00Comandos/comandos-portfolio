@@ -53,7 +53,10 @@ export type ChecklistItem = {
 
 /** One beat of a sticky scroll scene (Worth `scene` block). */
 export type SceneBeat = {
-  media: ContentImage | ContentVideo;
+  /** Image/video for the beat. Omit it and pass `quotes` for a typographic beat. */
+  media?: ContentImage | ContentVideo;
+  /** Users' own words, set large in place of the media (research beats). */
+  quotes?: readonly string[];
   /** Short mono label for the beat, e.g. "Before" / "New". */
   label: string;
   /** Optional 1–2 word figure shown as a `.hl` pill next to the label (e.g. "↑477%"). */

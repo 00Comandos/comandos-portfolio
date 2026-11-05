@@ -4,11 +4,12 @@ import type { SceneBeat } from "~/data/case-studies/types";
 
 type Props = {
   label?: string;
-  heading: string;
+  heading?: string;
   body?: string;
   beats: readonly SceneBeat[];
 };
 const { label, heading, body, beats } = Astro.props;
+const unquote = (s: string) => s.replace(/^[“"]\s*|\s*[”"]$/g, "");
 const pad = (n: number) => String(n).padStart(2, "0");
 const total = pad(beats.length);
 ---
@@ -20,19 +21,31 @@ const total = pad(beats.length);
   - Otherwise (mobile, reduced motion, no JS): beats stack in flow, each
     with its caption. Nothing is hidden until the script marks it ready.
 -->
-<div class="scene" data-scene style={`--beats: ${beats.length};`}>
+<div class:list={["scene", { "scene--bare": !heading }]} data-scene style={`--beats: ${beats.length};`}>
   <div class="scene-stage">
-    <div class="scene-text">
-      {label && <p class="eyebrow scene-label">{label}</p>}
-      <h3 class="display-serif scene-title">{heading}</h3>
-      {body && <p class="scene-body">{body}</p>}
-    </div>
+    {
+      heading && (
+        <div class="scene-text">
+          {label && <p class="eyebrow scene-label">{label}</p>}
+          <h3 class="display-serif scene-title">{heading}</h3>
+          {body && <p class="scene-body">{body}</p>}
+        </div>
+      )
+    }
     <ol class="scene-beats">
       {
         beats.map((b, i) => (
-          <li class="scene-beat" data-beat={i} data-active={i === 0 ? "" : undefined}>
+          <li class:list={["scene-beat", { "is-quotes": !b.media }]} data-beat={i} data-active={i === 0 ? "" : undefined}>
             <div class="scene-media">
-              {b.media.kind === "video" ? (
+              {!b.media ? (
+                <ul class="scene-quotes">
+                  {b.quotes?.map((q) => (
+                    <li>
+                      <q>{unquote(q)}</q>
+                    </li>
+                  ))}
+                </ul>
+              ) : b.media.kind === "video" ? (
                 <video
                   class="scene-video"
                   poster={b.media.poster}
@@ -140,6 +153,44 @@ const total = pad(beats.length);
     display: none;
   }
 
+  /* ---------- Quote beats (research): the words are the media ---------- */
+  .scene-beat.is-quotes {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 1.25rem;
+  }
+  .scene-beat.is-quotes .scene-cap {
+    margin-top: 0;
+  }
+  .scene-quotes {
+    border-top: 1px solid var(--color-ink);
+  }
+  .scene-quotes li {
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .scene-quotes q {
+    display: block;
+    position: relative;
+    padding-left: 1.4rem;
+    font-size: clamp(1.375rem, 2.6vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+    color: var(--color-ink);
+    quotes: none;
+  }
+  /* Hanging teal quote mark — the one accent. */
+  .scene-quotes q::before {
+    content: "“";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1em;
+    line-height: 1.15;
+    color: var(--color-accent);
+  }
+
   /* ---------- Pinned stage ---------- */
   @media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
     .scene[data-ready] {
@@ -200,6 +251,38 @@ const total = pad(beats.length);
     }
     .scene[data-ready] .scene-video {
       object-fit: cover;
+    }
+    /* Quote beats: words top-aligned with the caption, a bit roomier. */
+    .scene[data-ready] .is-quotes > .scene-media {
+      align-items: flex-start;
+      justify-content: stretch;
+      padding-top: 0.35rem;
+    }
+    .scene[data-ready] .scene-quotes {
+      width: 100%;
+    }
+    .scene[data-ready] .scene-quotes li {
+      padding-block: 1.5rem;
+    }
+    /* No heading: the caption (source + what it revealed) leads top-left. */
+    .scene--bare[data-ready] .scene-stage {
+      grid-template-areas:
+        "cap media"
+        "prog media";
+      grid-template-rows: auto auto;
+      align-content: center;
+    }
+    .scene--bare[data-ready] .scene-stage > .scene-beats,
+    .scene--bare[data-ready] .scene-media {
+      height: auto;
+    }
+    .scene--bare[data-ready] .scene-cap {
+      align-self: start;
+    }
+    .scene--bare[data-ready] .scene-progress {
+      grid-area: prog;
+      align-self: start;
+      margin-top: 1.25rem;
     }
     .scene[data-ready] .scene-cap {
       grid-area: cap;

@@ -51,7 +51,7 @@ export function extractCaseStudyImages(cs: CaseStudyContent): Extract<
       block.images.forEach(push);
     } else if (block.kind === "scene") {
       block.beats.forEach((b) => {
-        if (b.media.kind !== "video") push(b.media);
+        if (b.media && b.media.kind !== "video") push(b.media);
       });
     }
   }
@@ -70,7 +70,7 @@ export function extractCaseStudyVideos(cs: CaseStudyContent): ContentVideo[] {
       out.push(block.video);
     } else if (block.kind === "scene") {
       block.beats.forEach((b) => {
-        if (b.media.kind === "video") out.push(b.media);
+        if (b.media?.kind === "video") out.push(b.media);
       });
     }
   }

@@ -1,11 +1,13 @@
 ---
 import type { ChecklistItem } from "~/data/case-studies/types";
+import Scene from "~/components/case-study/Scene.astro";
 
 type Props = { items: readonly ChecklistItem[] };
 const { items } = Astro.props;
 
-// Items carrying quotes (`sub`) are research sources — rendered as columns
-// with the users' own words set as plain pull quotes on a hairline grid.
+// Items carrying quotes (`sub`) are research sources — rendered
+// as a pinned scroll scene (same pattern as the iterations block): one beat
+// per source, the users' own words set large.
 // Everything else stays a clean hairline list.
 const isResearch = items.length > 0 && items.every((i) => i.sub && i.sub.length > 0);
 
@@ -24,28 +26,20 @@ const ratios = !isResearch
   : [];
 const isRatio = ratios.length > 0 && ratios.every(Boolean);
 
-const unquote = (s: string) => s.replace(/^[“"]\s*|\s*[”"]$/g, "");
 const trimColon = (s: string) => s.replace(/:\s*$/, ".");
 ---
 
 {
   isResearch ? (
-    <ol class="research not-prose" data-research>
-      {items.map((item, c) => (
-        <li class="research-col" style={`--c: ${c};`}>
-          <span class="research-num mono">{String(c + 1).padStart(2, "0")}</span>
-          <h4 class="research-title">{item.label}</h4>
-          {item.body && <p class="research-body">{trimColon(item.body)}</p>}
-          <ul class="research-quotes">
-            {item.sub!.map((q, qi) => (
-              <li style={`--i: ${qi};`}>
-                <q>{unquote(q)}</q>
-              </li>
-            ))}
-          </ul>
-        </li>
-      ))}
-    </ol>
+    <div class="not-prose">
+      <Scene
+        beats={items.map((item) => ({
+          label: item.label,
+          caption: item.body ? trimColon(item.body) : "",
+          quotes: item.sub,
+        }))}
+      />
+    </div>
   ) : isRatio ? (
     <div class="ratio not-prose" data-ratio>
       {listTitle && <p class="checklist-title">{listTitle}</p>}
@@ -104,7 +98,7 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
       },
       { threshold: 0.25 },
     );
-    document.querySelectorAll<HTMLElement>("[data-research], [data-ratio]").forEach((el) => {
+    document.querySelectorAll<HTMLElement>("[data-ratio]").forEach((el) => {
       if (el.getBoundingClientRect().top < window.innerHeight * 0.85) return;
       el.setAttribute("data-armed", "");
       io.observe(el);
@@ -113,97 +107,6 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
 </script>
 
 <style>
-  /* ---------- Research sources: hairline grid + pull quotes ---------- */
-  .research {
-    display: grid;
-    border-top: 1px solid var(--color-ink);
-  }
-  @media (min-width: 900px) {
-    .research {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  .research-col {
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem 0 2rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-  @media (min-width: 900px) {
-    .research-col {
-      padding: 1.5rem 1.5rem 0.5rem;
-      border-bottom: 0;
-      border-right: 1px solid var(--color-border);
-    }
-    .research-col:first-child {
-      padding-left: 0;
-    }
-    .research-col:last-child {
-      border-right: 0;
-      padding-right: 0;
-    }
-  }
-  .research-num {
-    font-size: 0.75rem;
-    color: var(--color-muted);
-    font-variant-numeric: tabular-nums;
-  }
-  .research-title {
-    margin-top: 1rem;
-    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
-    font-weight: 500;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    color: var(--color-ink);
-  }
-  .research-body {
-    margin-top: 0.75rem;
-    font-size: 0.9375rem;
-    line-height: 1.55;
-    color: var(--color-muted);
-    max-width: 30ch;
-  }
-  .research-quotes {
-    margin-top: 1.75rem;
-  }
-  .research-quotes li {
-    padding-block: 0.9rem;
-    border-top: 1px solid var(--color-border);
-  }
-  .research-quotes q {
-    display: block;
-    position: relative;
-    padding-left: 1.1rem;
-    font-size: 1.0625rem;
-    line-height: 1.4;
-    letter-spacing: -0.015em;
-    color: var(--color-ink);
-    quotes: none;
-  }
-  /* Hanging teal quote mark — the one accent in the block. */
-  .research-quotes q::before {
-    content: "“";
-    position: absolute;
-    left: 0;
-    top: -0.05em;
-    font-size: 1.5em;
-    line-height: 1;
-    color: var(--color-accent);
-  }
-  /* Quiet reveal: quotes fade up in order, column by column. */
-  .research[data-armed] .research-quotes li {
-    opacity: 0;
-    transform: translateY(0.5rem);
-    transition:
-      opacity 0.5s ease,
-      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-    transition-delay: calc(var(--c, 0) * 160ms + var(--i, 0) * 120ms + 100ms);
-  }
-  .research[data-armed][data-in] .research-quotes li {
-    opacity: 1;
-    transform: none;
-  }
-
   /* ---------- Ratio pictogram ("8/10 users …") ---------- */
   .ratio-list {
     border-top: 1px solid var(--color-ink);
