@@ -322,7 +322,7 @@ export const kartaCard: CaseStudyContent = {
       },
       {
         kind: "checklist",
-        layout: "rings",
+        layout: "chart",
         items: [
           {
             label: "4/5 users did not like the card",
