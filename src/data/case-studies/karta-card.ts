@@ -276,7 +276,8 @@ export const kartaCard: CaseStudyContent = {
         kind: "card-stack",
         cards: [
           {
-            label: "Proposal · purple",
+            label: "First proposal",
+            caption: "First proposal: purple with a green diamond.",
             image: {
               kind: "image",
               image: card("karta-early-01-purple.webp"),
@@ -284,7 +285,8 @@ export const kartaCard: CaseStudyContent = {
             },
           },
           {
-            label: "Proposal · green",
+            label: "Second proposal",
+            caption: "Second proposal: green with a subtle line pattern.",
             image: {
               kind: "image",
               image: card("karta-early-02-green.webp"),
@@ -292,7 +294,8 @@ export const kartaCard: CaseStudyContent = {
             },
           },
           {
-            label: "Ai.fred prototype · front",
+            label: "Ai.fred · front",
+            caption: "The Ai.fred technology prototype — front, with a generative line pattern.",
             image: {
               kind: "image",
               image: card("karta-early-03-aifred-front.webp"),
@@ -300,7 +303,8 @@ export const kartaCard: CaseStudyContent = {
             },
           },
           {
-            label: "Ai.fred prototype · back",
+            label: "Ai.fred · back",
+            caption: "The Ai.fred prototype — back, with the card details and VISA Signature.",
             image: {
               kind: "image",
               image: card("karta-early-04-aifred-back.webp"),
@@ -318,6 +322,7 @@ export const kartaCard: CaseStudyContent = {
       },
       {
         kind: "checklist",
+        layout: "rings",
         items: [
           {
             label: "4/5 users did not like the card",

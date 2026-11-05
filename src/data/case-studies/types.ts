@@ -104,13 +104,14 @@ export type TwoColMediaItem = {
 export type AdventureBlock =
   | { kind: "intro"; text: string }
   /** Animated deck of design iterations (cut-out card images + labels). */
-  | { kind: "card-stack"; cards: readonly { image: Extract<ContentImage, { kind: "image" }>; label: string }[] }
+  | { kind: "card-stack"; cards: readonly { image: Extract<ContentImage, { kind: "image" }>; label: string; caption?: string }[] }
   /** Pinned before → after sequence (same renderer as the Worth scene). */
   | { kind: "scene"; label?: string; heading?: string; body?: string; beats: readonly SceneBeat[] }
   | { kind: "caption"; text: string }
   | { kind: "spacer"; size?: "sm" | "md" | "lg" }
-  /** `layout: "cards"` sets "8/10 users …" rows as side-by-side stat cards. */
-  | { kind: "checklist"; items: readonly ChecklistItem[]; layout?: "cards" }
+  /** "8/10 users …" rows: `cards` = side-by-side stat cards with people,
+      `rings` = columns of progress rings (a second, lighter style). */
+  | { kind: "checklist"; items: readonly ChecklistItem[]; layout?: "cards" | "rings" }
   | { kind: "image"; image: ContentImage; rounded?: boolean }
   | { kind: "video"; video: ContentVideo; rounded?: boolean }
   | { kind: "divider"; variant?: "hatched" | "line" }

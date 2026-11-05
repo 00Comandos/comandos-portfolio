@@ -1,95 +1,127 @@
 ---
 /*
- * Animated deck of design iterations (e.g. Karta's early card proposals).
- * Cards sit stacked in perspective; the deck deals the next one to the
- * front every few seconds once it is on screen. Labels underneath double
- * as controls. Without JS / under reduced motion: a static row of cards.
+ * Animated fan of design iterations (e.g. Karta's early card proposals).
+ * The active card sits large in the centre, its neighbours tilt in at the
+ * sides; the fan advances on its own while on screen. Below, story-style
+ * tabs: a progress bar per card + a readable name, and one caption line
+ * for the active card. Without JS / under reduced motion: a static grid.
  */
 import { Image } from "astro:assets";
 import type { ContentImage } from "~/data/case-studies/types";
 
-type Props = { cards: readonly { image: Extract<ContentImage, { kind: "image" }>; label: string }[] };
+type Props = {
+  cards: readonly { image: Extract<ContentImage, { kind: "image" }>; label: string; caption?: string }[];
+};
 const { cards } = Astro.props;
 const pad = (n: number) => String(n).padStart(2, "0");
 ---
 
-<div class="deck not-prose" data-deck style={`--count: ${cards.length};`}>
+<div class="deck not-prose" data-deck>
   <div class="deck-stage">
     {
       cards.map((c, i) => (
-        <figure class="deck-card" data-card={i} style={`--i: ${i};`}>
+        <figure class="deck-card" data-card={i}>
           <Image
             src={c.image.image}
             alt={c.image.alt}
             widths={[480, 760]}
-            sizes="(min-width: 900px) 420px, 70vw"
+            sizes="(min-width: 900px) 440px, 70vw"
             loading="lazy"
             decoding="async"
           />
+          <figcaption class="deck-static-cap">
+            <span class="mono">{pad(i + 1)}</span> {c.label}
+          </figcaption>
         </figure>
       ))
     }
   </div>
-  <ol class="deck-labels">
-    {
-      cards.map((c, i) => (
-        <li>
-          <button type="button" class="deck-label" data-go={i} aria-pressed={i === 0 ? "true" : "false"}>
-            <span class="mono">{pad(i + 1)}</span>
-            {c.label}
-          </button>
-        </li>
-      ))
-    }
-  </ol>
+
+  <div class="deck-ui">
+    <ol class="deck-tabs">
+      {
+        cards.map((c, i) => (
+          <li>
+            <button type="button" class="deck-tab" data-go={i} aria-pressed={i === 0 ? "true" : "false"}>
+              <span class="deck-bar" aria-hidden="true">
+                <span />
+              </span>
+              <span class="deck-tab-num mono">{pad(i + 1)}</span>
+              <span class="deck-tab-label">{c.label}</span>
+            </button>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="deck-caption" aria-live="polite">
+      {cards.map((c, i) => <span data-cap={i} hidden={i !== 0}>{c.caption ?? c.label}</span>)}
+    </p>
+  </div>
 </div>
 
 <script>
+  const DUR = 3200;
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   document.querySelectorAll<HTMLElement>("[data-deck]").forEach((deck) => {
     if (reduce) return;
     const cards = Array.from(deck.querySelectorAll<HTMLElement>("[data-card]"));
-    const labels = Array.from(deck.querySelectorAll<HTMLButtonElement>("[data-go]"));
+    const tabs = Array.from(deck.querySelectorAll<HTMLButtonElement>("[data-go]"));
+    const caps = Array.from(deck.querySelectorAll<HTMLElement>("[data-cap]"));
     const n = cards.length;
     let active = 0;
-    let timer = 0;
+    let elapsed = 0;
+    let last = 0;
     let visible = false;
     let hover = false;
 
     const render = () => {
-      cards.forEach((c, i) => c.style.setProperty("--pos", String((i - active + n) % n)));
-      labels.forEach((b, i) => b.setAttribute("aria-pressed", i === active ? "true" : "false"));
+      cards.forEach((c, i) => {
+        // Signed distance from the active card, wrapped (… -1, 0, +1 …).
+        let d = (i - active + n) % n;
+        if (d > n / 2) d -= n;
+        c.style.setProperty("--d", String(d));
+        c.style.setProperty("--ad", String(Math.abs(d)));
+        c.toggleAttribute("data-active", d === 0);
+      });
+      tabs.forEach((t, i) => {
+        t.setAttribute("aria-pressed", i === active ? "true" : "false");
+        t.style.setProperty("--p", i < active ? "1" : "0");
+      });
+      caps.forEach((c, i) => (c.hidden = i !== active));
     };
     const go = (i: number) => {
       active = (i + n) % n;
+      elapsed = 0;
       render();
     };
-    const loop = () => {
-      window.clearInterval(timer);
-      if (visible && !hover) timer = window.setInterval(() => go(active + 1), 2600);
+    const tick = (t: number) => {
+      if (visible && !hover) {
+        elapsed += last ? t - last : 0;
+        if (elapsed >= DUR) go(active + 1);
+        tabs[active].style.setProperty("--p", String(Math.min(elapsed / DUR, 1)));
+      }
+      last = t;
+      requestAnimationFrame(tick);
     };
 
     deck.setAttribute("data-live", "");
     render();
-    labels.forEach((b) =>
-      b.addEventListener("click", () => {
-        go(Number(b.dataset.go));
-        loop();
-      }),
-    );
-    deck.addEventListener("mouseenter", () => ((hover = true), loop()));
-    deck.addEventListener("mouseleave", () => ((hover = false), loop()));
-    new IntersectionObserver(([e]) => ((visible = e.isIntersecting), loop()), { threshold: 0.4 }).observe(deck);
+    tabs.forEach((b) => b.addEventListener("click", () => go(Number(b.dataset.go))));
+    deck.addEventListener("mouseenter", () => (hover = true));
+    deck.addEventListener("mouseleave", () => (hover = false));
+    new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0.4 }).observe(deck);
+    requestAnimationFrame(tick);
   });
 </script>
 
 <style>
   .deck {
-    padding: 1.5rem;
+    padding: 1.5rem 1.25rem;
     border-radius: var(--radius-xs);
     background-color: var(--color-paper-soft);
     background-image: radial-gradient(circle, rgb(6 6 6 / 0.08) 1px, transparent 1.2px);
     background-size: 20px 20px;
+    overflow: hidden;
   }
   @media (min-width: 768px) {
     .deck {
@@ -97,11 +129,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
     }
   }
 
-  /* Static fallback: the cards in a wrapped row. */
+  /* ---------- Static fallback ---------- */
   .deck-stage {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
+    gap: 1.25rem 1rem;
   }
   .deck-card {
     margin: 0;
@@ -110,63 +142,117 @@ const pad = (n: number) => String(n).padStart(2, "0");
     display: block;
     width: 100%;
     height: auto;
-    filter: drop-shadow(0 18px 30px rgb(6 6 6 / 0.18));
+    filter: drop-shadow(0 18px 28px rgb(6 6 6 / 0.2));
+  }
+  .deck-static-cap {
+    margin-top: 0.6rem;
+    font-size: 0.875rem;
+    color: var(--color-ink);
+  }
+  .deck-static-cap .mono {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+  .deck-ui {
+    display: none;
   }
 
-  /* Live deck: stacked in perspective, position-driven. */
+  /* ---------- Live fan ---------- */
   .deck[data-live] .deck-stage {
     position: relative;
     display: block;
-    aspect-ratio: 16 / 9;
-    perspective: 1400px;
+    aspect-ratio: 16 / 8;
+  }
+  .deck[data-live] .deck-static-cap {
+    display: none;
   }
   .deck[data-live] .deck-card {
-    --pos: 0;
+    --d: 0;
+    --ad: 0;
     position: absolute;
     left: 50%;
     top: 50%;
-    width: min(62%, 26rem);
-    z-index: calc(10 - var(--pos));
-    transform: translate(-50%, -38%) translateY(calc(var(--pos) * -11%)) scale(calc(1 - var(--pos) * 0.07));
-    opacity: calc(1 - var(--pos) * 0.28);
+    width: min(56%, 27rem);
+    z-index: calc(10 - var(--ad));
+    transform: translate(-50%, -50%) translateX(calc(var(--d) * 62%)) rotate(calc(var(--d) * 7deg))
+      scale(calc(1 - min(var(--ad), 1) * 0.24));
+    opacity: calc(1 - min(var(--ad), 2) * 0.5);
+    filter: saturate(calc(1 - min(var(--ad), 1) * 0.6));
     transition:
-      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 0.6s ease;
+      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.7s ease,
+      filter 0.7s ease;
   }
 
-  .deck-labels {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1.25rem;
-    margin-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
-    padding-top: 1rem;
+  .deck[data-live] .deck-ui {
+    display: block;
+    margin-top: 1.75rem;
   }
-  .deck-label {
-    display: inline-flex;
+  .deck-tabs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    grid-auto-flow: column;
+    gap: 0.75rem;
+  }
+  .deck-tab {
+    display: grid;
+    grid-template-columns: auto 1fr;
     align-items: baseline;
-    gap: 0.45rem;
-    padding: 0.4rem 0;
+    column-gap: 0.4rem;
+    width: 100%;
+    padding: 0 0 0.25rem;
     border: 0;
     background: none;
     font: inherit;
-    font-size: 0.9375rem;
+    text-align: left;
     color: var(--color-muted);
     cursor: pointer;
     transition: color 0.2s ease;
   }
-  .deck-label .mono {
+  /* Story-style progress bar on top of each tab. */
+  .deck-bar {
+    grid-column: 1 / -1;
+    position: relative;
+    display: block;
+    height: 2px;
+    margin-bottom: 0.75rem;
+    background: var(--color-border);
+    overflow: hidden;
+  }
+  .deck-bar span {
+    position: absolute;
+    inset: 0;
+    background: var(--color-ink);
+    transform-origin: left;
+    transform: scaleX(var(--p, 0));
+  }
+  .deck-tab-num {
     font-size: 0.75rem;
   }
-  .deck-label:hover,
-  .deck-label[aria-pressed="true"] {
+  .deck-tab-label {
+    font-size: 0.875rem;
+    line-height: 1.3;
+  }
+  .deck-tab:hover,
+  .deck-tab[aria-pressed="true"] {
     color: var(--color-ink);
   }
-  .deck-label[aria-pressed="true"] .mono {
+  .deck-tab[aria-pressed="true"] .deck-tab-num {
     color: var(--color-accent);
   }
-  .deck:not([data-live]) .deck-label {
-    pointer-events: none;
+  /* Phones: names would be cramped — bars + numbers only; the caption
+     line names the active card. */
+  @media (max-width: 639px) {
+    .deck-tab-label {
+      display: none;
+    }
+  }
+  .deck-caption {
+    margin-top: 1.25rem;
+    font-size: 1.125rem;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
     color: var(--color-ink);
+    min-height: 2.7em;
   }
 </style>

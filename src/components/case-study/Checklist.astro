@@ -2,7 +2,7 @@
 import type { ChecklistItem } from "~/data/case-studies/types";
 import Scene from "~/components/case-study/Scene.astro";
 
-type Props = { items: readonly ChecklistItem[]; layout?: "cards" };
+type Props = { items: readonly ChecklistItem[]; layout?: "cards" | "rings" };
 const { items, layout } = Astro.props;
 
 // Items carrying quotes (`sub`) are research sources — rendered
@@ -79,6 +79,39 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
         }))}
       />
     </div>
+  ) : isRatio && layout === "rings" ? (
+    <div class="ratio ratio--rings not-prose" data-ratio>
+      {listTitle && <p class="checklist-title">{listTitle}</p>}
+      <ul class="rings">
+        {ratios.map((r, i) => (
+          <li class="ring-col" style={`--i: ${i};`}>
+            <svg class="rg-svg" viewBox="0 0 120 120" aria-hidden="true">
+              {Array.from({ length: r!.d }, (_, k) => (
+                <circle
+                  class:list={["rg-seg", { "is-on": k < r!.n }]}
+                  cx="60"
+                  cy="60"
+                  r="52"
+                  pathLength="100"
+                  style={`--seg: ${100 / r!.d - 3}; --off: ${-(k * 100) / r!.d - 1.5}; --k: ${k};`}
+                />
+              ))}
+              <text class="rg-n" x="60" y="68" text-anchor="middle">
+                {r!.n}
+                <tspan class="rg-d">/{r!.d}</tspan>
+              </text>
+            </svg>
+            <p class="ratio-text">
+              <span class="metric-label">
+                <span class="sr-only">{r!.n} of {r!.d}{" "}</span>
+                {r!.text}
+              </span>
+              {r!.body && <span class="metric-body">{r!.body}</span>}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
   ) : isRatio ? (
     <div class:list={["ratio not-prose", { "ratio--cards": layout === "cards" }]} data-ratio>
       {listTitle && <p class="checklist-title">{listTitle}</p>}
@@ -98,7 +131,7 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
             </span>
             <p class="ratio-text">
               <span class="metric-label">
-                <span class="sr-only">{r!.n} of {r!.d} </span>
+                <span class="sr-only">{r!.n} of {r!.d}{" "}</span>
                 {r!.text}
               </span>
               {r!.body && <span class="metric-body">{r!.body}</span>}
@@ -310,6 +343,75 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
   .ratio--cards .person {
     width: 1.1rem;
     height: 1.8rem;
+  }
+
+  /* Rings: a column per stat — progress ring with the fraction inside,
+     one tick per person on the ring, the sentence underneath. */
+  .rings {
+    display: grid;
+    gap: 2.25rem;
+    border-top: 1px solid var(--color-ink);
+    padding-top: 2rem;
+  }
+  @media (min-width: 640px) {
+    .rings {
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+      grid-auto-flow: column;
+      gap: 2rem;
+    }
+  }
+  .ring-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .rg-svg {
+    flex-shrink: 0;
+    width: 8.5rem;
+    height: 8.5rem;
+    overflow: visible;
+  }
+  /* Phones: ring beside the sentence to keep the block short. */
+  @media (max-width: 639px) {
+    .ring-col {
+      flex-direction: row;
+      align-items: center;
+    }
+    .rg-svg {
+      width: 5.5rem;
+      height: 5.5rem;
+    }
+  }
+  /* One arc per person, small gaps between them. */
+  .rg-seg {
+    fill: none;
+    stroke: var(--color-border);
+    stroke-width: 7;
+    stroke-dasharray: var(--seg) 100;
+    stroke-dashoffset: var(--off);
+    transform: rotate(-90deg);
+    transform-origin: 60px 60px;
+    transition: stroke 0.4s ease;
+    transition-delay: calc(var(--i, 0) * 150ms + var(--k) * 90ms);
+  }
+  .rg-seg.is-on {
+    stroke: var(--color-ink);
+  }
+  .rg-n {
+    font-size: 36px;
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    fill: var(--color-ink);
+  }
+  .rg-d {
+    font-size: 15px;
+    fill: var(--color-muted);
+  }
+  .ratio--rings[data-armed]:not([data-in]) .rg-seg.is-on {
+    stroke: var(--color-border);
+  }
+  .ratio--rings .ratio-text {
+    max-width: 28ch;
   }
 
   /* ---------- Metric rows ("69% less pages") ---------- */
