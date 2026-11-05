@@ -21,6 +21,8 @@ export default defineConfig({
       // Image + video sitemap (src/pages/sitemap-images.xml.ts) is listed
       // in the index so crawlers find it without robots.txt.
       customSitemaps: ["https://www.comandos.me/sitemap-images.xml"],
+      // Internal design-system catalogue: never listed.
+      filter: (page) => !page.includes("/ds/"),
       serialize(item) {
         // Higher priority for the home and the projects index; case studies
         // and the rest keep the default.

@@ -1,0 +1,52 @@
+---
+/*
+ * One catalogue entry on /ds/: component name, file, when to use, the props
+ * to pass (code), optional notes, then the live render(s) in the slot.
+ * Styling lives in src/pages/ds.astro (global, `.ds-` prefixed).
+ */
+type Props = {
+  id: string;
+  name: string;
+  path: string;
+  when: string;
+  code?: string;
+  /** Free-form notes (rules, caveats). Each string is one paragraph. */
+  notes?: readonly string[];
+  /** Render the live area on the ink band (for dark-tone components). */
+  dark?: boolean;
+  /** Let the live area run full panel width with no padding (bleeds, sections). */
+  flush?: boolean;
+};
+const { id, name, path, when, code, notes, dark = false, flush = false } = Astro.props;
+---
+
+<article class="ds-entry" id={id}>
+  <header class="ds-entry-head">
+    <h3 class="ds-entry-name mono">{name}</h3>
+    <p class="ds-entry-path mono">{path}</p>
+    <p class="ds-entry-when">{when}</p>
+  </header>
+  {
+    (code || notes) && (
+      <div class="ds-entry-spec">
+        {notes && (
+          <div class="ds-notes">
+            {notes.map((n) => (
+              <p set:html={n} />
+            ))}
+          </div>
+        )}
+        {code && (
+          <pre class="ds-code"><code>{code}</code></pre>
+        )}
+      </div>
+    )
+  }
+  {
+    Astro.slots.has("default") && (
+      <div class:list={["ds-live", { "ds-live--dark": dark, "ds-live--flush": flush }]}>
+        <slot />
+      </div>
+    )
+  }
+</article>

@@ -1,0 +1,15 @@
+---
+/* Labelled cell inside an Entry's live area (variants side by side). */
+type Props = { label: string; note?: string; wide?: boolean };
+const { label, note, wide = false } = Astro.props;
+---
+
+<figure class:list={["ds-variant", { "ds-variant--wide": wide }]}>
+  <figcaption class="ds-variant-label mono">
+    {label}
+    {note && <span class="ds-variant-note">{note}</span>}
+  </figcaption>
+  <div class="ds-variant-body">
+    <slot />
+  </div>
+</figure>

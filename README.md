@@ -18,7 +18,7 @@ Migrated from WordPress (Elementor) to a fast, SEO-optimized, static-first site 
 | Validation | [Zod v4](https://zod.dev) |
 | Email | [Resend](https://resend.com) |
 | Anti-spam | [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) |
-| Font | Poppins (Google Fonts) |
+| Font | Geist + Geist Mono |
 | SEO | Per-page meta + OG + Twitter Cards + JSON-LD (`Article`, `BreadcrumbList`, `ItemList`, `VideoObject`), `@astrojs/sitemap` + custom image/video sitemap, `robots.txt` |
 | Video | H.264 reels + per-case-study clips in `public/videos/` (see **Video system**) |
 
@@ -81,8 +81,11 @@ Resend's dashboard generates the exact record values after you add and verify th
 src/
 ├── components/
 │   ├── layout/      Header, Footer, SEO, BaseLayout
-│   ├── home/        Hero, BeforeAfter, ClientsStrip, Testimonials, NorthFaceGrowthCTA
-│   ├── case-study/  Adventure, Challenge, Result, Worth, CaseStudyHeader, CaseStudyNav, RelatedCases
+│   ├── home/        Hero, BeforeAfter, ClientsStrip, Services, Method, Studio, FinalCTA (closing contact form)
+│   ├── case-study/  Adventure, Worth, Challenge, Result, CaseStudyHeader, Checklist (9 list layouts), Scene,
+│   │                CardStack, BeforeAfterSlider, CaptureSequence, ConciergeChat, BleedVideo, PillarArt…
+│   ├── services/    ServicesPage, ServicesPains, AudienceArt, iso.ts (isometric helpers)
+│   ├── method/      MethodPage, PhaseVisual, PrincipleArt
 │   ├── projects/    ProjectCard
 │   ├── contact/     ContactForm (per-field validation incl. E.164 WhatsApp, CTA gating)
 │   └── ui/          Logo, ArrowIcon, Placeholder
@@ -97,6 +100,7 @@ src/
 │   ├── projects/[slug].astro                  — 16 case studies, prerendered
 │   ├── contact.astro              /contact/   — SSR (reads ?status= for banners)
 │   ├── method.astro (+ es/)       /method/    — prerendered; 301 from /north-face-growth/
+│   ├── ds.astro                   /ds/        — internal design-system catalogue (noindex)
 │   ├── api/contact.ts             POST        — SSR Resend handler
 │   ├── goods/[...slug].ts         GET → 410   — deindex spam from old WP
 │   ├── b/[...slug].ts             GET → 410   — deindex spam from old WP
@@ -144,19 +148,17 @@ Encoding conventions (ffmpeg): H.264 CRF 21–24, `preset slow`, 24 fps, `-an`, 
 
 ## Design system
 
-Tokens are defined in `src/styles/global.css` via `@theme`:
+The living catalogue is **`/ds/`** (`src/pages/ds.astro`): every component with sample data, its variants and when to use it. It is internal only — `noindex, nofollow` meta, an `X-Robots-Tag` header (`vercel.json`), excluded from the sitemap (`astro.config.mjs`) and never linked from the site.
 
-- **Colors:** ink / paper / muted / border + magenta accent, mint, sun, sky, crimson.
-- **Typography:** Poppins (300 → 800 + italic).
-- **Radii:** `xs` 0.25rem → `full` 9999px.
-- **Shadows:** `--shadow-card` for testimonial cards.
+Tokens live in `src/styles/global.css` (`@theme`):
 
-Custom utility classes:
+- **Colour:** ink `#060606`, paper `#fff`, paper-soft `#f6f6f6`, grey `#ebebeb`, border `#dcdcdc`, muted; one accent — teal `#12dcd4`. No pink.
+- **Type:** Geist (300–700) for everything, Geist Mono for labels, numerals and tags.
+- **Signature pieces:** `.hl` (teal outlined pill, 1–2 words, nowrap from 640px), `.eyebrow` / `.mono` labels, hairline grids, thin oversized numerals.
+- **Buttons:** `.btn-primary` / `.btn-outline` black dot pills, min-height 40px (tap target).
+- **Rules:** one accent per block, hairlines over boxes, no dark panels or glows inside light sections (the dark tone is reserved for the closing form + footer, and the audience band on /services).
 
-- `.container-page` — responsive page container (max 1200px).
-- `.btn-primary` — black pill with hover lift + arrow slide.
-- `.btn-outline` — outlined pill, inverts to black on hover.
-- `.btn-link` — subtle underline-on-hover link.
+Case-study content is data-driven (`src/data/case-studies/*.ts` → `Adventure.astro` / `Worth.astro`). Lists use `Checklist.astro`, which picks a layout from the data (see `/ds/` for the exact rules) or from an explicit `layout` (`cards`, `rings`, `chart`, `flow`, `quotes`).
 
 ---
 

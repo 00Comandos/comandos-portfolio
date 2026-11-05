@@ -1,0 +1,1468 @@
+---
+/*
+ * /ds/ — internal design-system catalogue. NOT for visitors:
+ *  - noindex,nofollow meta (BaseLayout → SEO), X-Robots-Tag header
+ *    (vercel.json), excluded from the sitemap (astro.config.mjs);
+ *  - never linked from the site (keep it out of nav/footer).
+ * Every live render uses the real component with data lifted from the
+ * case-study files (src/data/case-studies/*.ts) — no invented samples.
+ */
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Entry from "~/components/ds/Entry.astro";
+import Variant from "~/components/ds/Variant.astro";
+import { pick, layoutOf, checklistUsage, type BlockOf, type ChecklistResolved } from "~/components/ds/catalogue";
+import themeCss from "~/styles/global.css?raw";
+
+import Checklist from "~/components/case-study/Checklist.astro";
+import Scene from "~/components/case-study/Scene.astro";
+import CardStack from "~/components/case-study/CardStack.astro";
+import BeforeAfterSlider from "~/components/case-study/BeforeAfterSlider.astro";
+import CaptureSequence from "~/components/case-study/CaptureSequence.astro";
+import ConciergeChat from "~/components/case-study/ConciergeChat.astro";
+import BleedVideo from "~/components/case-study/BleedVideo.astro";
+import ContentImage from "~/components/case-study/ContentImage.astro";
+import FeatureGrid from "~/components/case-study/FeatureGrid.astro";
+import TwoColMedia from "~/components/case-study/TwoColMedia.astro";
+import ImageGrid from "~/components/case-study/ImageGrid.astro";
+import Divider from "~/components/case-study/Divider.astro";
+import SectionChip from "~/components/case-study/SectionChip.astro";
+import StatIllustration from "~/components/case-study/StatIllustration.astro";
+import AnimatedIcon from "~/components/case-study/AnimatedIcon.astro";
+import Result from "~/components/case-study/Result.astro";
+import PillarArt from "~/components/case-study/PillarArt.astro";
+import ServicesPains from "~/components/services/ServicesPains.astro";
+import AudienceArt from "~/components/services/AudienceArt.astro";
+import PrincipleArt from "~/components/method/PrincipleArt.astro";
+import PhaseVisual from "~/components/method/PhaseVisual.astro";
+import FinalCTA from "~/components/home/FinalCTA.astro";
+
+import { caseStudies, getCaseStudy } from "~/data/case-studies";
+import type { IllustrationScene, PillarArtKind } from "~/data/case-studies/types";
+
+export const prerender = true;
+
+const cs = (slug: string) => {
+  const c = getCaseStudy(slug);
+  if (!c) throw new Error(`[ds] unknown case study ${slug}`);
+  return c;
+};
+const kartaCard = cs("karta-card");
+const kartaApp = cs("karta-app");
+const legalario = cs("legalario-e-signature");
+
+/* ---------- Foundations: tokens parsed from global.css @theme ---------- */
+const themeBlock = themeCss.match(/@theme\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
+const tokens = [...themeBlock.matchAll(/--([a-z]+)-([\w-]+):\s*([^;]+);/g)].map((m) => ({
+  group: m[1],
+  name: `--${m[1]}-${m[2]}`,
+  value: m[3].replace(/\s+/g, " ").trim(),
+}));
+const colors = tokens.filter((t) => t.group === "color");
+const radii = tokens.filter((t) => t.group === "radius");
+const fonts = tokens.filter((t) => t.group === "font");
+const shadows = tokens.filter((t) => t.group === "shadow");
+
+const typeScale = [
+  { name: "Case header H1 · .csh-title", where: "CaseStudyHeader.astro", style: "font-size: clamp(2.5rem, 4.6vw, 4.5rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1.04;", sample: "Display headline" },
+  { name: "Section H2 · .display-serif", where: "Adventure / Result / Challenge (clamp(2rem–2.25rem … 3–3.5rem))", style: "font-size: clamp(2.25rem, 4vw, 3rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1.04;", sample: "Section heading" },
+  { name: "Block H3 · .display-serif", where: "Adventure / Worth headings, Scene title (2rem → 2.375rem md)", style: "font-size: 2.375rem; font-weight: 500; letter-spacing: -0.04em; line-height: 1.04;", sample: "Block heading" },
+  { name: "Figure · .metric-fig / .ratio-num", where: "Checklist (300 weight, -0.05em)", style: "font-size: clamp(2.5rem, 4.5vw, 3.5rem); font-weight: 300; letter-spacing: -0.05em; line-height: 1;", sample: "69%" },
+  { name: "Result number", where: "Result.astro (container-query sized)", style: "font-size: clamp(4.5rem, 9vw, 8rem); font-weight: 300; letter-spacing: -0.05em; line-height: 1;", sample: "+477" },
+  { name: "Lead · intro body", where: "Challenge / header intro", style: "font-size: 1.0625rem; line-height: 1.55; letter-spacing: -0.01em;", sample: "Intro paragraph set at 17px with 1.55 leading for the case-study voice." },
+  { name: "Prose body", where: "Adventure / Worth prose (max 42rem)", style: "font-size: 1rem; line-height: 1.7; color: var(--color-ink-soft);", sample: "Body copy at 16px, 1.7 leading, ink-soft. Max measure 42rem inside .cs-body." },
+  { name: "Mono micro-label · .eyebrow", where: "global.css", style: "font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase;", sample: "Seeing the mountain" },
+];
+
+/* ---------- Checklist: real data for every branch ---------- */
+const ck = (slug: string, pred: (b: BlockOf<"checklist">) => boolean) =>
+  pick(cs(slug), "checklist", pred);
+const ckResearch = ck("stori-inversion-plus", (b) => b.items.every((i) => (i.sub?.length ?? 0) > 0));
+const ckQuotes = ck("legalario-e-signature", (b) => layoutOf(b) === "quotes");
+const ckChart = ck("legalario-e-signature", (b) => layoutOf(b) === "chart");
+const ckFlow = ck("karta-card", (b) => layoutOf(b) === "flow");
+const ckCards = ck("karta-card", (b) => layoutOf(b) === "cards");
+const ckMetric = ck("truora-report", (b) => b.items[0]?.label.startsWith("69%"));
+const ckQuestions = ck("mipos-restaurant-pos", (b) => b.items[0]?.label === "Activation:");
+const ckArt = ck("stadio-apple-watch", (b) => b.items.some((i) => i.art));
+const ckLead = ck("truora-truconnect", (b) => b.items[0]?.label.startsWith("+20"));
+const ckTitled = ck("yaydoo-design-system", (b) => b.items[0]?.label.startsWith("Detailed anatomy"));
+
+const usage = checklistUsage(caseStudies);
+// No case currently resolves to the plain list → a generic sample (5 rows, so not pillars).
+const plainSample = [
+  { label: "Label:", body: "Body continues as muted text." },
+  { label: "A finding that stands alone." },
+  { label: "Label:", body: "Body continues as muted text." },
+  { label: "Another finding." },
+  { label: "Label:", body: "Five or more rows are never pillars." },
+];
+const usageBy = (r: ChecklistResolved) => usage.filter((u) => u.resolved === r);
+const resolvedOrder: ChecklistResolved[] = ["research-scene", "quotes", "flow", "chart", "rings", "cards", "pictogram", "metric", "pillars", "list"];
+
+/* ---------- Other blocks (lifted from case data) ---------- */
+const sceneImages = pick(kartaCard, "scene");
+const cardStack = pick(kartaCard, "card-stack");
+const compare = pick(legalario, "compare");
+const capture = pick(legalario, "capture-sequence");
+const concierge = pick(kartaApp, "concierge-chat");
+const bleedVideo = pick(kartaCard, "bleed-video");
+const bleedImage = pick(kartaApp, "bleed-image");
+const featureGrid = pick(kartaApp, "feature-grid");
+const twoCol = pick(kartaApp, "two-col-media");
+const imageGrid = pick(kartaApp, "image-grid");
+
+const chipVariants = ["challenge", "adventure", "worth", "result", "seeing-mountain", "making-top", "nps", "interview", "signature"] as const;
+const scenes: IllustrationScene[] = [
+  "launch", "rise", "retention", "multiply", "audience", "ink", "biometric", "certified", "progress", "documents",
+  "signed-growth", "love", "reactivate", "sprint", "unify", "flow", "streak", "orbit", "sync", "whisper", "lap",
+  "magnet", "summit", "anydevice", "renew", "simmer", "tap-pay", "refer", "parking", "activate", "wayfind",
+];
+const pillarKinds: PillarArtKind[] = ["ready", "race", "refer", "travel", "assistant", "liquidity", "conversation", "leads"];
+const iconMotions = [
+  { name: "lucide:sparkles", motion: "breathe" },
+  { name: "lucide:gauge", motion: "rock" },
+  { name: "lucide:message-circle", motion: "bounce" },
+  { name: "lucide:scan-face", motion: "scan" },
+  { name: "lucide:scan-face", motion: "none" },
+] as const;
+
+/* ---------- Index ---------- */
+const index = [
+  { id: "foundations", label: "Foundations", items: [["colour", "Colour"], ["type", "Type"], ["radii", "Radii & shadow"], ["signature", ".hl · .eyebrow · .mono"], ["buttons", "Buttons"], ["hairlines", "Hairlines & rhythm"]] },
+  { id: "checklist", label: "Checklist", items: [["ck-rules", "Auto-layout rules"], ["ck-list", "Plain list"], ["ck-pillars", "Pillars"], ["ck-metric", "Metric rows"], ["ck-ratio", "Ratio · cards · rings"], ["ck-chart", "Chart"], ["ck-flow", "Flow"], ["ck-quotes", "Quotes"], ["ck-research", "Research → Scene"], ["ck-usage", "Where used"]] },
+  { id: "blocks", label: "Case-study blocks", items: [["scene", "Scene"], ["cardstack", "CardStack"], ["compare", "BeforeAfterSlider"], ["capture", "CaptureSequence"], ["concierge", "ConciergeChat"], ["bleed", "BleedVideo · bleed-image"], ["featuregrid", "FeatureGrid"], ["twocol", "TwoColMedia"], ["imagegrid", "ImageGrid"], ["divider", "Divider"], ["chip", "SectionChip"], ["statillu", "StatIllustration"], ["animicon", "AnimatedIcon"], ["result", "Result"], ["header", "CaseStudyHeader hero"]] },
+  { id: "iso", label: "Isometric drawings", items: [["pains", "ServicesPains"], ["audience", "AudienceArt"], ["principle", "PrincipleArt"], ["pillarart", "PillarArt"]] },
+  { id: "building", label: "Building blocks", items: [["phase", "PhaseVisual"], ["finalcta", "FinalCTA (dark)"], ["contactform", "ContactForm"]] },
+] as const;
+
+/* ---------- Code snippets (kept as strings: no template escaping) ---------- */
+const code = {
+  ck: `import Checklist from "~/components/case-study/Checklist.astro";
+// data: { kind: "checklist", items: ChecklistItem[], layout?: "cards" | "rings" | "chart" | "flow" | "quotes" }
+type ChecklistItem = { label: string; body?: string; sub?: string[]; art?: PillarArtKind };
+<Checklist items={items} layout={layout} />`,
+  ckList: `items: [
+  { label: "A finding that stands alone." },
+  { label: "Label:", body: "Optional body after it." },   // ← bodies are optional
+]`,
+  ckPillars: `items: [                       // 2–4 rows, EVERY row has a body
+  { label: "Activation:", body: "How do we …?" },
+  { label: "Retention:",  body: "What do … need?" },     // all bodies end in "?" → large question setting
+  { label: "Sales:",      body: "… the most profitable?", art: "race" },  // art → PillarArt drawing
+]
+// optional title row: first item has no body → mono title above
+// …if that first label starts with a figure ("+20 pilots in …") → headline figure (pillars only)`,
+  ckMetric: `items: [                       // ≥ 2 rows, every label STARTS with a figure
+  { label: "69% less pages:", body: "…" },
+  { label: "-37% support tickets:", body: "…" },
+]`,
+  ckRatio: `items: [                       // every label starts "N/D" (D ≤ 20 people)
+  { label: "8/10 users associate metal cards with …" },
+  { label: "10/10 users perceive that …" },
+]
+layout: undefined | "cards" | "rings"`,
+  ckChart: `layout: "chart"
+items: [ { label: "57% of users", body: "indicated that …" }, … ]   // all-% metrics
+// …or ratio rows ("4/5 users …"). Sorted by value; "users …" / "of users …" prefix dropped.`,
+  ckFlow: `layout: "flow"                  // ratio rows, > 1 row, ONE shared denominator
+items: [
+  { label: "4/5 users did not like the card", body: "…" },
+  { label: "5/5 users compared with …", body: "…" },
+]`,
+  ckQuotes: `layout: "quotes"                // label + body read as one quote
+items: [ { label: "I don't feel comfortable signing any documents." }, … ]`,
+  ckResearch: `items: [                       // EVERY item has sub[] → pinned Scene, one beat per source
+  { label: "NPS and Call Center", body: "Caption line:", sub: ["“Quote one”", "“Quote two”"] },
+  …
+]`,
+  scene: `import Scene from "~/components/case-study/Scene.astro";
+// Worth/Adventure: { kind: "scene", label?, heading?, body?, beats: SceneBeat[] }
+type SceneBeat = {
+  label: string;               // mono "Before" / "New"
+  caption: string;             // the line that changes per beat
+  media?: ContentImage | ContentVideo;   // omit + pass quotes for a typographic beat
+  quotes?: string[];
+  impact?: string;             // 1–2 word .hl pill next to the label ("↑477%")
+};
+<Scene label="…" heading="…" body="…" beats={beats} />   // max ONE per case`,
+  cardStack: `{ kind: "card-stack", cards: [{ image: ContentImage /* kind "image" */, label: "First proposal", caption?: "…" }, …] }
+<CardStack cards={cards} />`,
+  compare: `{ kind: "compare", before: ContentImage, after: ContentImage, label?: "signed document" }  // same canvas size
+<BeforeAfterSlider before={before} after={after} label="signed document" />`,
+  capture: `{ kind: "capture-sequence", frames: [{ image: ContentImage, label: "Look at the camera" }, …] }
+<CaptureSequence frames={frames} />`,
+  concierge: `{ kind: "concierge-chat", heading: "… helps you with:", title: "… Concierge",
+  channel?: "WhatsApp", backdrop?: ContentImage, items: string[] }   // last item (if > 2) = centred system pill
+<ConciergeChat heading=… title=… channel=… backdrop=… items=… />`,
+  bleed: `// Worth only — breaks out of the .cs-body column:
+{ kind: "bleed-video", video: ContentVideo, line: "One overlaid line." }
+{ kind: "bleed-image", image: ContentImage }      // closing image, no radius
+<BleedVideo video={video} line="…" />`,
+  featureGrid: `{ kind: "feature-grid", columns: 2 | 3, items: [
+  { number: "1", label?: "Business", title: "…", body: "…", highlight?: true, art?: "travel" }, … ] }
+<FeatureGrid columns={3} items={items} />`,
+  twoCol: `{ kind: "two-col-media", items: [{ image: ContentImage, kicker?: "…", title: "…", detail?: "…" }, …] }
+<TwoColMedia items={items} />`,
+  imageGrid: `{ kind: "image-grid", columns: 2 | 3 | 4, images: ContentImage[] }
+<ImageGrid columns={2} images={images} rounded? />`,
+  divider: `{ kind: "divider", variant?: "hatched" | "line" }   // variant ignored: always a 1px hairline
+<Divider />  <Divider tone="dark" />`,
+  chip: `{ kind: "chip", icon: "seeing-mountain" | "making-top" | "nps" | "interview" | "signature" | "worth", label: "…" }
+<SectionChip variant="seeing-mountain" label="Seeing the mountain" tone?="dark" />`,
+  stat: `// Result stat icon / card scene, or Adventure "illustrated-heading" / "illustrated-groups"
+{ kind: "illustration", scene: "rise" }      // StatIcon
+{ kind: "illustrated-heading", scene?: "rise", icon?: "lucide:scan-face", still?: true, heading: "…", body?: "…" }
+<div class="stat" data-in-view="false"><StatIllustration scene="rise" /></div>   // parent must flip data-in-view="true"`,
+  icon: `<AnimatedIcon name="lucide:scan-face" size={40} motion="breathe" | "rock" | "bounce" | "scan" | "none" />
+// sets: lucide, ph. Entrance needs an ancestor with data-in-view="true".`,
+  result: `result: {
+  heading: "…",
+  stats: [{ value: "+477%", label: "…", caption?: "…", icon: StatIcon, chart?: ContentImage }],  // 2 → two cols, else three
+  cards?: [{ heading: "…", body?: "…", image?: ContentImage, scene?: IllustrationScene }],
+}
+<Result content={caseStudy.result} />`,
+  header: `hero: {
+  image: ContentImage, intro: "…", bullets?: string[], mobileStack?: ContentImage[],
+  backdrop?: {
+    color: "rgb(19 212 124)",   // the image's own background colour → full-width band
+    until?: 100,                // % of the image height the band reaches (rest sits on paper)
+    align?: "center" | "end",   // "end": flush right/bottom (screens cropped on those sides)
+    fade?: true,                // soft-fade cropped right/bottom edges into the band
+    card?: true,                // complete screenshot as a centred card (padding + shadow)
+  },
+}`,
+  pains: `<ServicesPains lang="en" />   // whole section, copy from ui[lang].servicesPage.pains`,
+  audience: `<section data-glyphs> … <AudienceArt kind={1 | 2 | 3 | 4} /> … </section>
+// light strokes for the ink band; rises in when the [data-glyphs] parent gets data-play`,
+  principle: `<PrincipleArt kind={1 | 2 | 3 | 4} />   // 1 numbers · 2 no black box · 3 your stage · 4 extended`,
+  pillarArt: `type PillarArtKind = "ready" | "race" | "refer" | "travel" | "assistant" | "liquidity" | "conversation" | "leads";
+// used via ChecklistItem.art (pillars) or FeatureGridItem.art
+<PillarArt kind="race" />`,
+  phase: `<PhaseVisual phase={1 | 2 | 3 | 4} lang="en" label="Accessible description" />`,
+  finalCta: `<FinalCTA lang="en" />            // tone="dark" default: runs into the black footer
+<FinalCTA lang="en" tone="light" />`,
+  contactForm: `<ContactForm lang="en" | "es" theme?="light" | "dark" />
+// posts to /api/contact (?lang=es); reads ?status= / ?reason= / ?type= presets from the URL`,
+};
+
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+
+<BaseLayout
+  title="Design system (internal)"
+  description="Internal design-system catalogue for comandos.me. Not for public use."
+  noindex
+>
+  <div class="ds container-page">
+    <header class="ds-hero">
+      <p class="eyebrow ds-muted">Internal · noindex · not linked</p>
+      <h1 class="display-serif ds-h1">Design <span class="hl">system</span></h1>
+      <p class="ds-lead">
+        Living catalogue of the comandos.me building blocks. Every render below is the real component fed with data from
+        <code>src/data/case-studies/*.ts</code>, so what you see here is what ships. Each entry: name, file, when to use it, the data
+        shape, then the live render and its variants.
+      </p>
+    </header>
+
+    <div class="ds-shell">
+      <aside class="ds-index" aria-label="Catalogue index">
+        <nav>
+          <ol>
+            {
+              index.map((s, si) => (
+                <li>
+                  <a href={`#${s.id}`} class="ds-index-sec mono">
+                    {pad(si + 1)} {s.label}
+                  </a>
+                  <ul>
+                    {s.items.map(([id, label]) => (
+                      <li>
+                        <a href={`#${id}`}>{label}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))
+            }
+          </ol>
+        </nav>
+      </aside>
+
+      <div class="ds-main">
+        <!-- ===================== 01 FOUNDATIONS ===================== -->
+        <section class="ds-section" id="foundations" aria-labelledby="h-foundations">
+          <h2 class="ds-h2" id="h-foundations"><span class="mono">01</span> Foundations</h2>
+
+          <Entry
+            id="colour"
+            name="Colour tokens"
+            path="src/styles/global.css · @theme"
+            when="Paper + ink + cool greys; ONE teal accent used as a highlighter (pills, a single knob, the leading ribbon). Lime/sun/sky/crimson exist for rare data accents only."
+            notes={["Parsed live from <code>@theme</code> — edit global.css and this grid follows. Use as <code>var(--color-ink)</code> or Tailwind <code>text-ink</code>, <code>bg-paper-soft</code>, <code>border-border</code>."]}
+          >
+            <ul class="ds-swatches">
+              {
+                colors.map((c) => (
+                  <li class="ds-swatch">
+                    <span class="ds-swatch-chip" style={`background: ${c.value.startsWith("var(") ? `var(${c.name})` : c.value};`} />
+                    <span class="ds-swatch-name mono">{c.name.replace("--color-", "")}</span>
+                    <span class="ds-swatch-val mono">{c.value}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </Entry>
+
+          <Entry
+            id="type"
+            name="Type scale"
+            path="global.css · --font-sans / --font-mono · component styles"
+            when="Geist for everything (500 headings, -0.03 to -0.04em tracking, balanced wrap); Geist Mono for labels, numerals, tags and meta. Large figures go thin (300)."
+            notes={fonts.map((f) => `<code>${f.name}</code>: ${f.value}`)}
+          >
+            <ul class="ds-type">
+              {
+                typeScale.map((t) => (
+                  <li>
+                    <p class="ds-type-meta mono">
+                      {t.name} <span>{t.where}</span>
+                    </p>
+                    <p style={t.style}>{t.sample}</p>
+                  </li>
+                ))
+              }
+            </ul>
+          </Entry>
+
+          <Entry
+            id="radii"
+            name="Radii & shadow"
+            path="global.css · --radius-* · --shadow-card"
+            when="Mostly square: media and cards use radius-xs (4px); rounded-xl only on rounded media blocks; full for pills and buttons. One soft card shadow."
+          >
+            <ul class="ds-radii">
+              {
+                radii.map((r) => (
+                  <li>
+                    <span class="ds-radius-box" style={`border-radius: var(${r.name});`} />
+                    <span class="mono">{r.name.replace("--radius-", "")}</span>
+                    <span class="mono ds-muted">{r.value}</span>
+                  </li>
+                ))
+              }
+              {
+                shadows.map((s) => (
+                  <li>
+                    <span class="ds-radius-box ds-radius-box--shadow" style={`box-shadow: var(${s.name});`} />
+                    <span class="mono">{s.name.replace("--", "")}</span>
+                    <span class="mono ds-muted">card</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </Entry>
+
+          <Entry
+            id="signature"
+            name=".hl · .eyebrow · .mono · .display-serif"
+            path="src/styles/global.css · @layer components"
+            when=".hl = the Comandos signature: 1–2 key words in a teal outlined pill (nowrap ≥640px; never more than one per heading). .eyebrow = mono uppercase section label. .mono = mono voice without the uppercase."
+            code={`<h2 class="display-serif">Design that <span class="hl">compounds</span></h2>
+<p class="eyebrow">Seeing the mountain</p>
+<span class="mono">n = 10</span>`}
+          >
+            <div class="ds-variants">
+              <Variant label=".hl on paper">
+                <p class="display-serif ds-sample-h">Design that <span class="hl">compounds</span>.</p>
+              </Variant>
+              <Variant label=".hl on ink">
+                <div class="ds-ink-box">
+                  <p class="display-serif ds-sample-h">Let's build <span class="hl">together</span>.</p>
+                </div>
+              </Variant>
+              <Variant label=".eyebrow / .mono">
+                <p class="eyebrow">Seeing the mountain</p>
+                <p class="mono ds-mt">n = 10 · 2021–2023 · 03</p>
+              </Variant>
+            </div>
+          </Entry>
+
+          <Entry
+            id="buttons"
+            name="Buttons"
+            path="global.css (.btn-primary, .btn-outline, .btn-link) · Challenge.astro (.btn-dark-outline) · home/Services.astro (.btn-invert)"
+            when="Compact pills with a leading dot that turns teal on hover; min-height 40px. Primary = the one action of a block; outline = secondary; link = inline."
+            notes={[
+              "<strong>Dark variants are component-scoped</strong>, not global: <code>.btn-dark-outline</code> lives in Challenge.astro and <code>.btn-invert</code> in home/Services.astro. The dark row below is a <em>replica</em> of their CSS so you can see them; to reuse them elsewhere, promote both to global.css first.",
+            ]}
+            code={`<a class="btn-primary" href="…">Book a discovery call</a>
+<a class="btn-outline" href="…">See the work</a>
+<a class="btn-link" href="…">All projects</a>`}
+          >
+            <div class="ds-variants">
+              <Variant label="paper">
+                <div class="ds-row">
+                  <a class="btn-primary" href="#buttons">Primary</a>
+                  <a class="btn-outline" href="#buttons">Outline</a>
+                  <a class="btn-link" href="#buttons">Link</a>
+                </div>
+              </Variant>
+              <Variant label="ink · replicas" note=".btn-dark-outline · .btn-invert">
+                <div class="ds-ink-box ds-row">
+                  <a class="ds-btn-invert" href="#buttons">Invert</a>
+                  <a class="ds-btn-dark-outline" href="#buttons">Dark outline</a>
+                  <a class="btn-primary" href="#buttons">Primary</a>
+                </div>
+              </Variant>
+            </div>
+          </Entry>
+
+          <Entry
+            id="hairlines"
+            name="Hairlines, dividers & rhythm"
+            path="global.css (.hairline-t / .hairline-b) · Divider.astro · .cs-body / .container-page"
+            when="Hairlines over boxes. 1px --color-border between rows; a 1px INK rule opens a list/grid (Checklist, Result). Lists never close with a bottom hairline — the next divider or the section's space does."
+            notes={[
+              "<strong>Containers:</strong> <code>.container-page</code> = 1440 max, 20px → 38px side padding. <code>.cs-body</code> = case-study column: 786px max; ≥1200px it sits in the right 61% of the 1440 grid (left 39% = sticky section nav). Prose inside is capped at 42rem.",
+              "<strong>Vertical rhythm:</strong> Adventure blocks <code>space-y-8</code> (32px); Worth blocks <code>space-y-14 md:space-y-16</code> (56 → 64px); bleed bands start 56 → 64px below the column. Rows inside lists: 20–24px block padding.",
+              "<strong>Dark tone</strong> is reserved for the Challenge band, the closing form + footer and the /services audience band — no dark panels or glows inside light sections.",
+            ]}
+          >
+            <div class="ds-variants">
+              <Variant label="ink open + border rows">
+                <ul class="ds-rule-demo">
+                  <li>Row</li>
+                  <li>Row</li>
+                  <li>Row (no closing hairline)</li>
+                </ul>
+              </Variant>
+              <Variant label=".hairline-t / .hairline-b">
+                <p class="hairline-t hairline-b ds-pad">Content between hairlines</p>
+              </Variant>
+            </div>
+          </Entry>
+        </section>
+
+        <!-- ===================== 02 CHECKLIST ===================== -->
+        <section class="ds-section" id="checklist" aria-labelledby="h-checklist">
+          <h2 class="ds-h2" id="h-checklist"><span class="mono">02</span> Checklist — one data shape, ten layouts</h2>
+
+          <Entry
+            id="ck-rules"
+            name="Checklist"
+            path="src/components/case-study/Checklist.astro"
+            when="Any list in a case study. You don't pick the layout — the content does (labels, bodies, quotes); `layout` only opts into the five alternative looks. Write the copy, then check which branch it falls in."
+            code={code.ck}
+          >
+            <ol class="ds-rules">
+              <li>
+                <strong>Research → Scene.</strong> <em>Every</em> item has a non-empty <code>sub[]</code> → a pinned
+                <code>Scene</code>, one beat per item (label = mono tag, body = caption with a trailing “:” turned into “.”,
+                <code>sub</code> = the quotes set large). Wins over everything, including an explicit <code>layout</code>.
+              </li>
+              <li><strong><code>layout: "quotes"</code></strong> → pull-quote list. Label + body are joined into one quote; leading/trailing quote marks are stripped (a teal “ is drawn).</li>
+              <li>
+                <strong>Title row</strong> (decided before the rows are read): more than one item, the <em>first has no body</em>, and some later item
+                has one → item 1 is removed from the rows and shown as a mono title. If that first label starts with a figure
+                (<code>+20 pilots in …</code>, regex <code>^[+-−]?\d[\d.,]*(%|x|×|k)? text</code>) it becomes a <em>headline figure</em> instead —
+                <span class="ds-warn">but the figure is only rendered by the pillars layout; in any other branch it is silently dropped</span>.
+              </li>
+              <li>
+                <strong>Ratio rows</strong>: <em>every</em> row label starts <code>N/D</code> with D ≤ 20 (<code>8/10 users …</code>). A lowercase body
+                continues the sentence (joined); a capitalised body is a separate line. Then, by <code>layout</code>:
+                <ul>
+                  <li><code>"flow"</code> → alluvial ribbons — needs &gt; 1 row and <em>one shared D</em>; otherwise falls back to the pictogram.</li>
+                  <li><code>"chart"</code> → bar chart widget, sorted by value, “users …” prefix dropped; “n = D” head when all D match.</li>
+                  <li><code>"rings"</code> → a progress ring per stat. <code>"cards"</code> → stat cards with a 2×5 people grid.</li>
+                  <li>no layout → pictogram rows (one person per D).</li>
+                </ul>
+                D &gt; 20 is not a ratio: it falls through to metric rows.
+              </li>
+              <li>
+                <strong>Metric rows</strong>: ≥ 2 rows and <em>every</em> label starts with a figure (<code>69% less pages:</code>,
+                <code>-37% …</code>, <code>2x …</code>). The figure is set large and thin. A <em>single</em> figure row is not a metric (→ plain list).
+                <code>layout: "chart"</code> also accepts metrics when every figure ends in <code>%</code>.
+              </li>
+              <li>
+                <strong>Pillars</strong>: 2–4 rows and <em>every</em> row has a body → hairline grid with 01/02 numbers (3 → three columns, 2/4 → two).
+                <code>art</code> renders only here (PillarArt above the number). If every body ends in “?” they're set large as questions.
+                A lowercase body joins the title.
+              </li>
+              <li><strong>Plain list</strong> — everything else: black check discs, bold label + muted body.</li>
+            </ol>
+            <p class="ds-note">
+              Gotchas: <code>layout: "cards" | "rings"</code> do nothing outside ratio rows. 5+ label/body rows are a plain list, not pillars.
+              Only one <code>layout: "flow"</code> per page (its SVG uses a fixed <code>clipPath id="fl-reveal"</code>). Ratio, chart, rings and flow
+              animate in on scroll (<code>data-ratio</code> → <code>data-in</code>) unless already on screen at load.
+            </p>
+          </Entry>
+
+          <Entry
+            id="ck-list"
+            name="Checklist · plain list"
+            path="Checklist.astro → default branch"
+            when="Requirements, deliverables, findings that don't share a shape."
+            code={code.ckList}
+          >
+            <div class="ds-variants">
+              <Variant label="generic sample" note="no case uses the plain list today" wide>
+                <Checklist items={plainSample} />
+              </Variant>
+            </div>
+          </Entry>
+
+          <Entry
+            id="ck-pillars"
+            name="Checklist · pillars"
+            path="Checklist.astro → isPillars"
+            when="2–4 strategic pillars / bets (label + why). Add `art` for the isometric drawings; questions get the large setting."
+            code={code.ckPillars}
+          >
+            <div class="ds-variants">
+              <Variant label="questions · mipos-restaurant-pos" note="all bodies end in ?" wide>
+                <Checklist items={ckQuestions.items} />
+              </Variant>
+              <Variant label="with art · stadio-apple-watch" wide>
+                <Checklist items={ckArt.items} />
+              </Variant>
+              <Variant label="headline figure · truora-truconnect" note="first row “+20 pilots …”" wide>
+                <Checklist items={ckLead.items} />
+              </Variant>
+              <Variant label="title row · yaydoo-design-system" note="first row has no body" wide>
+                <Checklist items={ckTitled.items} />
+              </Variant>
+            </div>
+          </Entry>
+
+          <Entry id="ck-metric" name="Checklist · metric rows" path="Checklist.astro → isMetric" when="Outcome lists where every line leads with a number." code={code.ckMetric}>
+            <Variant label="truora-report" wide>
+              <Checklist items={ckMetric.items} />
+            </Variant>
+          </Entry>
+
+          <Entry
+            id="ck-ratio"
+            name="Checklist · ratio pictogram / cards / rings"
+            path="Checklist.astro → isRatio"
+            when="“N of D users” research findings with small samples (D ≤ 20). Same data, three looks — pick by density: rows for 3+, cards for 2 headline stats, rings for 2–4 side by side."
+            notes={["All three below use the exact same items (karta-card, “Conversations with users in 5 countries”). Live site uses <code>cards</code>; <code>rings</code> currently has no user."]}
+            code={code.ckRatio}
+          >
+            <div class="ds-variants">
+              <Variant label="no layout → pictogram rows" wide>
+                <Checklist items={ckCards.items} />
+              </Variant>
+              <Variant label='layout: "cards"' note="karta-card" wide>
+                <Checklist items={ckCards.items} layout="cards" />
+              </Variant>
+              <Variant label='layout: "rings"' note="unused on the site" wide>
+                <Checklist items={ckCards.items} layout="rings" />
+              </Variant>
+            </div>
+          </Entry>
+
+          <Entry
+            id="ck-chart"
+            name='Checklist · layout: "chart"'
+            path="Checklist.astro → isChart"
+            when="Ranked findings (percent or N/D) read like an analytics widget; the top row gets the teal knob."
+            code={code.ckChart}
+          >
+            <div class="ds-variants">
+              <Variant label="% metrics · legalario-e-signature" wide>
+                <Checklist items={ckChart.items} layout="chart" />
+              </Variant>
+              <Variant label="ratio rows · karta-card flow data as chart" wide>
+                <Checklist items={ckFlow.items} layout="chart" />
+              </Variant>
+            </div>
+          </Entry>
+
+          <Entry
+            id="ck-flow"
+            name='Checklist · layout: "flow"'
+            path="Checklist.astro → isFlow"
+            when="One interview sample splitting into overlapping findings (the same people said several things). Ribbon width at the top = share of the sample; slot width below ∝ mentions."
+            code={code.ckFlow}
+          >
+            <Variant label="karta-card · “In a matter of days”" wide>
+              <Checklist items={ckFlow.items} layout="flow" />
+            </Variant>
+          </Entry>
+
+          <Entry id="ck-quotes" name='Checklist · layout: "quotes"' path="Checklist.astro → quotes" when="Users' own words, short, no attribution." code={code.ckQuotes}>
+            <Variant label="legalario-e-signature" wide>
+              <Checklist items={ckQuotes.items} layout="quotes" />
+            </Variant>
+          </Entry>
+
+          <Entry
+            id="ck-research"
+            name="Checklist · research → Scene"
+            path="Checklist.astro → isResearch → Scene.astro"
+            when="Several research sources, each with a caption and 1–3 verbatim quotes. ≥900px it pins and crossfades one source per scroll step (N × 100svh tall); phones / reduced motion stack the beats."
+            code={code.ckResearch}
+          >
+            <Checklist items={ckResearch.items} />
+          </Entry>
+
+          <Entry
+            id="ck-usage"
+            name="Where each layout is used"
+            path="classified by src/components/ds/catalogue.ts (mirror of Checklist's rules)"
+            when="Every checklist in every case study (incl. step tails and illustrated groups), resolved with the rules above. Use it to find a precedent before writing a new list."
+          >
+            <div class="ds-table-wrap">
+              <table class="ds-table">
+                <thead>
+                  <tr><th class="mono">Resolved layout</th><th class="mono">#</th><th class="mono">Case · where · first label</th></tr>
+                </thead>
+                <tbody>
+                  {
+                    resolvedOrder.map((r) => {
+                      const rows = usageBy(r);
+                      return (
+                        <tr>
+                          <td class="mono">{r}</td>
+                          <td class="mono">{rows.length}</td>
+                          <td>
+                            {rows.length === 0 ? (
+                              <span class="ds-muted">— no current user</span>
+                            ) : (
+                              <ul>
+                                {rows.map((u) => (
+                                  <li>
+                                    <a href={`/projects/${u.slug}/`}>{u.slug}</a> <span class="ds-muted">· {u.where}{u.flags.length ? ` · ${u.flags.join(", ")}` : ""}</span> — {u.items[0]?.label}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  }
+                </tbody>
+              </table>
+            </div>
+          </Entry>
+        </section>
+
+        <!-- ===================== 03 CASE-STUDY BLOCKS ===================== -->
+        <section class="ds-section" id="blocks" aria-labelledby="h-blocks">
+          <h2 class="ds-h2" id="h-blocks"><span class="mono">03</span> Case-study blocks</h2>
+
+          <Entry
+            id="scene"
+            name="Scene"
+            path="src/components/case-study/Scene.astro"
+            when="The one before → after (or iteration) story per case: a pinned stage whose media crossfades per scroll step. Beats can be images, videos or quotes (see research → Scene above)."
+            notes={[
+              "Sticky: ≥900px the wrapper is <code>beats × 100svh</code> tall and the stage pins under the header. Any ancestor with <code>overflow: hidden</code> or a transform kills the pin — keep it out of clipped containers. Below 900px, under reduced motion or without JS the beats stack in flow.",
+            ]}
+            code={code.scene}
+          >
+            <Scene label={sceneImages.label} heading={sceneImages.heading} body={sceneImages.body} beats={sceneImages.beats} />
+          </Entry>
+
+          <Entry id="cardstack" name="CardStack" path="src/components/case-study/CardStack.astro" when="A fan of design iterations (cut-out cards) that advances on its own while on screen, story-style tabs under it. No JS / reduced motion: static grid." code={code.cardStack}>
+            <CardStack cards={cardStack.cards} />
+          </Entry>
+
+          <Entry id="compare" name="BeforeAfterSlider" path="src/components/case-study/BeforeAfterSlider.astro" when="Same screen, before vs new, on one canvas (both images the same size). Range input drives the clip; one peek sweep on first view." code={code.compare}>
+            <div class="ds-narrow">
+              <BeforeAfterSlider before={compare.before} after={compare.after} label={compare.label} />
+            </div>
+          </Entry>
+
+          <Entry id="capture" name="CaptureSequence" path="src/components/case-study/CaptureSequence.astro" when="A short screen-by-screen flow (liveness, onboarding) highlighted frame by frame while in view." code={code.capture}>
+            <CaptureSequence frames={capture.frames} />
+          </Entry>
+
+          <Entry id="concierge" name="ConciergeChat" path="src/components/case-study/ConciergeChat.astro" when="A service that runs on a chat channel: topics arrive as messages over a photo. WhatsApp palette on purpose (product depiction), no logo." code={code.concierge}>
+            <ConciergeChat heading={concierge.heading} title={concierge.title} channel={concierge.channel} backdrop={concierge.backdrop} items={concierge.items} />
+          </Entry>
+
+          <Entry
+            id="bleed"
+            name="BleedVideo · bleed-image"
+            path="src/components/case-study/BleedVideo.astro · Worth.astro (bleed-image → ContentImage)"
+            when="Edge-to-edge band that breaks out of the case column: a looping clip with one overlaid line, or the closing collage. Worth only; Worth splits the column around them (no 100vw math)."
+            code={code.bleed}
+            flush
+          >
+            <BleedVideo video={bleedVideo.video} line={bleedVideo.line} />
+            <div class="ds-bleed-image">
+              <ContentImage image={bleedImage.image} sizes="100vw" />
+            </div>
+          </Entry>
+
+          <Entry id="featuregrid" name="FeatureGrid" path="src/components/case-study/FeatureGrid.astro" when="2–3 product bets with a number, a small label and an optional drawing; `highlight` marks the one that matters." code={code.featureGrid}>
+            <FeatureGrid columns={featureGrid.columns} items={featureGrid.items} />
+          </Entry>
+
+          <Entry id="twocol" name="TwoColMedia" path="src/components/case-study/TwoColMedia.astro" when="Two (or more) screens side by side, each with its own title and detail." code={code.twoCol}>
+            <TwoColMedia items={twoCol.items} />
+          </Entry>
+
+          <Entry id="imagegrid" name="ImageGrid" path="src/components/case-study/ImageGrid.astro" when="2–4 equal images in a row (stacks on mobile). No captions." code={code.imageGrid}>
+            <ImageGrid columns={imageGrid.columns} images={imageGrid.images} />
+          </Entry>
+
+          <Entry id="divider" name="Divider" path="src/components/case-study/Divider.astro" when="Section break inside a case. Always a 1px hairline (the old 'hatched' variant is ignored). Skipped automatically right after media." code={code.divider}>
+            <div class="ds-variants">
+              <Variant label="tone: light"><Divider /></Variant>
+              <Variant label="tone: dark"><div class="ds-ink-box"><Divider tone="dark" /></div></Variant>
+            </div>
+          </Entry>
+
+          <Entry id="chip" name="SectionChip" path="src/components/case-study/SectionChip.astro" when="Opens a case section or a sub-phase (Seeing the mountain / Making top). Monochrome: only the glyph changes." code={code.chip}>
+            <div class="ds-variants">
+              <Variant label="tone: light">
+                <div class="ds-chips">{chipVariants.map((v) => <SectionChip variant={v} label={v} />)}</div>
+              </Variant>
+              <Variant label="tone: dark">
+                <div class="ds-ink-box ds-chips">{chipVariants.map((v) => <SectionChip variant={v} label={v} tone="dark" />)}</div>
+              </Variant>
+            </div>
+          </Entry>
+
+          <Entry
+            id="statillu"
+            name="StatIllustration"
+            path="src/components/case-study/StatIllustration.astro"
+            when="Small animated line scenes for Result stats/cards and illustrated headings. Strokes draw in when the .stat parent gets data-in-view='true' (Adventure/Result set it; this page has its own observer)."
+            code={code.stat}
+          >
+            <ul class="ds-scene-grid">
+              {
+                scenes.map((s) => (
+                  <li>
+                    <div class="stat" data-ds-stat data-in-view="false">
+                      <StatIllustration scene={s} />
+                    </div>
+                    <span class="mono">{s}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </Entry>
+
+          <Entry id="animicon" name="AnimatedIcon" path="src/components/case-study/AnimatedIcon.astro" when="An Iconify glyph (lucide / ph) with an ambient motion, for illustrated headings when no StatIllustration fits." code={code.icon}>
+            <ul class="ds-icon-grid">
+              {
+                iconMotions.map((i) => (
+                  <li data-ds-stat data-in-view="false">
+                    <AnimatedIcon name={i.name} motion={i.motion} />
+                    <span class="mono">{i.motion}</span>
+                    <span class="mono ds-muted">{i.name}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </Entry>
+
+          <Entry
+            id="result"
+            name="Result"
+            path="src/components/case-study/Result.astro"
+            when="The closing numbers of a case: huge thin figures with a small unit, label + caption, optional impact cards. 2 stats → two columns, otherwise three. Numbers count up once in view."
+            notes={["Renders its own <code>section#result</code> + <code>.container-page</code>; data below is karta-card's."]}
+            code={code.result}
+            flush
+          >
+            <Result content={kartaCard.result} />
+          </Entry>
+
+          <Entry
+            id="header"
+            name="CaseStudyHeader · hero.backdrop"
+            path="src/components/case-study/CaseStudyHeader.astro"
+            when="Hero image of a case. Default: full-bleed. Opt into `backdrop` when the screenshot has its own coloured background — the band continues that colour edge to edge and the image sits contained in it."
+            notes={[
+              "Not rendered here (it needs a full project record + the page H1). See it live:",
+              "<code>backdrop: { color }</code> (until defaults to 100) → <a href='/projects/legalario-emails/'>/projects/legalario-emails/</a>",
+              "<code>backdrop: { color, card: true }</code> → complete dashboard as a centred card on the band → <a href='/projects/truora-truconnect/'>/projects/truora-truconnect/</a>",
+              "<code>until: &lt;100</code> — band stops part-way down the image (e.g. a phone poking out of the card sits on paper). <code>align: \"end\"</code> — image flush to the band's right/bottom edges. <code>fade: true</code> — cropped right/bottom edges dissolve into the band. <strong>All three are available but currently unused</strong> (fade was replaced by card on TruConnect).",
+              "No backdrop → full-bleed hero, transparent images float on paper (karta-card).",
+            ]}
+            code={code.header}
+          />
+        </section>
+
+        <!-- ===================== 04 ISOMETRIC ===================== -->
+        <section class="ds-section" id="iso" aria-labelledby="h-iso">
+          <h2 class="ds-h2" id="h-iso"><span class="mono">04</span> Isometric drawings</h2>
+          <p class="ds-note">
+            One vocabulary, built with <code>src/components/services/iso.ts</code> (<code>box</code>, <code>pt</code>, <code>fitViewBox</code>): 1px ink strokes,
+            paper/grey faces, a single teal block per drawing; inverted (light strokes) on the ink band.
+          </p>
+
+          <Entry
+            id="pains"
+            name="ServicesPains"
+            path="src/components/services/ServicesPains.astro"
+            when="/services 'The reality today' — four founder pains, each with its drawing."
+            notes={["Renders the whole section with its i18n copy; the four drawings are inline in the component and can't be used on their own without extracting them (no change made)."]}
+            code={code.pains}
+            flush
+          >
+            <ServicesPains lang="en" />
+          </Entry>
+
+          <Entry id="audience" name="AudienceArt" path="src/components/services/AudienceArt.astro" when="/services audience band (dark). 1 Before PMF · 2 After PMF · 3 Maturing · 4 No design lead." code={code.audience} dark>
+            <ul class="ds-art-grid" data-glyphs data-play>
+              {
+                ([1, 2, 3, 4] as const).map((k) => (
+                  <li>
+                    <div class="ds-art"><AudienceArt kind={k} /></div>
+                    <span class="mono">kind {k}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </Entry>
+
+          <Entry id="principle" name="PrincipleArt" path="src/components/method/PrincipleArt.astro" when="/method principles (“The rules we climb by”). 1 Numbers, not opinions · 2 No black box · 3 Your stage, this order · 4 Built to be extended." code={code.principle}>
+            <ul class="ds-art-grid">
+              {
+                ([1, 2, 3, 4] as const).map((k) => (
+                  <li>
+                    <div class="ds-art"><PrincipleArt kind={k} /></div>
+                    <span class="mono">kind {k}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </Entry>
+
+          <Entry id="pillarart" name="PillarArt" path="src/components/case-study/PillarArt.astro" when="Small drawing above a Checklist pillar or a FeatureGrid cell (`art`). Add a new kind here when a case needs one." code={code.pillarArt}>
+            <ul class="ds-art-grid ds-art-grid--4">
+              {
+                pillarKinds.map((k) => (
+                  <li>
+                    <div class="ds-art"><PillarArt kind={k} /></div>
+                    <span class="mono">{k}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </Entry>
+        </section>
+
+        <!-- ===================== 05 BUILDING BLOCKS ===================== -->
+        <section class="ds-section" id="building" aria-labelledby="h-building">
+          <h2 class="ds-h2" id="h-building"><span class="mono">05</span> Services · method · home building blocks</h2>
+
+          <Entry id="phase" name="PhaseVisual" path="src/components/method/PhaseVisual.astro" when="/method phases: code-drawn animated diagrams (signals → clusters, options → bet, tokens → screen, A/B weeks). Plays while ≥35% in view; SSR = settled frame." code={code.phase}>
+            <ul class="ds-phase-grid">
+              {
+                ([1, 2, 3, 4] as const).map((p) => (
+                  <li>
+                    <PhaseVisual phase={p} lang="en" label={`Method phase ${p} diagram`} />
+                    <span class="mono">phase {p}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </Entry>
+
+          <Entry
+            id="finalcta"
+            name="FinalCTA"
+            path="src/components/home/FinalCTA.astro"
+            when="Closing block of every marketing page: promise + bullets + the contact form inline. Dark by default so it runs into the footer (and the header turns black over it)."
+            notes={["Rendered inside an <code>inert</code> wrapper with submit blocked — it cannot send anything from /ds/."]}
+            code={code.finalCta}
+            flush
+          >
+            <div class="ds-inert" inert>
+              <FinalCTA lang="en" />
+            </div>
+          </Entry>
+
+          <Entry
+            id="contactform"
+            name="ContactForm"
+            path="src/components/contact/ContactForm.astro"
+            when="The single lead form (FinalCTA, /contact). Multi-select 'What do you need?' chips (dropdown on phones), per-field validation incl. E.164 WhatsApp, Turnstile."
+            notes={["Shown live inside FinalCTA above (dark theme). Not rendered a second time: two instances on one page would duplicate field ids (<code>#name</code>, <code>#email</code>…). Light theme: see <a href='/contact/'>/contact/</a>."]}
+            code={code.contactForm}
+          />
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  // StatIllustration / AnimatedIcon entrance: flip data-in-view like
+  // Adventure.astro does on case pages.
+  const els = document.querySelectorAll<HTMLElement>("[data-ds-stat]");
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          (e.target as HTMLElement).setAttribute("data-in-view", "true");
+          io.unobserve(e.target);
+        }),
+      { threshold: 0.3 },
+    );
+    els.forEach((el) => io.observe(el));
+  } else {
+    els.forEach((el) => el.setAttribute("data-in-view", "true"));
+  }
+  // Belt and braces: nothing inside the catalogue's inert demo can submit.
+  document.addEventListener(
+    "submit",
+    (e) => {
+      if ((e.target as HTMLElement).closest(".ds-inert")) e.preventDefault();
+    },
+    true,
+  );
+</script>
+
+<style is:global>
+  /* The footer's own closing CTA is noise on a working tool. */
+  .footer-cta {
+    display: none !important;
+  }
+
+  .ds {
+    padding-block: 3rem 6rem;
+  }
+  .ds code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
+  .ds-muted {
+    color: var(--color-muted);
+  }
+  .ds-hero {
+    max-width: 52rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--color-ink);
+  }
+  .ds-h1 {
+    margin-top: 0.75rem;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+  }
+  .ds-lead {
+    margin-top: 1rem;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+
+  /* Shell: sticky index + main column. */
+  .ds-shell {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  @media (min-width: 1024px) {
+    .ds-shell {
+      grid-template-columns: 13.5rem minmax(0, 1fr);
+      gap: 3rem;
+    }
+    .ds-index {
+      position: sticky;
+      top: 5.5rem;
+      align-self: start;
+      max-height: calc(100svh - 6.5rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+  }
+  .ds-index ol {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .ds-index-sec {
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+  .ds-index ul {
+    margin-top: 0.5rem;
+    display: grid;
+    gap: 0.2rem;
+    font-size: 0.875rem;
+  }
+  .ds-index ul a {
+    color: var(--color-muted);
+  }
+  .ds-index a:hover {
+    color: var(--color-ink);
+  }
+  /* Mobile/tablet: compact stacked index. */
+  @media (max-width: 1023px) {
+    .ds-index {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .ds-index ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.9rem;
+    }
+  }
+
+  .ds-main {
+    min-width: 0;
+  }
+  .ds-section {
+    padding-top: 1rem;
+  }
+  .ds-section + .ds-section {
+    margin-top: 4rem;
+  }
+  .ds-h2 {
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-ink);
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+  }
+  .ds-h2 .mono {
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    vertical-align: middle;
+    color: var(--color-muted);
+    margin-right: 0.5rem;
+  }
+  [id] {
+    scroll-margin-top: 5.5rem;
+  }
+
+  /* Entry panel. No overflow clipping: Scene needs position: sticky. */
+  .ds-entry {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+    background: var(--color-paper);
+  }
+  .ds-entry + .ds-entry {
+    margin-top: 1.5rem;
+  }
+  .ds-entry-head {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1.25rem 1.25rem 1rem;
+  }
+  .ds-entry-name {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.3;
+  }
+  .ds-entry-path {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    overflow-wrap: anywhere;
+  }
+  .ds-entry-when {
+    max-width: 46rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+  .ds-entry-spec {
+    display: grid;
+    gap: 1rem;
+    padding: 0 1.25rem 1.25rem;
+  }
+  .ds-notes {
+    display: grid;
+    gap: 0.5rem;
+    max-width: 46rem;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+  .ds-notes a,
+  .ds-table a,
+  .ds-note a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .ds-code {
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 1rem 1.1rem;
+    border-radius: var(--radius-xs);
+    background: var(--color-paper-soft);
+    border: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--color-ink);
+    white-space: pre;
+    tab-size: 2;
+  }
+  .ds-code code {
+    font-size: inherit;
+  }
+  .ds-live {
+    padding: 1.5rem 1.25rem;
+    border-top: 1px solid var(--color-border);
+  }
+  @media (min-width: 768px) {
+    .ds-live {
+      padding: 2rem;
+    }
+  }
+  .ds-live--flush {
+    padding: 0 !important;
+  }
+  .ds-live--dark {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-radius: 0 0 var(--radius-xs) var(--radius-xs);
+  }
+  /* Components that wrap themselves in .cs-body: drop the ≥1200 39% offset. */
+  .ds-live .cs-body {
+    max-width: none;
+    padding-inline: 0;
+  }
+
+  .ds-variants {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  }
+  .ds-variant {
+    min-width: 0;
+  }
+  .ds-variant--wide {
+    grid-column: 1 / -1;
+  }
+  .ds-variant-label {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed var(--color-border);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+  .ds-variant-note {
+    color: var(--color-muted);
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  .ds-variant--wide + .ds-variant--wide {
+    margin-top: 1.5rem;
+  }
+  .ds-note {
+    max-width: 46rem;
+    margin: 0 0 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-muted);
+  }
+  .ds-live .ds-note {
+    margin: 1.5rem 0 0;
+  }
+  .ds-warn {
+    background: color-mix(in srgb, var(--color-accent-crimson) 10%, transparent);
+    color: var(--color-ink);
+  }
+
+  /* Foundations */
+  .ds-swatches {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  }
+  .ds-swatch {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+  .ds-swatch-chip {
+    height: 4.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+    margin-bottom: 0.4rem;
+  }
+  .ds-swatch-name {
+    font-size: 0.8125rem;
+  }
+  .ds-swatch-val {
+    font-size: 0.7rem;
+    color: var(--color-muted);
+    overflow-wrap: anywhere;
+  }
+  .ds-type li {
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    overflow-wrap: anywhere;
+  }
+  .ds-type li:first-child {
+    border-top: 1px solid var(--color-ink);
+  }
+  .ds-type li:last-child {
+    border-bottom: 0;
+  }
+  .ds-type-meta {
+    margin-bottom: 0.6rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .ds-type-meta span {
+    margin-left: 0.5rem;
+    color: var(--color-muted);
+    text-transform: none;
+  }
+  .ds-radii {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  .ds-radii li {
+    display: grid;
+    gap: 0.3rem;
+    justify-items: start;
+    font-size: 0.75rem;
+  }
+  .ds-radius-box {
+    width: 5rem;
+    height: 3.5rem;
+    border: 1px solid var(--color-ink);
+    background: var(--color-paper-soft);
+    margin-bottom: 0.3rem;
+  }
+  .ds-radius-box--shadow {
+    border-color: transparent;
+    background: var(--color-paper);
+    border-radius: var(--radius-xs);
+  }
+  .ds-sample-h {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+  }
+  .ds-ink-box {
+    padding: 1.5rem;
+    border-radius: var(--radius-xs);
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .ds-mt {
+    margin-top: 0.5rem;
+  }
+  .ds-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+  }
+  .ds-pad {
+    padding-block: 1rem;
+  }
+  .ds-rule-demo {
+    border-top: 1px solid var(--color-ink);
+  }
+  .ds-rule-demo li {
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .ds-rule-demo li:last-child {
+    border-bottom: 0;
+  }
+
+  /* Replicas of the component-scoped dark buttons (see Buttons notes). */
+  .ds-btn-invert,
+  .ds-btn-dark-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 1.15rem 0.5rem 1rem;
+    min-height: 2.5rem;
+    border-radius: 9999px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+  .ds-btn-invert::before,
+  .ds-btn-dark-outline::before {
+    content: "";
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background: currentColor;
+    transition: background-color 0.2s ease;
+  }
+  .ds-btn-invert {
+    background: #fff;
+    color: var(--color-ink);
+    border: 1px solid #fff;
+  }
+  .ds-btn-invert:hover {
+    background: transparent;
+    color: #fff;
+  }
+  .ds-btn-dark-outline {
+    background: transparent;
+    color: var(--color-paper);
+    border: 1px solid var(--color-paper);
+  }
+  .ds-btn-dark-outline:hover {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  .ds-btn-invert:hover::before,
+  .ds-btn-dark-outline:hover::before {
+    background: var(--color-accent);
+  }
+  .ds-btn-invert:focus-visible,
+  .ds-btn-dark-outline:focus-visible {
+    outline-color: #fff;
+  }
+
+  /* Checklist rules */
+  .ds-rules {
+    display: grid;
+    gap: 0.9rem;
+    max-width: 50rem;
+    padding-left: 1.25rem;
+    list-style: decimal;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+  .ds-rules ul {
+    margin: 0.4rem 0;
+    padding-left: 1.1rem;
+    list-style: disc;
+    display: grid;
+    gap: 0.2rem;
+  }
+  .ds-rules strong {
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+  .ds-table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .ds-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+  .ds-table th {
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    padding: 0 0.75rem 0.6rem 0;
+    border-bottom: 1px solid var(--color-ink);
+  }
+  .ds-table td {
+    vertical-align: top;
+    padding: 0.75rem 0.75rem 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .ds-table td:first-child {
+    white-space: nowrap;
+  }
+  .ds-table li + li {
+    margin-top: 0.25rem;
+  }
+
+  /* Blocks */
+  .ds-narrow {
+    max-width: 40rem;
+  }
+  .ds-bleed-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0 !important;
+  }
+  .ds-bleed-image {
+    margin-top: 1px;
+  }
+  .ds-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+  }
+  .ds-scene-grid {
+    display: grid;
+    gap: 1px;
+    grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+    background: var(--color-border);
+    border: 1px solid var(--color-border);
+  }
+  .ds-scene-grid li,
+  .ds-icon-grid li {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 0.6rem;
+    padding: 1.25rem 0.5rem 1rem;
+    background: var(--color-paper);
+    font-size: 0.75rem;
+    text-align: center;
+  }
+  .ds-icon-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  }
+  .ds-icon-grid li {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+  }
+  .ds-art-grid {
+    display: grid;
+    gap: 1.5rem 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (min-width: 768px) {
+    .ds-art-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .ds-art-grid li {
+    display: grid;
+    gap: 0.6rem;
+    font-size: 0.75rem;
+  }
+  .ds-art {
+    display: flex;
+    align-items: center;
+    height: 7rem;
+  }
+  .ds-art svg {
+    max-height: 100%;
+    max-width: 100%;
+  }
+  .ds-phase-grid {
+    display: grid;
+    gap: 2rem 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .ds-phase-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .ds-phase-grid li {
+    display: grid;
+    gap: 0.6rem;
+    min-width: 0;
+    font-size: 0.75rem;
+  }
+</style>
