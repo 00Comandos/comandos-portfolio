@@ -103,6 +103,8 @@ export type TwoColMediaItem = {
 
 export type AdventureBlock =
   | { kind: "intro"; text: string }
+  /** Pinned before → after sequence (same renderer as the Worth scene). */
+  | { kind: "scene"; label?: string; heading?: string; body?: string; beats: readonly SceneBeat[] }
   | { kind: "caption"; text: string }
   | { kind: "spacer"; size?: "sm" | "md" | "lg" }
   | { kind: "checklist"; items: readonly ChecklistItem[] }

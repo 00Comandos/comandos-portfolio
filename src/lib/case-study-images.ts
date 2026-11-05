@@ -36,6 +36,10 @@ export function extractCaseStudyImages(cs: CaseStudyContent): Extract<
       block.items.forEach((i) => push(i.image));
     } else if (block.kind === "prose-with-image") {
       push(block.image);
+    } else if (block.kind === "scene") {
+      block.beats.forEach((b) => {
+        if (b.media && b.media.kind !== "video") push(b.media);
+      });
     }
   }
 

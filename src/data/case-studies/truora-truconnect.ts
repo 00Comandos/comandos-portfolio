@@ -189,7 +189,6 @@ export const truoraTruConnect: CaseStudyContent = {
           "After 2 months and 2 weeks, we had the new MVP ready to test with 20 pilots. It required 3 iterations that allowed us to deliver and validate a product that quickly reached its own Product-Market-Fit.",
       },
       { kind: "image", image: resultMainImage },
-      { kind: "video", video: afterVideo },
       {
         kind: "checklist",
         items: [
@@ -205,6 +204,11 @@ export const truoraTruConnect: CaseStudyContent = {
               "We generated the necessary empowerment in the clients that the result was incredible. Truora implemented a similar strategy with Hubspot.",
           },
         ],
+      },
+      {
+        kind: "bleed-video",
+        video: afterVideo,
+        line: "Conversations, funnel and reactivation, tracked from one dashboard.",
       },
     ],
   },

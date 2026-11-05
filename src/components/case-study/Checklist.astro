@@ -21,10 +21,26 @@ const RATIO = /^(\d+)\s*\/\s*(\d+)\s*(.*)$/;
 const ratios = !isResearch
   ? rows.map((r) => {
       const m = r.label.match(RATIO);
-      return m && +m[2] <= 20 ? { n: +m[1], d: +m[2], text: [m[3], r.body].filter(Boolean).join(" ") } : null;
+      if (!m || +m[2] > 20) return null;
+      const text = m[3].replace(/:\s*$/, "");
+      // Lowercase body = the same sentence continues ("users" + "completed…").
+      const joins = !!r.body && /^[a-z]/.test(r.body);
+      return { n: +m[1], d: +m[2], text: joins ? `${text} ${r.body}` : text, body: joins ? undefined : r.body };
     })
   : [];
 const isRatio = ratios.length > 0 && ratios.every(Boolean);
+
+// "69% less pages:" / "-37% support tickets:" lists → metric rows: the
+// figure set large and thin, the rest of the label + body beside it.
+const METRIC = /^([+\-−]?\d[\d.,]*\s*(?:%|x|×)?)\s*(.*?)\s*:?\s*$/;
+const metrics =
+  !isResearch && !isRatio
+    ? rows.map((r) => {
+        const m = r.label.match(METRIC);
+        return m ? { fig: m[1].replace(/\s+/g, ""), label: m[2], body: r.body } : null;
+      })
+    : [];
+const isMetric = metrics.length > 1 && metrics.every(Boolean);
 
 const trimColon = (s: string) => s.replace(/:\s*$/, ".");
 ---
@@ -58,8 +74,26 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
               ))}
             </span>
             <p class="ratio-text">
-              <span class="sr-only">{r!.n} of {r!.d} </span>
-              {r!.text}
+              <span class="metric-label">
+                <span class="sr-only">{r!.n} of {r!.d} </span>
+                {r!.text}
+              </span>
+              {r!.body && <span class="metric-body">{r!.body}</span>}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ) : isMetric ? (
+    <div class="metric not-prose">
+      {listTitle && <p class="checklist-title">{listTitle}</p>}
+      <ul class="ratio-list">
+        {metrics.map((m) => (
+          <li class="metric-row">
+            <p class="metric-fig">{m!.fig}</p>
+            <p class="metric-text">
+              {m!.label && <span class="metric-label">{m!.label}</span>}
+              {m!.body && <span class="metric-body">{m!.body}</span>}
             </p>
           </li>
         ))}
@@ -178,10 +212,56 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
   }
   .ratio-text {
     grid-area: text;
+    display: grid;
+    gap: 0.35rem;
     font-size: 1rem;
     line-height: 1.45;
     color: var(--color-ink);
-    max-width: 30ch;
+    max-width: 38rem;
+  }
+
+  /* ---------- Metric rows ("69% less pages") ---------- */
+  .metric-row {
+    display: grid;
+    gap: 0.5rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  @media (min-width: 640px) {
+    .metric-row {
+      grid-template-columns: 9rem minmax(0, 1fr);
+      gap: 2rem;
+      align-items: center;
+      padding-block: 1.5rem;
+    }
+  }
+  .metric-fig {
+    font-size: clamp(2.5rem, 4.5vw, 3.5rem);
+    font-weight: 300;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .metric-text {
+    display: grid;
+    gap: 0.35rem;
+    max-width: 38rem;
+  }
+  .metric-label {
+    font-size: 1.125rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .metric-label::first-letter {
+    text-transform: uppercase;
+  }
+  .metric-body {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-muted);
   }
 
   /* ---------- Plain list ---------- */

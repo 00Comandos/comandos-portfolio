@@ -211,7 +211,11 @@ export const miposDarkKitchen: CaseStudyContent = {
         text:
           "We optimize the registration flow to mipOS Dark Kitchen, maintaining transparency in the promise of value at all times.",
       },
-      { kind: "video", video: registrationVideo },
+      {
+        kind: "bleed-video",
+        video: registrationVideo,
+        line: "Transparent value promise from the first screen.",
+      },
     ],
   },
   result: {

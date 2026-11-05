@@ -143,14 +143,19 @@ export const rebajatuscuentas: CaseStudyContent = {
           "We discovered an interesting niche: People who already had a loan with a bank and who could renegotiate the debt with another bank to obtain payment benefits. As a result, we saved time (in years) of payments.\n\nThese people were more willing to upload the necessary documentation to complete the user-journey of pre-qualification of credit. **This entire process is FREE to the end user.**",
       },
       {
-        kind: "image-grid",
-        columns: 2,
-        images: [old2018Image, mortgageListImage],
-      },
-      {
-        kind: "caption",
-        text:
-          "We completely redesigned the entire RebajaTusCuentas from scratch. On the left is the old user experience. On the right, an iterated version of the pre-qualified credit offer.",
+        kind: "scene",
+        beats: [
+          {
+            media: old2018Image,
+            label: "2018",
+            caption: "The old user experience — the 2018 legacy website.",
+          },
+          {
+            media: mortgageListImage,
+            label: "Redesign",
+            caption: "Redesigned from scratch: an iterated pre-qualified credit offer.",
+          },
+        ],
       },
       { kind: "divider", variant: "line" },
       {

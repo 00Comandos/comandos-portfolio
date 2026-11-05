@@ -162,14 +162,19 @@ export const miposKiosk: CaseStudyContent = {
           "**We opted for a native ROKU development** to support any kind of screens and make this product the most friendly for restaurants of any size.\n\n**Our focus:** A product that can be used by any touch device so that restaurants of any size could adopt it.",
       },
       {
-        kind: "image-grid",
-        columns: 2,
-        images: [oldInterfaceImage, newDesignImage],
-      },
-      {
-        kind: "caption",
-        text:
-          "A before and after of mipOS Kiosk — from the first legacy interface to the ROKU-native Chili's Kiosko tuned for any touch device.",
+        kind: "scene",
+        beats: [
+          {
+            media: oldInterfaceImage,
+            label: "Before",
+            caption: "The first legacy interface — where mipOS Kiosk started.",
+          },
+          {
+            media: newDesignImage,
+            label: "After",
+            caption: "The ROKU-native Chili's Kiosko, tuned for any touch device.",
+          },
+        ],
       },
     ],
   },

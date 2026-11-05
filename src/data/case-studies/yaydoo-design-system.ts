@@ -104,7 +104,6 @@ export const yaydooDesignSystem: CaseStudyContent = {
   adventure: {
     heading: "Understanding the Yaydoo context",
     blocks: [
-      { kind: "image", image: redFlagsImage },
       {
         kind: "heading",
         heading: "Getting ready: Where are we? and What will we need?",
@@ -148,9 +147,25 @@ export const yaydooDesignSystem: CaseStudyContent = {
           "We brought together Business, Marketing and Product in a single squad with a single goal: a unified brand under a single management. This was immediately reflected in a +15% increase in traffic and leads for Yaydoo products.",
       },
       {
-        kind: "image-grid",
-        columns: 2,
-        images: [newBrandImage, newMarketingImage],
+        kind: "scene",
+        beats: [
+          {
+            media: redFlagsImage,
+            label: "Before",
+            caption: "Eight logo variations across seven Yaydoo B2B SaaS products.",
+          },
+          {
+            media: newBrandImage,
+            label: "New brand",
+            impact: "+15%",
+            caption: "One Yaydoo mark with endorsed sub-brands — +15% traffic and leads.",
+          },
+          {
+            media: newMarketingImage,
+            label: "Marketing",
+            caption: "The unified brand applied to the partner-program landing page.",
+          },
+        ],
       },
       {
         kind: "caption",

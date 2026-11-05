@@ -362,19 +362,19 @@ export const kartaCard: CaseStudyContent = {
       },
       { kind: "video", video: blackCardRevealVideo, rounded: true },
       {
-        kind: "two-col-media",
-        items: [
+        kind: "scene",
+        heading: "Back of card",
+        beats: [
           {
-            image: backV1,
-            kicker: "Back of card",
-            title: "First Version",
-            detail:
-              "Tests with physical cards revealed poor readability in key areas; 80% took time to locate contact information.",
+            media: backV1,
+            label: "First version",
+            caption:
+              "Tests with physical cards revealed poor readability; 80% took time to locate contact information.",
           },
           {
-            image: backV2,
-            kicker: "Back of card",
-            title: "Final Version",
+            media: backV2,
+            label: "Final version",
+            caption: "A cleaner layout with a 24/7 WhatsApp Concierge number.",
           },
         ],
       },
@@ -392,7 +392,11 @@ export const kartaCard: CaseStudyContent = {
         columns: 2,
         images: [usingCard01, usingCard02, usingCard03, usingCard04],
       },
-      { kind: "video", video: restaurantPaymentVideo, rounded: true },
+      {
+        kind: "bleed-video",
+        video: restaurantPaymentVideo,
+        line: "Paying abroad with a card that speaks for you.",
+      },
     ],
   },
   result: {

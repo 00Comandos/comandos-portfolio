@@ -63,7 +63,7 @@ const total = pad(beats.length);
                 </video>
               ) : (
                 <ContentImage
-                  image={b.media}
+                  image={{ ...b.media, caption: undefined }}
                   fit="contain"
                   sizes="(min-width: 1200px) 36vw, (min-width: 900px) 460px, 100vw"
                 />
