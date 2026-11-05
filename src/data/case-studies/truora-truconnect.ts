@@ -14,7 +14,7 @@ const heroImage: ContentImage = {
 const challengeImage: ContentImage = {
   kind: "image",
   image: img("comandos-truora-truconnecttu-primer-proyecto.png"),
-  alt: "Truora TruConnect visual chatbot editor — Tu primer proyecto onboarding canvas with drag-and-drop conversation blocks, multiple-answer branching, user identity verification and finish nodes, the LATAM product designer and growth team's self-serve builder for WhatsApp onboarding without writing code",
+  alt: "Truora TruConnect metrics dashboard for “Tu primer proyecto” — 4,931 total conversations, conversion funnel (73% started, 50% interested, 42% verified, 11% successful), hourly activity, conversation summary, a conversation-effectiveness flow and validator results",
 };
 
 // ———— Adventure ————
