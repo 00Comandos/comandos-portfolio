@@ -47,8 +47,8 @@ const jsonLd = [
     description: p.metaDescription,
     url: pageUrl,
     inLanguage: lang,
-    author: { "@type": "Person", name: site.person.name, url: site.url },
-    publisher: { "@type": "Organization", name: site.name, url: site.url },
+    author: { "@type": "Person", name: site.person.name, url: `${site.url}/` },
+    publisher: { "@type": "Organization", name: site.name, url: `${site.url}/` },
     step: phases.map((ph) => ({
       "@type": "HowToStep",
       position: ph.n,

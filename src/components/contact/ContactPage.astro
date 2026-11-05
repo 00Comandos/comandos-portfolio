@@ -11,7 +11,7 @@ const t = contactCopy[lang];
 
 const EMAIL = "c@comandos.me";
 const path = lang === "es" ? "/es/contact/" : "/contact/";
-const home = lang === "es" ? `${site.url}/es/` : site.url;
+const home = lang === "es" ? `${site.url}/es/` : `${site.url}/`;
 
 const jsonLd = [
   {
@@ -198,6 +198,7 @@ const socials = [
     line-height: 1.08;
     color: var(--color-ink);
     max-width: 12em;
+    text-wrap: balance;
   }
   .contact-title .hl {
     padding-block: 0.02em;

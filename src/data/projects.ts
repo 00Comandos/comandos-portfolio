@@ -10,6 +10,13 @@ export type Project = {
   timeline: string;
   image: ImageMetadata;
   order: number;
+  /** SERP-only overrides (≤ ~49 chars + " — Comandos"; 140–160 chars).
+      `title` / `description` stay the on-page card copy. */
+  seoTitle?: string;
+  seoDescription?: string;
+  /** ISO date the case study was first published — feeds Article
+      `datePublished`. Leave unset rather than guess. */
+  published?: string;
 };
 
 const img = (filename: string) => requireImage(projectImages, filename);
@@ -25,6 +32,8 @@ export const projects: readonly Project[] = [
     timeline: "90 days",
     image: img("Stori-Inversion.webp"),
     order: 1,
+    seoDescription:
+      "Stori Inversión+ case study: guided investing with time-locked accounts and tiered yields. +477% activation and +318% average balance in 90 days.",
   },
   {
     slug: "karta-app",
@@ -36,6 +45,8 @@ export const projects: readonly Project[] = [
     timeline: "90 days",
     image: img("Karta-GlobalApp-Thumbnail.webp"),
     order: 2,
+    seoDescription:
+      "Product design for Karta's premium credit card app: WhatsApp AI concierge, up to 5 ways to pay, 85% lower fees and +1k customers in the first 12 months.",
   },
   {
     slug: "karta-card",
@@ -47,6 +58,8 @@ export const projects: readonly Project[] = [
     timeline: "45 days",
     image: img("Karta-GlobalCreditCard.webp"),
     order: 3,
+    seoDescription:
+      "Industrial and brand design for Karta's 17g metal credit card with AI features, tested with users in 5 countries. +1k customers in its first 12 months.",
   },
   {
     slug: "legalario-e-signature",
@@ -69,6 +82,9 @@ export const projects: readonly Project[] = [
     timeline: "30 days",
     image: img("Legalario-ElectronicSignature-Emails2.webp"),
     order: 5,
+    seoTitle: "Legalario Email Redesign Case Study: +31% Revenue",
+    seoDescription:
+      "Email redesign for Legalario's e-signature platform: invitations, reminders and confirmations that no longer looked like spam. +31% revenue in two sprints.",
   },
   {
     slug: "truora-report",
@@ -80,6 +96,7 @@ export const projects: readonly Project[] = [
     timeline: "30 days",
     image: img("truora-background-check-report.webp"),
     order: 6,
+    seoTitle: "Truora Report Case Study: -50% Reading Time",
   },
   {
     slug: "truora-truconnect",
@@ -91,6 +108,7 @@ export const projects: readonly Project[] = [
     timeline: "MVP in 3 months",
     image: img("comandos-truora-truConnect.png"),
     order: 7,
+    seoTitle: "Truora TruConnect: WhatsApp Onboarding MVP",
   },
   {
     slug: "yaydoo-design-system",
@@ -135,6 +153,8 @@ export const projects: readonly Project[] = [
     timeline: "MVP in 4 weeks",
     image: img("stadio-app-runners.png"),
     order: 11,
+    seoDescription:
+      "Product design for Stadio, a social running app for Apple Watch and Strava: 30% new runner adoption in two weeks and 45% retention after the first room.",
   },
   {
     slug: "rebajatuscuentas",
@@ -157,6 +177,8 @@ export const projects: readonly Project[] = [
     timeline: "Product in 4 months",
     image: img("comandos-mipOS-DarkKitchen.png"),
     order: 13,
+    seoDescription:
+      "FoodTech product design for mipOS Dark Kitchen: 40+ tablets from Uber Eats, Rappi and Didi Food consolidated into one screen. +400% productivity in one week.",
   },
   {
     slug: "mipos-restaurant-pos",
@@ -168,6 +190,8 @@ export const projects: readonly Project[] = [
     timeline: "Product in 4 months",
     image: img("mipOS-POS-darkversion.png"),
     order: 14,
+    seoDescription:
+      "Tablet-native POS design for the next generation of restaurants: 70% retention after the free trial and +67% productivity in order taking, on any tablet.",
   },
   {
     slug: "mipos-kiosk",
@@ -179,6 +203,8 @@ export const projects: readonly Project[] = [
     timeline: "MVP in 6 weeks",
     image: img("mipOS-Kiosko-Demo-comandos-project.png"),
     order: 15,
+    seoDescription:
+      "Self-order kiosk design for fast food restaurants: ordering and delivery flow optimized by 155%, MVP built in 6 weeks, +30% leads and +55% social selling.",
   },
   {
     slug: "spotfinder",
@@ -190,6 +216,8 @@ export const projects: readonly Project[] = [
     timeline: "Redesign in 6 months",
     image: img("spotfinder-comandos-studio-detail.png"),
     order: 16,
+    seoDescription:
+      "IoT product design for Spotfinder's parking hardware and app: a full redesign of the device and mobile app drove +52% user activation and brand adoption.",
   },
 ];
 

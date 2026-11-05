@@ -212,7 +212,9 @@ const pad = (n: number) => String(n).padStart(2, "0");
     align-items: baseline;
     column-gap: 0.4rem;
     width: 100%;
-    padding: 0 0 0.25rem;
+    /* Extra top padding: a 40px tap target without moving the label. */
+    padding: 0.25rem 0 0.25rem;
+    margin-top: -0.25rem;
     border: 0;
     background: none;
     font: inherit;

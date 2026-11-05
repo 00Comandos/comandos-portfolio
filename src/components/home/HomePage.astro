@@ -35,15 +35,15 @@ const listItems = await Promise.all(
     return {
       "@type": "ListItem" as const,
       position: i + 1,
-      url: `${site.url}/projects/${it.slug}`,
+      url: `${site.url}/projects/${it.slug}/`,
       item: {
         "@type": "CreativeWork" as const,
         name: project?.title ?? `${it.brand} — ${it.tagline}`,
-        url: `${site.url}/projects/${it.slug}`,
+        url: `${site.url}/projects/${it.slug}/`,
         description: it.tagline,
         about: it.brand,
         image: new URL(variant.src, site.url).toString(),
-        creator: { "@type": "Person", name: site.person.name },
+        creator: { "@id": `${site.url}/#person` },
       },
     };
   }),
@@ -63,19 +63,17 @@ const jsonLd = [
     url: homeUrl,
     inLanguage: lang,
     description: t.meta.homeDescription,
-    publisher: {
-      "@type": "Organization",
-      name: site.name,
-      url: site.url,
-    },
+    publisher: { "@id": `${site.url}/#organization` },
   },
   {
     "@context": "https://schema.org",
     "@type": "Person",
+    "@id": `${site.url}/#person`,
     name: site.person.name,
     alternateName: site.person.alternateName,
     jobTitle: site.person.jobTitle,
-    url: site.url,
+    url: `${site.url}/`,
+    worksFor: { "@id": `${site.url}/#organization` },
     sameAs: [site.social.linkedin, site.social.x],
     knowsAbout: [
       "Product design",
@@ -95,9 +93,18 @@ const jsonLd = [
   },
   {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": ["Organization", "ProfessionalService"],
+    "@id": `${site.url}/#organization`,
     name: site.name,
-    url: site.url,
+    url: `${site.url}/`,
+    image: new URL("/og-default.png", site.url).toString(),
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Mexico City",
+      addressCountry: "MX",
+    },
+    areaServed: ["MX", "LATAM"],
+    founder: { "@id": `${site.url}/#person` },
     logo: new URL("/images/Logo-Comandos.svg", site.url).toString(),
     sameAs: [site.social.linkedin, site.social.x],
     description: site.description,
@@ -130,6 +137,15 @@ const jsonLd = [
   imageAlt={`${homeBeforeAfter[0].brand} — ${homeBeforeAfter[0].tagline}. Product design case study by Carlos Comandos.`}
   jsonLd={jsonLd}
 >
+  {/* LCP: the hero poster is a CSS background + <video poster>, which the
+       preload scanner can't discover early. */}
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    href="/videos/hero-poster.jpg"
+    fetchpriority="high"
+  />
   <Hero lang={lang} />
   <ClientsStrip lang={lang} />
   <Impact lang={lang} />

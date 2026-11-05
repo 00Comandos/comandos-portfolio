@@ -13,17 +13,22 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
+      // No global `lastmod`: stamping every URL with the build time on each
+      // deploy is noise Google learns to ignore. Add real per-page dates
+      // here (e.g. from case-study data) once they exist.
       changefreq: "weekly",
-      lastmod: new Date(),
       priority: 0.7,
+      // Image + video sitemap (src/pages/sitemap-images.xml.ts) is listed
+      // in the index so crawlers find it without robots.txt.
+      customSitemaps: ["https://www.comandos.me/sitemap-images.xml"],
       serialize(item) {
-        // Higher priority + daily freshness for the home and the projects
-        // index; keep case studies on weekly.
+        // Higher priority for the home and the projects index; case studies
+        // and the rest keep the default.
         if (item.url === "https://www.comandos.me/") {
-          return { ...item, priority: 1.0, changefreq: "weekly" };
+          return { ...item, priority: 1.0 };
         }
         if (item.url === "https://www.comandos.me/projects/") {
-          return { ...item, priority: 0.9, changefreq: "weekly" };
+          return { ...item, priority: 0.9 };
         }
         return item;
       },

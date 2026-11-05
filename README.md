@@ -190,11 +190,14 @@ The indexed spam lives on the **apex** (`comandos.me/goods/...`, `comandos.me/b/
 
 ## SEO
 
+Strategy, keyword map, title/description matrix and the technical checklist live in [`docs/seo-strategy.md`](docs/seo-strategy.md).
+
 - Canonical origin is `https://www.comandos.me/` with trailing slashes enforced via `vercel.json`. Apex 308-redirects to www.
 - Per-page `<title>`, `<meta description>`, canonical, OG + Twitter Card tags via `src/components/layout/SEO.astro`. Per-page OG images derived from real artwork: case studies use their hero, the home and `/projects/` use the top featured case-study image.
-- Structured data (JSON-LD): `Person` + `Organization` (global), `WebSite`, `ItemList` (home), `CollectionPage` + `BreadcrumbList` (`/projects/`), `Article` + `BreadcrumbList` + per-image `ImageObject` + per-clip `VideoObject` (each case study), `ContactPage` + `BreadcrumbList` (`/contact/`).
-- Sitemaps: `/sitemap-index.xml` (via `@astrojs/sitemap`) plus a custom `/sitemap-images.xml` that lists every case-study image (title + caption) **and video** (`<video:video>` with thumbnail, description, duration) for Google Image/Video Search. `/sitemap-purge.xml` lists residual indexed spam URLs to force Google to recrawl their 410s — delete it once coverage shows them gone.
-- `robots.txt` allows well-behaved AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended), blocks noisy scrapers (Semrush, Ahrefs, DotBot, MJ12), and points to both sitemaps.
+- Structured data (JSON-LD, URLs always match the trailing-slash canonical): `Person` + `Organization` (global, linked by `@id`), `WebSite` + `Organization/ProfessionalService` + `ItemList` (home), `ProfessionalService` + `OfferCatalog` + `FAQPage` (`/services/`), `HowTo` (`/method/`), `CollectionPage` + `BreadcrumbList` (`/projects/`), `Article` + `BreadcrumbList` + per-image `ImageObject` + per-clip `VideoObject` (each case study; `datePublished` only when `published` is set in `src/data/projects.ts`), `ContactPage` + `BreadcrumbList` (`/contact/`).
+- Case-study SERP copy can differ from card copy via optional `seoTitle` / `seoDescription` in `src/data/projects.ts`. hreflang is emitted only for pages that exist in both EN and ES (`ES_ROUTES`).
+- Sitemaps: `/sitemap-index.xml` (via `@astrojs/sitemap`, no build-time `lastmod`; also references the image sitemap via `customSitemaps`) plus a custom `/sitemap-images.xml` that lists every case-study image (title + caption) **and video** (`<video:video>` with thumbnail, description, duration) for Google Image/Video Search. `/sitemap-purge.xml` lists residual indexed spam URLs to force Google to recrawl their 410s — delete it once coverage shows them gone.
+- `robots.txt` allows well-behaved AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended), blocks noisy scrapers (Semrush, Ahrefs, DotBot, MJ12), disallows `/api/` (never `/goods/` or `/b/` — their 410s must stay crawlable), and points to both sitemaps.
 - Search Console / Bing verification can be added via the optional `PUBLIC_GSC_VERIFICATION` / `PUBLIC_BING_VERIFICATION` env vars (`BaseLayout.astro` injects the meta tags conditionally). The production property is already DNS-verified.
 
 ---

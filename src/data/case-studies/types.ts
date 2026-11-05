@@ -186,8 +186,8 @@ export type AdventureBlock =
       /** Either a rich StatIllustration scene or an Iconify name (e.g. "lucide:scan-face"). */
       scene?: IllustrationScene;
       icon?: string;
-      /** Bespoke animated drawing instead of an icon/scene. */
-      art?: "facescan";
+      /** Keep the icon static (no ambient motion). */
+      still?: boolean;
       heading: string;
       body?: string;
     }

@@ -294,7 +294,8 @@ export const legalarioESignature: CaseStudyContent = {
       { kind: "divider" },
       {
         kind: "illustrated-heading",
-        art: "facescan",
+        icon: "lucide:scan-face",
+        still: true,
         heading: "Testing the entire product before the first deployment",
       },
       { kind: "image", image: testingImage },

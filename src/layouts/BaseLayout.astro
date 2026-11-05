@@ -30,10 +30,11 @@ const defaultJsonLd: Record<string, unknown>[] = [
   {
     "@context": "https://schema.org",
     "@type": "Person",
+    "@id": `${site.url}/#person`,
     name: site.person.name,
     alternateName: site.person.alternateName,
     jobTitle: site.person.jobTitle,
-    url: site.url,
+    url: `${site.url}/`,
     sameAs: [site.social.linkedin, site.social.x],
     description: site.description,
     knowsAbout: [
@@ -55,8 +56,9 @@ const defaultJsonLd: Record<string, unknown>[] = [
   {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": `${site.url}/#organization`,
     name: site.name,
-    url: site.url,
+    url: `${site.url}/`,
     logo: new URL("/images/Logo-Comandos.svg", site.url).toString(),
     sameAs: [site.social.linkedin, site.social.x],
     description: site.description,
@@ -67,10 +69,7 @@ const defaultJsonLd: Record<string, unknown>[] = [
       areaServed: ["MX", "LATAM"],
       availableLanguage: ["en", "es"],
     },
-    founder: {
-      "@type": "Person",
-      name: site.person.name,
-    },
+    founder: { "@id": `${site.url}/#person` },
   },
 ];
 ---
@@ -104,6 +103,7 @@ const defaultJsonLd: Record<string, unknown>[] = [
       href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..500&display=swap"
     />
     <SEO {...props} jsonLd={props.jsonLd ?? defaultJsonLd} />
+    <slot name="head" />
     {
       gaId && (
         <>

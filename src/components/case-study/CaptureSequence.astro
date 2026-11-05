@@ -89,6 +89,8 @@ const pad = (i: number) => String(i).padStart(2, "0");
     font-size: 0.8125rem;
     line-height: 1.4;
     color: var(--color-ink-soft);
+    /* 3-up at 320px leaves ~85px: "instructions" overflowed its column. */
+    hyphens: auto;
   }
   .cap-num {
     flex: none;

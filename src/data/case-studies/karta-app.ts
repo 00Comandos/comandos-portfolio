@@ -1,5 +1,5 @@
 import type { CaseStudyContent, ContentImage } from "./types";
-import { kartaCardImages, kartaImages, requireImage } from "~/lib/image-map";
+import { kartaImages, requireImage } from "~/lib/image-map";
 
 const img = (filename: string) => requireImage(kartaImages, filename);
 
@@ -146,8 +146,8 @@ const conciergeTransactionsMobile: ContentImage = {
 // Atmospheric backdrop for the concierge chat (from the Karta Card brand shoot).
 const conciergeBackdrop: ContentImage = {
   kind: "image",
-  image: requireImage(kartaCardImages, "karta-capadocia-741x1024.webp"),
-  alt: "Couple watching hot-air balloons rise over Cappadocia at sunrise",
+  image: img("karta-concierge-clouds-1536.jpg"),
+  alt: "A plane flying above the clouds at sunset",
 };
 
 // ———— Lifestyle closing collage ————

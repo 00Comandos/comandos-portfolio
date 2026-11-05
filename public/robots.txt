@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
+# Form endpoint — nothing to index. (Never disallow /goods/ or /b/: the
+# 410s there must stay crawlable so the old spam URLs drop out.)
+Disallow: /api/
 
 # Well-behaved AI crawlers — explicit allow for public portfolio content
 User-agent: GPTBot

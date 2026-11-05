@@ -9,7 +9,7 @@ const { project } = Astro.props;
 
 <article class="grid md:grid-cols-[minmax(0,240px)_1fr] gap-5 md:gap-8 items-start py-10 md:py-6 border-b border-[color:var(--color-border)] last:border-b-0">
   <a
-    href={`/projects/${project.slug}`}
+    href={`/projects/${project.slug}/`}
     class="project-thumb relative block overflow-hidden rounded-lg bg-[color:var(--color-paper-soft)]"
     aria-label={`${project.brand} — ${project.title}`}
   >
@@ -28,11 +28,11 @@ const { project } = Astro.props;
   </a>
 
   <div class="flex flex-col">
-    <h3 class="text-xl md:text-[1.625rem] font-bold leading-[1.2] tracking-tight">
-      <a href={`/projects/${project.slug}`} class="case-title">
+    <h2 class="text-xl md:text-[1.625rem] font-bold leading-[1.2] tracking-tight">
+      <a href={`/projects/${project.slug}/`} class="case-title">
         {project.title}
       </a>
-    </h3>
+    </h2>
 
     <p class="mt-3 text-[0.95rem] leading-[1.55] text-[color:var(--color-muted)] max-w-xl">
       {project.description}
@@ -66,7 +66,7 @@ const { project } = Astro.props;
     </dl>
 
     <a
-      href={`/projects/${project.slug}`}
+      href={`/projects/${project.slug}/`}
       class="btn-outline mt-6 self-start"
     >
       View case study

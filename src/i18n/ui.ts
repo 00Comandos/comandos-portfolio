@@ -11,7 +11,7 @@ const en = {
     skip: "Skip to content",
     homeTitle: "Product Design Studio for Founders Scaling to Growth",
     homeDescription:
-      "Comandos is a product design studio for startup founders moving from product-market fit to growth. Research, product strategy, design systems and experimentation — led by a Head of Design from LATAM unicorns.",
+      "Product design studio for founders moving from fit to growth: research, strategy, design systems and experiments, led by a Head of Design from LATAM unicorns.",
   },
   nav: {
     work: "Work",
@@ -168,7 +168,7 @@ const en = {
   servicesPage: {
     metaTitle: "Product Design Services for Startup Founders",
     metaDescription:
-      "Product design, design systems, product-led growth and fractional or full-time design leadership (VP, Director or Head of Product Design) — engagements for founders taking a product from fit to growth. Book a discovery call.",
+      "Product design, design systems, product-led growth and fractional or full-time design leadership for founders going from fit to growth. Book a discovery call.",
     breadcrumbHome: "Home",
     breadcrumb: "Services",
     hero: {
@@ -436,9 +436,9 @@ const en = {
     },
   },
   methodPage: {
-    metaTitle: "North Face Growth — Our Product Design Method",
+    metaTitle: "North Face Growth: Our Product Design Method",
     metaDescription:
-      "North Face Growth is Comandos' science-backed method for creating and scaling digital products: data, UX audit and research, product strategy, MVP and design system, testing and experimentation.",
+      "North Face Growth, Comandos' science-backed method to create and scale digital products: data, UX audit, research, strategy, MVP, design system and testing.",
     breadcrumbHome: "Home",
     breadcrumb: "Method",
     hero: {
@@ -603,9 +603,9 @@ const es: UI = {
     htmlLang: "es",
     ogLocale: "es_MX",
     skip: "Saltar al contenido",
-    homeTitle: "Estudio de Product Design para founders que escalan",
+    homeTitle: "Estudio de product design para founders que escalan",
     homeDescription:
-      "Comandos es un estudio de product design para founders que pasan de product-market fit a crecimiento. Research, estrategia de producto, design systems y experimentación — liderado por un Head of Design de unicornios LATAM.",
+      "Product design para founders que pasan de fit a crecimiento: research, estrategia, design systems y experimentos, con un Head of Design de unicornios LATAM.",
   },
   nav: {
     work: "Trabajo",
@@ -760,9 +760,9 @@ const es: UI = {
     secondary: "Envía un brief del proyecto",
   },
   servicesPage: {
-    metaTitle: "Servicios de product design para founders de startups",
+    metaTitle: "Servicios de product design para founders",
     metaDescription:
-      "Product design, design systems, product-led growth y liderazgo de diseño fraccional o full-time (VP, Director o Head of Product Design) — esquemas de trabajo para founders que llevan su producto de fit a crecimiento. Agenda una discovery call.",
+      "Product design, design systems, product-led growth y liderazgo de diseño fraccional o full-time para founders que escalan su producto. Agenda una llamada.",
     breadcrumbHome: "Inicio",
     breadcrumb: "Servicios",
     hero: {
@@ -1030,9 +1030,9 @@ const es: UI = {
     },
   },
   methodPage: {
-    metaTitle: "North Face Growth — Nuestro método de product design",
+    metaTitle: "North Face Growth: método de product design",
     metaDescription:
-      "North Face Growth es el método de Comandos, basado en evidencia, para crear y escalar productos digitales: data, UX audit y research, estrategia de producto, MVP y design system, testing y experimentación.",
+      "North Face Growth, el método de Comandos basado en evidencia para crear y escalar productos digitales: data, UX audit, research, estrategia, MVP y testing.",
     breadcrumbHome: "Inicio",
     breadcrumb: "Método",
     hero: {

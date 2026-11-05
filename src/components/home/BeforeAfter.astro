@@ -57,7 +57,7 @@ const panelVh = 55;
                 <a
                   class:list={["ba-pic", i === 0 ? "is-active" : ""]}
                   data-idx={i}
-                  href={`/projects/${it.slug}`}
+                  href={`/projects/${it.slug}/`}
                   aria-label={t.work.readCase(it.brand)}
                 >
                   <div class="ba-media">
@@ -88,7 +88,7 @@ const panelVh = 55;
                     data-idx={i}
                     data-long={it.brand.length > 14 ? "true" : "false"}
                   >
-                    <a href={`/projects/${it.slug}`} class="ba-name-link">
+                    <a href={`/projects/${it.slug}/`} class="ba-name-link">
                       {it.brand}
                     </a>
                   </li>
@@ -106,7 +106,7 @@ const panelVh = 55;
                 <a
                   class:list={["ba-pic", i === 0 ? "is-active" : ""]}
                   data-idx={i}
-                  href={`/projects/${it.slug}`}
+                  href={`/projects/${it.slug}/`}
                   aria-label={t.work.readCase(it.brand)}
                 >
                   <div class="ba-media">
@@ -155,7 +155,7 @@ const panelVh = 55;
         items.map((it) => (
           <li class="ba-m-card" data-before-caption={it.duringCaption} data-after-caption={it.nowCaption}>
             <div class="ba-m-stack" data-state="before">
-              <a href={`/projects/${it.slug}`} class="ba-m-link">
+              <a href={`/projects/${it.slug}/`} class="ba-m-link">
                 <Image
                   src={it.before}
                   alt={it.beforeAlt}

@@ -189,7 +189,7 @@ export const stadioAppleWatch: CaseStudyContent = {
         images: [podiumImage, finalDeliveryImage],
       },
       {
-        kind: "caption",
+        kind: "text",
         text:
           "We created additional interfaces to reinforce the gamification process. Who was on the podium for the day?",
       },

@@ -67,8 +67,10 @@ const heroWidths = [640, 960, 1280, 1600, 1920, 2560];
         {name}
         {tagline && (
           <>
-            <br />
-            <span class="hl">{tagline}</span>
+            {" "}
+            <span class="csh-tag">
+              <span class="hl">{tagline}</span>
+            </span>
           </>
         )}
       </h1>
@@ -236,6 +238,22 @@ const heroWidths = [640, 960, 1280, 1600, 1920, 2560];
     .csh-title {
       font-size: 2rem;
     }
+  }
+  /* Phones: the tagline pill always wraps. Give the stacked pill rows air
+     (at 1.02 they overlap), avoid a one-word last row, and keep the pill's
+     side padding inside the column. */
+  @media (max-width: 639px) {
+    .csh-title {
+      line-height: 1.2;
+      text-wrap: pretty;
+      padding-right: 0.4em;
+    }
+  }
+  /* Tagline on its own line (was a <br>); as a block it can balance, so
+     a wrapped pill splits evenly instead of leaving one word alone. */
+  .csh-tag {
+    display: block;
+    text-wrap: balance;
   }
   .csh-desc {
     margin-top: 1.5rem;

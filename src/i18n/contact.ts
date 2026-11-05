@@ -11,9 +11,9 @@ type ReferralSource = (typeof REFERRAL_SOURCES)[number];
 
 const en = {
   meta: {
-    title: "Contact",
+    title: "Contact: Book a Product Design Discovery Call",
     description:
-      "Partner with Comandos on your next FinTech or SaaS product. Tell us about your project and we'll reply within one business day.",
+      "Partner with Comandos on your next FinTech or SaaS product. Tell us about your project, book a 30-min discovery call and get a reply within one business day.",
     breadcrumbHome: "Home",
     breadcrumb: "Contact",
   },
@@ -110,9 +110,9 @@ export type ContactCopy = typeof en;
 
 const es: ContactCopy = {
   meta: {
-    title: "Contacto",
+    title: "Contacto: agenda una discovery call",
     description:
-      "Trabaja con Comandos en tu próximo producto FinTech o SaaS. Cuéntanos de tu proyecto y te respondemos en máximo un día hábil.",
+      "Trabaja con Comandos en tu próximo producto FinTech o SaaS. Cuéntanos de tu proyecto, agenda una llamada de 30 min y te respondemos en un día hábil.",
     breadcrumbHome: "Inicio",
     breadcrumb: "Contacto",
   },
