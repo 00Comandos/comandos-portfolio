@@ -235,7 +235,8 @@ export type IllustrationScene =
   | "wayfind";
 
 export type WorthBlock =
-  | { kind: "intro"; label?: string; heading: string; body?: string }
+  /** `sub`: a smaller sub-point under the previous intro (e.g. numbered use cases). */
+  | { kind: "intro"; label?: string; heading: string; body?: string; sub?: boolean }
   | { kind: "image"; image: ContentImage; rounded?: boolean }
   | { kind: "video"; video: ContentVideo; rounded?: boolean }
   | {
