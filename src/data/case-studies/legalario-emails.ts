@@ -66,16 +66,19 @@ const massSigningImage: ContentImage = {
   kind: "image",
   image: img("legalario-emails-mass-Signing-of-documents-2048x1275.webp"),
   alt: "Mass signing of documents — first version on a pink background vs. last version on a mint background",
+  caption: "01 — Mass signing of documents",
 };
 const documentsRequiredImage: ContentImage = {
   kind: "image",
   image: img("legalario-emails-documents-required-2048x871.webp"),
   alt: "Explanation of documents required for signing — phone showing identification options and signing method preferences",
+  caption: "02 — Explanation of documents required for signing",
 };
 const recurringSignersImage: ContentImage = {
   kind: "image",
   image: img("legalario-email-recurring-signers-2048x871.webp"),
   alt: "Mass signing of documents for recurring signers — a phone listing several pending contracts with a single sign-all action",
+  caption: "03 — Mass signing of documents for recurring signers",
 };
 
 export const legalarioEmails: CaseStudyContent = {
@@ -204,29 +207,11 @@ export const legalarioEmails: CaseStudyContent = {
         kind: "intro",
         heading: "We cover new use cases",
         body:
-          "The restructuring allowed us to identify frequent use cases in certain user segments that were not covered.",
-      },
-      {
-        kind: "intro",
-        sub: true,
-        label: "Use case 01",
-        heading: "Mass signing of documents",
+          "The restructuring allowed us to identify frequent use cases in certain user segments that were not covered: mass signing of documents, an explanation of the documents required for signing, and mass signing for recurring signers.",
       },
       { kind: "image", image: massSigningImage },
-      {
-        kind: "intro",
-        sub: true,
-        label: "Use case 02",
-        heading: "Explanation of documents required for signing",
-      },
       { kind: "image", image: documentsRequiredImage },
       { kind: "text", text: "Enabled for each customer based on their account settings." },
-      {
-        kind: "intro",
-        sub: true,
-        label: "Use case 03",
-        heading: "Mass signing of documents for recurring signers",
-      },
       { kind: "image", image: recurringSignersImage },
       {
         kind: "text",
