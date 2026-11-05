@@ -120,7 +120,7 @@ export type AdventureBlock =
   /** "8/10 users …" rows: `cards` = side-by-side stat cards with people,
       `rings` = columns of progress rings, `chart` = analytics-style bar
       chart (Amplitude/Mixpanel insight) led by the top finding. */
-  | { kind: "checklist"; items: readonly ChecklistItem[]; layout?: "cards" | "rings" | "chart" | "quotes" }
+  | { kind: "checklist"; items: readonly ChecklistItem[]; layout?: "cards" | "rings" | "chart" | "quotes" | "flow" }
   | { kind: "image"; image: ContentImage; rounded?: boolean }
   | { kind: "video"; video: ContentVideo; rounded?: boolean }
   | { kind: "divider"; variant?: "hatched" | "line" }

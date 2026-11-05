@@ -3,7 +3,7 @@ import type { ChecklistItem } from "~/data/case-studies/types";
 import Scene from "~/components/case-study/Scene.astro";
 import PillarArt from "~/components/case-study/PillarArt.astro";
 
-type Props = { items: readonly ChecklistItem[]; layout?: "cards" | "rings" | "chart" | "quotes" };
+type Props = { items: readonly ChecklistItem[]; layout?: "cards" | "rings" | "chart" | "quotes" | "flow" };
 const { items, layout } = Astro.props;
 
 // Items carrying quotes (`sub`) are research sources — rendered
@@ -89,6 +89,30 @@ if (layout === "chart" && !isRatio && isMetric && metrics.every((m) => m!.fig.en
     .forEach((r) => chart.push(r));
 }
 const isChart = layout === "chart" && chart.length > 0;
+
+// Flow (alluvial): one bar of n interviewees on top, a ribbon per finding
+// falling to its slot below. Ribbon width at the top = share of the sample
+// that said it (ribbons overlap: the same people said several things);
+// slot width below ∝ mentions. viewBox units: 1000 × FH.
+const isFlow = layout === "flow" && isRatio && chart.length > 1 && chart.every((r) => r.d === chart[0].d);
+const FW = 1000;
+const FH = 300;
+const GAP = 40;
+const flowTotal = chart.reduce((a, r) => a + r.n, 0);
+let fx = 0;
+const flow = isFlow
+  ? chart.map((r, k) => {
+      const m = chart.length;
+      const wTop = (r.n / r.d) * FW;
+      const t0 = (FW - wTop) * (k / (m - 1));
+      const wBot = ((FW - GAP * (m - 1)) * r.n) / flowTotal;
+      const b0 = fx;
+      fx += wBot + GAP;
+      const c = FH * 0.55;
+      const path = `M${t0} 0 L${t0 + wTop} 0 C${t0 + wTop} ${c} ${b0 + wBot} ${FH - c} ${b0 + wBot} ${FH} L${b0} ${FH} C${b0} ${FH - c} ${t0} ${c} ${t0} 0 Z`;
+      return { ...r, path, b0, wBot, k };
+    })
+  : [];
 // Quotes: every item is a user's words — label + body read as one quote.
 const quotes = items.map((i) => (i.body ? `${i.label.replace(/:\s*$/, "")} ${i.body}` : i.label));
 
@@ -128,6 +152,41 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
         </li>
       ))}
     </ul>
+  ) : isFlow ? (
+    <div class="ratio ratio--flow not-prose" data-ratio>
+      <p class="fl-top mono">
+        <span>{chart[0].d} users interviewed</span>
+        <span class="fl-n">n = {chart[0].d}</span>
+      </p>
+      <svg class="fl-svg" viewBox={`0 -4 ${FW} ${FH + 8}`} preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <clipPath id="fl-reveal">
+            <rect class="fl-reveal" x="0" y="-4" width={FW} height={FH + 8} />
+          </clipPath>
+        </defs>
+        <line class="fl-bar" x1="0" y1="0" x2={FW} y2="0" />
+        <g clip-path="url(#fl-reveal)">
+          {flow.map((r) => <path class:list={["fl-ribbon", { "is-top": r.k === 0 }]} d={r.path} />)}
+        </g>
+        {flow.map((r) => <line class="fl-slot" x1={r.b0} y1={FH} x2={r.b0 + r.wBot} y2={FH} />)}
+      </svg>
+      <ol class="fl-labels" style={`grid-template-columns: ${flow.map((r) => `${r.n}fr`).join(" ")};`}>
+        {flow.map((r) => (
+          <li class="fl-label">
+            <span class="fl-tick" aria-hidden="true"></span>
+            <p class="fl-fig">
+              {r.n}
+              <span>/{r.d}</span>
+            </p>
+            <p class="fl-name">
+              <span class="sr-only">{r.n} of {r.d} users: </span>
+              {r.name}
+            </p>
+            {r.body && <p class="fl-body">{r.body}</p>}
+          </li>
+        ))}
+      </ol>
+    </div>
   ) : isChart ? (
     <div class="ratio ratio--chart not-prose" data-ratio>
       {listTitle && <p class="checklist-title">{listTitle}</p>}
@@ -448,6 +507,109 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
     top: 0;
     line-height: 1.2;
     color: var(--color-accent);
+  }
+
+  /* Flow: alluvial ribbons (one sample → findings), hairline brackets. */
+  .fl-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+  .fl-n {
+    color: var(--color-muted);
+  }
+  .fl-svg {
+    display: block;
+    width: 100%;
+    height: clamp(9rem, 22vw, 16rem);
+    overflow: visible;
+  }
+  .fl-bar,
+  .fl-slot {
+    stroke: var(--color-ink);
+    stroke-width: 3;
+    vector-effect: non-scaling-stroke;
+  }
+  .fl-ribbon {
+    fill: var(--color-ink);
+    fill-opacity: 0.09;
+  }
+  .fl-ribbon.is-top {
+    fill: var(--color-accent);
+    fill-opacity: 0.28;
+  }
+  .fl-reveal {
+    transform-box: fill-box;
+    transform-origin: top;
+    transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .ratio--flow[data-armed]:not([data-in]) .fl-reveal {
+    transform: scaleY(0);
+  }
+  .fl-labels {
+    display: grid;
+    column-gap: 4%;
+    margin-top: 0.25rem;
+  }
+  .fl-label {
+    position: relative;
+    min-width: 0;
+    padding-top: 1rem;
+  }
+  /* Bracket: a hairline drop from the slot's left end. */
+  .fl-tick {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 0.75rem;
+    background: var(--color-ink);
+  }
+  .fl-fig {
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    font-weight: 300;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    color: var(--color-ink);
+  }
+  .fl-fig span {
+    font-size: 0.45em;
+    letter-spacing: -0.02em;
+    color: var(--color-muted);
+  }
+  .fl-name {
+    margin-top: 0.6rem;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    color: var(--color-ink);
+  }
+  .fl-body {
+    margin-top: 0.4rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-muted);
+  }
+  /* Phones: columns stay aligned to their ribbons, but only the figure
+     sits under each slot; name + quote follow as a list. */
+  @media (max-width: 639px) {
+    .fl-labels {
+      grid-template-columns: 1fr !important;
+      row-gap: 1.25rem;
+      margin-top: 1rem;
+    }
+    .fl-label {
+      padding: 0 0 0 1rem;
+    }
+    .fl-tick {
+      height: 100%;
+    }
   }
 
   /* Chart: compact widget card (Karta "limit control" / Ramp) — label and
