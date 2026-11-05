@@ -92,7 +92,7 @@ const heroWidths = [640, 960, 1280, 1600, 1920, 2560];
   </div>
 
   <div
-    class:list={["csh-media", backdrop && "csh-media--band"]}
+    class:list={["csh-media", backdrop && "csh-media--band", backdrop?.align === "end" && "csh-media--end"]}
     style={backdrop
       ? `--csh-band: ${backdrop.color}; --csh-band-until: ${backdrop.until ?? 100}%;`
       : undefined}
@@ -349,6 +349,25 @@ const heroWidths = [640, 960, 1280, 1600, 1920, 2560];
   .csh-media--band .csh-frame {
     max-width: 860px;
     margin-inline: auto;
+  }
+  /* Cropped screenshot: let its cut edges meet the band's right and bottom
+     edges so it reads as sliding out of frame, not as a broken image. */
+  .csh-media--end {
+    padding-top: 1rem;
+  }
+  .csh-media--end .csh-frame {
+    width: 90%;
+    max-width: none;
+    margin-left: auto;
+    margin-right: 0;
+  }
+  @media (min-width: 768px) {
+    .csh-media--end {
+      padding-top: 1.5rem;
+    }
+    .csh-media--end .csh-frame {
+      width: 64%;
+    }
   }
 
   .csh-intro {

@@ -336,7 +336,9 @@ export type CaseStudyContent = {
         coloured area runs edge to edge. `until` = how far down the image the
         band reaches, in % of the image height (default 100) — anything
         below (e.g. a phone poking out of the card) sits on the page. */
-    backdrop?: { color: string; until?: number };
+    /** `align: "end"`: the image sits flush with the band's right/bottom
+        edges (for screenshots already cropped on those sides). */
+    backdrop?: { color: string; until?: number; align?: "center" | "end" };
     /** Multi-paragraph body; split by \n\n. */
     intro: string;
     /** Optional bulleted list rendered beneath the intro paragraphs. */
