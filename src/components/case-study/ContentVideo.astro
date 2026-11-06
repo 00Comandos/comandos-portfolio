@@ -20,6 +20,8 @@ const portrait = video.orientation === "portrait";
       playsinline
       preload="none"
       data-lazy-video
+      data-end={video.endSeconds}
+      data-end-src={video.endSeconds ? video.src : undefined}
       aria-label={video.alt}
       style={[
         video.aspect ? `aspect-ratio: ${video.aspect};` : "",
@@ -54,6 +56,10 @@ const portrait = video.orientation === "portrait";
 </style>
 
 <script>
+  import { loopUntil } from "~/lib/clip-end";
+  document
+    .querySelectorAll<HTMLVideoElement>("video[data-end]")
+    .forEach((v) => loopUntil(v, Number(v.dataset.end), v.dataset.endSrc));
   // Below-the-fold clips: with preload="none" and no autoplay attribute
   // the browser downloads nothing until we call play(). Start each video
   // shortly before it scrolls into view, pause it when it leaves.

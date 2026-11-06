@@ -21,9 +21,10 @@ const sizesAttr = {
 };
 
 // Hover previews (Tubik-style "quick view") for cases that have footage.
-const previews: Record<string, string> = {
-  "stori-inversion-plus": "/videos/stori-inversion-plus-confident-investor-after-desktop.mp4",
-  "karta-card": "/videos/karta-card-black-card-reveal-after.mp4",
+// `end` loops only the first seconds (Karta: hide the card turning to its back).
+const previews: Record<string, { src: string; end?: number }> = {
+  "stori-inversion-plus": { src: "/videos/stori-inversion-plus-confident-investor-after-desktop.mp4" },
+  "karta-card": { src: "/videos/karta-card-black-card-reveal-after.mp4", end: 1.6 },
 };
 
 const tiles = slugs.flatMap((slug, i) => {
@@ -77,7 +78,8 @@ const tiles = slugs.flatMap((slug, i) => {
                   <>
                     <video
                       class="cg-video"
-                      data-src={tile.preview}
+                      data-src={tile.preview.src}
+                      data-end={tile.preview.end}
                       muted
                       loop
                       playsinline
@@ -113,6 +115,7 @@ const tiles = slugs.flatMap((slug, i) => {
 </section>
 
 <script>
+  import { loopUntil } from "~/lib/clip-end";
   /*
    * Desktop-only niceties: a circular "View case" cursor that follows the
    * pointer over case media (Aerolab), and muted video previews that load
@@ -141,6 +144,7 @@ const tiles = slugs.flatMap((slug, i) => {
       grid.querySelectorAll<HTMLElement>(".cg-link").forEach((link) => {
         const media = link.querySelector<HTMLElement>(".cg-media");
         const video = media?.querySelector<HTMLVideoElement>(".cg-video");
+        if (video?.dataset.end) loopUntil(video, Number(video.dataset.end));
         let stopTimer = 0;
         link.addEventListener("pointerenter", (e) => {
           x = cx = e.clientX;

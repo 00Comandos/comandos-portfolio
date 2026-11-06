@@ -32,6 +32,8 @@ export type ContentVideo = {
   /** Portrait-only footage: rendered centered at a phone-like width on
       desktop instead of stretching full-bleed. */
   orientation?: "portrait";
+  /** Loop only the first N seconds of the desktop `src` (hide a bad tail). */
+  endSeconds?: number;
   /** Accessible description — mirrors ContentImage.alt. */
   alt: string;
   caption?: string;
