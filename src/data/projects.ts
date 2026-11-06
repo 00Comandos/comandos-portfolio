@@ -10,6 +10,8 @@ export type Project = {
   timeline: string;
   image: ImageMetadata;
   order: number;
+  /** Market for the /projects/ filter tabs. */
+  market: Market;
   /** SERP-only overrides (≤ ~49 chars + " — Comandos"; 140–160 chars).
       `title` / `description` stay the on-page card copy. */
   seoTitle?: string;
@@ -19,11 +21,23 @@ export type Project = {
   published?: string;
 };
 
+export const MARKETS = ["fintech", "legaltech", "foodtech", "proptech", "iot", "sport"] as const;
+export type Market = (typeof MARKETS)[number];
+export const MARKET_LABELS: Record<Market, string> = {
+  fintech: "FinTech",
+  legaltech: "LegalTech & Fraud",
+  foodtech: "FoodTech",
+  proptech: "PropTech",
+  iot: "IoT",
+  sport: "Sport",
+};
+
 const img = (filename: string) => requireImage(projectImages, filename);
 
 export const projects: readonly Project[] = [
   {
     slug: "stori-inversion-plus",
+    market: "fintech",
     brand: "Stori",
     title: "Stori Inversión+ Case Study: +477% Activation",
     description:
@@ -37,6 +51,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "karta-app",
+    market: "fintech",
     brand: "Karta",
     title: "Karta App Case Study: Premium Credit Card UX",
     description:
@@ -50,6 +65,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "karta-card",
+    market: "fintech",
     brand: "Karta",
     title: "Karta Card Design Case Study: AI Metal Credit Card",
     description:
@@ -63,6 +79,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "legalario-e-signature",
+    market: "legaltech",
     brand: "Legalario",
     title: "Legalario Case Study: 99% E-Signature Completion",
     description:
@@ -74,6 +91,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "legalario-emails",
+    market: "legaltech",
     brand: "Legalario",
     title: "Legalario Emails Case Study: Electronic Signature for Anyone",
     description:
@@ -88,6 +106,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "truora-report",
+    market: "legaltech",
     brand: "Truora",
     title: "Truora Background Check Report Case Study: -50% Reading\u00a0Time",
     description:
@@ -100,6 +119,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "truora-truconnect",
+    market: "legaltech",
     brand: "Truora",
     title: "Truora TruConnect Case Study: WhatsApp Onboarding MVP",
     description:
@@ -112,6 +132,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "yaydoo-design-system",
+    market: "fintech",
     brand: "Yaydoo",
     title: "Yaydoo Design System: +40% Productivity in 3 Months",
     description:
@@ -123,6 +144,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "yaydoo-porcobrar",
+    market: "fintech",
     brand: "Yaydoo",
     title: "Yaydoo porCobrar: +40% New Users in 30 Days",
     description:
@@ -134,6 +156,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "yaydoo-vendorplace",
+    market: "fintech",
     brand: "Yaydoo",
     title: "Yaydoo Vendorplace: 2× User Registrations",
     description:
@@ -145,6 +168,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "stadio-apple-watch",
+    market: "sport",
     brand: "Stadio",
     title: "Stadio Case Study: Apple Watch Running App",
     description:
@@ -158,6 +182,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "rebajatuscuentas",
+    market: "proptech",
     brand: "RebajaTusCuentas",
     title: "RebajaTusCuentas: +300% Growth, 3 Countries",
     description:
@@ -169,6 +194,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "mipos-dark-kitchen",
+    market: "foodtech",
     brand: "mipOS Dark Kitchen",
     title: "mipOS Dark Kitchen: +400% Productivity",
     description:
@@ -182,6 +208,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "mipos-restaurant-pos",
+    market: "foodtech",
     brand: "mipOS Restaurants",
     title: "mipOS Restaurant POS: 70% Conversion\u00a0Rate",
     description:
@@ -195,6 +222,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "mipos-kiosk",
+    market: "foodtech",
     brand: "mipOS Kiosk",
     title: "mipOS Kiosk: +155% Conversion Optimization",
     description:
@@ -208,6 +236,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "spotfinder",
+    market: "iot",
     brand: "Spotfinder",
     title: "Spotfinder: +52% IoT Hardware Activation Rate",
     description:

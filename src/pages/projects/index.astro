@@ -2,12 +2,16 @@
 import { getImage } from "astro:assets";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import ProjectCard from "~/components/projects/ProjectCard.astro";
-import { projects } from "~/data/projects";
+import { MARKETS, MARKET_LABELS, projects } from "~/data/projects";
 import { site } from "~/lib/site";
 
 export const prerender = true;
 
 const sorted = [...projects].sort((a, b) => a.order - b.order);
+// Filter tabs: only markets that have cases, with their counts.
+const markets = MARKETS.map((m) => ({ id: m, label: MARKET_LABELS[m], count: sorted.filter((p) => p.market === m).length })).filter(
+  (m) => m.count > 0,
+);
 
 const ogVariant = await getImage({
   src: sorted[0].image,
@@ -62,12 +66,165 @@ const jsonLd = [
           <h1 class="display-serif text-[3.25rem] md:text-[4rem] lg:text-[3.25rem] xl:text-[4rem] max-w-[14ch]">
             Building<br /><em>exponential<br />growth</em>
           </h1>
+          <nav class="pf" aria-label="Filter case studies by market" data-pf>
+            <button type="button" class="pf-tab" data-market="all" aria-pressed="true">
+              All <span class="pf-count mono">{sorted.length}</span>
+            </button>
+            {
+              markets.map((m) => (
+                <button type="button" class="pf-tab" data-market={m.id} aria-pressed="false">
+                  {m.label} <span class="pf-count mono">{m.count}</span>
+                </button>
+              ))
+            }
+          </nav>
+          <p class="sr-only" aria-live="polite" data-pf-status></p>
         </div>
       </aside>
 
-      <div class="min-w-0 divide-y divide-[color:var(--color-border)]">
-        {sorted.map((project) => <ProjectCard project={project} />)}
+      <div class="min-w-0 divide-y divide-[color:var(--color-border)]" data-pf-list>
+        {
+          sorted.map((project) => (
+            <div data-market={project.market}>
+              <ProjectCard project={project} />
+            </div>
+          ))
+        }
       </div>
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  // Market filter: show/hide cards; the choice lives in ?market= so a
+  // filtered list can be shared. Without JS every case shows.
+  const nav = document.querySelector<HTMLElement>("[data-pf]");
+  const list = document.querySelector<HTMLElement>("[data-pf-list]");
+  const status = document.querySelector<HTMLElement>("[data-pf-status]");
+  if (nav && list) {
+    const tabs = Array.from(nav.querySelectorAll<HTMLButtonElement>("[data-market]"));
+    const items = Array.from(list.querySelectorAll<HTMLElement>(":scope > [data-market]"));
+    const apply = (m: string, push: boolean) => {
+      const valid = tabs.some((t) => t.dataset.market === m) ? m : "all";
+      tabs.forEach((t) => t.setAttribute("aria-pressed", String(t.dataset.market === valid)));
+      let n = 0;
+      items.forEach((it) => {
+        const show = valid === "all" || it.dataset.market === valid;
+        it.hidden = !show;
+        if (show) n++;
+      });
+      if (status) status.textContent = `${n} case ${n === 1 ? "study" : "studies"}`;
+      if (push) {
+        const url = new URL(location.href);
+        if (valid === "all") url.searchParams.delete("market");
+        else url.searchParams.set("market", valid);
+        history.replaceState(null, "", url);
+      }
+    };
+    tabs.forEach((t) =>
+      t.addEventListener("click", () => {
+        apply(t.dataset.market ?? "all", true);
+        // On phones the list starts below the fold — bring it into view.
+        if (window.matchMedia("(max-width: 1023px)").matches) list.scrollIntoView({ behavior: "smooth", block: "start" });
+      }),
+    );
+    apply(new URL(location.href).searchParams.get("market") ?? "all", false);
+  }
+</script>
+
+<style>
+  /* Phones/tablet: one swipeable row, bleeding to the screen edges. */
+  .pf {
+    display: flex;
+    gap: 0.5rem;
+    margin: 2rem -1.25rem 0;
+    padding: 0 1.25rem 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-padding-inline: 1.25rem;
+  }
+  .pf::-webkit-scrollbar {
+    display: none;
+  }
+  .pf-tab {
+    flex-shrink: 0;
+  }
+  /* Desktop: a vertical list under the sticky title. */
+  @media (min-width: 1024px) {
+    .pf {
+      overflow: visible;
+      margin-inline: 0;
+      padding-inline: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+      margin-top: 2.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--color-border);
+    }
+  }
+  .pf-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.4rem 0.95rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-paper);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+    cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .pf-tab:hover {
+    border-color: var(--color-ink);
+  }
+  .pf-tab[aria-pressed="true"] {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .pf-count {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+  .pf-tab[aria-pressed="true"] .pf-count {
+    color: var(--color-accent);
+  }
+  @media (min-width: 1024px) {
+    .pf-tab {
+      border-color: transparent;
+      padding-inline: 0;
+      min-height: 2.25rem;
+      background: none;
+      color: var(--color-muted);
+    }
+    .pf-tab:hover {
+      border-color: transparent;
+      color: var(--color-ink);
+    }
+    .pf-tab[aria-pressed="true"] {
+      background: none;
+      border-color: transparent;
+      color: var(--color-ink);
+    }
+    .pf-tab[aria-pressed="true"]::before {
+      content: "";
+      width: 0.4rem;
+      height: 0.4rem;
+      margin-right: -0.1rem;
+      border-radius: 9999px;
+      background: var(--color-accent);
+    }
+  }
+  [data-pf-list] > [hidden] {
+    display: none;
+  }
+</style>
