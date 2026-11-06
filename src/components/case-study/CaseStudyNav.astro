@@ -289,7 +289,13 @@ const linkIconPath =
 
     // Visible between: challenge has reached the probe row …
     // … and until result is about to reach it.
-    const show = chRect.top <= PROBE_Y && resRect.top > PROBE_Y;
+    // Full-bleed photos are busy and often light: step the nav aside while
+    // any of one sits under the nav column.
+    const overPhoto = Array.from(document.querySelectorAll("[data-bleed-photo]")).some((el) => {
+      const r = el.getBoundingClientRect();
+      return r.top < vh * 0.55 && r.bottom > 80;
+    });
+    const show = chRect.top <= PROBE_Y && resRect.top > PROBE_Y && !overPhoto;
     const onDark =
       (chRect.top <= PROBE_Y && chRect.bottom > PROBE_Y) ||
       Array.from(document.querySelectorAll("[data-bleed]")).some((el) => {

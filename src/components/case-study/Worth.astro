@@ -47,7 +47,7 @@ const endsWithBleed = segments[segments.length - 1]?.kind !== "column";
       <BleedVideo video={seg.block.video} line={seg.block.line} />
     </div>
   ) : seg.kind === "bleed-image" ? (
-    <div class="worth-bleed worth-bleed-image">
+    <div class="worth-bleed worth-bleed-image" data-bleed-photo>
       <ContentImage image={seg.block.image} sizes="100vw" />
     </div>
   ) : (
