@@ -460,3 +460,72 @@ const switchHref = alternatePath(pathname, otherLang);
     });
   }
 </script>
+
+<script>
+  /*
+   * Language switch keeps the reader's place. EN and ES are separate
+   * pages with different text lengths, so instead of a pixel offset we
+   * remember the innermost element with an id under the header line and
+   * how far into it the reader was, then restore that on the other page.
+   */
+  const KEY = "lang-switch-place";
+  const LINE = 96; // just under the sticky header
+
+  document.querySelectorAll<HTMLAnchorElement>("a.lang-switch").forEach((a) =>
+    a.addEventListener("click", () => {
+      let anchor: HTMLElement | null = null;
+      let best = Infinity;
+      document.querySelectorAll<HTMLElement>("main [id]").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.height && r.top <= LINE && r.bottom > LINE && r.height < best) {
+          best = r.height;
+          anchor = el;
+        }
+      });
+      const doc = document.documentElement;
+      const place: Record<string, unknown> = {
+        to: new URL(a.href, location.href).pathname,
+        from: location.pathname,
+        ratio: scrollY / Math.max(1, doc.scrollHeight - innerHeight),
+      };
+      if (anchor) {
+        const r = (anchor as HTMLElement).getBoundingClientRect();
+        place.id = (anchor as HTMLElement).id;
+        place.frac = (LINE - r.top) / r.height;
+      }
+      try {
+        sessionStorage.setItem(KEY, JSON.stringify(place));
+      } catch {}
+    }),
+  );
+
+  let raw: string | null = null;
+  try {
+    raw = sessionStorage.getItem(KEY);
+    sessionStorage.removeItem(KEY);
+  } catch {}
+  if (raw) {
+    const place = JSON.parse(raw) as { to: string; from: string; ratio: number; id?: string; frac?: number };
+    // Only when it's the same page in the other language (a case without
+    // a translation falls back to another page — start that one at the top).
+    const bare = (p: string) => p.replace(/^\/es(?=\/)/, "");
+    if (place.to === location.pathname && bare(place.to) === bare(place.from) && !location.hash) {
+      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+      const restore = () => {
+        const doc = document.documentElement;
+        const el = place.id ? document.getElementById(place.id) : null;
+        const top = el
+          ? el.getBoundingClientRect().top + scrollY + (place.frac ?? 0) * el.offsetHeight - LINE
+          : place.ratio * (doc.scrollHeight - innerHeight);
+        window.scrollTo({ top: Math.max(0, top), behavior: "instant" as ScrollBehavior });
+      };
+      restore();
+      // Late images can shift the layout — settle once more after load,
+      // unless the reader has already started moving.
+      let moved = false;
+      const stop = () => (moved = true);
+      ["wheel", "touchstart", "keydown"].forEach((t) => addEventListener(t, stop, { once: true, passive: true }));
+      window.addEventListener("load", () => !moved && restore(), { once: true });
+    }
+  }
+</script>

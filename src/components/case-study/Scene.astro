@@ -87,7 +87,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
         {beats.map((_, i) => <span data-tick={i} data-active={i === 0 ? "" : undefined} />)}
       </span>
       <span class="scene-count mono"><b data-count>01</b> / {pad(beats.length)}</span>
-      <span class="scene-hint mono">{es ? "Desliza" : "Scroll"} <span class="scene-hint-arrow">↓</span></span>
+      <span class="scene-hint" title={es ? "Desliza para avanzar" : "Scroll to advance"}>
+        <svg viewBox="0 0 16 22" width="16" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 2v17M2 13l6 6 6-6" />
+        </svg>
+      </span>
     </div>
   </div>
 </div>
@@ -277,7 +281,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
       grid-template-areas:
         "cap media"
         "prog media";
-      grid-template-rows: auto auto;
+      grid-template-rows: auto max-content;
       align-content: center;
     }
     .scene--bare[data-ready] .scene-stage > .scene-beats,
@@ -287,7 +291,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
     .scene--bare[data-ready] .scene-cap {
       align-self: start;
     }
-    .scene--bare[data-ready] .scene-progress {
+    .scene.scene--bare[data-ready] .scene-progress {
       grid-area: prog;
       align-self: start;
       margin-top: 1.25rem;
@@ -328,6 +332,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
       grid-area: cap;
       align-self: end;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 0.875rem;
     }
@@ -363,18 +368,16 @@ const pad = (n: number) => String(n).padStart(2, "0");
       font-weight: 400;
       color: var(--color-ink);
     }
+    /* One-time cue: a larger arrow under the progress row, gently nudging. */
     .scene-hint {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.6875rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      flex-basis: 100%;
+      display: block;
+      height: 1.375rem;
       color: var(--color-muted);
       transition: opacity 0.4s ease;
     }
-    .scene-hint-arrow {
-      display: inline-block;
+    .scene-hint svg {
+      display: block;
       animation: scene-nudge 1.6s ease-in-out infinite;
     }
     .scene[data-hinted] .scene-hint {
@@ -383,10 +386,10 @@ const pad = (n: number) => String(n).padStart(2, "0");
     @keyframes scene-nudge {
       0%,
       100% {
-        transform: translateY(-1px);
+        transform: translateY(-2px);
       }
       50% {
-        transform: translateY(3px);
+        transform: translateY(4px);
       }
     }
   }
