@@ -6,8 +6,8 @@
  * climbs camp by camp (the four phases) to the summit flag.
  * Final state without JS / under reduced motion.
  */
-type Props = { camps: readonly string[]; ink?: string };
-const { camps, ink = "var(--color-ink)" } = Astro.props;
+type Props = { camps: readonly string[]; summit?: string; ink?: string };
+const { camps, summit = "Growth", ink = "var(--color-ink)" } = Astro.props;
 
 const W = 1200;
 const H = 520;
@@ -34,12 +34,26 @@ const hatch = [
   "M540 330 L560 360", "M528 372 L548 404", "M516 412 L534 446", "M560 250 L574 280", "M570 200 L582 226",
   "M440 300 L452 330", "M430 352 L442 384", "M318 352 L328 378", "M306 400 L318 428",
 ];
-// Route: base camp → 4 camps (phases) → summit.
-const stops: [number, number][] = [
-  [118, 500], [262, 470], [392, 398], [500, 300], [600, 70],
+// Route: base → camps 01–04 (the phases) → summit = growth. One polyline;
+// camps light up exactly when the drawn line reaches them.
+const path: [number, number][] = [
+  [118, 500], [190, 490], [262, 470], [318, 444], [392, 402], [436, 352], [482, 304], [512, 254], [546, 196], [574, 134], [600, 70],
 ];
-const route = "M118 500 L190 488 L262 470 L232 440 L330 420 L392 398 L360 360 L452 330 L500 300 L476 250 L556 190 L560 130 L600 70";
-const labelSide: ("l" | "r")[] = ["r", "r", "r", "l"];
+const campIdx = [2, 4, 6, 8];
+const seg = path.slice(1).map((p, i) => Math.hypot(p[0] - path[i][0], p[1] - path[i][1]));
+const total = seg.reduce((a, b) => a + b, 0);
+const at = (idx: number) => seg.slice(0, idx).reduce((a, b) => a + b, 0) / total;
+const route = "M" + path.map((p) => p.join(" ")).join(" L");
+const ROUTE_START = 2.2;
+const ROUTE_DUR = 3.2;
+const camp = campIdx.map((idx, i) => ({
+  x: path[idx][0],
+  y: path[idx][1],
+  side: (i < 2 ? "r" : "l") as "l" | "r",
+  delay: ROUTE_START + at(idx) * ROUTE_DUR,
+}));
+const summitDelay = ROUTE_START + ROUTE_DUR;
+const stops = [path[0]];
 ---
 
 <div class="mtn" data-mtn style={`--mtn-ink: ${ink};`} aria-hidden="true">
@@ -90,27 +104,27 @@ const labelSide: ("l" | "r")[] = ["r", "r", "r", "l"];
     <path class="mtn-line mtn-cloud-edge" pathLength="1" d="M820 520 C850 492 890 496 916 482 C950 466 990 478 1020 468 C1060 456 1100 470 1130 462 C1160 456 1180 466 1200 460" />
 
     <!-- Route + camps -->
-    <path class="mtn-route" d={route} pathLength="1" />
+    <path class="mtn-route" d={route} pathLength="1" style={`--rs:${ROUTE_START}s;--rd:${ROUTE_DUR}s`} />
+    <circle cx={stops[0][0]} cy={stops[0][1]} r="4" class="mtn-base" />
     {
-      stops.slice(1, 4).concat([[600, 70]]).map(([x, y], i) => (
-        <g class="mtn-camp" style={`--c:${i}`}>
-          <circle cx={x} cy={y} r="6" class="mtn-camp-dot" />
-          <text
-            x={labelSide[i] === "r" ? x + 14 : x - 14}
-            y={y + 4}
-            text-anchor={labelSide[i] === "r" ? "start" : "end"}
-            class="mtn-label"
-          >
-            <tspan class="mtn-num">{String(i + 1).padStart(2, "0")}</tspan><tspan class="mtn-name"> {camps[i]}</tspan>
+      camp.map((c, i) => (
+        <g class="mtn-camp" style={`--at:${c.delay.toFixed(2)}s`}>
+          <circle cx={c.x} cy={c.y} r="6" class="mtn-camp-dot" />
+          <text x={c.side === "r" ? c.x + 14 : c.x - 14} y={c.y + 4} text-anchor={c.side === "r" ? "start" : "end"} class="mtn-label">
+            <tspan class="mtn-num">{String(i + 1).padStart(2, "0")}</tspan>
+            <tspan class="mtn-name"> {camps[i]}</tspan>
           </text>
         </g>
       ))
     }
-    <circle cx={stops[0][0]} cy={stops[0][1]} r="4" class="mtn-base" />
-    <!-- Summit flag -->
-    <g class="mtn-flag">
-      <path d="M600 70 L600 30" class="mtn-pole" />
-      <path d="M600 30 L626 38 L600 46 Z" class="mtn-pennant" />
+    <!-- Summit = growth -->
+    <g class="mtn-flag" style={`--at:${summitDelay.toFixed(2)}s`}>
+      <circle cx="600" cy="70" r="7" class="mtn-summit-dot" />
+      <path d="M600 63 L600 24" class="mtn-pole" />
+      <path d="M600 24 L630 33 L600 42 Z" class="mtn-pennant" />
+      <text x="640" y="38" class="mtn-label mtn-summit">
+        <tspan class="mtn-arrow">↗</tspan> {summit}
+      </text>
     </g>
   </svg>
 </div>
@@ -176,7 +190,7 @@ const labelSide: ("l" | "r")[] = ["r", "r", "r", "l"];
     stroke: currentColor;
     stroke-width: 1.5;
   }
-  .mtn-camp:last-of-type .mtn-camp-dot,
+  .mtn-summit-dot,
   .mtn-base {
     fill: var(--color-accent);
     stroke: currentColor;
@@ -194,6 +208,13 @@ const labelSide: ("l" | "r")[] = ["r", "r", "r", "l"];
   }
   .mtn-num {
     fill: var(--color-muted);
+  }
+  .mtn-summit {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .mtn-arrow {
+    fill: var(--color-accent);
   }
   .mtn-pole {
     stroke: currentColor;
@@ -231,8 +252,9 @@ const labelSide: ("l" | "r")[] = ["r", "r", "r", "l"];
     .mtn[data-armed] .mtn-base {
       opacity: 0;
     }
+    /* Dash 1, gap 2: nothing of the route leaks before it starts. */
     .mtn[data-armed] .mtn-route {
-      stroke-dasharray: 1;
+      stroke-dasharray: 1 2;
       stroke-dashoffset: 1;
     }
     .mtn[data-play] .mtn-line {
@@ -241,29 +263,26 @@ const labelSide: ("l" | "r")[] = ["r", "r", "r", "l"];
       stroke-dashoffset: 0;
     }
     .mtn[data-play] .mtn-shade {
-      transition: opacity 1.2s ease 1.3s;
+      transition: opacity 1.2s ease 1.2s;
       opacity: 1;
     }
     .mtn[data-play] .mtn-hatch {
       transition: opacity 0.6s ease;
-      transition-delay: calc(1.6s + var(--i, 0) * 0.05s);
+      transition-delay: calc(1.5s + var(--i, 0) * 0.05s);
       opacity: 0.7;
     }
     .mtn[data-play] .mtn-base {
-      transition: opacity 0.4s ease 2.2s;
+      transition: opacity 0.3s ease 2s;
       opacity: 1;
     }
+    /* Linear so the line reaches each camp at its computed delay. */
     .mtn[data-play] .mtn-route {
-      transition: stroke-dashoffset 2.4s cubic-bezier(0.45, 0, 0.2, 1) 2.3s;
+      transition: stroke-dashoffset var(--rd) linear var(--rs);
       stroke-dashoffset: 0;
     }
-    .mtn[data-play] .mtn-camp {
-      transition: opacity 0.5s ease;
-      transition-delay: calc(2.8s + var(--c) * 0.5s);
-      opacity: 1;
-    }
+    .mtn[data-play] .mtn-camp,
     .mtn[data-play] .mtn-flag {
-      transition: opacity 0.5s ease 4.8s;
+      transition: opacity 0.35s ease var(--at);
       opacity: 1;
     }
   }
