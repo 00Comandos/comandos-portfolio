@@ -136,28 +136,46 @@ const tiles = slugs.flatMap((slug, i) => {
         raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.3 ? requestAnimationFrame(loop) : 0;
       };
 
-      grid.querySelectorAll<HTMLElement>(".cg-media").forEach((media) => {
-        const video = media.querySelector<HTMLVideoElement>(".cg-video");
-        media.addEventListener("pointerenter", (e) => {
+      // The whole card (media + caption) is one hover target, so the
+      // zoom, preview, cursor and caption dot start and end together.
+      grid.querySelectorAll<HTMLElement>(".cg-link").forEach((link) => {
+        const media = link.querySelector<HTMLElement>(".cg-media");
+        const video = media?.querySelector<HTMLVideoElement>(".cg-video");
+        let stopTimer = 0;
+        link.addEventListener("pointerenter", (e) => {
           x = cx = e.clientX;
           y = cy = e.clientY;
           loop();
           cursor?.classList.add("is-on");
-          if (video && !reduced.matches) {
+          window.clearTimeout(stopTimer);
+          if (video && media && !reduced.matches) {
             if (!video.src && video.dataset.src) video.src = video.dataset.src;
-            video.play().then(() => media.classList.add("is-playing")).catch(() => {});
+            video
+              .play()
+              .then(() => {
+                if (link.matches(":hover")) media.classList.add("is-playing");
+              })
+              .catch(() => {});
           }
         });
-        media.addEventListener("pointermove", (e) => {
+        link.addEventListener("pointermove", (e) => {
           x = e.clientX;
           y = e.clientY;
           if (!raf) raf = requestAnimationFrame(loop);
         });
-        media.addEventListener("pointerleave", () => {
+        link.addEventListener("pointerleave", (e) => {
+          // Let the circle follow the pointer out while it fades.
+          x = e.clientX;
+          y = e.clientY;
+          if (!raf) raf = requestAnimationFrame(loop);
           cursor?.classList.remove("is-on");
-          if (video) {
-            video.pause();
+          if (video && media) {
+            // Fade the preview out while it keeps moving, then rewind.
             media.classList.remove("is-playing");
+            stopTimer = window.setTimeout(() => {
+              video.pause();
+              video.currentTime = 0;
+            }, 400);
           }
         });
       });
@@ -261,7 +279,8 @@ const tiles = slugs.flatMap((slug, i) => {
     transform: scale(1.001);
     transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .cg-link:hover :global(.cg-img) {
+  .cg-link:hover :global(.cg-img),
+  .cg-link:hover .cg-video {
     transform: scale(1.04);
   }
 
@@ -306,7 +325,10 @@ const tiles = slugs.flatMap((slug, i) => {
     height: 100%;
     object-fit: cover;
     opacity: 0;
-    transition: opacity 0.35s ease;
+    transform: scale(1.001);
+    transition:
+      opacity 0.35s ease,
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
   }
   .cg-media.is-playing .cg-video {
@@ -357,7 +379,7 @@ const tiles = slugs.flatMap((slug, i) => {
   [data-cursor] .cg-cursor {
     display: grid;
   }
-  [data-cursor] .cg-media {
+  [data-cursor] .cg-link {
     cursor: none;
   }
   .cg-cursor.is-on {
