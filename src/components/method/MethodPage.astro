@@ -8,6 +8,7 @@ import FinalCTA from "~/components/home/FinalCTA.astro";
 import Checklist from "~/components/case-study/Checklist.astro";
 import PhaseVisual from "~/components/method/PhaseVisual.astro";
 import PrincipleArt from "~/components/method/PrincipleArt.astro";
+import MountainArt from "~/components/method/MountainArt.astro";
 import { site } from "~/lib/site";
 import { localizedPath, ui, type Lang } from "~/i18n";
 
@@ -74,6 +75,9 @@ const jsonLd = [
       <h1 id="mp-hero-heading" class="mp-hero-title">
         {p.hero.title.replace(" —", "\u00a0—")} <span class="hl">{p.hero.titleHl}</span>
       </h1>
+    </div>
+    <div class="container-page mp-hero-art">
+      <MountainArt camps={phases.map((ph) => ph.label)} />
     </div>
     <div class="mp-hero-body">
       <div class="container-page mp-split">
@@ -353,6 +357,14 @@ const jsonLd = [
     }
     .mp-hero-top .eyebrow {
       padding-bottom: 0.6rem;
+    }
+  }
+  .mp-hero-art {
+    margin-top: 0.5rem;
+  }
+  @media (min-width: 1024px) {
+    .mp-hero-art {
+      margin-top: 0;
     }
   }
   .mp-hero-title {
