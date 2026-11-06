@@ -87,10 +87,6 @@ const tiles = slugs.flatMap((slug, i) => {
                       aria-hidden="true"
                       tabindex="-1"
                     />
-                    <span class="cg-badge mono" aria-hidden="true">
-                      <svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 0.5v7L7.5 4z" fill="currentColor" /></svg>
-                      {t.work.preview}
-                    </span>
                   </>
                 )}
               </span>
@@ -117,9 +113,10 @@ const tiles = slugs.flatMap((slug, i) => {
 <script>
   import { loopUntil } from "~/lib/clip-end";
   /*
-   * Desktop-only niceties: a circular "View case" cursor that follows the
-   * pointer over case media (Aerolab), and muted video previews that load
-   * and play on hover (Tubik "quick view"). Touch devices get neither.
+   * Desktop-only hover, after Aerolab: a "View case" disc pinned exactly to
+   * the pointer (no easing lag) that fades in and vanishes at once on exit;
+   * cases with footage swap the still for a muted preview playing beneath
+   * it. No zoom. Touch devices get none of it.
    */
   function initCaseGrid() {
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
@@ -129,60 +126,63 @@ const tiles = slugs.flatMap((slug, i) => {
       grid.dataset.ready = "1";
       grid.setAttribute("data-cursor", "");
       const cursor = grid.querySelector<HTMLElement>(".cg-cursor");
-
-      let x = 0, y = 0, cx = 0, cy = 0, raf = 0;
-      const loop = () => {
-        const k = reduced.matches ? 1 : 0.22;
-        cx += (x - cx) * k;
-        cy += (y - cy) * k;
-        if (cursor) cursor.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
-        raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.3 ? requestAnimationFrame(loop) : 0;
+      let x = 0, y = 0, raf = 0;
+      let over: HTMLElement | null = null;
+      const paint = () => {
+        raf = 0;
+        if (cursor) cursor.style.translate = `${x}px ${y}px`;
+      };
+      const move = (e: PointerEvent) => {
+        x = e.clientX;
+        y = e.clientY;
+        if (!raf) raf = requestAnimationFrame(paint);
       };
 
-      // The whole card (media + caption) is one hover target, so the
-      // zoom, preview, cursor and caption dot start and end together.
-      grid.querySelectorAll<HTMLElement>(".cg-link").forEach((link) => {
+      const links = Array.from(grid.querySelectorAll<HTMLElement>(".cg-link"));
+      const leave = (link: HTMLElement) => {
+        if (over === link) over = null;
+        if (!over) cursor?.classList.remove("is-on");
+        const media = link.querySelector<HTMLElement>(".cg-media");
+        const video = media?.querySelector<HTMLVideoElement>(".cg-video");
+        media?.classList.remove("is-playing");
+        if (video) {
+          video.pause();
+          video.currentTime = 0;
+        }
+      };
+
+      links.forEach((link) => {
         const media = link.querySelector<HTMLElement>(".cg-media");
         const video = media?.querySelector<HTMLVideoElement>(".cg-video");
         if (video?.dataset.end) loopUntil(video, Number(video.dataset.end));
-        let stopTimer = 0;
         link.addEventListener("pointerenter", (e) => {
-          x = cx = e.clientX;
-          y = cy = e.clientY;
-          loop();
+          over = link;
+          move(e);
+          paint();
           cursor?.classList.add("is-on");
-          window.clearTimeout(stopTimer);
           if (video && media && !reduced.matches) {
             if (!video.src && video.dataset.src) video.src = video.dataset.src;
             video
               .play()
               .then(() => {
-                if (link.matches(":hover")) media.classList.add("is-playing");
+                if (over === link) media.classList.add("is-playing");
               })
               .catch(() => {});
           }
         });
-        link.addEventListener("pointermove", (e) => {
-          x = e.clientX;
-          y = e.clientY;
-          if (!raf) raf = requestAnimationFrame(loop);
-        });
-        link.addEventListener("pointerleave", (e) => {
-          // Let the circle follow the pointer out while it fades.
-          x = e.clientX;
-          y = e.clientY;
-          if (!raf) raf = requestAnimationFrame(loop);
-          cursor?.classList.remove("is-on");
-          if (video && media) {
-            // Fade the preview out while it keeps moving, then rewind.
-            media.classList.remove("is-playing");
-            stopTimer = window.setTimeout(() => {
-              video.pause();
-              video.currentTime = 0;
-            }, 400);
-          }
-        });
+        link.addEventListener("pointermove", move);
+        link.addEventListener("pointerleave", () => leave(link));
       });
+
+      // Wheel-scrolling moves the card out from under a still pointer
+      // without a pointerleave: drop the hover once it no longer matches.
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (over && !over.matches(":hover")) leave(over);
+        },
+        { passive: true },
+      );
     });
   }
   initCaseGrid();
@@ -276,16 +276,17 @@ const tiles = slugs.flatMap((slug, i) => {
     }
   }
   .cg-media :global(.cg-img) {
+    position: relative;
+    z-index: 1;
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scale(1.001);
-    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: opacity 0.15s ease-in-out;
   }
-  .cg-link:hover :global(.cg-img),
-  .cg-link:hover .cg-video {
-    transform: scale(1.04);
+  /* The preview plays beneath the still; the still steps aside. */
+  .cg-media.is-playing :global(.cg-img) {
+    opacity: 0;
   }
 
   .cg-meta {
@@ -321,43 +322,17 @@ const tiles = slugs.flatMap((slug, i) => {
     border-radius: var(--radius-xs);
     color: var(--color-ink);
   }
-  /* Video preview layered over the still; fades in once playing. */
   .cg-video {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0;
-    transform: scale(1.001);
-    transition:
-      opacity 0.35s ease,
-      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
   }
-  .cg-media.is-playing .cg-video {
-    opacity: 1;
-  }
-  .cg-badge {
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.35rem 0.6rem;
-    border-radius: 9999px;
-    background: rgb(255 255 255 / 0.9);
-    color: var(--color-ink);
-    font-size: 0.6875rem;
-    text-transform: uppercase;
-    transition: opacity 0.25s ease;
-  }
-  .cg-media.is-playing .cg-badge {
-    opacity: 0;
-  }
 
-  /* Circular cursor (desktop, fine pointer only). */
+  /* "View case" disc (desktop, fine pointer only): pinned to the pointer,
+     fades in, gone the instant the pointer leaves the card. */
   .cg-cursor {
     position: fixed;
     top: 0;
@@ -365,20 +340,18 @@ const tiles = slugs.flatMap((slug, i) => {
     z-index: 30;
     display: none;
     place-items: center;
-    width: 6.5rem;
-    height: 6.5rem;
+    width: 5.5rem;
+    height: 5.5rem;
+    margin: -2.75rem 0 0 -2.75rem;
     border-radius: 9999px;
     background: var(--color-ink);
     color: var(--color-paper);
     font-size: 0.6875rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
+    text-align: center;
     pointer-events: none;
     opacity: 0;
-    scale: 0.4;
-    transition:
-      opacity 0.2s ease,
-      scale 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   }
   [data-cursor] .cg-cursor {
     display: grid;
@@ -388,7 +361,7 @@ const tiles = slugs.flatMap((slug, i) => {
   }
   .cg-cursor.is-on {
     opacity: 1;
-    scale: 1;
+    transition: opacity 0.2s ease;
   }
 
   .cg-name::after {

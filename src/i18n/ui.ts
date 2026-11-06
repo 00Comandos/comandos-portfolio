@@ -61,7 +61,6 @@ const en = {
     readCase: (brand: string) => `Read the ${brand} case study`,
     all: "See all case studies",
     viewCase: "View case",
-    preview: "Preview",
   },
   services: {
     eyebrow: "Services",
@@ -656,7 +655,6 @@ const es: UI = {
     readCase: (brand: string) => `Ver el caso de ${brand}`,
     all: "Ver todos los casos",
     viewCase: "Ver caso",
-    preview: "Preview",
   },
   services: {
     eyebrow: "Servicios",
