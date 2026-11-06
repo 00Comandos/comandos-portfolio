@@ -8,7 +8,7 @@
  * under reduced motion.
  */
 import { Image } from "astro:assets";
-import summit from "~/assets/images/method/north-face-growth-summit.png";
+import summit from "~/assets/images/method/north-face-growth-summit.webp";
 
 type Props = { camps: readonly string[]; summitLabel?: string; alt: string };
 const { camps, summitLabel = "Growth", alt } = Astro.props;
@@ -35,7 +35,7 @@ const top = path[path.length - 1];
     src={summit}
     alt={alt}
     widths={[640, 960, 1280, 1678]}
-    sizes="(min-width: 1280px) 1200px, 100vw"
+    sizes="100vw"
     loading="eager"
     fetchpriority="high"
     class="sc-img"
@@ -80,11 +80,11 @@ const top = path[path.length - 1];
 </script>
 
 <style>
+  /* Full width, transparent: the engraving sits straight on the page. */
   .sc {
     position: relative;
-    max-width: 1200px;
-    margin-inline: auto;
-    --sc-paper: rgb(247 231 204);
+    width: 100%;
+    --sc-paper: var(--color-paper);
     --sc-ink: #1d2b5e;
   }
   .sc-img {
