@@ -1,19 +1,19 @@
 ---
 import { Image } from "astro:assets";
 import { localizedPath, ui, type Lang } from "~/i18n";
-// One visual per step, pulled from real case-study work (no stock).
-import imgResearch from "~/assets/images/karta/Karta-GlobalApp-Interviews-2048x1026.webp";
-import imgStrategy from "~/assets/images/mipos-dark-kitchen/mipOS-DarkKitchen-UserJourney-comados-studio.png";
-import imgSystem from "~/assets/images/yaydoo-design-system/GrillDesignSystem-Result-yaydoo-comandos-project.png";
+// One visual per step: a real interview scene, then case-study work.
+import imgResearch from "~/assets/images/stock/research-user-interview.webp";
+import imgStrategy from "~/assets/images/rebajatuscuentas/rebajaTusCuentas-board-comandos-project.png";
+import imgSystem from "~/assets/images/yaydoo-design-system/comandos-yaydoo-design-system-grill.png";
 import imgTesting from "~/assets/images/truora-report/truora-headmap-backgroundCheck-report-2048x1492.webp";
 
 type Props = { lang: Lang };
 const t = ui[Astro.props.lang];
 
 const media = [
-  { src: imgResearch, position: "0% 40%" },
+  { src: imgResearch, position: "68% 35%" },
   { src: imgStrategy, position: "50% 50%" },
-  { src: imgSystem, position: "50% 30%" },
+  { src: imgSystem, position: "0% 30%" },
   { src: imgTesting, position: "50% 20%" },
 ];
 
