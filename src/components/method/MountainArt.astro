@@ -56,7 +56,7 @@ const seg = path.slice(1).map((p, i) => Math.hypot(p[0] - path[i][0], p[1] - pat
 const total = seg.reduce((a, b) => a + b, 0);
 const at = (idx: number) => seg.slice(0, idx).reduce((a, b) => a + b, 0) / total;
 const route = P(path);
-const ROUTE_START = 1.9;
+const ROUTE_START = 2.7;
 const ROUTE_DUR = 3;
 const camp = campIdx.map((idx) => ({ x: path[idx][0], y: path[idx][1], delay: ROUTE_START + at(idx) * ROUTE_DUR }));
 const summitDelay = ROUTE_START + ROUTE_DUR;
@@ -139,7 +139,7 @@ const summitDelay = ROUTE_START + ROUTE_DUR;
         // a line can stop short of its end. Once each draw-in is over, drop
         // the dashes so every line ends up whole.
         window.setTimeout(() => el.setAttribute("data-lines-done", ""), 2300);
-        window.setTimeout(() => el.setAttribute("data-route-done", ""), 5000);
+        window.setTimeout(() => el.setAttribute("data-route-done", ""), 5800);
       }),
     );
   });
@@ -285,7 +285,7 @@ const summitDelay = ROUTE_START + ROUTE_DUR;
       opacity: 0.55;
     }
     .mtn[data-play] .mtn-base {
-      transition: opacity 0.3s ease 1.7s;
+      transition: opacity 0.3s ease 2.5s;
       opacity: 1;
     }
     .mtn[data-play] .mtn-route {
