@@ -94,6 +94,8 @@ const stats = homeImpact[lang];
   }
 
   .impact-cell {
+    container-type: inline-size;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -123,7 +125,11 @@ const stats = homeImpact[lang];
     color: var(--color-muted);
     transition: color 0.2s ease;
   }
+  .impact-brand {
+    max-width: 100%;
+  }
   .impact-brand::before {
+    flex-shrink: 0;
     content: "";
     width: 0.375rem;
     height: 0.375rem;
@@ -133,7 +139,8 @@ const stats = homeImpact[lang];
   }
   .impact-value {
     margin-top: 2.5rem;
-    font-size: clamp(3rem, 7vw, 6rem);
+    /* Fits the widest figure ("+155%") inside its own cell. */
+    font-size: min(6rem, 26cqi);
     font-weight: 500;
     line-height: 0.9;
     letter-spacing: -0.05em;
@@ -160,15 +167,10 @@ const stats = homeImpact[lang];
   }
   /* Smallest phones: the 2-col cells are ~140px — "+155%" / "+300%" and
      "REBAJATUSCUENTAS" at the default floor get clipped. */
-  @media (max-width: 359px) {
-    .impact-cell {
-      padding-right: 0.5rem;
-    }
-    .impact-value {
-      font-size: 2.25rem;
-    }
+  /* Phones: the long brand name ("RebajaTusCuentas") shrinks to fit. */
+  @media (max-width: 639px) {
     .impact-brand {
-      font-size: 0.6875rem;
+      font-size: min(0.875rem, 7.4cqi);
     }
   }
 </style>

@@ -570,6 +570,13 @@ const time = (i: number) => `10:${String(41 + Math.floor(i / 2)).padStart(2, "0"
     color: #8696a0;
     box-shadow: none;
   }
+  .cc-placeholder {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .cc-field svg {
     flex: none;
     width: 1.375rem;
