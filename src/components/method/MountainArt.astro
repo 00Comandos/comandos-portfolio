@@ -6,8 +6,18 @@
  * by camp (the four phases) to the summit: growth.
  * Final state without JS / under reduced motion.
  */
-type Props = { camps: readonly string[]; summit?: string; ink?: string };
-const { camps, summit = "Growth", ink = "var(--color-ink)" } = Astro.props;
+type Props = {
+  camps?: readonly string[];
+  summit?: string;
+  ink?: string;
+  /** Section background, so the range's paper fill blends in. */
+  paper?: string;
+  /** `still`: just the engraved mountain + summit flag — no route, no
+      camps, no animation (used on /services). */
+  variant?: "climb" | "still";
+};
+const { camps = [], summit = "Growth", ink = "var(--color-ink)", paper = "var(--color-paper)", variant = "climb" } = Astro.props;
+const still = variant === "still";
 
 const W = 1200;
 const H = 520;
@@ -52,7 +62,7 @@ const camp = campIdx.map((idx) => ({ x: path[idx][0], y: path[idx][1], delay: RO
 const summitDelay = ROUTE_START + ROUTE_DUR;
 ---
 
-<div class="mtn" data-mtn style={`--mtn-ink: ${ink};`} aria-hidden="true">
+<div class="mtn" data-mtn={still ? undefined : ""} style={`--mtn-ink: ${ink}; --mtn-paper: ${paper};`} aria-hidden="true">
   <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMax meet">
     <defs>
       <pattern id="mtn-dots-dense" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
@@ -92,10 +102,10 @@ const summitDelay = ROUTE_START + ROUTE_DUR;
 
     <path class="mtn-line mtn-ground" d={`M0 519 L${W} 519`} pathLength="1" />
 
-    <path class="mtn-route" d={route} pathLength="1" style={`--rs:${ROUTE_START}s;--rd:${ROUTE_DUR}s`} />
-    <circle cx={path[0][0]} cy={path[0][1]} r="4" class="mtn-base" />
+    {!still && <path class="mtn-route" d={route} pathLength="1" style={`--rs:${ROUTE_START}s;--rd:${ROUTE_DUR}s`} />}
+    {!still && <circle cx={path[0][0]} cy={path[0][1]} r="4" class="mtn-base" />}
     {
-      camp.map((c, i) => (
+      !still && camp.map((c, i) => (
         <g class="mtn-camp" style={`--at:${c.delay.toFixed(2)}s`}>
           <circle cx={c.x} cy={c.y} r="6" class="mtn-camp-dot" />
           <text x={c.x - 16} y={c.y + 4} text-anchor="end" class="mtn-label">
@@ -109,9 +119,11 @@ const summitDelay = ROUTE_START + ROUTE_DUR;
       <circle cx="600" cy="70" r="7" class="mtn-summit-dot" />
       <path d="M600 63 L600 22" class="mtn-pole" />
       <path d="M600 22 L632 31 L600 40 Z" class="mtn-pennant" />
-      <text x="644" y="36" class="mtn-label mtn-summit">
-        <tspan class="mtn-arrow">↗</tspan> {summit}
-      </text>
+      {!still && (
+        <text x="644" y="36" class="mtn-label mtn-summit">
+          <tspan class="mtn-arrow">↗</tspan> {summit}
+        </text>
+      )}
     </g>
   </svg>
 </div>
@@ -120,7 +132,16 @@ const summitDelay = ROUTE_START + ROUTE_DUR;
   document.querySelectorAll<HTMLElement>("[data-mtn]").forEach((el) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     el.setAttribute("data-armed", "");
-    requestAnimationFrame(() => requestAnimationFrame(() => el.setAttribute("data-play", "")));
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        el.setAttribute("data-play", "");
+        // Chrome scales pathLength dashes oddly with non-scaling strokes, so
+        // a line can stop short of its end. Once each draw-in is over, drop
+        // the dashes so every line ends up whole.
+        window.setTimeout(() => el.setAttribute("data-lines-done", ""), 2300);
+        window.setTimeout(() => el.setAttribute("data-route-done", ""), 5000);
+      }),
+    );
   });
 </script>
 
@@ -139,7 +160,7 @@ const summitDelay = ROUTE_START + ROUTE_DUR;
     vector-effect: non-scaling-stroke;
   }
   .mtn-paper {
-    fill: var(--color-paper);
+    fill: var(--mtn-paper);
   }
   .mtn-dot {
     fill: currentColor;
@@ -177,7 +198,7 @@ const summitDelay = ROUTE_START + ROUTE_DUR;
     stroke-linejoin: round;
   }
   .mtn-camp-dot {
-    fill: var(--color-paper);
+    fill: var(--mtn-paper);
     stroke: currentColor;
     stroke-width: 1.5;
   }
@@ -189,7 +210,7 @@ const summitDelay = ROUTE_START + ROUTE_DUR;
   }
   .mtn-label {
     paint-order: stroke;
-    stroke: var(--color-paper);
+    stroke: var(--mtn-paper);
     stroke-width: 6px;
     stroke-linejoin: round;
     font-family: var(--font-mono);
@@ -270,6 +291,11 @@ const summitDelay = ROUTE_START + ROUTE_DUR;
     .mtn[data-play] .mtn-route {
       transition: stroke-dashoffset var(--rd) linear var(--rs);
       stroke-dashoffset: 0;
+    }
+    .mtn[data-lines-done] .mtn-line,
+    .mtn[data-route-done] .mtn-route {
+      stroke-dasharray: none;
+      transition: none;
     }
     .mtn[data-play] .mtn-camp,
     .mtn[data-play] .mtn-flag {

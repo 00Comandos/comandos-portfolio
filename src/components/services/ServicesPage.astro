@@ -4,7 +4,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import FinalCTA from "~/components/home/FinalCTA.astro";
 import ServicesPains from "./ServicesPains.astro";
 import AudienceArt from "./AudienceArt.astro";
-import ElevationProfile from "./ElevationProfile.astro";
+import MountainArt from "~/components/method/MountainArt.astro";
 import { projects } from "~/data/projects";
 import { homeImpact, homeWorkCopy } from "~/data/home-work-i18n";
 import { site } from "~/lib/site";
@@ -243,11 +243,19 @@ const jsonLd = [
           {p.process.title} <span class="hl">{p.process.titleHl}</span>
         </h2>
         <p class="sv-sub">{p.process.body}</p>
-        <ElevationProfile
-          steps={t.method.steps.map((s) => s.label)}
-          summit={lang === "es" ? "Crecimiento" : "Growth"}
-          label={p.process.titleHl}
-        />
+        <div class="sv-process-art">
+          <MountainArt variant="still" paper="var(--color-grey)" />
+        </div>
+        <ol class="sv-steps">
+          {
+            t.method.steps.map((step, i) => (
+              <li>
+                <span class="sv-step-num">{num(i)}</span>
+                <span>{step.title}</span>
+              </li>
+            ))
+          }
+        </ol>
         <a href={L("/method/")} class="btn-outline sv-process-cta">
           {p.process.cta}
         </a>
@@ -891,6 +899,9 @@ const jsonLd = [
   .sv-step-num {
     font-size: 0.75rem;
     color: var(--color-muted);
+  }
+  .sv-process-art {
+    margin-top: 2.5rem;
   }
   .sv-process-cta {
     margin-top: 2.5rem;
