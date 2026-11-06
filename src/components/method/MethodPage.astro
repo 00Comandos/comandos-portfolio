@@ -8,7 +8,7 @@ import FinalCTA from "~/components/home/FinalCTA.astro";
 import Checklist from "~/components/case-study/Checklist.astro";
 import PhaseVisual from "~/components/method/PhaseVisual.astro";
 import PrincipleArt from "~/components/method/PrincipleArt.astro";
-import MountainArt from "~/components/method/MountainArt.astro";
+import SummitClimb from "~/components/method/SummitClimb.astro";
 import { site } from "~/lib/site";
 import { localizedPath, ui, type Lang } from "~/i18n";
 
@@ -76,8 +76,14 @@ const jsonLd = [
         {p.hero.title.replace(" —", "\u00a0—")} <span class="hl">{p.hero.titleHl}</span>
       </h1>
     </div>
-    <div class="container-page mp-hero-art">
-      <MountainArt camps={phases.map((ph) => ph.label)} summit={lang === "es" ? "Crecimiento" : "Growth"} />
+    <div class="mp-hero-art">
+      <SummitClimb
+        camps={phases.map((ph) => ph.label)}
+        summitLabel={lang === "es" ? "Crecimiento" : "Growth"}
+        alt={lang === "es"
+          ? "Ilustración grabada de una cumbre nevada con la ruta de North Face Growth: cuatro campamentos hasta la cima del crecimiento"
+          : "Engraved snowy summit with the North Face Growth route: four camps up to the summit of growth"}
+      />
     </div>
     <div class="mp-hero-body">
       <div class="container-page mp-split">
@@ -359,12 +365,14 @@ const jsonLd = [
       padding-bottom: 0.6rem;
     }
   }
+  /* Full-bleed band in the illustration's own cream. */
   .mp-hero-art {
-    margin-top: 0.5rem;
+    margin-top: 1.5rem;
+    background: rgb(247 231 204);
   }
   @media (min-width: 1024px) {
     .mp-hero-art {
-      margin-top: 0;
+      margin-top: 1rem;
     }
   }
   .mp-hero-title {

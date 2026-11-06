@@ -1,0 +1,199 @@
+---
+/*
+ * /method hero: the engraved summit illustration with the North Face
+ * Growth climb drawn on top — a teal route up the lit face, camps 01–04
+ * lighting up as the line reaches them, the summit flag = growth.
+ * The overlay shares the image's coordinate space (1678 × 937), so the
+ * route stays on the ridge at every width. Final state without JS /
+ * under reduced motion.
+ */
+import { Image } from "astro:assets";
+import summit from "~/assets/images/method/north-face-growth-summit.png";
+
+type Props = { camps: readonly string[]; summitLabel?: string; alt: string };
+const { camps, summitLabel = "Growth", alt } = Astro.props;
+
+const W = 1678;
+const H = 937;
+// Route up the snow face, base in the mist → summit (image pixels).
+const path: [number, number][] = [
+  [520, 830], [600, 770], [690, 690], [742, 604], [762, 528], [726, 470], [760, 408], [800, 334], [812, 270], [796, 214], [800, 184],
+];
+const campIdx = [2, 4, 6, 8];
+const seg = path.slice(1).map((p, i) => Math.hypot(p[0] - path[i][0], p[1] - path[i][1]));
+const total = seg.reduce((a, b) => a + b, 0);
+const at = (idx: number) => seg.slice(0, idx).reduce((a, b) => a + b, 0) / total;
+const route = "M" + path.map((p) => p.join(" ")).join(" L");
+const START = 0.6;
+const DUR = 3;
+const camp = campIdx.map((idx) => ({ x: path[idx][0], y: path[idx][1], delay: START + at(idx) * DUR }));
+const top = path[path.length - 1];
+---
+
+<div class="sc" data-sc>
+  <Image
+    src={summit}
+    alt={alt}
+    widths={[640, 960, 1280, 1678]}
+    sizes="(min-width: 1280px) 1200px, 100vw"
+    loading="eager"
+    fetchpriority="high"
+    class="sc-img"
+  />
+  <svg class="sc-svg" viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
+    <path class="sc-route" d={route} pathLength="1" style={`--rs:${START}s;--rd:${DUR}s`} />
+    <circle class="sc-base" cx={path[0][0]} cy={path[0][1]} r="7" />
+    {
+      camp.map((c, i) => (
+        <g class="sc-camp" style={`--at:${c.delay.toFixed(2)}s`}>
+          <circle class="sc-camp-dot" cx={c.x} cy={c.y} r="10" />
+          <text class="sc-label" x={c.x - 22} y={c.y + 6} text-anchor="end">
+            <tspan class="sc-num">{String(i + 1).padStart(2, "0")}</tspan>
+            <tspan class="sc-name"> {camps[i]}</tspan>
+          </text>
+        </g>
+      ))
+    }
+    <g class="sc-flag" style={`--at:${(START + DUR).toFixed(2)}s`}>
+      <circle class="sc-top" cx={top[0]} cy={top[1]} r="11" />
+      <path class="sc-pole" d={`M${top[0]} ${top[1] - 11} L${top[0]} ${top[1] - 78}`} />
+      <path class="sc-pennant" d={`M${top[0]} ${top[1] - 78} L${top[0] + 48} ${top[1] - 64} L${top[0]} ${top[1] - 50} Z`} />
+      <text class="sc-label sc-summit" x={top[0] + 64} y={top[1] - 56}>
+        <tspan class="sc-arrow">↗</tspan> {summitLabel}
+      </text>
+    </g>
+  </svg>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-sc]").forEach((el) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    el.setAttribute("data-armed", "");
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        el.setAttribute("data-play", "");
+        // Drop the dash once drawn so the route always ends whole.
+        window.setTimeout(() => el.setAttribute("data-done", ""), 3800);
+      }),
+    );
+  });
+</script>
+
+<style>
+  .sc {
+    position: relative;
+    max-width: 1200px;
+    margin-inline: auto;
+    --sc-paper: rgb(247 231 204);
+    --sc-ink: #1d2b5e;
+  }
+  .sc-img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .sc-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .sc-route {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .sc-camp-dot {
+    fill: var(--sc-paper);
+    stroke: var(--sc-ink);
+    stroke-width: 3.5;
+  }
+  .sc-base,
+  .sc-top {
+    fill: var(--color-accent);
+    stroke: var(--sc-ink);
+    stroke-width: 3;
+  }
+  .sc-pole {
+    stroke: var(--sc-ink);
+    stroke-width: 4;
+  }
+  .sc-pennant {
+    fill: var(--color-accent);
+    stroke: var(--sc-ink);
+    stroke-width: 2.5;
+  }
+  .sc-label {
+    paint-order: stroke;
+    stroke: var(--sc-paper);
+    stroke-width: 14px;
+    stroke-linejoin: round;
+    font-family: var(--font-mono);
+    font-size: 19px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    fill: var(--color-ink);
+  }
+  .sc-num {
+    fill: var(--sc-ink);
+  }
+  .sc-summit {
+    font-size: 24px;
+    font-weight: 500;
+  }
+  .sc-arrow {
+    fill: var(--color-accent);
+  }
+  /* Phones: numbers only, sized up to stay legible on the small image. */
+  @media (max-width: 639px) {
+    .sc-label {
+      font-size: 54px;
+      stroke-width: 26px;
+    }
+    .sc-summit {
+      font-size: 58px;
+    }
+    .sc-name {
+      display: none;
+    }
+    .sc-route {
+      stroke-width: 12;
+    }
+    .sc-camp-dot {
+      r: 18;
+      stroke-width: 6;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .sc[data-armed] .sc-route {
+      stroke-dasharray: 1.02 2;
+      stroke-dashoffset: 1.02;
+    }
+    .sc[data-armed] .sc-camp,
+    .sc[data-armed] .sc-flag,
+    .sc[data-armed] .sc-base {
+      opacity: 0;
+    }
+    .sc[data-play] .sc-base {
+      transition: opacity 0.3s ease 0.3s;
+      opacity: 1;
+    }
+    .sc[data-play] .sc-route {
+      transition: stroke-dashoffset var(--rd) linear var(--rs);
+      stroke-dashoffset: 0;
+    }
+    .sc[data-play] .sc-camp,
+    .sc[data-play] .sc-flag {
+      transition: opacity 0.35s ease var(--at);
+      opacity: 1;
+    }
+    .sc[data-done] .sc-route {
+      stroke-dasharray: none;
+      transition: none;
+    }
+  }
+</style>
