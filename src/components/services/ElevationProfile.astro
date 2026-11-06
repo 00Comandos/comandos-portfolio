@@ -1,0 +1,236 @@
+---
+/*
+ * North Face Growth as an elevation profile (Strava/Garmin style): one
+ * continuous line climbing four stages to the summit (growth). Simpler,
+ * flatter sibling of the /method engraved mountain. Each stage is a column:
+ * hovering / focusing it lights its stretch of the line in teal. Draws in
+ * once on screen; static under reduced motion / without JS.
+ */
+type Props = { steps: readonly string[]; summit?: string; label: string };
+const { steps, summit = "Growth", label } = Astro.props;
+
+const W = 1000;
+const H = 220;
+const n = steps.length;
+const colW = W / n;
+// Elevation at each stage boundary (y grows downward): a gentle start,
+// steeper middle, last push to the summit.
+const ys = [200, 168, 128, 82, 26];
+// A few small undulations inside each stage so it reads as terrain.
+const stage = (i: number) => {
+  const x0 = i * colW;
+  const x1 = (i + 1) * colW;
+  const y0 = ys[i];
+  const y1 = ys[i + 1];
+  const pts: [number, number][] = [];
+  const k = 6;
+  for (let j = 0; j <= k; j++) {
+    const t = j / k;
+    const wobble = j === 0 || j === k ? 0 : Math.sin(t * Math.PI * 2 + i) * 5;
+    pts.push([x0 + (x1 - x0) * t, y0 + (y1 - y0) * (t * t * (3 - 2 * t)) + wobble]);
+  }
+  return pts;
+};
+const all = Array.from({ length: n }, (_, i) => stage(i));
+const toD = (pts: [number, number][]) => "M" + pts.map((p) => p.map((v) => Math.round(v * 10) / 10).join(" ")).join(" L");
+const fullLine = toD(all.flatMap((p, i) => (i === 0 ? p : p.slice(1))));
+const area = fullLine + ` L${W} ${H} L0 ${H} Z`;
+const pad = (i: number) => String(i + 1).padStart(2, "0");
+---
+
+<div class="ep" data-ep>
+  <svg class="ep-svg" viewBox={`0 -24 ${W} ${H + 24}`} preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <pattern id="ep-dots" width="7" height="7" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="0.9" class="ep-dot" />
+      </pattern>
+      <linearGradient id="ep-fade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.9" />
+        <stop offset="1" stop-color="#fff" stop-opacity="0" />
+      </linearGradient>
+      <mask id="ep-mask" maskUnits="userSpaceOnUse" x="0" y="-24" width={W} height={H + 24}>
+        <rect x="0" y="-24" width={W} height={H + 24} fill="url(#ep-fade)" />
+      </mask>
+    </defs>
+    {Array.from({ length: n - 1 }, (_, i) => <line class="ep-grid" x1={(i + 1) * colW} y1="-24" x2={(i + 1) * colW} y2={H} />)}
+    <path class="ep-area" d={area} fill="url(#ep-dots)" mask="url(#ep-mask)" />
+    <path class="ep-line" d={fullLine} pathLength="1" />
+    {all.map((p, i) => <path class="ep-seg" data-seg={i} d={toD(p)} />)}
+    {ys.slice(0, n).map((y, i) => <circle class="ep-node" cx={i * colW} cy={y} r="4" />)}
+    <circle class="ep-summit" cx={W} cy={ys[n]} r="6" />
+  </svg>
+  <p class="ep-summit-label mono" aria-hidden="true"><span>↗</span> {summit}</p>
+  <ol class="ep-steps" aria-label={label}>
+    {
+      steps.map((s, i) => (
+        <li class="ep-step" data-step={i} tabindex="0">
+          <span class="ep-num mono">{pad(i)}</span>
+          <span class="ep-name">{s}</span>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-ep]").forEach((ep) => {
+    const steps = Array.from(ep.querySelectorAll<HTMLElement>("[data-step]"));
+    const segs = Array.from(ep.querySelectorAll<SVGPathElement>("[data-seg]"));
+    const set = (i: number | null) => {
+      segs.forEach((s, j) => s.classList.toggle("is-on", j === i));
+      steps.forEach((s, j) => s.classList.toggle("is-on", j === i));
+    };
+    steps.forEach((s, i) => {
+      s.addEventListener("mouseenter", () => set(i));
+      s.addEventListener("focus", () => set(i));
+      s.addEventListener("mouseleave", () => set(null));
+      s.addEventListener("blur", () => set(null));
+    });
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+    ep.setAttribute("data-armed", "");
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        ep.setAttribute("data-play", "");
+        io.disconnect();
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(ep);
+  });
+</script>
+
+<style>
+  .ep {
+    position: relative;
+    margin-top: 2.5rem;
+  }
+  .ep-svg {
+    display: block;
+    width: 100%;
+    height: clamp(9rem, 22vw, 15rem);
+    overflow: visible;
+  }
+  .ep-svg * {
+    vector-effect: non-scaling-stroke;
+  }
+  .ep-dot {
+    fill: var(--color-ink);
+    opacity: 0.55;
+  }
+  .ep-grid {
+    stroke: var(--color-ink);
+    stroke-opacity: 0.12;
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+  }
+  .ep-line {
+    fill: none;
+    stroke: var(--color-ink);
+    stroke-width: 1.75;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .ep-seg {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .ep-seg.is-on {
+    opacity: 1;
+  }
+  .ep-node {
+    fill: var(--color-grey);
+    stroke: var(--color-ink);
+    stroke-width: 1.25;
+  }
+  .ep-summit {
+    fill: var(--color-accent);
+    stroke: var(--color-ink);
+    stroke-width: 1.25;
+  }
+  .ep-summit-label {
+    position: absolute;
+    top: -0.4rem;
+    right: 0;
+    transform: translateY(-100%);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+  .ep-summit-label span {
+    color: var(--color-accent);
+  }
+  .ep-steps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--color-ink);
+  }
+  @media (min-width: 640px) {
+    .ep-steps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .ep-step {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.9rem 0.75rem 0.25rem 0;
+    outline: none;
+    cursor: default;
+  }
+  .ep-num {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    transition: color 0.2s ease;
+  }
+  .ep-name {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    color: var(--color-ink);
+  }
+  .ep-step.is-on .ep-num {
+    color: var(--color-ink);
+  }
+  .ep-step:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ep[data-armed] .ep-line {
+      stroke-dasharray: 1.02 2;
+      stroke-dashoffset: 1.02;
+    }
+    .ep[data-armed] .ep-area,
+    .ep[data-armed] .ep-node,
+    .ep[data-armed] .ep-summit,
+    .ep[data-armed] .ep-summit-label {
+      opacity: 0;
+    }
+    .ep[data-play] .ep-line {
+      transition: stroke-dashoffset 2s cubic-bezier(0.45, 0, 0.2, 1);
+      stroke-dashoffset: 0;
+    }
+    .ep[data-play] .ep-area {
+      transition: opacity 1s ease 1s;
+      opacity: 1;
+    }
+    .ep[data-play] .ep-node {
+      transition: opacity 0.3s ease 0.5s;
+      opacity: 1;
+    }
+    .ep[data-play] .ep-summit,
+    .ep[data-play] .ep-summit-label {
+      transition: opacity 0.4s ease 1.9s;
+      opacity: 1;
+    }
+  }
+</style>

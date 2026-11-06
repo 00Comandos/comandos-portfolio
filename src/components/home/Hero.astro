@@ -38,7 +38,7 @@ const ROUNDS = {
 
   <div class="hero-grid">
     <div class="hero-left">
-      <p class="hero-sub">{t.hero.sub}</p>
+      <p class="hero-sub"><strong class="hero-sub-lead">{t.hero.subLead}</strong> {t.hero.sub}</p>
       <div class="hero-left-foot">
         <a href={t.links.discovery} class="hero-link">
           <span class="hero-dot" aria-hidden="true"></span>
@@ -204,6 +204,12 @@ const ROUNDS = {
       /* Left edge follows the container grid on very wide screens. */
       padding-left: max(2.375rem, calc((100vw - 1440px) / 2 + 2.375rem));
     }
+  }
+  /* Lead line on its own row: who it's for, at a glance. */
+  .hero-sub-lead {
+    display: block;
+    font-weight: 500;
+    color: var(--color-ink);
   }
   .hero-sub {
     font-size: clamp(1.25rem, 1.65vw, 1.5rem);

@@ -4,6 +4,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import FinalCTA from "~/components/home/FinalCTA.astro";
 import ServicesPains from "./ServicesPains.astro";
 import AudienceArt from "./AudienceArt.astro";
+import ElevationProfile from "./ElevationProfile.astro";
 import { projects } from "~/data/projects";
 import { homeImpact, homeWorkCopy } from "~/data/home-work-i18n";
 import { site } from "~/lib/site";
@@ -242,16 +243,11 @@ const jsonLd = [
           {p.process.title} <span class="hl">{p.process.titleHl}</span>
         </h2>
         <p class="sv-sub">{p.process.body}</p>
-        <ol class="sv-steps">
-          {
-            t.method.steps.map((step, i) => (
-              <li>
-                <span class="sv-step-num">{num(i)}</span>
-                <span>{step.title}</span>
-              </li>
-            ))
-          }
-        </ol>
+        <ElevationProfile
+          steps={t.method.steps.map((s) => s.label)}
+          summit={lang === "es" ? "Crecimiento" : "Growth"}
+          label={p.process.titleHl}
+        />
         <a href={L("/method/")} class="btn-outline sv-process-cta">
           {p.process.cta}
         </a>
@@ -544,9 +540,70 @@ const jsonLd = [
     }
   }
   .sv-index-num {
+    position: relative;
+    padding-left: 1.1rem;
     font-size: 0.8125rem;
     color: var(--color-muted);
     font-variant-numeric: tabular-nums;
+  }
+  /* Hero route: a node per service on a thin rail — the four services read
+     as one climb (same vocabulary as the North Face Growth profile). */
+  .sv-index-num::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0.45rem;
+    height: 0.45rem;
+    border: 1px solid var(--color-ink);
+    border-radius: 9999px;
+    background: var(--color-paper);
+    transform: translateY(-50%);
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
+  }
+  .sv-index-link:hover .sv-index-num::before,
+  .sv-index-link:focus-visible .sv-index-num::before {
+    background: var(--color-accent);
+    transform: translateY(-50%) scale(1.3);
+  }
+  .sv-hero-index li {
+    position: relative;
+  }
+  /* Rail: from this row's node down to the next row's node. */
+  .sv-hero-index li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: calc(var(--sv-pl, 1.25rem) + 0.225rem - 0.5px);
+    top: calc(50% + 0.35rem);
+    width: 1px;
+    height: calc(100% - 0.7rem);
+    background: var(--color-ink);
+    opacity: 0.35;
+    transform-origin: top;
+    pointer-events: none;
+  }
+  @media (min-width: 768px) {
+    .sv-hero-index {
+      --sv-pl: 2.375rem;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sv-hero-index li:not(:last-child)::after {
+      animation: sv-rail 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .sv-hero-index li:nth-child(2)::after {
+      animation-delay: 0.25s;
+    }
+    .sv-hero-index li:nth-child(3)::after {
+      animation-delay: 0.5s;
+    }
+  }
+  @keyframes sv-rail {
+    from {
+      transform: scaleY(0);
+    }
   }
   .sv-index-title {
     font-size: clamp(1.25rem, 1.9vw, 1.75rem);
