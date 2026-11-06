@@ -43,8 +43,8 @@ const blackCardRevealVideo: ContentVideo = {
   poster: "/videos/karta-card-black-card-reveal-after-poster.jpg",
   mobileSrc: "/videos/karta-card-black-card-reveal-after-mobile.mp4",
   mobileAspect: "4 / 5",
-  // The clip turns the card to an unfinished back after ~1.7s — loop the front only.
-  endSeconds: 1.6,
+  // The clip turns the card edge-on at ~2.0s, back after — loop the front only.
+  endSeconds: 2.3,
   alt: "After the redesign — the matte-black Karta metal credit card standing upright in a single dramatic spotlight",
   caption:
     "The redesign — 17 grams of recycled steel under a single spotlight.",
