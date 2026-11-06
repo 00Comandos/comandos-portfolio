@@ -1,0 +1,270 @@
+---
+/*
+ * PROTOTYPE — /method hero illustration in an engraved line + halftone
+ * style (one ink, dot-screen shading, lots of air). The North Face Growth
+ * mountain: ridges drawn in, then the dot shading, then the teal route
+ * climbs camp by camp (the four phases) to the summit flag.
+ * Final state without JS / under reduced motion.
+ */
+type Props = { camps: readonly string[]; ink?: string };
+const { camps, ink = "var(--color-ink)" } = Astro.props;
+
+const W = 1200;
+const H = 520;
+// Silhouette of the range (left → right), closed along the bottom edge.
+const skyline =
+  "M0 520 L0 448 L70 420 L130 436 L210 372 L270 392 L340 300 L400 326 L470 220 L520 238 L600 64 L652 150 L700 128 L760 214 L820 190 L900 296 L960 276 L1040 366 L1120 340 L1200 392 L1200 520 Z";
+// Shadow faces (east side of each peak) — filled with the dot screen.
+const shadeDense =
+  "M600 64 L652 150 L700 128 L760 214 L820 190 L900 296 L960 276 L1040 366 L1120 340 L1200 392 L1200 520 L742 520 L708 400 L668 300 L640 210 Z";
+const shadeLight = "M470 220 L520 238 L566 180 L548 300 L512 420 L478 520 L410 520 L452 380 Z";
+const shadeFar = "M210 372 L270 392 L340 300 L330 380 L300 470 L250 520 L190 520 L230 440 Z";
+// Ridge and gully lines (engraving).
+const ridges = [
+  "M600 64 L566 180 L548 300 L512 420 L478 520",
+  "M600 64 L640 210 L668 300 L708 400 L742 520",
+  "M470 220 L452 380 L410 520",
+  "M340 300 L330 380 L300 470 L250 520",
+  "M820 190 L842 300 L880 420",
+  "M700 128 L716 230 L752 330",
+  "M960 276 L980 380 L1010 470",
+];
+// Short hatch strokes on the lit faces.
+const hatch = [
+  "M540 330 L560 360", "M528 372 L548 404", "M516 412 L534 446", "M560 250 L574 280", "M570 200 L582 226",
+  "M440 300 L452 330", "M430 352 L442 384", "M318 352 L328 378", "M306 400 L318 428",
+];
+// Route: base camp → 4 camps (phases) → summit.
+const stops: [number, number][] = [
+  [118, 500], [262, 470], [392, 398], [500, 300], [600, 70],
+];
+const route = "M118 500 L190 488 L262 470 L232 440 L330 420 L392 398 L360 360 L452 330 L500 300 L476 250 L556 190 L560 130 L600 70";
+const labelSide: ("l" | "r")[] = ["r", "r", "r", "l"];
+---
+
+<div class="mtn" data-mtn style={`--mtn-ink: ${ink};`} aria-hidden="true">
+  <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMax meet">
+    <defs>
+      <pattern id="mtn-dots-dense" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
+        <circle cx="2" cy="2" r="1.35" class="mtn-dot" />
+      </pattern>
+      <pattern id="mtn-dots-light" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
+        <circle cx="2" cy="2" r="0.8" class="mtn-dot" />
+      </pattern>
+      <linearGradient id="mtn-fade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.35" />
+        <stop offset="1" stop-color="#fff" stop-opacity="1" />
+      </linearGradient>
+      <clipPath id="mtn-clip">
+        <path d={skyline} />
+      </clipPath>
+      <mask id="mtn-fade-mask">
+        <rect x="0" y="0" width={W} height={H} fill="url(#mtn-fade)" />
+      </mask>
+    </defs>
+
+    <!-- Far haze band (dot screen) behind the range -->
+    <path class="mtn-shade mtn-haze" d="M0 330 C200 300 380 318 560 296 C760 272 960 300 1200 280 L1200 340 C980 352 760 330 560 350 C380 368 200 352 0 380 Z" fill="url(#mtn-dots-light)" />
+
+    <!-- Range fill (paper) so haze stays behind it -->
+    <path d={skyline} class="mtn-paper" />
+
+    <!-- Dot-screen shading -->
+    <g mask="url(#mtn-fade-mask)" clip-path="url(#mtn-clip)">
+      <path class="mtn-shade" d={shadeDense} fill="url(#mtn-dots-dense)" />
+      <path class="mtn-shade" d={shadeLight} fill="url(#mtn-dots-light)" />
+      <path class="mtn-shade" d={shadeFar} fill="url(#mtn-dots-light)" />
+    </g>
+
+    <!-- Engraved lines -->
+    <path class="mtn-line mtn-outline" d={skyline.replace("M0 520 L0 448", "M0 448").replace(" L1200 520 Z", "")} pathLength="1" />
+    {ridges.map((d, i) => <path class="mtn-line" d={d} pathLength="1" style={`--i:${i}`} />)}
+    <g clip-path="url(#mtn-clip)">
+      {hatch.map((d, i) => <path class="mtn-hatch" d={d} style={`--i:${i}`} />)}
+    </g>
+
+    <!-- Foreground cloud bank: paper fill with a dotted underside -->
+    <path class="mtn-cloud" d="M0 520 L0 486 C40 470 70 478 96 466 C130 450 170 466 196 458 C230 446 262 462 300 470 C330 476 350 498 382 494 L420 520 Z" />
+    <path class="mtn-cloud" d="M820 520 C850 492 890 496 916 482 C950 466 990 478 1020 468 C1060 456 1100 470 1130 462 C1160 456 1180 466 1200 460 L1200 520 Z" />
+    <path class="mtn-line mtn-cloud-edge" pathLength="1" d="M0 486 C40 470 70 478 96 466 C130 450 170 466 196 458 C230 446 262 462 300 470 C330 476 350 498 382 494" />
+    <path class="mtn-line mtn-cloud-edge" pathLength="1" d="M820 520 C850 492 890 496 916 482 C950 466 990 478 1020 468 C1060 456 1100 470 1130 462 C1160 456 1180 466 1200 460" />
+
+    <!-- Route + camps -->
+    <path class="mtn-route" d={route} pathLength="1" />
+    {
+      stops.slice(1, 4).concat([[600, 70]]).map(([x, y], i) => (
+        <g class="mtn-camp" style={`--c:${i}`}>
+          <circle cx={x} cy={y} r="6" class="mtn-camp-dot" />
+          <text
+            x={labelSide[i] === "r" ? x + 14 : x - 14}
+            y={y + 4}
+            text-anchor={labelSide[i] === "r" ? "start" : "end"}
+            class="mtn-label"
+          >
+            <tspan class="mtn-num">{String(i + 1).padStart(2, "0")}</tspan><tspan class="mtn-name"> {camps[i]}</tspan>
+          </text>
+        </g>
+      ))
+    }
+    <circle cx={stops[0][0]} cy={stops[0][1]} r="4" class="mtn-base" />
+    <!-- Summit flag -->
+    <g class="mtn-flag">
+      <path d="M600 70 L600 30" class="mtn-pole" />
+      <path d="M600 30 L626 38 L600 46 Z" class="mtn-pennant" />
+    </g>
+  </svg>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-mtn]").forEach((el) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    el.setAttribute("data-armed", "");
+    requestAnimationFrame(() => requestAnimationFrame(() => el.setAttribute("data-play", "")));
+  });
+</script>
+
+<style>
+  .mtn {
+    color: var(--mtn-ink);
+  }
+  .mtn svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .mtn path,
+  .mtn circle {
+    vector-effect: non-scaling-stroke;
+  }
+  .mtn-paper,
+  .mtn-cloud {
+    fill: var(--color-paper);
+  }
+  .mtn-dot {
+    fill: currentColor;
+  }
+  .mtn-line {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.25;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .mtn-outline {
+    stroke-width: 1.6;
+  }
+  .mtn-hatch {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1;
+    stroke-linecap: round;
+    opacity: 0.7;
+  }
+  .mtn-cloud-edge {
+    stroke-width: 1;
+  }
+  .mtn-route {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 2.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .mtn-camp-dot {
+    fill: var(--color-paper);
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
+  .mtn-camp:last-of-type .mtn-camp-dot,
+  .mtn-base {
+    fill: var(--color-accent);
+    stroke: currentColor;
+  }
+  .mtn-label {
+    paint-order: stroke;
+    stroke: var(--color-paper);
+    stroke-width: 6px;
+    stroke-linejoin: round;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    fill: currentColor;
+  }
+  .mtn-num {
+    fill: var(--color-muted);
+  }
+  .mtn-pole {
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
+  .mtn-pennant {
+    fill: var(--color-accent);
+    stroke: currentColor;
+    stroke-width: 1;
+  }
+  /* Phones: labels would be unreadable at this scale — numbers only. */
+  @media (max-width: 639px) {
+    .mtn-label {
+      font-size: 34px;
+      stroke-width: 10px;
+    }
+    .mtn-name {
+      display: none;
+    }
+    .mtn-num {
+      fill: currentColor;
+    }
+  }
+
+  /* ——— Draw-in ——— */
+  @media (prefers-reduced-motion: no-preference) {
+    .mtn[data-armed] .mtn-line {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+    }
+    .mtn[data-armed] .mtn-shade,
+    .mtn[data-armed] .mtn-hatch,
+    .mtn[data-armed] .mtn-camp,
+    .mtn[data-armed] .mtn-flag,
+    .mtn[data-armed] .mtn-base {
+      opacity: 0;
+    }
+    .mtn[data-armed] .mtn-route {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+    }
+    .mtn[data-play] .mtn-line {
+      transition: stroke-dashoffset 1.8s cubic-bezier(0.45, 0, 0.2, 1);
+      transition-delay: calc(var(--i, 0) * 0.12s);
+      stroke-dashoffset: 0;
+    }
+    .mtn[data-play] .mtn-shade {
+      transition: opacity 1.2s ease 1.3s;
+      opacity: 1;
+    }
+    .mtn[data-play] .mtn-hatch {
+      transition: opacity 0.6s ease;
+      transition-delay: calc(1.6s + var(--i, 0) * 0.05s);
+      opacity: 0.7;
+    }
+    .mtn[data-play] .mtn-base {
+      transition: opacity 0.4s ease 2.2s;
+      opacity: 1;
+    }
+    .mtn[data-play] .mtn-route {
+      transition: stroke-dashoffset 2.4s cubic-bezier(0.45, 0, 0.2, 1) 2.3s;
+      stroke-dashoffset: 0;
+    }
+    .mtn[data-play] .mtn-camp {
+      transition: opacity 0.5s ease;
+      transition-delay: calc(2.8s + var(--c) * 0.5s);
+      opacity: 1;
+    }
+    .mtn[data-play] .mtn-flag {
+      transition: opacity 0.5s ease 4.8s;
+      opacity: 1;
+    }
+  }
+</style>
