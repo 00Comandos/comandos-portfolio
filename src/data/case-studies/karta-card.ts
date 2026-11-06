@@ -55,21 +55,6 @@ const blackCardRevealVideo: ContentVideo = {
   durationSeconds: 4,
 };
 
-const restaurantPaymentVideo: ContentVideo = {
-  kind: "video",
-  src: "/videos/karta-card-restaurant-payment-after.mp4",
-  poster: "/videos/karta-card-restaurant-payment-after-poster.jpg",
-  mobileSrc: "/videos/karta-card-restaurant-payment-after-mobile.mp4",
-  mobileAspect: "4 / 5",
-  alt: "After Karta — a smiling diner hands the black Karta metal card to a waiter in a high-rise restaurant overlooking the Tokyo skyline at night",
-  caption:
-    "The moment Karta was designed for — paying abroad with a card that speaks for you.",
-  name: "Karta metal credit card — paying with status abroad (after)",
-  description:
-    "The experience Karta customers bought into: handing a heavyweight black metal card to the waiter at a world-class restaurant abroad — the borderless, travel-worthy payment moment behind +1k customers in 12 months and 2 additional cards per user.",
-  uploadDate: "2026-07-22",
-  durationSeconds: 4,
-};
 
 // ———— Hero ————
 const heroImage: ContentImage = {
@@ -170,25 +155,13 @@ const backV2: ContentImage = {
 };
 
 // ———— Result / lifestyle grid (reuse from karta-app) ————
-const usingCard01: ContentImage = {
+// The four "in real life" photos unified into one full-bleed collage
+// (same asset as the Karta App closing): desktop mosaic + mobile stack.
+const closingCollage: ContentImage = {
   kind: "image",
-  image: karta("karta-using-credit-card-01-768x892.webp"),
-  alt: "Karta metal card held up in a bright travel moment",
-};
-const usingCard02: ContentImage = {
-  kind: "image",
-  image: karta("karta-using-credit-card-02-768x892.webp"),
-  alt: "Karta black metal credit card photographed at a world-class travel destination — the heavyweight premium card LATAM customers hand to hotel concierges and Michelin-starred restaurant staff abroad, branded as travel-worthy status by design",
-};
-const usingCard03: ContentImage = {
-  kind: "image",
-  image: karta("karta-using-credit-card-03-768x1020.webp"),
-  alt: "Karta welcome kit — metal card resting on its signed presentation box",
-};
-const usingCard04: ContentImage = {
-  kind: "image",
-  image: karta("karta-using-credit-card-04-768x1020.webp"),
-  alt: "Karta black metal credit card studio close-up — laser-etched Karta wordmark, diamond motif and contactless NFC mark on the heavyweight brushed-metal body, the premium physical product the LATAM high-net-worth customer receives in a signed presentation box after account approval",
+  image: karta("karta-app-closing-collage-2400x1200.webp"),
+  mobileImage: karta("karta-app-closing-collage-mobile-1200x1876.webp"),
+  alt: "Collage of the Karta black metal Visa card in real life — held up in front of Cinderella Castle with pink flowers in the foreground, unboxed from its black welcome kit ('Anywhere, Anytime', 'Metal looks good on you!') on a wooden table, a close-up of the Karta logo on the matte card, and several Karta cards spread on a dark table next to a fortune cookie",
 };
 
 export const kartaCard: CaseStudyContent = {
@@ -399,16 +372,7 @@ export const kartaCard: CaseStudyContent = {
         kind: "big-heading",
         heading: "Focused on people who have no limits or boundaries.",
       },
-      {
-        kind: "image-grid",
-        columns: 2,
-        images: [usingCard01, usingCard02, usingCard03, usingCard04],
-      },
-      {
-        kind: "bleed-video",
-        video: restaurantPaymentVideo,
-        line: "Paying abroad with a card that speaks for you.",
-      },
+      { kind: "bleed-image", image: closingCollage },
     ],
   },
   result: {
