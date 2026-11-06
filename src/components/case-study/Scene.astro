@@ -10,6 +10,8 @@ type Props = {
 };
 const { label, heading, body, beats } = Astro.props;
 const unquote = (s: string) => s.replace(/^[“"]\s*|\s*[”"]$/g, "");
+const es = Astro.url.pathname.startsWith("/es/");
+const pad = (n: number) => String(n).padStart(2, "0");
 ---
 
 <!--
@@ -81,7 +83,11 @@ const unquote = (s: string) => s.replace(/^[“"]\s*|\s*[”"]$/g, "");
       }
     </ol>
     <div class="scene-progress" aria-hidden="true">
-      {beats.map((_, i) => <span data-tick={i} data-active={i === 0 ? "" : undefined} />)}
+      <span class="scene-ticks">
+        {beats.map((_, i) => <span data-tick={i} data-active={i === 0 ? "" : undefined} />)}
+      </span>
+      <span class="scene-count mono"><b data-count>01</b> / {pad(beats.length)}</span>
+      <span class="scene-hint mono">{es ? "Desliza" : "Scroll"} <span class="scene-hint-arrow">↓</span></span>
     </div>
   </div>
 </div>
@@ -316,20 +322,72 @@ const unquote = (s: string) => s.replace(/^[“"]\s*|\s*[”"]$/g, "");
       transform: none;
       transition-delay: 0s;
     }
+    /* Progress fills continuously with scroll so the pinned stage never
+       feels frozen; a one-time "Scroll ↓" hint leaves after beat 1. */
     .scene[data-ready] .scene-progress {
       grid-area: cap;
       align-self: end;
       display: flex;
+      align-items: center;
+      gap: 0.875rem;
+    }
+    .scene-ticks {
+      display: flex;
       gap: 0.35rem;
     }
-    .scene-progress span {
-      width: 1.5rem;
-      height: 2px;
+    .scene-ticks span {
+      position: relative;
+      width: 2rem;
+      height: 3px;
+      border-radius: 2px;
+      overflow: hidden;
       background: var(--color-border);
-      transition: background-color 0.3s ease;
     }
-    .scene-progress span[data-active] {
+    .scene-ticks span::after {
+      content: "";
+      position: absolute;
+      inset: 0;
       background: var(--color-ink);
+      transform: scaleX(var(--f, 0));
+      transform-origin: left;
+    }
+    .scene-ticks span[data-active]::after {
+      background: var(--color-accent);
+    }
+    .scene-count {
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      color: var(--color-muted);
+    }
+    .scene-count b {
+      font-weight: 400;
+      color: var(--color-ink);
+    }
+    .scene-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      transition: opacity 0.4s ease;
+    }
+    .scene-hint-arrow {
+      display: inline-block;
+      animation: scene-nudge 1.6s ease-in-out infinite;
+    }
+    .scene[data-hinted] .scene-hint {
+      opacity: 0;
+    }
+    @keyframes scene-nudge {
+      0%,
+      100% {
+        transform: translateY(-1px);
+      }
+      50% {
+        transform: translateY(3px);
+      }
     }
   }
 </style>
@@ -342,6 +400,7 @@ const unquote = (s: string) => s.replace(/^[“"]\s*|\s*[”"]$/g, "");
     const beats = Array.from(scene.querySelectorAll<HTMLElement>(".scene-beat"));
     const ticks = Array.from(scene.querySelectorAll<HTMLElement>("[data-tick]"));
     const stage = scene.querySelector<HTMLElement>(".scene-stage")!;
+    const count = scene.querySelector<HTMLElement>("[data-count]");
     const mq = window.matchMedia(PIN);
     let active = 0;
     let inView = false;
@@ -364,6 +423,8 @@ const unquote = (s: string) => s.replace(/^[“"]\s*|\s*[”"]$/g, "");
       active = i;
       beats.forEach((b, j) => b.toggleAttribute("data-active", j === i));
       ticks.forEach((t, j) => t.toggleAttribute("data-active", j === i));
+      if (count) count.textContent = String(i + 1).padStart(2, "0");
+      if (i > 0) scene.setAttribute("data-hinted", "");
       syncVideos();
     };
 
@@ -373,7 +434,9 @@ const unquote = (s: string) => s.replace(/^[“"]\s*|\s*[”"]$/g, "");
       const rect = scene.getBoundingClientRect();
       const travel = rect.height - stage.offsetHeight;
       const p = travel > 0 ? Math.min(Math.max(-rect.top / travel, 0), 0.9999) : 0;
-      setActive(Math.floor(p * beats.length));
+      const n = beats.length;
+      ticks.forEach((t, j) => t.style.setProperty("--f", String(Math.min(Math.max(p * n - j, 0), 1))));
+      setActive(Math.floor(p * n));
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
