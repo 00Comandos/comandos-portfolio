@@ -4,7 +4,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import FinalCTA from "~/components/home/FinalCTA.astro";
 import ServicesPains from "./ServicesPains.astro";
 import AudienceArt from "./AudienceArt.astro";
-import summitImage from "~/assets/images/services/north-face-growth-summit.png";
+import summitImage from "~/assets/images/services/north-face-growth-panorama.png";
 import { projects } from "~/data/projects";
 import { homeImpact, homeWorkCopy } from "~/data/home-work-i18n";
 import { site } from "~/lib/site";
@@ -248,10 +248,10 @@ const jsonLd = [
       <Image
         src={summitImage}
         alt={lang === "es"
-          ? "Ilustración grabada de una cumbre nevada entre la bruma — la montaña de North Face Growth"
-          : "Engraved illustration of a snowy summit rising above the mist — the North Face Growth mountain"}
-        widths={[640, 960, 1280, 1678]}
-        sizes="(min-width: 1200px) 1100px, 100vw"
+          ? "Panorama grabado en índigo de una cumbre nevada sobre una cordillera entre la bruma — la montaña de North Face Growth"
+          : "Indigo engraved panorama of a snowy summit above a misty mountain range — the North Face Growth mountain"}
+        widths={[640, 960, 1280, 1600, 2000]}
+        sizes="100vw"
         class="sv-process-img"
         loading="lazy"
         decoding="async"
@@ -838,16 +838,16 @@ const jsonLd = [
   }
 
   /* Grey band with a faint dot grid — the "map" behind the method. */
+  /* The section takes the illustration's own paper colour, so the
+     engraved summit sits on one continuous surface, edge to edge. */
   .sv-process {
-    background-color: var(--color-grey);
-    background-image: radial-gradient(circle, rgb(6 6 6 / 0.13) 1px, transparent 1.2px);
-    background-size: 22px 22px;
-    background-position: center;
-    padding-block: 4.5rem;
+    --sv-summit-paper: rgb(250 240 219);
+    background-color: var(--sv-summit-paper);
+    padding-block: 4.5rem 0;
   }
   @media (min-width: 768px) {
     .sv-process {
-      padding-block: 6.5rem;
+      padding-block: 6.5rem 0;
     }
   }
   .sv-process-inner {
@@ -863,13 +863,14 @@ const jsonLd = [
     margin-inline: auto;
     max-width: 36rem;
   }
+  /* Full illustration, full bleed: breaks out of the container padding. */
   .sv-process-img {
     display: block;
-    width: 100%;
-    max-width: 1100px;
+    width: 100vw;
+    max-width: none;
     height: auto;
-    margin-top: 3rem;
-    border-radius: var(--radius-xs);
+    margin-top: 2.5rem;
+    margin-inline: calc(50% - 50vw);
   }
   .sv-process-grid {
     display: grid;
