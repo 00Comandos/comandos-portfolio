@@ -13,6 +13,19 @@ export const DEFAULT_LANG: Lang = "en";
 /** English paths that already have a Spanish twin under `/es`. */
 export const ES_ROUTES = new Set<string>(["/", "/services/", "/method/", "/contact/"]);
 
+/**
+ * Sections mirrored under `/es` before they are translated: Spanish chrome,
+ * English content, noindex + canonical to the English page. The language
+ * switch keeps the reader on the same page instead of sending them home.
+ */
+export const ES_MIRROR_PREFIXES = ["/projects/"] as const;
+
+export function isEsMirror(pathname: string): boolean {
+  if (!pathname.startsWith("/es/")) return false;
+  const base = basePath(pathname);
+  return ES_MIRROR_PREFIXES.some((p) => base.startsWith(p));
+}
+
 export function getLang(url: URL): Lang {
   return url.pathname === "/es" || url.pathname.startsWith("/es/")
     ? "es"
@@ -43,7 +56,9 @@ export function alternatePath(pathname: string, target: Lang): string {
   const base = basePath(pathname);
   const normalized = base.endsWith("/") ? base : `${base}/`;
   if (target === "en") return normalized;
-  return ES_ROUTES.has(normalized) ? localizedPath(normalized, "es") : "/es/";
+  if (ES_ROUTES.has(normalized)) return localizedPath(normalized, "es");
+  if (ES_MIRROR_PREFIXES.some((p) => normalized.startsWith(p))) return `/es${normalized}`;
+  return "/es/";
 }
 
 export function hasTranslation(pathname: string): boolean {

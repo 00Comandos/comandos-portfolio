@@ -1,0 +1,14 @@
+---
+/* Spanish mirror of a case study — see ../projects/index.astro. */
+import Page from "../../projects/[slug].astro";
+import { projects } from "~/data/projects";
+export const prerender = true;
+// The EN page renders from Astro.params; its typed props are `never`.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CaseStudyPage: any = Page;
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug } }));
+}
+---
+
+<CaseStudyPage />

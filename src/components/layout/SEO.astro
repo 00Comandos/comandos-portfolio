@@ -1,6 +1,6 @@
 ---
 import { site } from "~/lib/site";
-import { getLang, ui } from "~/i18n";
+import { getLang, ui, isEsMirror, basePath } from "~/i18n";
 
 type Props = {
   title?: string;
@@ -31,7 +31,11 @@ const ogLocale = ui[lang].meta.ogLocale;
 const ogLocaleAlt = ui[lang === "en" ? "es" : "en"].meta.ogLocale;
 
 const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
-const url = canonical ?? new URL(Astro.url.pathname, site.url).toString();
+// Untranslated ES mirrors point search engines at the English original.
+const mirror = isEsMirror(Astro.url.pathname);
+const url = mirror
+  ? new URL(basePath(Astro.url.pathname), site.url).toString()
+  : (canonical ?? new URL(Astro.url.pathname, site.url).toString());
 const ogImage = new URL(image, site.url).toString();
 const ogImageAlt =
   imageAlt ??
@@ -50,6 +54,7 @@ const twitterHandle = "@01Comandos";
 <meta name="author" content={site.person.name} />
 <link rel="canonical" href={url} />
 {noindex && <meta name="robots" content="noindex, nofollow" />}
+{!noindex && mirror && <meta name="robots" content="noindex, follow" />}
 
 <meta property="og:type" content={type} />
 <meta property="og:site_name" content={site.name} />

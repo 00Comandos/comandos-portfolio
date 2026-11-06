@@ -1,0 +1,11 @@
+---
+/*
+ * Spanish mirror of /projects/: Spanish chrome (header, footer), English
+ * content until the case studies are translated. noindex + canonical to
+ * the English page (handled in SEO.astro) so it never competes in search.
+ */
+import Page from "../../projects/index.astro";
+export const prerender = true;
+---
+
+<Page />
