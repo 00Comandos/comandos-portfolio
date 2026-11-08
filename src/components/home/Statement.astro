@@ -25,7 +25,7 @@ const t = ui[Astro.props.lang].statement;
       <Image
         src={whiteboard}
         alt={t.imageAlt}
-        widths={[480, 800, 1200, 1600]}
+        widths={[480, 800, 1086]}
         sizes="(min-width: 900px) 44vw, 100vw"
         loading="lazy"
         decoding="async"
@@ -92,10 +92,7 @@ const t = ui[Astro.props.lang].statement;
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    /* Keep the person at the bottom edge in view when cropped. */
-    object-position: center 70%;
+    /* Natural ratio: the whole board plus the teammate at the bottom. */
   }
   .statement-copy {
     display: grid;
