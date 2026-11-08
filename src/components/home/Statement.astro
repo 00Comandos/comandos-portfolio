@@ -3,28 +3,26 @@
  * Home: a breathing pause between the logos and the work. Structure after
  * ArchiPro's "Project Portfolio" panel: a full-height row with a large
  * statement, a short paragraph and one button on the left (vertically
- * centred), and one tall rounded card on the right — a short silent loop
- * of real working sessions (crossfade). Kept on the
- * page's white.
+ * centred), and one tall rounded photo on the right. The proof sits as
+ * three small metric cards under the copy. Kept on the page's white.
  */
 import { Image } from "astro:assets";
 import { ui, type Lang } from "~/i18n";
-// A real working session: the funnel on the whiteboard plus a teammate at
-// the laptop (front-facing person out), in grey like the Studio photo.
-import whiteboard from "~/assets/images/studio/comandos-whiteboard-funnel-session.webp";
+// Carlos at the strategy whiteboard, in grey like the Studio photo.
 import carlosBoard from "~/assets/images/studio/comandos-session-carlos-board.webp";
-import teamSession from "~/assets/images/studio/comandos-session-remote-team.webp";
-import emailReview from "~/assets/images/studio/comandos-session-email-review.webp";
+import { homeImpact } from "~/data/home-work-i18n";
+import { localizedPath } from "~/i18n";
 
 type Props = { lang: Lang };
-const t = ui[Astro.props.lang].statement;
-// A short silent loop of real working moments (crossfade, ~2.6 s each).
-const slides = [
-  { src: carlosBoard, alt: t.slideAlts[0] },
-  { src: whiteboard, alt: t.imageAlt },
-  { src: teamSession, alt: t.slideAlts[1] },
-  { src: emailReview, alt: t.slideAlts[2] },
-];
+const { lang } = Astro.props;
+const t = ui[lang].statement;
+// Proof: three headline metrics, each a small card linking to its case.
+const LOGOS: Record<string, string> = {
+  "stori-inversion-plus": "/images/logo-stori.png",
+  "mipos-kiosk": "/images/mipos-logo.svg",
+  "legalario-e-signature": "/images/logo-legalario.png",
+};
+const proof = homeImpact[lang].filter((m) => m.slug in LOGOS);
 ---
 
 <section aria-labelledby="statement-heading" class="statement">
@@ -36,57 +34,34 @@ const slides = [
       </h2>
       <p class="statement-sub">{t.p1}</p>
       <p class="statement-sub statement-sub--next">{t.p2}</p>
+      <ul class="statement-proof">
+        {
+          proof.map((m) => (
+            <li>
+              <a href={localizedPath(`/projects/${m.slug}/`, lang)} class="sp-card">
+                <img src={LOGOS[m.slug]} alt={m.brand} class="sp-logo" loading="lazy" decoding="async" />
+                <span class="sp-value">{m.value}</span>
+                <span class="sp-label">{m.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
       <a href="#work" class="statement-btn">{t.cta}</a>
     </div>
-    <figure class="statement-media" data-slides>
-      {
-        slides.map((sl, i) => (
-          <Image
-            src={sl.src}
-            alt={sl.alt}
-            widths={[480, 800, 1200]}
-            sizes="(min-width: 900px) 40vw, 100vw"
-            loading="lazy"
-            decoding="async"
-            class="statement-img"
-            data-slide
-            data-active={i === 0 ? "" : undefined}
-            aria-hidden={i === 0 ? undefined : "true"}
-          />
-        ))
-      }
+    <figure class="statement-media">
+      <Image
+        src={carlosBoard}
+        alt={t.imageAlt}
+        widths={[480, 800, 1086]}
+        sizes="(min-width: 900px) 40vw, 100vw"
+        loading="lazy"
+        decoding="async"
+        class="statement-img"
+      />
     </figure>
   </div>
 </section>
-
-<script>
-  // Crossfade the photos while the card is on screen; reduced motion keeps
-  // the first one.
-  const HOLD = 2600;
-  document.querySelectorAll<HTMLElement>("[data-slides]").forEach((fig) => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const imgs = Array.from(fig.querySelectorAll<HTMLElement>("[data-slide]"));
-    if (imgs.length < 2) return;
-    let i = 0;
-    let timer = 0;
-    const show = (n: number) => {
-      imgs.forEach((im, j) => {
-        im.toggleAttribute("data-active", j === n);
-        if (j === n) im.removeAttribute("aria-hidden");
-        else im.setAttribute("aria-hidden", "true");
-      });
-    };
-    const start = () => {
-      if (timer) return;
-      timer = window.setInterval(() => show((i = (i + 1) % imgs.length)), HOLD);
-    };
-    const stop = () => {
-      window.clearInterval(timer);
-      timer = 0;
-    };
-    new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { threshold: 0.25 }).observe(fig);
-  });
-</script>
 
 <style>
   .statement {
@@ -130,7 +105,7 @@ const slides = [
     margin-top: 0.9rem;
   }
   .statement-btn {
-    margin-top: 2.25rem;
+    margin-top: 2rem;
     display: inline-flex;
     align-items: center;
     min-height: 3rem;
@@ -164,21 +139,65 @@ const slides = [
     }
   }
   .statement-media :global(.statement-img) {
-    position: absolute;
-    inset: 0;
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
-    opacity: 0;
-    transition: opacity 0.9s ease;
   }
-  /* Whiteboard slide: board plus the teammate at the bottom right. */
-  .statement-media :global(.statement-img:nth-child(2)) {
-    object-position: 70% 60%;
+
+  /* Proof cards: hairline cells, logo, figure, one line. */
+  .statement-proof {
+    margin-top: 1.75rem;
+    width: 100%;
+    max-width: 34rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
   }
-  .statement-media :global(.statement-img[data-active]) {
-    opacity: 1;
+  .sp-card {
+    container-type: inline-size;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0.9rem 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+    color: var(--color-ink);
+    transition: border-color 0.2s ease;
+  }
+  .sp-card:hover {
+    border-color: var(--color-ink);
+  }
+  .sp-card:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  .sp-logo {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 1rem;
+    object-fit: contain;
+    object-position: left center;
+    filter: brightness(0);
+    opacity: 0.75;
+  }
+  .sp-value {
+    margin-top: 1rem;
+    /* Fits "+477%" in its own card down to 320px screens. */
+    font-size: min(2.25rem, 30cqi);
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+  }
+  .sp-label {
+    margin-top: 0.5rem;
+    font-size: min(0.8125rem, 12cqi);
+    line-height: 1.3;
+    color: var(--color-muted);
+    overflow-wrap: anywhere;
+    hyphens: auto;
   }
 </style>
