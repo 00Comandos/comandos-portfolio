@@ -22,7 +22,13 @@ const LOGOS: Record<string, string> = {
   "mipos-kiosk": "/images/mipos-logo.svg",
   "legalario-e-signature": "/images/logo-legalario.png",
 };
-const proof = homeImpact[lang].filter((m) => m.slug in LOGOS);
+// Split "+477%" → "+", "477", "%" so the numeral sets large and thin with
+// small superscript signs (same treatment as the case-study Result band).
+const split = (v: string) => {
+  const m = v.match(/^([^\d]*?)(\d+(?:[.,]\d+)?)(.*)$/);
+  return m ? { pre: m[1], num: m[2], unit: m[3] } : { pre: "", num: v, unit: "" };
+};
+const proof = homeImpact[lang].filter((m) => m.slug in LOGOS).map((m) => ({ ...m, v: split(m.value) }));
 ---
 
 <section aria-labelledby="statement-heading" class="statement">
@@ -37,10 +43,17 @@ const proof = homeImpact[lang].filter((m) => m.slug in LOGOS);
       <ul class="statement-proof">
         {
           proof.map((m) => (
-            <li>
+            <li class="sp-cell">
               <a href={localizedPath(`/projects/${m.slug}/`, lang)} class="sp-card">
                 <img src={LOGOS[m.slug]} alt={m.brand} class="sp-logo" loading="lazy" decoding="async" />
-                <span class="sp-value">{m.value}</span>
+                <span class="sp-value">
+                  <span class="sr-only">{m.value}</span>
+                  <span class="sp-value-inner" aria-hidden="true">
+                    {m.v.pre && <span class="sp-unit sp-pre">{m.v.pre}</span>}
+                    <span class="sp-num">{m.v.num}</span>
+                    {m.v.unit && <span class="sp-unit">{m.v.unit}</span>}
+                  </span>
+                </span>
                 <span class="sp-label">{m.label}</span>
               </a>
             </li>
@@ -145,29 +158,33 @@ const proof = homeImpact[lang].filter((m) => m.slug in LOGOS);
     object-fit: cover;
   }
 
-  /* Proof cards: hairline cells, logo, figure, one line. */
+  /* Proof band (case-study Result style): black top rule, hairline
+     columns, large thin numerals with small superscript signs. */
   .statement-proof {
     margin-top: 1.75rem;
     width: 100%;
-    max-width: 34rem;
+    max-width: 36rem;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.5rem;
+    border-top: 1px solid var(--color-ink);
   }
-  .sp-card {
+  .sp-cell {
     container-type: inline-size;
     min-width: 0;
-    height: 100%;
+    border-left: 1px solid var(--color-border);
+  }
+  .sp-cell:first-child {
+    border-left: 0;
+  }
+  .sp-card {
     display: flex;
     flex-direction: column;
-    padding: 0.9rem 0.75rem 1rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-xs);
+    height: 100%;
+    padding: 1rem 0.9rem 0.5rem;
     color: var(--color-ink);
-    transition: border-color 0.2s ease;
   }
-  .sp-card:hover {
-    border-color: var(--color-ink);
+  .sp-cell:first-child .sp-card {
+    padding-left: 0;
   }
   .sp-card:focus-visible {
     outline: 2px solid var(--color-accent);
@@ -177,27 +194,51 @@ const proof = homeImpact[lang].filter((m) => m.slug in LOGOS);
     display: block;
     width: auto;
     max-width: 100%;
-    height: 1rem;
+    height: 0.95rem;
     object-fit: contain;
     object-position: left center;
     filter: brightness(0);
-    opacity: 0.75;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+  .sp-card:hover .sp-logo {
+    opacity: 1;
   }
   .sp-value {
-    margin-top: 1rem;
-    /* Fits "+477%" in its own card down to 320px screens. */
-    font-size: min(2.25rem, 30cqi);
-    font-weight: 500;
-    line-height: 0.95;
-    letter-spacing: -0.045em;
+    margin-top: 1.25rem;
+    font-size: min(4.25rem, 31cqi);
+    font-weight: 300;
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    white-space: nowrap;
+  }
+  .sp-value-inner {
+    display: flex;
+    align-items: flex-start;
+  }
+  .sp-num {
     font-variant-numeric: tabular-nums;
   }
+  .sp-unit {
+    font-size: 0.34em;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-top: 0.12em;
+    margin-left: 0.06em;
+  }
+  .sp-pre {
+    margin-left: 0;
+    margin-right: 0.04em;
+  }
   .sp-label {
-    margin-top: 0.5rem;
-    font-size: min(0.8125rem, 12cqi);
+    margin-top: 1rem;
+    font-size: min(0.9375rem, 11cqi);
+    font-weight: 500;
     line-height: 1.3;
-    color: var(--color-muted);
+    letter-spacing: -0.015em;
     overflow-wrap: anywhere;
-    hyphens: auto;
+  }
+  .sp-label::first-letter {
+    text-transform: uppercase;
   }
 </style>
