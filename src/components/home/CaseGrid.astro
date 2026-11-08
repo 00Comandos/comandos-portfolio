@@ -226,6 +226,12 @@ const tiles = slugs.flatMap((slug, i) => {
     font-size: clamp(2rem, 3.6vw, 3.25rem);
     max-width: 16ch;
   }
+  /* Smallest phones: keep "measurably solved." in one pill. */
+  @media (max-width: 359px) {
+    .cg-title {
+      font-size: 1.75rem;
+    }
+  }
   .cg-all {
     flex-shrink: 0;
   }
