@@ -50,6 +50,14 @@ const en = {
     titleEnd: "",
     readCase: "Read the case",
   },
+  statement: {
+    line1: "Founder speed.",
+    line2Pre: "",
+    line2Hl: "Proven",
+    line2End: " at scale.",
+    p1: "We're a product design studio that has shipped with four-person founding teams and with products used by millions — Stori, Karta, Truora, Legalario.",
+    p2: "We bring a founder's speed to companies at scale, and the rigor of scale to founders who are just getting started.",
+  },
   work: {
     eyebrow: "Selected work",
     title: "Product problems,",
@@ -643,6 +651,14 @@ const es: UI = {
     titleEm: "métricas",
     titleEnd: "de negocio.",
     readCase: "Ver el caso",
+  },
+  statement: {
+    line1: "Velocidad de founder.",
+    line2Pre: "",
+    line2Hl: "Probado",
+    line2End: " a escala.",
+    p1: "Somos un estudio de diseño de producto que ha lanzado con equipos fundadores de cuatro personas y con productos que usan millones — Stori, Karta, Truora, Legalario.",
+    p2: "Llevamos la velocidad de un founder a empresas a escala, y el rigor de la escala a founders que apenas empiezan.",
   },
   work: {
     eyebrow: "Trabajo seleccionado",
