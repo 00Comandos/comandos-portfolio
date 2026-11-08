@@ -105,7 +105,7 @@ const en = {
   },
   method: {
     eyebrow: "Method",
-    title: "North Face Growth —",
+    title: "North Face Growth\u00a0—",
     titleEm: "how we climb.",
     sub: "Our methodology to create and scale products in turbo mode. Not every product needs every step — but they always run in this order.",
     cta: "Explore the method",
@@ -707,7 +707,7 @@ const es: UI = {
   },
   method: {
     eyebrow: "Método",
-    title: "North Face Growth —",
+    title: "North Face Growth\u00a0—",
     titleEm: "cómo escalamos.",
     sub: "Nuestra metodología para crear y escalar productos en modo turbo. No todo producto necesita cada paso — pero siempre van en este orden.",
     cta: "Conoce el método",
