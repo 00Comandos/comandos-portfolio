@@ -2,16 +2,13 @@
 /*
  * Home: a breathing pause between the logos and the work (Aerolab
  * "Startup instincts. Enterprise experience." pattern) — a two-line
- * statement with one highlighted word, the Comandos mark, and two short
+ * statement with one highlighted word and two short
  * paragraphs offset to the right half. Lots of white on purpose.
  */
-import logoSvg from "../../../public/images/Logo-Comandos.svg?raw";
 import { ui, type Lang } from "~/i18n";
 
 type Props = { lang: Lang };
 const t = ui[Astro.props.lang].statement;
-// The isotype is the first 38.6 × 35 of the wordmark; crop it by viewBox.
-const d = logoSvg.match(/\sd="([^"]+)"/)?.[1] ?? "";
 ---
 
 <section aria-labelledby="statement-heading" class="statement">
@@ -20,9 +17,6 @@ const d = logoSvg.match(/\sd="([^"]+)"/)?.[1] ?? "";
       {t.line1}<br />
       {t.line2Pre}<span class="hl">{t.line2Hl}</span>{t.line2End}
     </h2>
-    <svg class="statement-mark" viewBox="0 0 38.6 35" aria-hidden="true">
-      <path fill-rule="evenodd" clip-rule="evenodd" d={d} fill="currentColor" />
-    </svg>
     <div class="statement-copy">
       <p>{t.p1}</p>
       <p>{t.p2}</p>
@@ -49,15 +43,12 @@ const d = logoSvg.match(/\sd="([^"]+)"/)?.[1] ?? "";
       grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-template-areas:
         "title ."
-        "mark copy";
+        ". copy";
       row-gap: 3.5rem;
       column-gap: 2rem;
     }
     .statement-title {
       grid-area: title;
-    }
-    .statement-mark {
-      grid-area: mark;
     }
     .statement-copy {
       grid-area: copy;
@@ -68,11 +59,6 @@ const d = logoSvg.match(/\sd="([^"]+)"/)?.[1] ?? "";
     font-weight: 400;
     letter-spacing: -0.035em;
     line-height: 1.08;
-    color: var(--color-ink);
-  }
-  .statement-mark {
-    width: 2rem;
-    height: auto;
     color: var(--color-ink);
   }
   .statement-copy {
