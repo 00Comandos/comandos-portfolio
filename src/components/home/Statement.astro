@@ -7,7 +7,7 @@
  */
 import { Image } from "astro:assets";
 import { ui, type Lang } from "~/i18n";
-// A real working session: a conversion funnel on the whiteboard (cropped
+// A real working session: a conversion funnel on the whiteboard
 // to the board — no people — and set in grey like the Studio photo).
 import whiteboard from "~/assets/images/studio/comandos-whiteboard-funnel-session.webp";
 
@@ -26,7 +26,7 @@ const t = ui[Astro.props.lang].statement;
         src={whiteboard}
         alt={t.imageAlt}
         widths={[480, 800, 1200, 1600]}
-        sizes="(min-width: 900px) 46vw, 100vw"
+        sizes="(min-width: 900px) 44vw, 100vw"
         loading="lazy"
         decoding="async"
         class="statement-img"
@@ -56,11 +56,14 @@ const t = ui[Astro.props.lang].statement;
   @media (min-width: 900px) {
     .statement-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      /* Text left (title, then copy), the tall photo on the right. */
       grid-template-areas:
-        "title ."
-        "media copy";
-      row-gap: 3.5rem;
-      column-gap: 2rem;
+        "title media"
+        "copy media";
+      grid-template-rows: auto 1fr;
+      row-gap: 2.5rem;
+      column-gap: clamp(2rem, 5vw, 5rem);
+      align-items: start;
     }
     .statement-title {
       grid-area: title;
@@ -89,8 +92,10 @@ const t = ui[Astro.props.lang].statement;
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 4;
     object-fit: cover;
+    /* Keep the person at the bottom edge in view when cropped. */
+    object-position: center 70%;
   }
   .statement-copy {
     display: grid;
