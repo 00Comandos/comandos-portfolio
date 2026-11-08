@@ -12,6 +12,6 @@ export const clients: readonly Client[] = [
   { name: "Truora", logo: "/images/Truora-Logo.svg", website: "https://www.truora.com" },
   { name: "Legalario", logo: "/images/logo-legalario.png" },
   { name: "RebajaTusCuentas", logo: "/images/RebajaTusCuentas-Logotipo.svg", website: "https://rebajatuscuentas.com" },
-  { name: "mipOS", logo: "/images/mipos-logo.svg" },
+  { name: "mipOS", logo: "/images/mipos-logo-mono.svg" },
   { name: "Kriptos", logo: "/images/kriptos-logo.svg", website: "https://www.kriptos.io" },
 ];
