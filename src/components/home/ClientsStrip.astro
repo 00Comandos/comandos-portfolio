@@ -1,9 +1,17 @@
 ---
-import { clients } from "~/data/clients";
+import { clients as baseClients, type Client } from "~/data/clients";
 import { ui, type Lang } from "~/i18n";
 
-type Props = { lang: Lang };
+// `more` (home B): adds the two clients with the most published cases —
+// 8 logos: one row on wide screens, 4 × 2 on tablets, 2 × 4 on phones.
+type Props = { lang: Lang; more?: boolean };
+const { more = false } = Astro.props;
 const t = ui[Astro.props.lang];
+const EXTRA: Client[] = [
+  { name: "Legalario", logo: "/images/logo-legalario.png" },
+  { name: "mipOS", logo: "/images/mipos-logo.svg" },
+];
+const clients = more ? [...baseClients.slice(0, 3), EXTRA[0], baseClients[3], EXTRA[1], ...baseClients.slice(4)] : baseClients;
 ---
 
 <section aria-label={t.clients.label} class="clients">
@@ -13,7 +21,7 @@ const t = ui[Astro.props.lang];
       <p class="clients-note">{t.clients.title}</p>
     </div>
 
-    <ul class="clients-grid">
+    <ul class:list={["clients-grid", { "clients-grid--8": more }]}>
       {
         clients.map((c) => {
           const img = (
@@ -107,6 +115,20 @@ const t = ui[Astro.props.lang];
     .clients-grid {
       grid-template-columns: repeat(6, minmax(0, 1fr));
       column-gap: 2rem;
+    }
+  }
+  /* Eight logos: 2 × 4 → 4 × 2 → one row. */
+  .clients-grid--8 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (min-width: 768px) {
+    .clients-grid--8 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1280px) {
+    .clients-grid--8 {
+      grid-template-columns: repeat(8, minmax(0, 1fr));
     }
   }
   .clients-cell {
