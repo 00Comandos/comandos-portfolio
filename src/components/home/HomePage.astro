@@ -2,7 +2,6 @@
 import { getImage } from "astro:assets";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Hero from "~/components/home/Hero.astro";
-import ClientsStrip from "~/components/home/ClientsStrip.astro";
 import CaseGrid from "~/components/home/CaseGrid.astro";
 import { HOME_CASE_SLUGS } from "~/data/home-work-i18n";
 import Method from "~/components/home/Method.astro";
@@ -157,7 +156,6 @@ const faqLd = {
     fetchpriority="high"
   />
   <Hero lang={lang} />
-  <ClientsStrip lang={lang} />
   <Statement lang={lang} />
   <CaseGrid lang={lang} />
   <Method lang={lang} />
