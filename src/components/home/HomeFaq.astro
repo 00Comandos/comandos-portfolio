@@ -1,11 +1,11 @@
 ---
-// Home B: objections answered before the form. Native <details> (works
+// Home: objections answered before the form. Native <details> (works
 // without JS); FAQPage JSON-LD is emitted by the page.
 import type { Lang } from "~/i18n";
-import { homeB } from "~/i18n/home-b";
+import { homeFaq } from "~/i18n/home-faq";
 
 type Props = { lang: Lang };
-const c = homeB[Astro.props.lang].faq;
+const c = homeFaq[Astro.props.lang];
 ---
 
 <section aria-labelledby="faq-heading" class="faq">

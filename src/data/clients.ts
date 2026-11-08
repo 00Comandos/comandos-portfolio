@@ -10,7 +10,8 @@ export const clients: readonly Client[] = [
   { name: "Stori", logo: "/images/logo-stori.png", website: "https://www.storicard.com" },
   { name: "Karta", logo: "/images/logo-karta.png", maxHeightClass: "max-h-5 md:max-h-6" },
   { name: "Truora", logo: "/images/Truora-Logo.svg", website: "https://www.truora.com" },
+  { name: "Legalario", logo: "/images/logo-legalario.png" },
   { name: "RebajaTusCuentas", logo: "/images/RebajaTusCuentas-Logotipo.svg", website: "https://rebajatuscuentas.com" },
-  { name: "Yaydoo", logo: "/images/yaydoo-logo.svg" },
+  { name: "mipOS", logo: "/images/mipos-logo.svg" },
   { name: "Kriptos", logo: "/images/kriptos-logo.svg", website: "https://www.kriptos.io" },
 ];

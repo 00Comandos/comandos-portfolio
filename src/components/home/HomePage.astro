@@ -3,26 +3,21 @@ import { getImage } from "astro:assets";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Hero from "~/components/home/Hero.astro";
 import ClientsStrip from "~/components/home/ClientsStrip.astro";
-import Impact from "~/components/home/Impact.astro";
 import CaseGrid from "~/components/home/CaseGrid.astro";
 import { HOME_CASE_SLUGS } from "~/data/home-work-i18n";
-import Services from "~/components/home/Services.astro";
 import Method from "~/components/home/Method.astro";
 import Testimonials from "~/components/home/Testimonials.astro";
 import Studio from "~/components/home/Studio.astro";
 import FinalCTA from "~/components/home/FinalCTA.astro";
 import HomeFaq from "~/components/home/HomeFaq.astro";
-import { homeB } from "~/i18n/home-b";
+import { homeFaq } from "~/i18n/home-faq";
 import { site } from "~/lib/site";
 import { ui, type Lang } from "~/i18n";
 import { homeBeforeAfter } from "~/data/home-before-after";
 import { projects } from "~/data/projects";
 
-// `variant="b"` is the local comparison build (/home-b/): adds an FAQ
-// before the form; noindex, canonical to the real home.
-type Props = { lang: Lang; variant?: "a" | "b" };
-const { lang, variant = "a" } = Astro.props;
-const isB = variant === "b";
+type Props = { lang: Lang };
+const { lang } = Astro.props;
 const t = ui[lang];
 const homeUrl = lang === "es" ? `${site.url}/es/` : `${site.url}/`;
 
@@ -135,7 +130,7 @@ const jsonLd = [
 const faqLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: homeB[lang].faq.items.map((it) => ({
+  mainEntity: homeFaq[lang].items.map((it) => ({
     "@type": "Question",
     name: it.q,
     acceptedAnswer: { "@type": "Answer", text: it.a },
@@ -146,12 +141,10 @@ const faqLd = {
 <BaseLayout
   title={t.meta.homeTitle}
   description={t.meta.homeDescription}
-  alternates={isB ? undefined : { en: "/", es: "/es/" }}
-  noindex={isB}
-  canonical={isB ? homeUrl : undefined}
+  alternates={{ en: "/", es: "/es/" }}
   image={homeOg.src}
   imageAlt={`${homeBeforeAfter[0].brand} — ${homeBeforeAfter[0].tagline}. Product design case study by Carlos Comandos.`}
-  jsonLd={isB ? [...(Array.isArray(jsonLd) ? jsonLd : [jsonLd]), faqLd] : jsonLd}
+  jsonLd={[...jsonLd, faqLd]}
 >
   {/* LCP: the hero poster is a CSS background + <video poster>, which the
        preload scanner can't discover early. */}
@@ -163,13 +156,11 @@ const faqLd = {
     fetchpriority="high"
   />
   <Hero lang={lang} />
-  <ClientsStrip lang={lang} more={isB} />
-  {!isB && <Impact lang={lang} />}
+  <ClientsStrip lang={lang} />
   <CaseGrid lang={lang} />
-  {!isB && <Services lang={lang} />}
   <Method lang={lang} />
   <Testimonials lang={lang} />
   <Studio lang={lang} />
-  {isB && <HomeFaq lang={lang} />}
+  <HomeFaq lang={lang} />
   <FinalCTA lang={lang} />
 </BaseLayout>

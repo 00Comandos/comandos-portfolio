@@ -1,29 +1,14 @@
 ---
-import { clients as baseClients, type Client } from "~/data/clients";
+import { clients } from "~/data/clients";
 import { ui, type Lang } from "~/i18n";
 
-// `more` (home B): adds the two clients with the most published cases and
-// drops Yaydoo — 7 logos: one row on wide screens, 4 + 3 on tablets.
-type Props = { lang: Lang; more?: boolean };
-const { more = false } = Astro.props;
+type Props = { lang: Lang };
 const t = ui[Astro.props.lang];
-const EXTRA: Client[] = [
-  { name: "Legalario", logo: "/images/logo-legalario.png" },
-  { name: "mipOS", logo: "/images/mipos-logo.svg" },
-];
-const clients = more
-  ? [...baseClients.slice(0, 3), EXTRA[0], baseClients[3], EXTRA[1], ...baseClients.slice(4)].filter((c) => c.name !== "Yaydoo")
-  : baseClients;
 ---
 
 <section aria-label={t.clients.label} class="clients">
   <div class="container-page">
-    <div class="clients-head">
-      <p class="eyebrow">{t.clients.label}</p>
-      <p class="clients-note">{t.clients.title}</p>
-    </div>
-
-    <ul class:list={["clients-grid", { "clients-grid--8": more }]}>
+    <ul class="clients-grid">
       {
         clients.map((c) => {
           const img = (
@@ -58,78 +43,34 @@ const clients = more
 </section>
 
 <style>
+  /* Logos only (the section keeps its aria-label), tucked up under the
+     hero. */
   .clients {
-    padding-block: 4rem 4.5rem;
+    padding-block: 2.5rem 1.5rem;
     background: var(--color-paper);
   }
   @media (min-width: 768px) {
     .clients {
-      padding-block: 7rem 9rem;
+      padding-block: 3.5rem 3rem;
     }
-  }
-
-  /* Label and note sit side by side, joined by a small dot. */
-  .clients-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.25rem 0.75rem;
-    margin-bottom: 2.5rem;
-  }
-  @media (min-width: 768px) {
-    .clients-head {
-      margin-bottom: 4.25rem;
-    }
-  }
-  .clients-head .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  .clients-head .eyebrow::after {
-    content: none;
-  }
-  @media (min-width: 768px) {
-    .clients-head .eyebrow::after {
-      content: "";
-    }
-  }
-  .clients-head .eyebrow::after {
-    width: 4px;
-    height: 4px;
-    border-radius: 9999px;
-    background: var(--color-muted-soft);
-  }
-  .clients-note {
-    font-size: 0.9375rem;
-    letter-spacing: -0.01em;
-    color: var(--color-muted);
   }
 
   .clients-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* Seven logos: 2 columns → 4 → one row. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     row-gap: 2.5rem;
     column-gap: 1.25rem;
     align-items: center;
   }
   @media (min-width: 768px) {
     .clients-grid {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       column-gap: 2rem;
     }
   }
-  /* Seven logos: 2 columns → 4 → one row. */
-  .clients-grid--8 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  @media (min-width: 768px) {
-    .clients-grid--8 {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
   @media (min-width: 1280px) {
-    .clients-grid--8 {
+    .clients-grid {
       grid-template-columns: repeat(7, minmax(0, 1fr));
     }
   }

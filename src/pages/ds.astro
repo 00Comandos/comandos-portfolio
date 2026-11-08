@@ -391,10 +391,10 @@ const pad = (n: number) => String(n).padStart(2, "0");
           <Entry
             id="buttons"
             name="Buttons"
-            path="global.css (.btn-primary, .btn-outline, .btn-link) · Challenge.astro (.btn-dark-outline) · home/Services.astro (.btn-invert)"
+            path="global.css (.btn-primary, .btn-outline, .btn-link) · Challenge.astro (.btn-dark-outline) · .btn-invert (from the retired home Services section)"
             when="Compact pills with a leading dot that turns teal on hover; min-height 40px. Primary = the one action of a block; outline = secondary; link = inline."
             notes={[
-              "<strong>Dark variants are component-scoped</strong>, not global: <code>.btn-dark-outline</code> lives in Challenge.astro and <code>.btn-invert</code> in home/Services.astro. The dark row below is a <em>replica</em> of their CSS so you can see them; to reuse them elsewhere, promote both to global.css first.",
+              "<strong>Dark variants are component-scoped</strong>, not global: <code>.btn-dark-outline</code> lives in Challenge.astro and <code>.btn-invert</code> came from the retired home Services section. The dark row below is a <em>replica</em> of their CSS so you can see them; to reuse them elsewhere, promote both to global.css first.",
             ]}
             code={`<a class="btn-primary" href="…">Book a discovery call</a>
 <a class="btn-outline" href="…">See the work</a>
