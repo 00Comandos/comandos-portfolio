@@ -43,15 +43,16 @@ const t = ui[Astro.props.lang];
 </section>
 
 <style>
-  /* Logos only (the section keeps its aria-label), tucked up under the
-     hero. */
+  /* Logos only (the section keeps its aria-label): a band framed by the
+     hero's bottom hairline and a matching full-width one below. */
   .clients {
-    padding-block: 1.75rem 1.5rem;
+    padding-block: 1.75rem;
     background: var(--color-paper);
+    border-bottom: 1px solid var(--color-border);
   }
   @media (min-width: 768px) {
     .clients {
-      padding-block: 2.25rem 3rem;
+      padding-block: 2.25rem;
     }
   }
 
