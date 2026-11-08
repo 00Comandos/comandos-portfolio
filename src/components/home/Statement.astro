@@ -1,14 +1,15 @@
 ---
 /*
- * Home: a breathing pause between the logos and the work (Aerolab
- * "Startup instincts. Enterprise experience." pattern) — a two-line
- * statement, a whiteboard photo from a real session, and two short
- * paragraphs offset to the right half. Lots of white on purpose.
+ * Home: a breathing pause between the logos and the work. Structure after
+ * ArchiPro's "Project Portfolio" panel: a full-height row with a large
+ * statement, a short paragraph and one button on the left (vertically
+ * centred), and a single tall rounded photo on the right. Kept on the
+ * page's white.
  */
 import { Image } from "astro:assets";
 import { ui, type Lang } from "~/i18n";
-// A real working session: a conversion funnel on the whiteboard
-// to the board — no people — and set in grey like the Studio photo).
+// A real working session: the funnel on the whiteboard plus a teammate at
+// the laptop (front-facing person out), in grey like the Studio photo.
 import whiteboard from "~/assets/images/studio/comandos-whiteboard-funnel-session.webp";
 
 type Props = { lang: Lang };
@@ -17,92 +18,112 @@ const t = ui[Astro.props.lang].statement;
 
 <section aria-labelledby="statement-heading" class="statement">
   <div class="container-page statement-grid">
-    <h2 id="statement-heading" class="statement-title">
-      {t.line1}<br />
-      {t.line2Pre}{t.line2Hl}{t.line2End}
-    </h2>
+    <div class="statement-copy">
+      <h2 id="statement-heading" class="statement-title">
+        {t.line1}<br />
+        {t.line2Pre}{t.line2Hl}{t.line2End}
+      </h2>
+      <p class="statement-sub">{t.p1}</p>
+      <p class="statement-sub statement-sub--soft">{t.p2}</p>
+      <a href="#studio" class="statement-btn">{t.cta}</a>
+    </div>
     <figure class="statement-media">
       <Image
         src={whiteboard}
         alt={t.imageAlt}
         widths={[480, 800, 1086]}
-        sizes="(min-width: 900px) 44vw, 100vw"
+        sizes="(min-width: 900px) 40vw, 100vw"
         loading="lazy"
         decoding="async"
         class="statement-img"
       />
     </figure>
-    <div class="statement-copy">
-      <p>{t.p1}</p>
-      <p>{t.p2}</p>
-    </div>
   </div>
 </section>
 
 <style>
   .statement {
-    padding-block: 6rem 1rem;
+    padding-block: 5rem 3rem;
     background: var(--color-paper);
-  }
-  @media (min-width: 768px) {
-    .statement {
-      padding-block: 9.5rem 2rem;
-    }
   }
   .statement-grid {
     display: grid;
-    gap: 2rem;
+    gap: 2.5rem;
   }
   @media (min-width: 900px) {
+    .statement {
+      padding-block: 4rem;
+    }
     .statement-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      /* Text left (title, then copy), the tall photo on the right. */
-      grid-template-areas:
-        "title media"
-        "copy media";
-      grid-template-rows: auto 1fr;
-      row-gap: 2.5rem;
-      column-gap: clamp(2rem, 5vw, 5rem);
-      align-items: start;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: clamp(2rem, 6vw, 7rem);
+      min-height: min(100svh - 6rem, 56rem);
     }
-    .statement-title {
-      grid-area: title;
-    }
-    .statement-media {
-      grid-area: media;
-    }
-    .statement-copy {
-      grid-area: copy;
-      align-self: start;
-    }
+  }
+  .statement-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
   .statement-title {
-    font-size: clamp(2rem, 3.6vw, 3.25rem);
+    font-size: clamp(2.5rem, 5vw, 4.75rem);
     font-weight: 400;
-    letter-spacing: -0.035em;
-    line-height: 1.08;
+    letter-spacing: -0.045em;
+    line-height: 1;
     color: var(--color-ink);
   }
+  .statement-sub {
+    margin-top: 1.75rem;
+    max-width: 30rem;
+    font-size: clamp(1.0625rem, 1.4vw, 1.3125rem);
+    line-height: 1.4;
+    letter-spacing: -0.012em;
+    color: var(--color-ink);
+  }
+  .statement-sub--soft {
+    margin-top: 0.9rem;
+    color: var(--color-muted);
+  }
+  .statement-btn {
+    margin-top: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0 1.6rem;
+    border-radius: 9999px;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  }
+  .statement-btn:hover {
+    background: color-mix(in srgb, var(--color-ink) 82%, var(--color-accent));
+  }
+  .statement-btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  /* One tall rounded card, like a cover. */
   .statement-media {
     overflow: hidden;
-    border-radius: var(--radius-xs);
+    border-radius: 1.25rem;
     background: var(--color-grey);
+  }
+  @media (min-width: 900px) {
+    .statement-media {
+      justify-self: end;
+      width: min(100%, 36rem, calc((100svh - 10rem) * 0.8));
+    }
   }
   .statement-media :global(.statement-img) {
     display: block;
     width: 100%;
     height: auto;
-    /* Natural ratio: the whole board plus the teammate at the bottom. */
-  }
-  .statement-copy {
-    display: grid;
-    gap: 1.1rem;
-    max-width: 38rem;
-  }
-  .statement-copy p {
-    font-size: clamp(1.0625rem, 1.35vw, 1.25rem);
-    line-height: 1.45;
-    letter-spacing: -0.01em;
-    color: var(--color-ink-soft);
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    /* Board plus the teammate at the bottom right. */
+    object-position: 70% 60%;
   }
 </style>
