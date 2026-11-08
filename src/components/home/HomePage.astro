@@ -11,7 +11,6 @@ import Method from "~/components/home/Method.astro";
 import Testimonials from "~/components/home/Testimonials.astro";
 import Studio from "~/components/home/Studio.astro";
 import FinalCTA from "~/components/home/FinalCTA.astro";
-import HomePaths from "~/components/home/HomePaths.astro";
 import HomeFaq from "~/components/home/HomeFaq.astro";
 import { homeB } from "~/i18n/home-b";
 import { site } from "~/lib/site";
@@ -19,8 +18,8 @@ import { ui, type Lang } from "~/i18n";
 import { homeBeforeAfter } from "~/data/home-before-after";
 import { projects } from "~/data/projects";
 
-// `variant="b"` is the local comparison build (/home-b/): adds audience
-// paths + FAQ before the form; noindex, canonical to the real home.
+// `variant="b"` is the local comparison build (/home-b/): adds an FAQ
+// before the form; noindex, canonical to the real home.
 type Props = { lang: Lang; variant?: "a" | "b" };
 const { lang, variant = "a" } = Astro.props;
 const isB = variant === "b";
@@ -172,6 +171,5 @@ const faqLd = {
   <Testimonials lang={lang} />
   <Studio lang={lang} />
   {isB && <HomeFaq lang={lang} />}
-  {isB && <HomePaths lang={lang} />}
   <FinalCTA lang={lang} />
 </BaseLayout>

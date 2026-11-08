@@ -1,51 +1,13 @@
-// Copy for the home "B" variant (/home-b/): audience paths + FAQ.
+// Copy for the home "B" variant (/home-b/): FAQ.
 // Kept apart from ui.ts until the variant is chosen.
 import type { Lang } from "~/i18n";
 
-export type HomePath = {
-  label: string;
-  title: string;
-  body: string;
-  points: readonly string[];
-  cta: string;
-  /** Contact form project types to preselect (values of PROJECT_TYPES). */
-  types: readonly string[];
-  /** `/contact/?type=` fallback when the inline form isn't on the page. */
-  preset: string;
-};
-
 export type HomeB = {
-  paths: { eyebrow: string; title: string; sub: string; items: readonly HomePath[] };
   faq: { eyebrow: string; title: string; items: readonly { q: string; a: string }[] };
 };
 
 export const homeB: Record<Lang, HomeB> = {
   en: {
-    paths: {
-      eyebrow: "Start here",
-      title: "Where is your product today?",
-      sub: "Two very different starting points — pick yours and the brief starts half-written.",
-      items: [
-        {
-          label: "Founders",
-          title: "We're launching",
-          body: "Validate the idea, design the MVP and ship a first release your users trust from day one.",
-          points: ["Research & validation", "MVP or pilot", "Product strategy"],
-          cta: "Start with a launch plan",
-          types: ["MVP / Pilot", "Product Strategy"],
-          preset: "launch",
-        },
-        {
-          label: "Products at scale",
-          title: "It works — but it's stuck",
-          body: "Find what's blocking growth in a live product, fix the UX at scale and prove it with experiments.",
-          points: ["UX audit & research", "Redesign at scale", "Growth & experimentation"],
-          cta: "Start with a diagnostic",
-          types: ["UX Research", "Full Product Redesign", "Growth / Experimentation"],
-          preset: "scale",
-        },
-      ],
-    },
     faq: {
       eyebrow: "FAQ",
       title: "Before we talk",
@@ -78,31 +40,6 @@ export const homeB: Record<Lang, HomeB> = {
     },
   },
   es: {
-    paths: {
-      eyebrow: "Empieza aquí",
-      title: "¿Dónde está tu producto hoy?",
-      sub: "Dos puntos de partida muy distintos — elige el tuyo y el brief queda medio escrito.",
-      items: [
-        {
-          label: "Founders",
-          title: "Estamos lanzando",
-          body: "Valida la idea, diseña el MVP y lanza una primera versión en la que tus usuarios confíen desde el día uno.",
-          points: ["Research y validación", "MVP o piloto", "Estrategia de producto"],
-          cta: "Empezar con un plan de lanzamiento",
-          types: ["MVP / Pilot", "Product Strategy"],
-          preset: "launch",
-        },
-        {
-          label: "Productos a escala",
-          title: "Funciona — pero está atorado",
-          body: "Encuentra qué frena el crecimiento de un producto en vivo, arregla la UX a escala y pruébalo con experimentos.",
-          points: ["UX audit y research", "Rediseño a escala", "Growth y experimentación"],
-          cta: "Empezar con un diagnóstico",
-          types: ["UX Research", "Full Product Redesign", "Growth / Experimentation"],
-          preset: "scale",
-        },
-      ],
-    },
     faq: {
       eyebrow: "Preguntas frecuentes",
       title: "Antes de hablar",
