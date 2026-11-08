@@ -1,0 +1,138 @@
+---
+// Home B: objections answered before the form. Native <details> (works
+// without JS); FAQPage JSON-LD is emitted by the page.
+import type { Lang } from "~/i18n";
+import { homeB } from "~/i18n/home-b";
+
+type Props = { lang: Lang };
+const c = homeB[Astro.props.lang].faq;
+---
+
+<section aria-labelledby="faq-heading" class="faq">
+  <div class="container-page faq-grid">
+    <div class="faq-head">
+      <p class="eyebrow">{c.eyebrow}</p>
+      <h2 id="faq-heading" class="faq-title">{c.title}</h2>
+    </div>
+    <div class="faq-list">
+      {
+        c.items.map((it, i) => (
+          <details class="faq-item" open={i === 0}>
+            <summary>
+              <span class="faq-num mono">{String(i + 1).padStart(2, "0")}</span>
+              <span class="faq-q">{it.q}</span>
+              <span class="faq-icon" aria-hidden="true" />
+            </summary>
+            <p class="faq-a">{it.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq {
+    padding-block: 5rem;
+    background: var(--color-paper);
+    border-top: 1px solid var(--color-border);
+  }
+  @media (min-width: 768px) {
+    .faq {
+      padding-block: 7.5rem;
+    }
+  }
+  .faq-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .faq-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      gap: 4rem;
+    }
+    .faq-head {
+      position: sticky;
+      top: 7rem;
+      align-self: start;
+    }
+  }
+  .faq-head .eyebrow {
+    color: var(--color-muted);
+  }
+  .faq-title {
+    margin-top: 1rem;
+    font-size: clamp(2.25rem, 4.4vw, 4rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.04;
+  }
+  .faq-list {
+    border-top: 1px solid var(--color-ink);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .faq-item summary {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr) 1.25rem;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 1.4rem 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-item summary:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  .faq-num {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+  .faq-q {
+    font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .faq-icon {
+    position: relative;
+    align-self: center;
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+  .faq-icon::before,
+  .faq-icon::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1.5px;
+    background: var(--color-ink);
+    transition: transform 0.25s ease;
+  }
+  .faq-icon::after {
+    transform: rotate(90deg);
+  }
+  .faq-item[open] .faq-icon::after {
+    transform: rotate(0deg);
+  }
+  .faq-a {
+    padding: 0 2rem 1.6rem 3rem;
+    max-width: 44rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  @media (max-width: 639px) {
+    .faq-a {
+      padding-left: 3rem;
+      padding-right: 0;
+    }
+  }
+</style>

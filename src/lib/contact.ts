@@ -16,6 +16,8 @@ export const PROJECT_TYPES = [
 export const PROJECT_TYPE_PRESETS: Record<string, (typeof PROJECT_TYPES)[number]> = {
   discovery: "Discovery call (30 min)",
   fractional: "Fractional / Full-time Head of Design",
+  launch: "MVP / Pilot",
+  scale: "Full Product Redesign",
 };
 
 export const REFERRAL_SOURCES = [

@@ -11,13 +11,19 @@ import Method from "~/components/home/Method.astro";
 import Testimonials from "~/components/home/Testimonials.astro";
 import Studio from "~/components/home/Studio.astro";
 import FinalCTA from "~/components/home/FinalCTA.astro";
+import HomePaths from "~/components/home/HomePaths.astro";
+import HomeFaq from "~/components/home/HomeFaq.astro";
+import { homeB } from "~/i18n/home-b";
 import { site } from "~/lib/site";
 import { ui, type Lang } from "~/i18n";
 import { homeBeforeAfter } from "~/data/home-before-after";
 import { projects } from "~/data/projects";
 
-type Props = { lang: Lang };
-const { lang } = Astro.props;
+// `variant="b"` is the local comparison build (/home-b/): adds audience
+// paths + FAQ before the form; noindex, canonical to the real home.
+type Props = { lang: Lang; variant?: "a" | "b" };
+const { lang, variant = "a" } = Astro.props;
+const isB = variant === "b";
 const t = ui[lang];
 const homeUrl = lang === "es" ? `${site.url}/es/` : `${site.url}/`;
 
@@ -127,15 +133,26 @@ const jsonLd = [
     itemListElement: listItems,
   },
 ];
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: homeB[lang].faq.items.map((it) => ({
+    "@type": "Question",
+    name: it.q,
+    acceptedAnswer: { "@type": "Answer", text: it.a },
+  })),
+};
 ---
 
 <BaseLayout
   title={t.meta.homeTitle}
   description={t.meta.homeDescription}
-  alternates={{ en: "/", es: "/es/" }}
+  alternates={isB ? undefined : { en: "/", es: "/es/" }}
+  noindex={isB}
+  canonical={isB ? homeUrl : undefined}
   image={homeOg.src}
   imageAlt={`${homeBeforeAfter[0].brand} — ${homeBeforeAfter[0].tagline}. Product design case study by Carlos Comandos.`}
-  jsonLd={jsonLd}
+  jsonLd={isB ? [...(Array.isArray(jsonLd) ? jsonLd : [jsonLd]), faqLd] : jsonLd}
 >
   {/* LCP: the hero poster is a CSS background + <video poster>, which the
        preload scanner can't discover early. */}
@@ -154,5 +171,7 @@ const jsonLd = [
   <Method lang={lang} />
   <Testimonials lang={lang} />
   <Studio lang={lang} />
+  {isB && <HomeFaq lang={lang} />}
+  {isB && <HomePaths lang={lang} />}
   <FinalCTA lang={lang} />
 </BaseLayout>

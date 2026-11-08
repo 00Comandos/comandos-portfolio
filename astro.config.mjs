@@ -23,7 +23,7 @@ export default defineConfig({
       customSitemaps: ["https://www.comandos.me/sitemap-images.xml"],
       // Internal design-system catalogue: never listed.
       // /ds/ is internal; /es/projects/ are noindex mirrors of the EN cases.
-      filter: (page) => !page.includes("/ds/") && !page.includes("/es/projects/"),
+      filter: (page) => !page.includes("/ds/") && !page.includes("/es/projects/") && !page.includes("/home-b/"),
       serialize(item) {
         // Higher priority for the home and the projects index; case studies
         // and the rest keep the default.
