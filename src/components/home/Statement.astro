@@ -19,7 +19,7 @@ const t = ui[Astro.props.lang].statement;
 <section aria-labelledby="statement-heading" class="statement">
   <div class="container-page statement-grid">
     <div class="statement-copy">
-      <h2 id="statement-heading" class="statement-title">
+      <h2 id="statement-heading" class="display-serif statement-title">
         {t.line1}<br />
         {t.line2Pre}{t.line2Hl}{t.line2End}
       </h2>
@@ -66,18 +66,16 @@ const t = ui[Astro.props.lang].statement;
     flex-direction: column;
     align-items: flex-start;
   }
+  /* Same scale as the next section title (CaseGrid .cg-title). */
   .statement-title {
-    font-size: clamp(2.5rem, 5vw, 4.75rem);
-    font-weight: 400;
-    letter-spacing: -0.045em;
-    line-height: 1;
+    font-size: clamp(2rem, 3.6vw, 3.25rem);
     color: var(--color-ink);
   }
   .statement-sub {
     margin-top: 1.75rem;
     max-width: 30rem;
-    font-size: clamp(1.0625rem, 1.4vw, 1.3125rem);
-    line-height: 1.4;
+    font-size: 1.0625rem;
+    line-height: 1.55;
     letter-spacing: -0.012em;
     color: var(--color-ink);
   }
