@@ -12,6 +12,7 @@ import { ui, type Lang } from "~/i18n";
 // A real working session: the funnel on the whiteboard plus a teammate at
 // the laptop (front-facing person out), in grey like the Studio photo.
 import whiteboard from "~/assets/images/studio/comandos-whiteboard-funnel-session.webp";
+import carlosBoard from "~/assets/images/studio/comandos-session-carlos-board.webp";
 import teamSession from "~/assets/images/studio/comandos-session-remote-team.webp";
 import emailReview from "~/assets/images/studio/comandos-session-email-review.webp";
 
@@ -20,8 +21,9 @@ const t = ui[Astro.props.lang].statement;
 // A short silent loop of real working moments (crossfade, ~2.6 s each).
 const slides = [
   { src: whiteboard, alt: t.imageAlt },
-  { src: teamSession, alt: t.slideAlts[0] },
-  { src: emailReview, alt: t.slideAlts[1] },
+  { src: carlosBoard, alt: t.slideAlts[0] },
+  { src: teamSession, alt: t.slideAlts[1] },
+  { src: emailReview, alt: t.slideAlts[2] },
 ];
 ---
 

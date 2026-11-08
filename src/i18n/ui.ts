@@ -59,6 +59,7 @@ const en = {
     p2: "We bring a founder's speed to companies at scale, and the rigor of scale to founders who are just getting started.",
     cta: "Meet the studio",
     slideAlts: [
+      "Carlos at the strategy table in front of a whiteboard full of onboarding steps and pricing tiers",
       "The team working through a product session at the table, with more teammates joining on a video call",
       "Reviewing an email design for Stori's Inversión Crece+ launch",
     ],
@@ -667,6 +668,7 @@ const es: UI = {
     p2: "Llevamos la velocidad de un founder a empresas a escala, y el rigor de la escala a founders que apenas empiezan.",
     cta: "Conoce el estudio",
     slideAlts: [
+      "Carlos en la mesa de estrategia frente a un pizarrón con pasos de onboarding y niveles de precio",
       "El equipo trabajando una sesión de producto en la mesa, con más integrantes conectados por videollamada",
       "Revisión del diseño de un email para el lanzamiento de Inversión Crece+ de Stori",
     ],
