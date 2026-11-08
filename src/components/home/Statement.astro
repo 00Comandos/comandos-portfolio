@@ -13,7 +13,6 @@ import { ui, type Lang } from "~/i18n";
 // the laptop (front-facing person out), in grey like the Studio photo.
 import whiteboard from "~/assets/images/studio/comandos-whiteboard-funnel-session.webp";
 import teamSession from "~/assets/images/studio/comandos-session-remote-team.webp";
-import usabilityTest from "~/assets/images/studio/comandos-session-usability-test.webp";
 import emailReview from "~/assets/images/studio/comandos-session-email-review.webp";
 
 type Props = { lang: Lang };
@@ -22,8 +21,7 @@ const t = ui[Astro.props.lang].statement;
 const slides = [
   { src: whiteboard, alt: t.imageAlt },
   { src: teamSession, alt: t.slideAlts[0] },
-  { src: usabilityTest, alt: t.slideAlts[1] },
-  { src: emailReview, alt: t.slideAlts[2] },
+  { src: emailReview, alt: t.slideAlts[1] },
 ];
 ---
 

@@ -60,7 +60,6 @@ const en = {
     cta: "Meet the studio",
     slideAlts: [
       "The team working through a product session at the table, with more teammates joining on a video call",
-      "Carlos running a remote usability test of a KYC address-verification step on a video call",
       "Reviewing an email design for Stori's Inversión Crece+ launch",
     ],
     imageAlt: "A working session: a conversion funnel sketched on the whiteboard — landing views, CTA and conversion by step — while a teammate works on a laptop",
@@ -669,7 +668,6 @@ const es: UI = {
     cta: "Conoce el estudio",
     slideAlts: [
       "El equipo trabajando una sesión de producto en la mesa, con más integrantes conectados por videollamada",
-      "Carlos conduciendo una prueba de usabilidad remota del paso de verificación de domicilio (KYC) por videollamada",
       "Revisión del diseño de un email para el lanzamiento de Inversión Crece+ de Stori",
     ],
     imageAlt: "Una sesión de trabajo: un embudo de conversión dibujado en el pizarrón — vistas del landing, CTA y conversión por paso — mientras alguien del equipo trabaja en su laptop",
