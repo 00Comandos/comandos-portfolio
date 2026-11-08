@@ -62,7 +62,7 @@ export const spotfinder: CaseStudyContent = {
   kicker: "Parking — SaaS",
   brandLogo: {
     kind: "public",
-    src: "/images/spotfinder-logo.svg",
+    src: "/images/spotfinder-logo.webp",
     alt: "Spotfinder",
     height: 44,
   },

@@ -1,19 +1,24 @@
 ---
 import { clients } from "~/data/clients";
 import { ui, type Lang } from "~/i18n";
+import { publicImageSize } from "~/lib/public-image-size";
 
 type Props = { lang: Lang };
 const t = ui[Astro.props.lang];
+// Intrinsic sizes so each logo reserves its box before it loads.
+const sizes = await Promise.all(clients.map((c) => publicImageSize(c.logo)));
 ---
 
 <section aria-label={t.clients.label} class="clients">
   <div class="container-page">
     <ul class="clients-grid">
       {
-        clients.map((c) => {
+        clients.map((c, i) => {
           const img = (
             <img
               src={c.logo}
+              width={sizes[i]?.width}
+              height={sizes[i]?.height}
               alt={c.name}
               loading="lazy"
               decoding="async"

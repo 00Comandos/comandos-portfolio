@@ -8,6 +8,14 @@ import {
 } from "~/lib/case-study-images";
 import { site } from "~/lib/site";
 
+// Cut long alts at a word boundary (never mid-word) for <image:title>.
+const clip = (text: string, max: number) => {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max + 1);
+  const end = cut.lastIndexOf(" ");
+  return `${cut.slice(0, end > max * 0.6 ? end : max).replace(/[\s,;:—–-]+$/, "")}…`;
+};
+
 export const prerender = true;
 
 const escapeXml = (s: string) =>
@@ -56,7 +64,7 @@ export const GET: APIRoute = async () => {
         });
         images.push({
           url: new URL(variant.src, site.url).toString(),
-          title: `${project.brand} — ${ci.alt.slice(0, 90)}`,
+          title: `${project.brand} — ${clip(ci.alt, 90)}`,
           caption: ci.caption ?? ci.alt,
         });
       }
