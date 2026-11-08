@@ -167,7 +167,7 @@ const faqLd = {
   <ClientsStrip lang={lang} />
   {isB ? <ImpactShowcase lang={lang} /> : <Impact lang={lang} />}
   <CaseGrid lang={lang} />
-  <Services lang={lang} />
+  {!isB && <Services lang={lang} />}
   <Method lang={lang} />
   <Testimonials lang={lang} />
   <Studio lang={lang} />
