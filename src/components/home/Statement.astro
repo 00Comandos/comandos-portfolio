@@ -20,8 +20,8 @@ type Props = { lang: Lang };
 const t = ui[Astro.props.lang].statement;
 // A short silent loop of real working moments (crossfade, ~2.6 s each).
 const slides = [
-  { src: whiteboard, alt: t.imageAlt },
   { src: carlosBoard, alt: t.slideAlts[0] },
+  { src: whiteboard, alt: t.imageAlt },
   { src: teamSession, alt: t.slideAlts[1] },
   { src: emailReview, alt: t.slideAlts[2] },
 ];
@@ -174,8 +174,8 @@ const slides = [
     opacity: 0;
     transition: opacity 0.9s ease;
   }
-  /* First slide: board plus the teammate at the bottom right. */
-  .statement-media :global(.statement-img:first-child) {
+  /* Whiteboard slide: board plus the teammate at the bottom right. */
+  .statement-media :global(.statement-img:nth-child(2)) {
     object-position: 70% 60%;
   }
   .statement-media :global(.statement-img[data-active]) {
