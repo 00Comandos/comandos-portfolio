@@ -3,7 +3,8 @@
  * Home: a breathing pause between the logos and the work. Structure after
  * ArchiPro's "Project Portfolio" panel: a full-height row with a large
  * statement, a short paragraph and one button on the left (vertically
- * centred), and a single tall rounded photo on the right. Kept on the
+ * centred), and one tall rounded card on the right — a short silent loop
+ * of real working sessions (crossfade). Kept on the
  * page's white.
  */
 import { Image } from "astro:assets";
@@ -11,9 +12,19 @@ import { ui, type Lang } from "~/i18n";
 // A real working session: the funnel on the whiteboard plus a teammate at
 // the laptop (front-facing person out), in grey like the Studio photo.
 import whiteboard from "~/assets/images/studio/comandos-whiteboard-funnel-session.webp";
+import teamSession from "~/assets/images/studio/comandos-session-remote-team.webp";
+import usabilityTest from "~/assets/images/studio/comandos-session-usability-test.webp";
+import emailReview from "~/assets/images/studio/comandos-session-email-review.webp";
 
 type Props = { lang: Lang };
 const t = ui[Astro.props.lang].statement;
+// A short silent loop of real working moments (crossfade, ~2.6 s each).
+const slides = [
+  { src: whiteboard, alt: t.imageAlt },
+  { src: teamSession, alt: t.slideAlts[0] },
+  { src: usabilityTest, alt: t.slideAlts[1] },
+  { src: emailReview, alt: t.slideAlts[2] },
+];
 ---
 
 <section aria-labelledby="statement-heading" class="statement">
@@ -27,19 +38,55 @@ const t = ui[Astro.props.lang].statement;
       <p class="statement-sub statement-sub--next">{t.p2}</p>
       <a href="#studio" class="statement-btn">{t.cta}</a>
     </div>
-    <figure class="statement-media">
-      <Image
-        src={whiteboard}
-        alt={t.imageAlt}
-        widths={[480, 800, 1086]}
-        sizes="(min-width: 900px) 40vw, 100vw"
-        loading="lazy"
-        decoding="async"
-        class="statement-img"
-      />
+    <figure class="statement-media" data-slides>
+      {
+        slides.map((sl, i) => (
+          <Image
+            src={sl.src}
+            alt={sl.alt}
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 900px) 40vw, 100vw"
+            loading="lazy"
+            decoding="async"
+            class="statement-img"
+            data-slide
+            data-active={i === 0 ? "" : undefined}
+            aria-hidden={i === 0 ? undefined : "true"}
+          />
+        ))
+      }
     </figure>
   </div>
 </section>
+
+<script>
+  // Crossfade the photos while the card is on screen; reduced motion keeps
+  // the first one.
+  const HOLD = 2600;
+  document.querySelectorAll<HTMLElement>("[data-slides]").forEach((fig) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const imgs = Array.from(fig.querySelectorAll<HTMLElement>("[data-slide]"));
+    if (imgs.length < 2) return;
+    let i = 0;
+    let timer = 0;
+    const show = (n: number) => {
+      imgs.forEach((im, j) => {
+        im.toggleAttribute("data-active", j === n);
+        if (j === n) im.removeAttribute("aria-hidden");
+        else im.setAttribute("aria-hidden", "true");
+      });
+    };
+    const start = () => {
+      if (timer) return;
+      timer = window.setInterval(() => show((i = (i + 1) % imgs.length)), HOLD);
+    };
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = 0;
+    };
+    new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { threshold: 0.25 }).observe(fig);
+  });
+</script>
 
 <style>
   .statement {
@@ -104,6 +151,8 @@ const t = ui[Astro.props.lang].statement;
   }
   /* One tall rounded card, like a cover. */
   .statement-media {
+    position: relative;
+    aspect-ratio: 4 / 5;
     overflow: hidden;
     border-radius: 1.25rem;
     background: var(--color-grey);
@@ -115,12 +164,21 @@ const t = ui[Astro.props.lang].statement;
     }
   }
   .statement-media :global(.statement-img) {
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 5;
+    height: 100%;
     object-fit: cover;
-    /* Board plus the teammate at the bottom right. */
+    object-position: center;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+  }
+  /* First slide: board plus the teammate at the bottom right. */
+  .statement-media :global(.statement-img:first-child) {
     object-position: 70% 60%;
+  }
+  .statement-media :global(.statement-img[data-active]) {
+    opacity: 1;
   }
 </style>
