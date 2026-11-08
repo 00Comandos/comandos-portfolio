@@ -57,6 +57,7 @@ const en = {
     line2End: " at scale.",
     p1: "We're a product design studio that has shipped with four-person founding teams and with products used by millions — Stori, Karta, Truora, Legalario.",
     p2: "We bring a founder's speed to companies at scale, and the rigor of scale to founders who are just getting started.",
+    imageAlt: "A conversion funnel sketched on a whiteboard during a working session — landing views, CTA and step-by-step conversion rates",
   },
   work: {
     eyebrow: "Selected work",
@@ -659,6 +660,7 @@ const es: UI = {
     line2End: " a escala.",
     p1: "Somos un estudio de diseño de producto que ha lanzado con equipos fundadores de cuatro personas y con productos que usan millones — Stori, Karta, Truora, Legalario.",
     p2: "Llevamos la velocidad de un founder a empresas a escala, y el rigor de la escala a founders que apenas empiezan.",
+    imageAlt: "Un embudo de conversión dibujado en un pizarrón durante una sesión de trabajo — vistas del landing, CTA y conversión por paso",
   },
   work: {
     eyebrow: "Trabajo seleccionado",

@@ -2,10 +2,14 @@
 /*
  * Home: a breathing pause between the logos and the work (Aerolab
  * "Startup instincts. Enterprise experience." pattern) — a two-line
- * statement and two short
+ * statement, a whiteboard photo from a real session, and two short
  * paragraphs offset to the right half. Lots of white on purpose.
  */
+import { Image } from "astro:assets";
 import { ui, type Lang } from "~/i18n";
+// A real working session: a conversion funnel on the whiteboard (cropped
+// to the board — no people — and set in grey like the Studio photo).
+import whiteboard from "~/assets/images/studio/comandos-whiteboard-funnel-session.webp";
 
 type Props = { lang: Lang };
 const t = ui[Astro.props.lang].statement;
@@ -17,6 +21,17 @@ const t = ui[Astro.props.lang].statement;
       {t.line1}<br />
       {t.line2Pre}{t.line2Hl}{t.line2End}
     </h2>
+    <figure class="statement-media">
+      <Image
+        src={whiteboard}
+        alt={t.imageAlt}
+        widths={[480, 800, 1200, 1600]}
+        sizes="(min-width: 900px) 46vw, 100vw"
+        loading="lazy"
+        decoding="async"
+        class="statement-img"
+      />
+    </figure>
     <div class="statement-copy">
       <p>{t.p1}</p>
       <p>{t.p2}</p>
@@ -43,15 +58,19 @@ const t = ui[Astro.props.lang].statement;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-template-areas:
         "title ."
-        ". copy";
+        "media copy";
       row-gap: 3.5rem;
       column-gap: 2rem;
     }
     .statement-title {
       grid-area: title;
     }
+    .statement-media {
+      grid-area: media;
+    }
     .statement-copy {
       grid-area: copy;
+      align-self: start;
     }
   }
   .statement-title {
@@ -60,6 +79,18 @@ const t = ui[Astro.props.lang].statement;
     letter-spacing: -0.035em;
     line-height: 1.08;
     color: var(--color-ink);
+  }
+  .statement-media {
+    overflow: hidden;
+    border-radius: var(--radius-xs);
+    background: var(--color-grey);
+  }
+  .statement-media :global(.statement-img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
   }
   .statement-copy {
     display: grid;
