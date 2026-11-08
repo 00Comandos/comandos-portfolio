@@ -2,8 +2,15 @@
 import { homeImpact } from "~/data/home-work-i18n";
 import { ui, type Lang } from "~/i18n";
 
-type Props = { lang: Lang };
-const { lang } = Astro.props;
+// `logos` (home B): each company's logo replaces its name.
+type Props = { lang: Lang; logos?: boolean };
+const { lang, logos = false } = Astro.props;
+const LOGOS: Record<string, string> = {
+  "stori-inversion-plus": "/images/logo-stori.png",
+  "mipos-kiosk": "/images/mipos-logo.svg",
+  "legalario-e-signature": "/images/logo-legalario.png",
+  rebajatuscuentas: "/images/rebajatuscuentas-logo.svg",
+};
 const t = ui[lang];
 const stats = homeImpact[lang];
 ---
@@ -21,7 +28,13 @@ const stats = homeImpact[lang];
         stats.map((s) => (
           <li>
             <a href={`/projects/${s.slug}/`} class="impact-cell">
-              <span class="impact-brand">{s.brand}</span>
+              {logos && LOGOS[s.slug] ? (
+                <span class="impact-logo-wrap">
+                  <img src={LOGOS[s.slug]} alt={s.brand} class="impact-logo" loading="lazy" decoding="async" />
+                </span>
+              ) : (
+                <span class="impact-brand">{s.brand}</span>
+              )}
               <span class="impact-value">{s.value}</span>
               <span class="impact-label">{s.label}</span>
               <span class="sr-only">— {t.impact.readCase}</span>
@@ -136,6 +149,27 @@ const stats = homeImpact[lang];
     border-radius: 9999px;
     background: currentColor;
     transition: background-color 0.2s ease;
+  }
+  /* Logos: monochrome ink like the clients strip, one shared box height
+     so wordmarks and symbols read at the same weight. */
+  .impact-logo-wrap {
+    display: flex;
+    align-items: center;
+    height: 1.75rem;
+  }
+  .impact-logo {
+    display: block;
+    width: auto;
+    max-width: min(100%, 9rem);
+    max-height: 100%;
+    object-fit: contain;
+    object-position: left center;
+    filter: brightness(0);
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+  .impact-cell:hover .impact-logo {
+    opacity: 1;
   }
   .impact-value {
     margin-top: 2.5rem;
