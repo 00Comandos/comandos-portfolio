@@ -24,7 +24,7 @@ const t = ui[Astro.props.lang].statement;
         {t.line2Pre}{t.line2Hl}{t.line2End}
       </h2>
       <p class="statement-sub">{t.p1}</p>
-      <p class="statement-sub statement-sub--soft">{t.p2}</p>
+      <p class="statement-sub statement-sub--next">{t.p2}</p>
       <a href="#studio" class="statement-btn">{t.cta}</a>
     </div>
     <figure class="statement-media">
@@ -81,9 +81,8 @@ const t = ui[Astro.props.lang].statement;
     letter-spacing: -0.012em;
     color: var(--color-ink);
   }
-  .statement-sub--soft {
+  .statement-sub--next {
     margin-top: 0.9rem;
-    color: var(--color-muted);
   }
   .statement-btn {
     margin-top: 2.25rem;
