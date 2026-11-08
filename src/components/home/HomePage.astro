@@ -12,7 +12,6 @@ import Testimonials from "~/components/home/Testimonials.astro";
 import Studio from "~/components/home/Studio.astro";
 import FinalCTA from "~/components/home/FinalCTA.astro";
 import HomeFaq from "~/components/home/HomeFaq.astro";
-import ImpactShowcase from "~/components/home/ImpactShowcase.astro";
 import { homeB } from "~/i18n/home-b";
 import { site } from "~/lib/site";
 import { ui, type Lang } from "~/i18n";
@@ -165,7 +164,7 @@ const faqLd = {
   />
   <Hero lang={lang} />
   <ClientsStrip lang={lang} />
-  {isB ? <ImpactShowcase lang={lang} /> : <Impact lang={lang} />}
+  {!isB && <Impact lang={lang} />}
   <CaseGrid lang={lang} />
   {!isB && <Services lang={lang} />}
   <Method lang={lang} />
