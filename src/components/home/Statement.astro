@@ -2,7 +2,7 @@
 /*
  * Home: a breathing pause between the logos and the work (Aerolab
  * "Startup instincts. Enterprise experience." pattern) — a two-line
- * statement with one highlighted word and two short
+ * statement and two short
  * paragraphs offset to the right half. Lots of white on purpose.
  */
 import { ui, type Lang } from "~/i18n";
@@ -15,7 +15,7 @@ const t = ui[Astro.props.lang].statement;
   <div class="container-page statement-grid">
     <h2 id="statement-heading" class="statement-title">
       {t.line1}<br />
-      {t.line2Pre}<span class="hl">{t.line2Hl}</span>{t.line2End}
+      {t.line2Pre}{t.line2Hl}{t.line2End}
     </h2>
     <div class="statement-copy">
       <p>{t.p1}</p>

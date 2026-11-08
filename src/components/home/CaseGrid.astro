@@ -54,7 +54,7 @@ const tiles = slugs.flatMap((slug, i) => {
     <div class="cg-head">
       <div class="cg-head-copy">
         <h2 id="work-heading" class="display-serif cg-title">
-          {t.work.title} <span class="hl">{t.work.titleEm}</span>
+          {t.work.title} {t.work.titleEm}
         </h2>
       </div>
       <a href="/projects/" class="btn-outline cg-all">{t.work.all}</a>
@@ -225,12 +225,6 @@ const tiles = slugs.flatMap((slug, i) => {
   .cg-title {
     font-size: clamp(2rem, 3.6vw, 3.25rem);
     max-width: 16ch;
-  }
-  /* Smallest phones: keep "measurably solved." in one pill. */
-  @media (max-width: 359px) {
-    .cg-title {
-      font-size: 1.75rem;
-    }
   }
   .cg-all {
     flex-shrink: 0;
