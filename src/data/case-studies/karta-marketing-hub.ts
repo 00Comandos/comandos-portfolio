@@ -89,12 +89,12 @@ export const kartaMarketingHub: CaseStudyContent = {
     image: heroImage,
     backdrop: { color: "rgb(14 13 12)", card: true },
     intro:
-      "Karta's sales and partnership team sells a premium U.S. credit card across four markets — the U.S. and Brazil first, then Mexico and Argentina — in three languages.\n\nEvery one pager, brochure, guide and email used to be rebuilt by hand in Figma. We turned all of it into one internal tool: one source of truth that the whole team trusts, and that compliance can audit.",
+      "Karta's sales and partnership team sells a premium U.S. credit card across four markets — the U.S. and Brazil first, then Mexico and Argentina — in three languages.\n\nEvery one pager, brochure, guide and email used to be rebuilt by hand in Figma. In 30 days, step by step, we turned all of it into one internal tool: we standardised the brochure first, then the rest of the materials, until everything lived in one source of truth that the whole team trusts and compliance can audit.",
   },
   challenge: {
-    heading: "Two weeks to ship one piece, in three languages, with nobody sure which version was the right one.",
+    heading: "Two weeks per piece, and nobody sure which version was right.",
     body:
-      "Each version of a marketing piece was designed manually in Figma, once per language. Design and the first round of feedback easily took three days; reaching a final version took up to two weeks. Then every PDF had to be exported and pushed through compressors so a 20–30 MB file could be shared on any channel. Everything lived in a Drive folder that grew harder to manage with every version and every new teammate — and beyond the file name, there was no record of who had which piece or how it was being shared.",
+      "Every piece was rebuilt by hand in Figma, once per language — up to two weeks to reach a final version. The 20–30 MB PDFs had to be compressed before sharing, and they lived in a Drive where only the file name hinted at which version was current or who had it.",
     ctaLabel: "I want to scale my sales team",
     results: [
       "One hub for 8–10 people across 4 markets.",
@@ -134,7 +134,7 @@ export const kartaMarketingHub: CaseStudyContent = {
         kind: "heading",
         heading: "Every piece became a page — and the PDF, its mirror.",
         body:
-          "Instead of drawing each version, we built each piece once as a web page. The PDF is always generated from that page, so a change to the copy updates every language and format at once — and the files come out light enough to share anywhere.",
+          "It started with the brochure: instead of drawing each version, we built it once as a web page and generated the PDF from that page. It worked, so one pager, guides and the rest followed the same path. A change to the copy now updates every language and format at once — and the files come out light enough to share anywhere.",
       },
       {
         kind: "image-grid",

@@ -19,7 +19,16 @@ export type Project = {
   /** ISO date the case study was first published — feeds Article
       `datePublished`. Leave unset rather than guess. */
   published?: string;
+  /** Spanish copy for cases with real ES content (see case-studies/translated.mjs). */
+  es?: Partial<
+    Pick<Project, "title" | "description" | "impact" | "timeline" | "seoTitle" | "seoDescription">
+  >;
 };
+
+/** The project with its Spanish copy applied when `lang` is "es". */
+export function localizeProject(p: Project, lang: "en" | "es"): Project {
+  return lang === "es" && p.es ? { ...p, ...p.es } : p;
+}
 
 export const MARKETS = ["fintech", "legaltech", "foodtech", "proptech", "iot", "sport"] as const;
 export type Market = (typeof MARKETS)[number];
@@ -85,12 +94,22 @@ export const projects: readonly Project[] = [
     description:
       "An internal tool that unified Karta's marketing materials for sales and partners in 4 markets and 3 languages: PDFs, A4, emails, brand kit and landings.",
     impact: "8–10 people aligned in 4 markets",
-    timeline: "4 months",
+    timeline: "30 days",
     image: img("Karta-MarketingHub-Thumbnail.webp"),
     order: 3.5,
     seoTitle: "Karta Marketing Hub: Sales Enablement Tool",
     seoDescription:
       "Internal sales-enablement tool for Karta: 144 always-current PDFs in English, Spanish and Portuguese, emails, brand kit and landings, behind company sign-in with every download logged.",
+    es: {
+      title: "Karta Marketing Hub: Sales Enablement",
+      description:
+        "Una herramienta interna que unificó los materiales de marketing de Karta para ventas y partners en 4 mercados y 3 idiomas: PDFs, A4, correos, kit de marca y landings.",
+      impact: "8–10 personas alineadas en 4 mercados",
+      timeline: "30 días",
+      seoTitle: "Karta Marketing Hub: herramienta de sales enablement",
+      seoDescription:
+        "Herramienta interna de sales enablement para Karta: 144 PDFs siempre vigentes en inglés, español y portugués, correos, kit de marca y landings, con acceso corporativo y cada descarga registrada.",
+    },
   },
   {
     slug: "legalario-e-signature",

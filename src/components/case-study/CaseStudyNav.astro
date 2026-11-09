@@ -1,9 +1,12 @@
 ---
+import { caseChrome } from "~/i18n/case-chrome";
+import { getLang } from "~/i18n";
+const c = caseChrome[getLang(Astro.url)];
 const sections = [
-  { id: "challenge", label: "Challenge" },
-  { id: "adventure", label: "Adventure" },
-  { id: "worth", label: "Worth" },
-  { id: "result", label: "Result" },
+  { id: "challenge", label: c.challenge },
+  { id: "adventure", label: c.adventure },
+  { id: "worth", label: c.worth },
+  { id: "result", label: c.result },
 ] as const;
 
 // Phosphor Icons — "Link" (regular weight), inlined as SVG to avoid adding a dep.
@@ -17,7 +20,7 @@ const linkIconPath =
   data-visible="false"
   data-theme="light"
 >
-  <button type="button" class="cs-copy" data-copy>
+  <button type="button" class="cs-copy" data-copy data-copied={c.copied}>
     <svg
       width="15"
       height="15"
@@ -28,7 +31,7 @@ const linkIconPath =
     >
       <path d={linkIconPath} />
     </svg>
-    <span data-copy-label>Copy Link</span>
+    <span data-copy-label>{c.copyLink}</span>
   </button>
 
   <ul class="cs-list">
@@ -49,7 +52,7 @@ const linkIconPath =
   class="cs-nav-mobile"
   data-visible="false"
 >
-  <button type="button" class="cs-pill cs-pill-primary" data-copy>
+  <button type="button" class="cs-pill cs-pill-primary" data-copy data-copied={c.copied}>
     <svg
       width="14"
       height="14"
@@ -60,7 +63,7 @@ const linkIconPath =
     >
       <path d={linkIconPath} />
     </svg>
-    <span data-copy-label>Copy Link</span>
+    <span data-copy-label>{c.copyLink}</span>
   </button>
 </nav>
 
@@ -254,7 +257,7 @@ const linkIconPath =
     btn.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(window.location.href);
-        label.textContent = "Copied!";
+        label.textContent = btn.dataset.copied ?? "Copied!";
         setTimeout(() => {
           label.textContent = original;
         }, 1600);

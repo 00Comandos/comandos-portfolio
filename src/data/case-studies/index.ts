@@ -16,6 +16,8 @@ import { miposDarkKitchen } from "./mipos-dark-kitchen";
 import { miposRestaurantPos } from "./mipos-restaurant-pos";
 import { miposKiosk } from "./mipos-kiosk";
 import { spotfinder } from "./spotfinder";
+import { kartaMarketingHubEs } from "./es/karta-marketing-hub";
+import { TRANSLATED_CASES } from "./translated.mjs";
 
 const caseStudies: readonly CaseStudyContent[] = [
   storiInversionPlus,
@@ -37,10 +39,21 @@ const caseStudies: readonly CaseStudyContent[] = [
   spotfinder,
 ];
 
-const bySlug = new Map(caseStudies.map((c) => [c.slug, c]));
+const caseStudiesEs: readonly CaseStudyContent[] = [kartaMarketingHubEs];
 
-export function getCaseStudy(slug: string): CaseStudyContent | undefined {
-  return bySlug.get(slug);
+const bySlug = new Map(caseStudies.map((c) => [c.slug, c]));
+const bySlugEs = new Map(caseStudiesEs.map((c) => [c.slug, c]));
+
+/** Spanish content when it exists, otherwise the English case. */
+export function getCaseStudy(
+  slug: string,
+  lang: "en" | "es" = "en",
+): CaseStudyContent | undefined {
+  return (lang === "es" ? bySlugEs.get(slug) : undefined) ?? bySlug.get(slug);
+}
+
+export function hasSpanishCase(slug: string): boolean {
+  return TRANSLATED_CASES.includes(slug);
 }
 
 export { caseStudies };

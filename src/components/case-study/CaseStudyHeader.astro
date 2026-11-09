@@ -6,6 +6,8 @@ import ContentImage from "~/components/case-study/ContentImage.astro";
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 import type { CaseStudyContent } from "~/data/case-studies/types";
 import { splitCaseTitle } from "~/lib/case-title";
+import { caseChrome } from "~/i18n/case-chrome";
+import { getLang } from "~/i18n";
 
 type Props = {
   content: CaseStudyContent;
@@ -21,15 +23,16 @@ type Props = {
 const { content, fallbackImage, title, brand, description, impact, timeline } =
   Astro.props;
 
+const c = caseChrome[getLang(Astro.url)];
 const { name, tagline } = splitCaseTitle(title);
 const introParagraphs = content.hero.intro.split(/\n\n+/);
 
 // Hairline meta table — only cells backed by real data.
 const meta = [
-  { label: "Client", value: brand },
-  { label: "Industry", value: content.kicker },
-  { label: "Timeline", value: timeline },
-  { label: "Impact", value: impact },
+  { label: c.client, value: brand },
+  { label: c.industry, value: content.kicker },
+  { label: c.timeline, value: timeline },
+  { label: c.impact, value: impact },
 ].filter((m) => m.value && m.value.trim().length > 0);
 
 // Full-bleed hero: edge to edge at every width — unless the case opts into a
@@ -47,9 +50,9 @@ const logoWidth =
 <section class="csh">
   <div class="container-page csh-top">
     <div class="csh-left">
-      <a href="/projects/" class="btn-link csh-back">
+      <a href={c.projectsHref} class="btn-link csh-back">
         <span class="rotate-180 inline-block"><ArrowIcon /></span>
-        All projects
+        {c.allProjects}
       </a>
       {
         content.brandLogo?.kind === "public" ? (

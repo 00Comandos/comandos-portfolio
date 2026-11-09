@@ -6,6 +6,8 @@
 // (home first); `localizedPath()` only maps to `/es/…` for routes listed
 // in `ES_ROUTES`, every other link falls back to the English page.
 
+import { TRANSLATED_CASES } from "~/data/case-studies/translated.mjs";
+
 export const LANGS = ["en", "es"] as const;
 export type Lang = (typeof LANGS)[number];
 export const DEFAULT_LANG: Lang = "en";
@@ -23,6 +25,8 @@ export const ES_MIRROR_PREFIXES = ["/projects/"] as const;
 export function isEsMirror(pathname: string): boolean {
   if (!pathname.startsWith("/es/")) return false;
   const base = basePath(pathname);
+  // Cases with real Spanish content are not mirrors.
+  if (TRANSLATED_CASES.some((s) => base === `/projects/${s}/`)) return false;
   return ES_MIRROR_PREFIXES.some((p) => base.startsWith(p));
 }
 

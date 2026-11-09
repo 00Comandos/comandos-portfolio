@@ -5,6 +5,7 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import icon from "astro-icon";
 import tailwindcss from "@tailwindcss/vite";
+import { TRANSLATED_CASES } from "./src/data/case-studies/translated.mjs";
 
 export default defineConfig({
   site: "https://www.comandos.me",
@@ -23,7 +24,11 @@ export default defineConfig({
       customSitemaps: ["https://www.comandos.me/sitemap-images.xml"],
       // Internal design-system catalogue: never listed.
       // /ds/ is internal; /es/projects/ are noindex mirrors of the EN cases.
-      filter: (page) => !page.includes("/ds/") && !page.includes("/es/projects/"),
+      // Translated cases (TRANSLATED_CASES) are real Spanish pages and stay in.
+      filter: (page) =>
+        !page.includes("/ds/") &&
+        (!page.includes("/es/projects/") ||
+          TRANSLATED_CASES.some((s) => page.endsWith(`/es/projects/${s}/`))),
       serialize(item) {
         // Higher priority for the home and the projects index; case studies
         // and the rest keep the default.

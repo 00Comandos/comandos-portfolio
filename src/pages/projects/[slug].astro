@@ -10,8 +10,14 @@ import Worth from "~/components/case-study/Worth.astro";
 import Result from "~/components/case-study/Result.astro";
 import RelatedCases from "~/components/case-study/RelatedCases.astro";
 import CaseCTA from "~/components/case-study/CaseCTA.astro";
-import { projects, getProjectBySlug, getRelatedProjects } from "~/data/projects";
-import { getCaseStudy } from "~/data/case-studies";
+import {
+  projects,
+  getProjectBySlug,
+  getRelatedProjects,
+  localizeProject,
+} from "~/data/projects";
+import { getCaseStudy, hasSpanishCase } from "~/data/case-studies";
+import { getLang } from "~/i18n";
 import {
   extractCaseStudyImages,
   extractCaseStudyVideos,
@@ -25,13 +31,21 @@ export function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-const project = slug ? getProjectBySlug(slug) : undefined;
+const lang = getLang(Astro.url);
+const baseProject = slug ? getProjectBySlug(slug) : undefined;
 
-if (!project) {
+if (!baseProject) {
   return Astro.redirect("/projects/", 302);
 }
 
-const caseStudy = getCaseStudy(project.slug);
+// Spanish copy only on /es/ pages of cases that really have it.
+const translated = hasSpanishCase(baseProject.slug);
+const contentLang = lang === "es" && translated ? "es" : "en";
+const project = localizeProject(baseProject, contentLang);
+const caseStudy = getCaseStudy(project.slug, contentLang);
+const alternates = translated
+  ? { en: `/projects/${project.slug}/`, es: `/es/projects/${project.slug}/` }
+  : undefined;
 const related = getRelatedProjects(project.slug, 3);
 
 // Generate a 1200-wide OG image from the case study hero when available,
@@ -105,7 +119,7 @@ const primaryImage = {
 };
 
 // Canonical URLs (trailing slash, www) — JSON-LD must match <link rel=canonical>.
-const pageUrl = `${site.url}/projects/${project.slug}/`;
+const pageUrl = `${site.url}${contentLang === "es" ? "/es" : ""}/projects/${project.slug}/`;
 const seoTitle = project.seoTitle ?? project.title;
 const seoDescription = project.seoDescription ?? project.description;
 
@@ -120,7 +134,7 @@ const jsonLd = [
     about: { "@type": "Organization", name: project.brand },
     description: seoDescription,
     keywords: `${project.brand}, ${project.title}, product design, case study, LATAM, FinTech, SaaS, UX research`,
-    inLanguage: "en",
+    inLanguage: contentLang,
     // Real dates only — a build timestamp would claim a fresh article on
     // every deploy. Fill `published` in src/data/projects.ts per case.
     ...(project.published ? { datePublished: project.published } : {}),
@@ -184,6 +198,7 @@ const jsonLd = [
     caseStudy?.hero.image?.kind === "image" ? caseStudy.hero.image.alt : undefined
   }
   jsonLd={jsonLd}
+  alternates={alternates}
 >
   {
     caseStudy ? (

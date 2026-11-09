@@ -1,4 +1,6 @@
 ---
+import { caseChrome } from "~/i18n/case-chrome";
+import { getLang, localizedPath } from "~/i18n";
 import { Image } from "astro:assets";
 import type { Project } from "~/data/projects";
 import { homeWorkCopy } from "~/data/home-work-i18n";
@@ -6,6 +8,8 @@ import { splitCaseTitle } from "~/lib/case-title";
 
 type Props = { cases: readonly Project[] };
 const { cases } = Astro.props;
+const lang = getLang(Astro.url);
+const c = caseChrome[lang];
 
 // Same tile language as the home CaseGrid. Title is the cleaned case name
 // (not the brand) so sibling cases from one client stay distinguishable.
@@ -15,7 +19,7 @@ const tiles = cases.map((c) => ({
   alt: c.title,
   image: c.image,
   impact: c.impact,
-  tags: homeWorkCopy.en[c.slug]?.tags ?? [],
+  tags: (homeWorkCopy[lang] ?? homeWorkCopy.en)[c.slug]?.tags ?? [],
 }));
 ---
 
@@ -23,16 +27,16 @@ const tiles = cases.map((c) => ({
   <div class="container-page">
     <div class="rc-head">
       <h2 id="related-heading" class="display-serif rc-title">
-        Cases that might interest you
+        {c.related}
       </h2>
-      <a href="/projects/" class="btn-outline rc-all">All projects</a>
+      <a href={c.projectsHref} class="btn-outline rc-all">{c.allProjects}</a>
     </div>
 
     <ul class="rc-list">
       {
         tiles.map((t) => (
           <li>
-            <a href={`/projects/${t.slug}/`} class="rc-link">
+            <a href={`${c.projectsHref}${t.slug}/`} class="rc-link">
               <span class="rc-media">
                 <Image
                   src={t.image}

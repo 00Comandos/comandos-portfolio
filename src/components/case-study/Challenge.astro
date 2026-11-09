@@ -4,16 +4,21 @@ import SectionChip from "~/components/case-study/SectionChip.astro";
 import ContentImage from "~/components/case-study/ContentImage.astro";
 import Divider from "~/components/case-study/Divider.astro";
 import type { CaseStudyContent } from "~/data/case-studies/types";
+import { caseChrome } from "~/i18n/case-chrome";
+import { getLang, localizedPath } from "~/i18n";
+
 
 type Props = { content: CaseStudyContent["challenge"]; brand: string };
 const { content, brand } = Astro.props;
 
-const contactHref = `/contact/?project=${encodeURIComponent(`Like ${brand}`)}`;
+const lang = getLang(Astro.url);
+const c = caseChrome[lang];
+const contactHref = `${localizedPath("/contact/", lang)}?project=${encodeURIComponent(`Like ${brand}`)}`;
 ---
 
 <section id="challenge" class="bg-[color:var(--color-ink)] text-[color:var(--color-paper)] py-16 md:py-24">
   <div class="cs-body">
-    <SectionChip variant="challenge" label="Challenge" tone="dark" />
+    <SectionChip variant="challenge" label={c.challenge} tone="dark" />
 
     <h2 class="display-serif mt-6 text-[clamp(2.25rem,4vw,3.5rem)] max-w-[20ch]">
       {content.heading}
@@ -31,7 +36,7 @@ const contactHref = `/contact/?project=${encodeURIComponent(`Like ${brand}`)}`;
 
     <div class="grid gap-10 md:grid-cols-2">
       <div>
-        <h3 class="text-[0.9375rem] font-medium tracking-[-0.01em] text-white/55">Results</h3>
+        <h3 class="text-[0.9375rem] font-medium tracking-[-0.01em] text-white/55">{c.results}</h3>
         <ul class="mt-4 space-y-2">
           {
             content.results.map((r) => (
@@ -45,7 +50,7 @@ const contactHref = `/contact/?project=${encodeURIComponent(`Like ${brand}`)}`;
       </div>
 
       <div>
-        <h3 class="text-[0.9375rem] font-medium tracking-[-0.01em] text-white/55">The team</h3>
+        <h3 class="text-[0.9375rem] font-medium tracking-[-0.01em] text-white/55">{c.team}</h3>
         <ul class="mt-4 space-y-2">
           {
             content.team.map((t) => (

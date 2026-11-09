@@ -1,6 +1,10 @@
 ---
+import { caseChrome } from "~/i18n/case-chrome";
+import { getLang, localizedPath } from "~/i18n";
 type Props = { brand: string };
 const { brand } = Astro.props;
+const lang = getLang(Astro.url);
+const c = caseChrome[lang];
 // `.hl` pills are 1–2 words; longer brand names stay plain text.
 const pill = brand.trim().split(/\s+/).length <= 2;
 ---
@@ -10,14 +14,14 @@ const pill = brand.trim().split(/\s+/).length <= 2;
 <section class="cta-case" aria-labelledby="cta-case-heading">
   <div class="container-page">
     <div class="cta-case-row">
-      <p class="eyebrow cta-case-label">Work with us</p>
+      <p class="eyebrow cta-case-label">{c.ctaEyebrow}</p>
       <div class="cta-case-copy">
         <h2 id="cta-case-heading" class="cta-case-title">
-          Grow like {pill ? <span class="hl">{brand}</span> : brand}
+          {c.ctaGrow} {pill ? <span class="hl">{brand}</span> : brand}
         </h2>
-        <p class="cta-case-body">A 30-minute call. Your product, our process.</p>
+        <p class="cta-case-body">{c.ctaBody}</p>
       </div>
-      <a href="/contact/?type=discovery" class="btn-primary cta-case-btn">Book a discovery call</a>
+      <a href={`${localizedPath("/contact/", lang)}?type=discovery`} class="btn-primary cta-case-btn">{c.ctaButton}</a>
     </div>
   </div>
 </section>
