@@ -14,7 +14,8 @@ const statCols = content.stats.length === 2 ? "res-cols-2" : "res-cols-3";
 // set huge and thin with a small superscript unit (Karta "100+"), and so a
 // count-up has a clean target. Non-numeric values ("ROKU") stay whole.
 const splitValue = (v: string) => {
-  const m = v.match(/^([^\d]*?)(\d+(?:[.,]\d+)?)(.*)$/);
+  // Names that contain a number ("SOC 2") stay whole — no letter prefixes.
+  const m = v.match(/^([^\dA-Za-z]*?)(\d+(?:[.,]\d+)?)(.*)$/);
   if (!m) return { pre: "", num: v, unit: "", count: null as number | null, decimals: 0 };
   const [, pre, num, unit] = m;
   const decimals = num.includes(".") ? num.split(".")[1].length : 0;
@@ -38,7 +39,16 @@ const cardCols =
             {(() => {
               const v = splitValue(s.value);
               return (
-                <dt class="res-value">
+                <dt
+                  class="res-value"
+                  style={
+                    // Words ("Minutes", "SOC 2") scale to the cell instead of
+                    // overflowing into the next column.
+                    v.count === null && s.value.length > 4
+                      ? `font-size: min(12rem, ${Math.floor(150 / s.value.length)}cqi);`
+                      : undefined
+                  }
+                >
                   <span class="sr-only">{s.value}</span>
                   <span aria-hidden="true" class="res-value-inner">
                     {v.pre && <span class="res-unit res-pre">{v.pre}</span>}

@@ -8,8 +8,8 @@ const img = (filename: string) => requireImage(kartaImages, filename);
 
 const heroImage: ContentImage = {
   kind: "image",
-  image: img("karta-marketing-hub-tool.webp"),
-  alt: "Karta Marketing Hub — la herramienta interna abierta en el one pager para asesores financieros, con la barra lateral de documentos agrupada por producto y audiencia, formatos Digital / Print (A4), English / Español / Português y un botón para descargar el PDF",
+  image: img("karta-marketing-hub-tool-rewards.webp"),
+  alt: "Karta Marketing Hub — la herramienta interna abierta en la página 1 de la guía de Rewards, con la barra lateral de documentos agrupada por producto y audiencia, formatos Digital / Print (A4), English / Español / Português y un botón para descargar el PDF",
 };
 
 const loginImage: ContentImage = {
@@ -18,22 +18,22 @@ const loginImage: ContentImage = {
   alt: "Acceso a Karta Marketing Hub — solo con un código de un solo uso enviado al correo corporativo de Karta",
 };
 
-const onePagerEn: ContentImage = {
+const rewardsEn: ContentImage = {
   kind: "image",
-  image: img("karta-marketing-hub-onepager-en.webp"),
-  alt: "One pager para asesores financieros en inglés — Issued in the U.S. Recognized globally.",
+  image: img("karta-marketing-hub-rewards-en.webp"),
+  alt: "Guía de Rewards en inglés — Every dollar you spend takes you somewhere: la tarjeta Karta Visa Infinite y cómo funcionan los puntos",
   caption: "English",
 };
-const onePagerEs: ContentImage = {
+const rewardsEs: ContentImage = {
   kind: "image",
-  image: img("karta-marketing-hub-onepager-es.webp"),
-  alt: "El mismo one pager en español — Emitida en EE. UU. Reconocida globalmente.",
+  image: img("karta-marketing-hub-rewards-es.webp"),
+  alt: "La misma guía en español — Transfiera a aerolíneas aliadas, con la equivalencia de puntos a millas por aerolínea",
   caption: "Español",
 };
-const onePagerPt: ContentImage = {
+const rewardsPt: ContentImage = {
   kind: "image",
-  image: img("karta-marketing-hub-onepager-pt.webp"),
-  alt: "El mismo one pager en portugués de Brasil — Emitido nos EUA. Reconhecido globalmente.",
+  image: img("karta-marketing-hub-rewards-pt.webp"),
+  alt: "La misma guía en portugués de Brasil — el concierge en WhatsApp: planea cualquier viaje en una sola conversación",
   caption: "Português",
 };
 const printImage: ContentImage = {
@@ -70,6 +70,31 @@ const eventsImage: ContentImage = {
   image: img("karta-marketing-hub-events.webp"),
   alt: "Modo Events — un backdrop de 6 × 3 m preparado para impresión a escala 1:10 con sangrado",
   caption: "Events — piezas listas para imprimir en eventos, del backdrop al merch.",
+};
+
+const mobileLogin: ContentImage = {
+  kind: "image",
+  image: img("karta-marketing-hub-mobile-login.webp"),
+  alt: "Acceso desde el teléfono — correo corporativo y código de un solo uso",
+  caption: "Correo corporativo + código",
+};
+const mobileDownload: ContentImage = {
+  kind: "image",
+  image: img("karta-marketing-hub-mobile-download.webp"),
+  alt: "Una pieza en el teléfono, en español, con Descargar PDF a un toque",
+  caption: "Elige el idioma, descarga",
+};
+const mobileMenu: ContentImage = {
+  kind: "image",
+  image: img("karta-marketing-hub-mobile-menu.webp"),
+  alt: "El menú del hub en el teléfono — cada pieza agrupada por producto y audiencia",
+  caption: "Cada pieza, a un toque",
+};
+const mobileShare: ContentImage = {
+  kind: "image",
+  image: img("karta-marketing-hub-mobile-share.webp"),
+  alt: "Landings en el teléfono — un botón para copiar el enlace de cada idioma, listo para pegar en WhatsApp",
+  caption: "Copia el enlace, envíalo",
 };
 
 export const kartaMarketingHubEs: CaseStudyContent = {
@@ -135,11 +160,11 @@ export const kartaMarketingHubEs: CaseStudyContent = {
       {
         kind: "image-grid",
         columns: 3,
-        images: [onePagerEn, onePagerEs, onePagerPt],
+        images: [rewardsEn, rewardsEs, rewardsPt],
       },
       {
         kind: "caption",
-        text: "Una página, tres idiomas: inglés, español y portugués de Brasil desde la misma fuente.",
+        text: "Una pieza, tres idiomas: la guía de Rewards en inglés, español y portugués de Brasil, desde la misma fuente.",
       },
       { kind: "divider" },
       {
@@ -174,6 +199,19 @@ export const kartaMarketingHubEs: CaseStudyContent = {
       { kind: "image", image: eventsImage },
       { kind: "divider" },
       {
+        kind: "intro",
+        heading: "Desde el teléfono, en plena conversación",
+        body:
+          "Cuando un cliente o partner pide algo puntual por WhatsApp, el vendedor abre el hub en su teléfono, elige el idioma y envía el PDF vigente o su enlace — sin laptop, sin Drive, sin pedirle a diseño la última versión.",
+        sub: true,
+      },
+      {
+        kind: "image-grid",
+        columns: 4,
+        images: [mobileLogin, mobileDownload, mobileMenu, mobileShare],
+      },
+      { kind: "divider" },
+      {
         kind: "checklist",
         items: [
           {
@@ -187,6 +225,11 @@ export const kartaMarketingHubEs: CaseStudyContent = {
               "quién descargó qué pieza, en qué idioma y formato — la trazabilidad que piden compliance y SOC 2.",
           },
           {
+            label: "Custom, dentro del estándar:",
+            body:
+              "una petición para un partner o un deal específico se vuelve una variante co-branded de la pieza aprobada — no un archivo paralelo con sus propias promesas.",
+          },
+          {
             label: "Nada que perseguir:",
             body:
               "sin adjuntos con versiones viejas; el equipo comparte la pieza vigente o su enlace.",
@@ -196,25 +239,25 @@ export const kartaMarketingHubEs: CaseStudyContent = {
     ],
   },
   result: {
-    heading: "Una sola fuente de verdad para ventas y partners",
+    heading: "Un solo mensaje en cada mercado",
     stats: [
       {
-        value: "144",
-        label: "PDFs siempre vigentes",
-        caption: "Cada pieza en tres idiomas, digital y A4, regenerada desde una sola fuente.",
-        icon: { kind: "illustration", scene: "sync", alt: "Siempre sincronizado" },
+        value: "1",
+        label: "propuesta de valor en 4 mercados",
+        caption: "8–10 vendedores y partners en EE. UU., Brasil, México y Argentina explican Karta igual — los leads escuchan una sola historia, en su idioma.",
+        icon: { kind: "illustration", scene: "unify", alt: "Un equipo, un mensaje" },
       },
       {
-        value: "4",
-        label: "mercados alineados",
-        caption: "8–10 personas en EE. UU., Brasil, México y Argentina trabajando con los mismos materiales.",
-        icon: { kind: "illustration", scene: "unify", alt: "Un solo equipo" },
+        value: "Minutos",
+        label: "para responder a un cliente o partner — no dos semanas",
+        caption: "De hasta dos semanas para tener una pieza final a enviar la versión vigente desde el teléfono, en plena conversación.",
+        icon: { kind: "illustration", scene: "sync", alt: "Respuestas más rápidas" },
       },
       {
-        value: "100%",
-        label: "descargas registradas",
-        caption: "Acceso corporativo con código de un solo uso; cada descarga registrada para compliance.",
-        icon: { kind: "illustration", scene: "certified", alt: "Trazabilidad" },
+        value: "SOC 2",
+        label: "controles de acceso y auditoría",
+        caption: "Acceso corporativo con código de un solo uso y cada descarga registrada — los controles de acceso y trazabilidad que pide SOC 2.",
+        icon: { kind: "illustration", scene: "certified", alt: "Controles SOC 2" },
       },
     ],
   },

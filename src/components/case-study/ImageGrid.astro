@@ -11,12 +11,12 @@ type Props = {
 const { columns, images, rounded = false } = Astro.props;
 const gridClass =
   columns === 4
-    ? "md:grid-cols-4"
+    ? "grid-cols-2 md:grid-cols-4" // phone screens: two per row on phones
     : columns === 3
       ? "md:grid-cols-3"
       : "md:grid-cols-2";
 ---
 
-<div class:list={["grid grid-cols-1 gap-4 md:gap-4", gridClass]}>
+<div class:list={["grid gap-4 md:gap-4", columns !== 4 && "grid-cols-1", gridClass]}>
   {images.map((img) => <ContentImage image={img} rounded={rounded} />)}
 </div>
