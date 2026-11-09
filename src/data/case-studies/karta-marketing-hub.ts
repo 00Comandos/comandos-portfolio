@@ -85,13 +85,13 @@ const mobileLogin: ContentImage = {
 const mobileDownload: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-mobile-download.webp"),
-  alt: "Karta sales enablement piece on a phone, in Spanish, with the Download PDF button one tap away",
-  caption: "Pick the language, download",
+  alt: "Karta sales piece on a phone: Digital or A4, Visa or Mastercard, and the PDF button in the top bar",
+  caption: "Pick the format, download",
 };
 const mobileMenu: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-mobile-menu.webp"),
-  alt: "Karta Marketing Hub menu drawer on a phone: every sales piece grouped by product and audience",
+  alt: "Karta Marketing Hub full-screen menu on a phone: sales pieces by product and audience, languages at the foot",
   caption: "Every piece, one tap away",
 };
 const mobileShare: ContentImage = {
