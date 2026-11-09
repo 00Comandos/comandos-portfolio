@@ -234,7 +234,7 @@ export const kartaMarketingHubEs: CaseStudyContent = {
             label: "Cada descarga, registrada:",
             icon: "ph:download-simple-light",
             body:
-              "Quién descargó qué pieza, en qué idioma y cuándo. Es la evidencia de acceso que revisa compliance, y la que busca una auditoría SOC 2.",
+              "Sabemos quién descargó qué pieza, en qué idioma y cuándo.",
           },
           {
             label: "Custom, dentro del estándar:",
@@ -270,7 +270,7 @@ export const kartaMarketingHubEs: CaseStudyContent = {
       {
         value: "SOC 2",
         label: "controles de acceso y auditoría",
-        caption: "Acceso corporativo con código de un solo uso y cada descarga registrada: control de acceso y trazabilidad, la evidencia que revisa una auditoría SOC 2.",
+        caption: "Acceso solo con correo de Karta y código. Cada descarga queda registrada.",
         icon: { kind: "illustration", scene: "certified", alt: "Controles SOC 2" },
       },
     ],

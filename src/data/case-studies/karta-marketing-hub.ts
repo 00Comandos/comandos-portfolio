@@ -238,7 +238,7 @@ export const kartaMarketingHub: CaseStudyContent = {
             label: "Every download, on record:",
             icon: "ph:download-simple-light",
             body:
-              "Who downloaded which piece, in which language and when. It is the access evidence compliance reviews, and the kind a SOC 2 audit looks for.",
+              "We know who downloaded which piece, in which language and when.",
           },
           {
             label: "Custom, within the standard:",
@@ -274,7 +274,7 @@ export const kartaMarketingHub: CaseStudyContent = {
       {
         value: "SOC 2",
         label: "access and audit controls",
-        caption: "Company sign-in with a one-time code and every download logged: access control and an audit trail, the kind of evidence a SOC 2 audit reviews.",
+        caption: "Access only with a Karta email and a one-time code. Every download is logged.",
         icon: { kind: "illustration", scene: "certified", alt: "SOC 2 controls" },
       },
     ],
