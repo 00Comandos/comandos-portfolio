@@ -12,6 +12,17 @@ const heroImage: ContentImage = {
   alt: "Karta Marketing Hub en la guía Rewards, página 1: menú por producto y audiencia, Digital o Print A4, EN/ES/PT, Descargar PDF",
 };
 
+const beforeFigmaImage: ContentImage = {
+  kind: "image",
+  image: img("karta-marketing-hub-before-figma.webp"),
+  alt: "One pagers de Karta en Figma antes del hub: una copia por trimestre, nivel mínimo y actualización, lado a lado",
+  caption: "Antes: un lienzo de Figma por pieza, con una copia por trimestre, nivel y actualización.",
+};
+const beforePagesImage: ContentImage = {
+  kind: "image",
+  image: img("karta-marketing-hub-before-pages.webp"),
+  alt: "Lista de páginas de Figma de Karta antes del hub: una página en progreso por pieza, red de tarjeta y partner",
+};
 const loginImage: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-login.webp"),
@@ -137,7 +148,7 @@ export const kartaMarketingHubEs: CaseStudyContent = {
       { label: "Equipo de Ventas y Alianzas" },
       { label: "Compliance" },
     ],
-    image: loginImage,
+    image: beforeFigmaImage,
   },
   adventure: {
     heading: "De un Drive lleno de versiones a una sola fuente de verdad.",
@@ -158,6 +169,12 @@ export const kartaMarketingHubEs: CaseStudyContent = {
             body: "Con una versión por partner, alianza y mercado, no había registro de quién tenía qué archivo ni a dónde iba.",
           },
         ],
+      },
+      {
+        kind: "prose-with-image",
+        heading: "Una página por pieza, por red de tarjeta, por partner.",
+        body: "Cada partner, alianza o mercado nuevo abría otra página en Figma, y dentro, otro set de frames que había que mantener al día a mano.",
+        image: beforePagesImage,
       },
       { kind: "divider" },
       { kind: "chip", icon: "seeing-mountain", label: "Viendo la montaña" },
@@ -221,6 +238,7 @@ export const kartaMarketingHubEs: CaseStudyContent = {
         images: [mobileLogin, mobileDownload, mobileMenu, mobileShare],
       },
       { kind: "divider" },
+      { kind: "image", image: loginImage },
       {
         kind: "checklist",
         items: [

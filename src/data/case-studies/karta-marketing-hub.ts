@@ -14,6 +14,17 @@ const heroImage: ContentImage = {
 };
 
 // ———— Challenge ————
+const beforeFigmaImage: ContentImage = {
+  kind: "image",
+  image: img("karta-marketing-hub-before-figma.webp"),
+  alt: "Karta one pagers in Figma before the hub: a copy for every quarter, minimum tier and update, side by side",
+  caption: "Before: one Figma canvas per piece, with a copy for every quarter, tier and update.",
+};
+const beforePagesImage: ContentImage = {
+  kind: "image",
+  image: img("karta-marketing-hub-before-pages.webp"),
+  alt: "Karta Figma page list before the hub: a work-in-progress page per piece, card network and partner",
+};
 const loginImage: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-login.webp"),
@@ -141,7 +152,7 @@ export const kartaMarketingHub: CaseStudyContent = {
       { label: "Sales & Partnerships team" },
       { label: "Compliance" },
     ],
-    image: loginImage,
+    image: beforeFigmaImage,
   },
   adventure: {
     heading: "From a Drive full of versions to one source of truth.",
@@ -162,6 +173,12 @@ export const kartaMarketingHub: CaseStudyContent = {
             body: "With a version per partner, alliance and market, there was no record of who had which file or where it went.",
           },
         ],
+      },
+      {
+        kind: "prose-with-image",
+        heading: "A page per piece, per card network, per partner.",
+        body: "Every new partner, alliance or market opened another Figma page, and inside it another set of frames to keep in sync by hand.",
+        image: beforePagesImage,
       },
       { kind: "divider" },
       { kind: "chip", icon: "seeing-mountain", label: "Seeing the mountain" },
@@ -225,6 +242,7 @@ export const kartaMarketingHub: CaseStudyContent = {
         images: [mobileLogin, mobileDownload, mobileMenu, mobileShare],
       },
       { kind: "divider" },
+      { kind: "image", image: loginImage },
       {
         kind: "checklist",
         items: [
