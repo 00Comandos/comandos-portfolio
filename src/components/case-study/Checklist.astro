@@ -2,6 +2,7 @@
 import type { ChecklistItem } from "~/data/case-studies/types";
 import Scene from "~/components/case-study/Scene.astro";
 import PillarArt from "~/components/case-study/PillarArt.astro";
+import { Icon } from "astro-icon/components";
 
 type Props = { items: readonly ChecklistItem[]; layout?: "cards" | "rings" | "chart" | "quotes" | "flow" };
 const { items, layout } = Astro.props;
@@ -125,8 +126,8 @@ const stripColon = (s: string) => s.replace(/\s*:\s*$/, "");
 // Same rule as above: a lowercase body is the rest of the label's sentence.
 const pillars = rows.map((r) =>
   r.body && /^[a-z]/.test(r.body)
-    ? { title: `${stripColon(r.label)} ${r.body}`, body: undefined, art: r.art }
-    : { title: stripColon(r.label), body: r.body, art: r.art },
+    ? { title: `${stripColon(r.label)} ${r.body}`, body: undefined, art: r.art, icon: r.icon }
+    : { title: stripColon(r.label), body: r.body, art: r.art, icon: r.icon },
 );
 // Questions get the large setting only when every body is one.
 const allQuestions = pillars.every((p) => !p.body || /\?\s*$/.test(p.body)) && pillars.some((p) => p.body);
@@ -301,7 +302,14 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
         {pillars.map((pl, i) => (
           <li class="pillar">
             {pl.art && <PillarArt kind={pl.art} />}
-            <span class="pillar-num mono">{String(i + 1).padStart(2, "0")}</span>
+            {pl.icon ? (
+              <span class="pillar-head">
+                <span class="pillar-icon" aria-hidden="true"><Icon name={pl.icon} /></span>
+                <span class="pillar-num mono">{String(i + 1).padStart(2, "0")}</span>
+              </span>
+            ) : (
+              <span class="pillar-num mono">{String(i + 1).padStart(2, "0")}</span>
+            )}
             <h4 class="pillar-title">{pl.title}</h4>
             {pl.body && <p class:list={["pillar-body", { "is-question": allQuestions }]}>{pl.body}</p>}
           </li>
@@ -862,6 +870,16 @@ const trimColon = (s: string) => s.replace(/:\s*$/, ".");
     .pillars-grid.n-3 .pillar {
       border-bottom: 0;
     }
+  }
+  .pillar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .pillar-icon {
+    display: inline-flex;
+    font-size: 1.75rem;
+    color: var(--color-ink);
   }
   .pillar-num {
     font-size: 0.75rem;

@@ -151,7 +151,7 @@ export const kartaMarketingHub: CaseStudyContent = {
         items: [
           {
             label: "Manual by design:",
-            body: "every language and every partner meant another hand-built Figma file.",
+            body: "Every language and every partner meant another hand-built Figma file.",
           },
           {
             label: "Heavy files:",
@@ -159,7 +159,7 @@ export const kartaMarketingHub: CaseStudyContent = {
           },
           {
             label: "No control:",
-            body: "the file name was the only clue to which version was current, who had it and where it went.",
+            body: "The file name was the only clue to which version was current, who had it and where it went.",
           },
         ],
       },
@@ -230,23 +230,27 @@ export const kartaMarketingHub: CaseStudyContent = {
         items: [
           {
             label: "Company email + one-time code:",
+            icon: "ph:lock-key-light",
             body:
-              "only Karta addresses can create an account, and without the code sent to that inbox nobody gets in.",
+              "Only Karta addresses can create an account, and without the code sent to that inbox nobody gets in.",
           },
           {
             label: "Every download, on record:",
+            icon: "ph:download-simple-light",
             body:
-              "who downloaded which piece, in which language and format. That is the audit trail compliance and SOC 2 ask for.",
+              "Who downloaded which piece, in which language and when. It is the access evidence compliance reviews, and the kind a SOC 2 audit looks for.",
           },
           {
             label: "Custom, within the standard:",
+            icon: "ph:seal-check-light",
             body:
-              "a request for a specific partner or deal becomes a co-branded variant of the approved piece, not a parallel file with its own promises.",
+              "A request for a specific partner or deal becomes a co-branded variant of the approved piece, not a parallel file with its own promises.",
           },
           {
             label: "Nothing to chase:",
+            icon: "ph:link-simple-light",
             body:
-              "no attachments with stale versions; the team shares the current piece or its link.",
+              "No attachments with stale versions; the team shares the current piece or its link.",
           },
         ],
       },
@@ -270,7 +274,7 @@ export const kartaMarketingHub: CaseStudyContent = {
       {
         value: "SOC 2",
         label: "access and audit controls",
-        caption: "Company sign-in with a one-time code and every download logged: the access and audit-trail controls SOC 2 asks for.",
+        caption: "Company sign-in with a one-time code and every download logged: access control and an audit trail, the kind of evidence a SOC 2 audit reviews.",
         icon: { kind: "illustration", scene: "certified", alt: "SOC 2 controls" },
       },
     ],

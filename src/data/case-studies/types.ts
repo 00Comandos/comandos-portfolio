@@ -55,6 +55,9 @@ export type ChecklistItem = {
   /** Pillars layout only: small isometric drawing above the item
       (same vocabulary as the /method principles). */
   art?: PillarArtKind;
+  /** Pillars layout only: Iconify name (e.g. "ph:lock-key-light") shown
+      next to the item number. */
+  icon?: string;
   body?: string;
   sub?: readonly string[];
 };

@@ -147,15 +147,15 @@ export const kartaMarketingHubEs: CaseStudyContent = {
         items: [
           {
             label: "Manual por diseño:",
-            body: "cada idioma y cada partner significaba otro archivo de Figma hecho a mano.",
+            body: "Cada idioma y cada partner significaba otro archivo de Figma hecho a mano.",
           },
           {
             label: "Archivos pesados:",
-            body: "exportaciones de 20–30 MB que había que comprimir antes de poder enviarlas.",
+            body: "Exportaciones de 20–30 MB que había que comprimir antes de poder enviarlas.",
           },
           {
             label: "Sin control:",
-            body: "el nombre del archivo era la única pista de qué versión estaba vigente, quién la tenía y a dónde iba.",
+            body: "El nombre del archivo era la única pista de qué versión estaba vigente, quién la tenía y a dónde iba.",
           },
         ],
       },
@@ -226,23 +226,27 @@ export const kartaMarketingHubEs: CaseStudyContent = {
         items: [
           {
             label: "Correo corporativo + código de un solo uso:",
+            icon: "ph:lock-key-light",
             body:
-              "solo las direcciones de Karta pueden crear una cuenta, y sin el código que llega a ese buzón nadie entra.",
+              "Solo las direcciones de Karta pueden crear una cuenta, y sin el código que llega a ese buzón nadie entra.",
           },
           {
             label: "Cada descarga, registrada:",
+            icon: "ph:download-simple-light",
             body:
-              "quién descargó qué pieza, en qué idioma y formato. Es la trazabilidad que piden compliance y SOC 2.",
+              "Quién descargó qué pieza, en qué idioma y cuándo. Es la evidencia de acceso que revisa compliance, y la que busca una auditoría SOC 2.",
           },
           {
             label: "Custom, dentro del estándar:",
+            icon: "ph:seal-check-light",
             body:
-              "una petición para un partner o un deal específico se vuelve una variante co-branded de la pieza aprobada, no un archivo paralelo con sus propias promesas.",
+              "Una petición para un partner o un deal específico se vuelve una variante co-branded de la pieza aprobada, no un archivo paralelo con sus propias promesas.",
           },
           {
             label: "Nada que perseguir:",
+            icon: "ph:link-simple-light",
             body:
-              "sin adjuntos con versiones viejas; el equipo comparte la pieza vigente o su enlace.",
+              "Sin adjuntos con versiones viejas; el equipo comparte la pieza vigente o su enlace.",
           },
         ],
       },
@@ -266,7 +270,7 @@ export const kartaMarketingHubEs: CaseStudyContent = {
       {
         value: "SOC 2",
         label: "controles de acceso y auditoría",
-        caption: "Acceso corporativo con código de un solo uso y cada descarga registrada: los controles de acceso y trazabilidad que pide SOC 2.",
+        caption: "Acceso corporativo con código de un solo uso y cada descarga registrada: control de acceso y trazabilidad, la evidencia que revisa una auditoría SOC 2.",
         icon: { kind: "illustration", scene: "certified", alt: "Controles SOC 2" },
       },
     ],
