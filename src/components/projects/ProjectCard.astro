@@ -3,8 +3,10 @@ import { Image } from "astro:assets";
 import ArrowIcon from "~/components/ui/ArrowIcon.astro";
 import type { Project } from "~/data/projects";
 
-type Props = { project: Project };
-const { project } = Astro.props;
+/** The first cards sit above the fold on desktop: `eager` skips lazy
+    loading, `lcp` (first card only) adds fetchpriority="high". */
+type Props = { project: Project; eager?: boolean; lcp?: boolean };
+const { project, eager = false, lcp = false } = Astro.props;
 ---
 
 <article class="grid md:grid-cols-[minmax(0,240px)_1fr] gap-5 md:gap-8 items-start py-10 md:py-6 border-b border-[color:var(--color-border)] last:border-b-0">
@@ -18,7 +20,8 @@ const { project } = Astro.props;
       alt={`${project.brand} — ${project.title}. ${project.description}`}
       widths={[360, 540, 720, 1080, 1440]}
       sizes="(min-width: 768px) 240px, 100vw"
-      loading="lazy"
+      loading={eager || lcp ? "eager" : "lazy"}
+      fetchpriority={lcp ? "high" : undefined}
       decoding="async"
       class="project-thumb-img h-full w-full object-cover aspect-[1.046] md:aspect-[4/5]"
     />

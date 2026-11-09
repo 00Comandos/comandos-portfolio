@@ -77,7 +77,7 @@ export function extractCaseStudyImages(cs: CaseStudyContent): Extract<
  * JSON-LD on the case-study page and the video entries in the sitemap.
  */
 export function extractCaseStudyVideos(cs: CaseStudyContent): ContentVideo[] {
-  const out: ContentVideo[] = [];
+  const out: ContentVideo[] = cs.hero.video ? [cs.hero.video] : [];
   for (const block of [...cs.adventure.blocks, ...cs.worth.blocks]) {
     if (block.kind === "video" || block.kind === "bleed-video") {
       out.push(block.video);

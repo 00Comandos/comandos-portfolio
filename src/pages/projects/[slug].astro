@@ -85,6 +85,7 @@ const imageObjects = await Promise.all(
       url: new URL(v.src, site.url).toString(),
       caption: ci.alt,
       description: ci.caption ?? ci.alt,
+      inLanguage: contentLang,
       width: v.attributes?.width ?? ci.image.width ?? 1200,
       height: v.attributes?.height ?? ci.image.height ?? 800,
     };
@@ -102,7 +103,7 @@ const videoObjects = (caseStudy ? extractCaseStudyVideos(caseStudy) : []).map(
     thumbnailUrl: new URL(v.poster, site.url).toString(),
     uploadDate: v.uploadDate,
     duration: `PT${v.durationSeconds}S`,
-    inLanguage: "en",
+    inLanguage: contentLang,
     publisher: {
       "@type": "Organization",
       name: site.name,

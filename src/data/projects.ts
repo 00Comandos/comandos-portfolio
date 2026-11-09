@@ -96,7 +96,7 @@ export const projects: readonly Project[] = [
     impact: "8–10 people aligned in 4 markets",
     timeline: "30 days",
     image: img("Karta-MarketingHub-Thumbnail.webp"),
-    order: 3.5,
+    order: 1.5,
     seoTitle: "Karta Marketing Hub: Sales Enablement Tool",
     seoDescription:
       "Internal sales-enablement tool for Karta: 144 always-current PDFs in English, Spanish and Portuguese, emails, brand kit and landings, behind company sign-in with every download logged.",

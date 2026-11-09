@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { getImage } from "astro:assets";
-import { projects } from "~/data/projects";
-import { getCaseStudy } from "~/data/case-studies";
+import { localizeProject, projects } from "~/data/projects";
+import { getCaseStudy, hasSpanishCase } from "~/data/case-studies";
 import {
   extractCaseStudyImages,
   extractCaseStudyVideos,
@@ -29,8 +29,26 @@ const escapeXml = (s: string) =>
 export const GET: APIRoute = async () => {
   const entries: string[] = [];
 
-  for (const project of projects) {
-    const loc = `${site.url}/projects/${project.slug}/`;
+  // Every EN case page, plus the /es/ page of each translated case
+  // (real Spanish content, so its images carry the Spanish alts).
+  const pages = [
+    ...projects.map((p) => ({ base: p, lang: "en" as const })),
+    ...projects
+      .filter((p) => hasSpanishCase(p.slug))
+      .map((p) => ({ base: p, lang: "es" as const })),
+  ];
+
+  for (const { base, lang } of pages) {
+    const project = localizeProject(base, lang);
+    const loc = `${site.url}${lang === "es" ? "/es" : ""}/projects/${project.slug}/`;
+    // EN keeps its historical "Brand — text" titles; ES uses "Brand: text"
+    // and skips the prefix when the text already names the brand.
+    const titled = (text: string) =>
+      lang === "en"
+        ? `${project.brand} — ${text}`
+        : text.includes(project.brand)
+          ? text
+          : `${project.brand}: ${text}`;
 
     // Always include the thumbnail/hero image used on the card.
     const thumb = await getImage({
@@ -43,14 +61,14 @@ export const GET: APIRoute = async () => {
     const images: { url: string; title: string; caption: string }[] = [
       {
         url: thumbUrl,
-        title: `${project.brand} — ${project.title}`,
+        title: titled(project.title),
         caption: project.description,
       },
     ];
 
     // If there's a full case study, add every in-page image too,
     // dedup'd by source.
-    const caseStudy = getCaseStudy(project.slug);
+    const caseStudy = getCaseStudy(project.slug, lang);
     if (caseStudy) {
       const inPage = extractCaseStudyImages(caseStudy);
       const seen = new Set<string>([thumb.src]);
@@ -64,7 +82,7 @@ export const GET: APIRoute = async () => {
         });
         images.push({
           url: new URL(variant.src, site.url).toString(),
-          title: `${project.brand} — ${clip(ci.alt, 90)}`,
+          title: titled(clip(ci.alt, 90)),
           caption: ci.caption ?? ci.alt,
         });
       }

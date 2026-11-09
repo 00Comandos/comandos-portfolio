@@ -22,6 +22,15 @@ const splitValue = (v: string) => {
   const count = num.includes(",") ? null : Number(num);
   return { pre, num, unit, count, decimals };
 };
+// Words ("Minutes", "SOC 2") are wider than numerals: the longest one sets
+// one size for the whole row, so every value shares a cap height and the
+// labels below line up.
+const wordLengths = content.stats
+  .filter((s) => splitValue(s.value).count === null && s.value.length > 4)
+  .map((s) => s.value.length);
+const rowFit = wordLengths.length
+  ? Math.floor(150 / Math.max(...wordLengths))
+  : null;
 const cardCols =
   content.cards && content.cards.length === 2 ? "res-cols-2" : "res-cols-3";
 ---
@@ -41,16 +50,13 @@ const cardCols =
               return (
                 <dt
                   class="res-value"
-                  style={
-                    // Words ("Minutes", "SOC 2") scale to the cell instead of
-                    // overflowing into the next column.
-                    v.count === null && s.value.length > 4
-                      ? `font-size: min(12rem, ${Math.floor(150 / s.value.length)}cqi);`
-                      : undefined
-                  }
+                  style={rowFit ? `font-size: min(clamp(4.5rem, 34cqi, 12rem), ${rowFit}cqi);` : undefined}
                 >
                   <span class="sr-only">{s.value}</span>
-                  <span aria-hidden="true" class="res-value-inner">
+                  <span
+                    aria-hidden="true"
+                    class="res-value-inner"
+                  >
                     {v.pre && <span class="res-unit res-pre">{v.pre}</span>}
                     <span
                       class="res-num"
@@ -165,8 +171,11 @@ const cardCols =
       border-bottom: none;
       border-left: 1px solid var(--color-border);
     }
+    /* Same content width as the other cells (1.5rem + 1.5rem), so the
+       cqi-sized numerals, and the labels under them, line up. */
     .res-cell:first-child {
       padding-left: 0;
+      padding-right: 3rem;
       border-left: none;
     }
   }
@@ -184,9 +193,15 @@ const cardCols =
     color: var(--color-ink);
     white-space: nowrap;
   }
+  .res-value {
+    display: flex;
+    align-items: flex-end;
+    height: 0.85em;
+  }
   .res-value-inner {
     display: flex;
     align-items: flex-start;
+    line-height: 0.85;
   }
   .res-num {
     font-variant-numeric: tabular-nums;

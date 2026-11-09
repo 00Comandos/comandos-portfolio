@@ -71,7 +71,7 @@ const tiles = slugs.flatMap((slug, i) => {
                   alt={tile.alt}
                   widths={tile.size === "s" ? [480, 720, 960] : [720, 1080, 1440, 1920]}
                   sizes={sizesAttr[tile.size]}
-                  loading={i < 2 ? "eager" : "lazy"}
+                  loading="lazy"
                   class="cg-img"
                 />
                 {tile.preview && (

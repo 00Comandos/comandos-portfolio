@@ -331,6 +331,9 @@ export type CaseStudyContent = {
   brandLogo?: { kind: "public"; src: string; alt: string; height?: number };
   hero: {
     image?: ContentImage;
+    /** Optional silent loop shown in place of `image` (which stays the OG
+        image / JSON-LD source). Autoplays, poster = first frame. */
+    video?: ContentVideo;
     /** Optional stack of images rendered on mobile instead of `image`. */
     mobileStack?: readonly ContentImage[];
     /** Opt-in contained hero: the image renders narrower and centred on a

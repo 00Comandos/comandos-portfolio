@@ -10,94 +10,94 @@ const img = (filename: string) => requireImage(kartaImages, filename);
 const heroImage: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-tool-rewards.webp"),
-  alt: "Karta Marketing Hub — the internal tool open on page 1 of the Rewards guide, with the document sidebar grouped by product and audience, Digital / Print (A4) formats, English / Español / Português and a Download PDF button",
+  alt: "Karta Marketing Hub on Rewards guide page 1: sidebar by product and audience, Digital or Print (A4), EN/ES/PT, Download PDF",
 };
 
 // ———— Challenge ————
 const loginImage: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-login.webp"),
-  alt: "Karta Marketing Hub sign-in — access only with a one-time code sent to a Karta company email",
+  alt: "Karta Marketing Hub sign-in screen: access with a Karta company email and a one-time code",
 };
 
 // ———— Adventure ————
 const rewardsEn: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-rewards-en.webp"),
-  alt: "Rewards guide in English — Every dollar you spend takes you somewhere: the Karta Visa Infinite card and how points work",
+  alt: "Karta Rewards guide in English: cover reading “Every dollar you spend takes you somewhere” and how points work",
   caption: "English",
 };
 const rewardsEs: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-rewards-es.webp"),
-  alt: "The same guide in Spanish — Transfer to airline partners, with the points-to-miles rate for each airline",
+  alt: "Karta Rewards guide in Spanish: “Transfiera a aerolíneas aliadas” section with points-to-miles rates per airline",
   caption: "Español",
 };
 const rewardsPt: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-rewards-pt.webp"),
-  alt: "The same guide in Brazilian Portuguese — the WhatsApp concierge: plan any trip in a single conversation",
+  alt: "Karta Rewards guide in Brazilian Portuguese: WhatsApp concierge section to plan any trip in one conversation",
   caption: "Português",
 };
 const printImage: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-print-a4.webp"),
-  alt: "The one pager switched to Print (A4): the same page, paginated and numbered for printing, with co-branded partner versions listed in the sidebar",
+  alt: "Karta one pager in Print (A4) mode in the marketing hub: paginated for print, co-branded partner versions in the sidebar",
 };
 const globalAccountImage: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-global-account.webp"),
-  alt: "Global Account guide for financial advisors inside the hub — the Products menu switches between Consumer, Corporate and Global Account materials",
+  alt: "Karta Global Account guide for financial advisors in the hub, with the product menu: Consumer, Corporate, Global Account",
 };
 
 // ———— Worth ————
 const emailsImage: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-emails.webp"),
-  alt: "Emails mode — every Karta transactional email synced from its repository, previewable on desktop, tablet or mobile and downloadable as HTML",
-  caption: "Emails — every transactional email, synced from its source and ready to preview or download.",
+  alt: "Karta Marketing Hub Emails mode: transactional emails synced from code, preview on desktop, tablet or mobile, download HTML",
+  caption: "Emails: every transactional email, synced from its source and ready to preview or download.",
 };
 const brandImage: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-brand.webp"),
-  alt: "Brand mode — Karta logo and isotype in dark, light and square versions with SVG, PNG and JPG downloads",
-  caption: "Brand — logos and isotypes in every format, one click for the whole kit.",
+  alt: "Karta Marketing Hub Brand mode: Karta logo and isotype in dark, light and square versions, with SVG, PNG and JPG downloads",
+  caption: "Brand: logos and isotypes in every format, one click for the whole kit.",
 };
 const landingsImage: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-landings.webp"),
-  alt: "Landings mode — the public Rewards and Brochure pages with a copy-link for each language",
-  caption: "Landings — public pages for partners, with the link for each language one click away.",
+  alt: "Karta Marketing Hub Landings mode: public Rewards and Brochure pages with a copy-link button for each language",
+  caption: "Landings: public pages for partners, with the link for each language one click away.",
 };
 const eventsImage: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-events.webp"),
-  alt: "Events mode — a 6 × 3 m event backdrop prepared for print at 1:10 scale with bleed",
-  caption: "Events — print-ready pieces for events, from backdrops to merch.",
+  alt: "Karta Marketing Hub Events mode: 6 × 3 m event backdrop at 1:10 scale with bleed, ready for print",
+  caption: "Events: print-ready pieces for events, from backdrops to merch.",
 };
 
 const mobileLogin: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-mobile-login.webp"),
-  alt: "Sign-in on a phone — company email and a one-time code",
+  alt: "Karta Marketing Hub sign-in on a phone: company email and a one-time code",
   caption: "Company email + code",
 };
 const mobileDownload: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-mobile-download.webp"),
-  alt: "A piece on a phone, in Spanish, with Download PDF one tap away",
+  alt: "Karta sales enablement piece on a phone, in Spanish, with the Download PDF button one tap away",
   caption: "Pick the language, download",
 };
 const mobileMenu: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-mobile-menu.webp"),
-  alt: "The hub's menu on a phone — every piece grouped by product and audience",
+  alt: "Karta Marketing Hub menu drawer on a phone: every sales piece grouped by product and audience",
   caption: "Every piece, one tap away",
 };
 const mobileShare: ContentImage = {
   kind: "image",
   image: img("karta-marketing-hub-mobile-share.webp"),
-  alt: "Landings on a phone — a copy-link button for each language, ready to paste into WhatsApp",
+  alt: "Karta Marketing Hub Landings on a phone: a copy-link button per language, ready to share on WhatsApp",
   caption: "Copy the link, send it",
 };
 
@@ -112,14 +112,24 @@ export const kartaMarketingHub: CaseStudyContent = {
   },
   hero: {
     image: heroImage,
+    video: {
+      kind: "video",
+      src: "/videos/karta-marketing-hub-hero.mp4",
+      poster: "/videos/karta-marketing-hub-hero-poster.jpg",
+      alt: "Karta Marketing Hub demo: scrolling the Rewards guide, switching to Print (A4) and downloading the PDF",
+      name: "Karta Marketing Hub: from Digital to Print (A4) to PDF",
+      description: "A seller scrolls the Rewards guide in the Karta Marketing Hub, switches it to the paginated Print (A4) format and downloads the PDF.",
+      uploadDate: "2026-11-08",
+      durationSeconds: 13,
+    },
     backdrop: { color: "rgb(14 13 12)", card: true },
     intro:
-      "Karta's sales and partnership team sells a premium U.S. credit card across four markets — the U.S. and Brazil first, then Mexico and Argentina — in three languages.\n\nEvery one pager, brochure, guide and email used to be rebuilt by hand in Figma. In 30 days, step by step, we turned all of it into one internal tool: we standardised the brochure first, then the rest of the materials, until everything lived in one source of truth that the whole team trusts and compliance can audit.",
+      "Karta's sales and partnership team sells a premium U.S. credit card across four markets in three languages: the U.S. and Brazil first, then Mexico and Argentina.\n\nEvery one pager, brochure, guide and email used to be rebuilt by hand in Figma. In 30 days, step by step, we turned all of it into one internal tool: we standardised the brochure first, then the rest of the materials, until everything lived in one source of truth that the whole team trusts and compliance can audit.",
   },
   challenge: {
     heading: "Two weeks per piece, and nobody sure which version was right.",
     body:
-      "Every piece was rebuilt by hand in Figma, once per language — up to two weeks to reach a final version. The 20–30 MB PDFs had to be compressed before sharing, and they lived in a Drive where only the file name hinted at which version was current or who had it.",
+      "Every piece was rebuilt by hand in Figma, once per language, and reaching a final version took up to two weeks. The 20–30 MB PDFs had to be compressed before sharing, and they lived in a Drive where only the file name hinted at which version was current or who had it.",
     ctaLabel: "I want to scale my sales team",
     results: [
       "One hub for 8–10 people across 4 markets.",
@@ -157,9 +167,9 @@ export const kartaMarketingHub: CaseStudyContent = {
       { kind: "chip", icon: "seeing-mountain", label: "Seeing the mountain" },
       {
         kind: "heading",
-        heading: "Every piece became a page — and the PDF, its mirror.",
+        heading: "Every piece became a page, and the PDF its mirror.",
         body:
-          "It started with the brochure: instead of drawing each version, we built it once as a web page and generated the PDF from that page. It worked, so one pager, guides and the rest followed the same path. A change to the copy now updates every language and format at once — and the files come out light enough to share anywhere.",
+          "It started with the brochure: instead of drawing each version, we built it once as a web page and generated the PDF from that page. It worked, so one pager, guides and the rest followed the same path. A change to the copy now updates every language and format at once, and the files come out light enough to share anywhere.",
       },
       {
         kind: "image-grid",
@@ -195,7 +205,7 @@ export const kartaMarketingHub: CaseStudyContent = {
         kind: "intro",
         heading: "Everything the commercial team shares, in one place",
         body:
-          "Beyond the PDFs, the hub brings together the transactional emails, the brand kit, the public landings for partners and the print pieces for events — each in its own mode, behind the same sign-in.",
+          "Beyond the PDFs, the hub brings together the transactional emails, the brand kit, the public landings for partners and the print pieces for events. Each has its own mode, behind the same sign-in.",
       },
       { kind: "image", image: emailsImage },
       { kind: "image", image: brandImage },
@@ -206,7 +216,7 @@ export const kartaMarketingHub: CaseStudyContent = {
         kind: "intro",
         heading: "From the phone, mid-conversation",
         body:
-          "When a client or partner asks for something specific on WhatsApp, the seller opens the hub on their phone, picks the language and sends the current PDF or its link — no laptop, no Drive, no asking design for the latest version.",
+          "When a client or partner asks for something specific on WhatsApp, the seller opens the hub on their phone, picks the language and sends the current PDF or its link. No laptop, no Drive, no asking design for the latest version.",
         sub: true,
       },
       {
@@ -226,12 +236,12 @@ export const kartaMarketingHub: CaseStudyContent = {
           {
             label: "Every download, on record:",
             body:
-              "who downloaded which piece, in which language and format — the audit trail compliance and SOC 2 ask for.",
+              "who downloaded which piece, in which language and format. That is the audit trail compliance and SOC 2 ask for.",
           },
           {
             label: "Custom, within the standard:",
             body:
-              "a request for a specific partner or deal becomes a co-branded variant of the approved piece — not a parallel file with its own promises.",
+              "a request for a specific partner or deal becomes a co-branded variant of the approved piece, not a parallel file with its own promises.",
           },
           {
             label: "Nothing to chase:",
@@ -248,19 +258,19 @@ export const kartaMarketingHub: CaseStudyContent = {
       {
         value: "1",
         label: "value proposition in 4 markets",
-        caption: "8–10 sellers and partners in the U.S., Brazil, Mexico and Argentina explain Karta the same way — leads hear one story, in their language.",
+        caption: "8–10 sellers and partners in the U.S., Brazil, Mexico and Argentina explain Karta the same way, so leads hear one story in their language.",
         icon: { kind: "illustration", scene: "unify", alt: "One team, one message" },
       },
       {
         value: "Minutes",
-        label: "to answer a client or partner — not two weeks",
+        label: "to answer a client or partner, not two weeks",
         caption: "From up to two weeks to get a final piece to sending the current version from a phone, mid-conversation.",
         icon: { kind: "illustration", scene: "sync", alt: "Faster answers" },
       },
       {
         value: "SOC 2",
         label: "access and audit controls",
-        caption: "Company sign-in with a one-time code and every download logged — the access and audit-trail controls SOC 2 asks for.",
+        caption: "Company sign-in with a one-time code and every download logged: the access and audit-trail controls SOC 2 asks for.",
         icon: { kind: "illustration", scene: "certified", alt: "SOC 2 controls" },
       },
     ],

@@ -84,9 +84,9 @@ const jsonLd = [
 
       <div class="min-w-0 divide-y divide-[color:var(--color-border)]" data-pf-list>
         {
-          sorted.map((project) => (
+          sorted.map((project, i) => (
             <div data-market={project.market}>
-              <ProjectCard project={project} />
+              <ProjectCard project={project} eager={i < 2} lcp={i === 0} />
             </div>
           ))
         }

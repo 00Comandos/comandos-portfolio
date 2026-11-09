@@ -138,6 +138,22 @@ const logoWidth =
             ))}
           </div>
         </>
+      ) : content.hero.video ? (
+        <div class="csh-frame">
+          <video
+            class="csh-video"
+            src={content.hero.video.src}
+            poster={content.hero.video.poster}
+            width="1600"
+            height="1000"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+            aria-label={content.hero.video.alt}
+          />
+        </div>
       ) : content.hero.image ? (
         <div class="csh-frame">
           <ContentImage
@@ -433,4 +449,20 @@ const logoWidth =
       margin-top: 4rem;
     }
   }
+  .csh-video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+  }
 </style>
+
+<script>
+  // Reduced motion: keep the hero video on its poster frame.
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.querySelectorAll<HTMLVideoElement>(".csh-video").forEach((v) => {
+      v.removeAttribute("autoplay");
+      v.pause();
+    });
+  }
+</script>
