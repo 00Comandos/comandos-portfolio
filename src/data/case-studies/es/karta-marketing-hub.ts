@@ -123,9 +123,9 @@ export const kartaMarketingHubEs: CaseStudyContent = {
       "El equipo de ventas y alianzas de Karta vende una tarjeta de crédito premium de EE. UU. en cuatro mercados y tres idiomas: primero EE. UU. y Brasil, luego México y Argentina.\n\nCada one pager, brochure, guía y correo se rehacía a mano en Figma. En 30 días, paso a paso, lo convertimos en una sola herramienta interna: primero estandarizamos el brochure, después el resto de los materiales, hasta que todo vivió en una única fuente de verdad en la que el equipo confía y que compliance puede auditar.",
   },
   challenge: {
-    heading: "Dos semanas por pieza, y nadie seguro de cuál era la versión correcta.",
+    heading: "Dos semanas por pieza, y una versión por cada partner, alianza y mercado.",
     body:
-      "Cada pieza se rehacía a mano en Figma, una vez por idioma, y llegar a la versión final tomaba hasta dos semanas. Los PDFs de 20–30 MB había que comprimirlos antes de compartirlos, y vivían en un Drive donde solo el nombre del archivo daba una pista de qué versión estaba vigente o quién la tenía.",
+      "Cada pieza se rehacía a mano en Figma, una vez por idioma, y llegar a la versión final tomaba hasta dos semanas. Después venían las variantes por partner, alianza y mercado: PDFs de 20–30 MB que había que comprimir y que se acumulaban en Drive. Saber quién tenía qué versión, y a dónde se había enviado, se complicaba con cada una.",
     ctaLabel: "Quiero escalar mi equipo de ventas",
     results: [
       "Un solo hub para 8–10 personas en 4 mercados.",
@@ -154,8 +154,8 @@ export const kartaMarketingHubEs: CaseStudyContent = {
             body: "Exportaciones de 20–30 MB que había que comprimir antes de poder enviarlas.",
           },
           {
-            label: "Sin control:",
-            body: "El nombre del archivo era la única pista de qué versión estaba vigente, quién la tenía y a dónde iba.",
+            label: "Sin trazabilidad:",
+            body: "Con una versión por partner, alianza y mercado, no había registro de quién tenía qué archivo ni a dónde iba.",
           },
         ],
       },

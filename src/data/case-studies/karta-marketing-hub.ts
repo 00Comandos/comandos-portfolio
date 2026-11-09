@@ -127,9 +127,9 @@ export const kartaMarketingHub: CaseStudyContent = {
       "Karta's sales and partnership team sells a premium U.S. credit card across four markets in three languages: the U.S. and Brazil first, then Mexico and Argentina.\n\nEvery one pager, brochure, guide and email used to be rebuilt by hand in Figma. In 30 days, step by step, we turned all of it into one internal tool: we standardised the brochure first, then the rest of the materials, until everything lived in one source of truth that the whole team trusts and compliance can audit.",
   },
   challenge: {
-    heading: "Two weeks per piece, and nobody sure which version was right.",
+    heading: "Two weeks per piece, and one version for every partner, alliance and market.",
     body:
-      "Every piece was rebuilt by hand in Figma, once per language, and reaching a final version took up to two weeks. The 20–30 MB PDFs had to be compressed before sharing, and they lived in a Drive where only the file name hinted at which version was current or who had it.",
+      "Every piece was rebuilt by hand in Figma, once per language, and reaching a final version took up to two weeks. Then came the variants for each partner, alliance and market: 20–30 MB PDFs that had to be compressed and kept piling up in Drive. Tracking who had which version, and where it was sent, got harder with every one.",
     ctaLabel: "I want to scale my sales team",
     results: [
       "One hub for 8–10 people across 4 markets.",
@@ -158,8 +158,8 @@ export const kartaMarketingHub: CaseStudyContent = {
             body: "20–30 MB exports that had to be compressed before anyone could send them.",
           },
           {
-            label: "No control:",
-            body: "The file name was the only clue to which version was current, who had it and where it went.",
+            label: "No traceability:",
+            body: "With a version per partner, alliance and market, there was no record of who had which file or where it went.",
           },
         ],
       },
