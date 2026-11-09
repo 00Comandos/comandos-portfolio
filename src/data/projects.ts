@@ -78,6 +78,21 @@ export const projects: readonly Project[] = [
       "Industrial and brand design for Karta's 17g metal credit card with AI features, tested with users in 5 countries. +1k customers in its first 12 months.",
   },
   {
+    slug: "karta-marketing-hub",
+    market: "fintech",
+    brand: "Karta",
+    title: "Karta Marketing Hub: Sales Enablement",
+    description:
+      "An internal tool that unified Karta's marketing materials for sales and partners in 4 markets and 3 languages: PDFs, A4, emails, brand kit and landings.",
+    impact: "8–10 people aligned in 4 markets",
+    timeline: "4 months",
+    image: img("Karta-MarketingHub-Thumbnail.webp"),
+    order: 3.5,
+    seoTitle: "Karta Marketing Hub: Sales Enablement Tool",
+    seoDescription:
+      "Internal sales-enablement tool for Karta: 144 always-current PDFs in English, Spanish and Portuguese, emails, brand kit and landings, behind company sign-in with every download logged.",
+  },
+  {
     slug: "legalario-e-signature",
     market: "legaltech",
     brand: "Legalario",
