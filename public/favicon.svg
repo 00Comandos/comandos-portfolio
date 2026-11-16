@@ -2,6 +2,8 @@
   <rect width="60" height="60" fill="#0b0b0b"/>
   <g transform="translate(10 12.5)">
     <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
       d="M35.5833 25.3854V32.4158H2.58419V12.1988H9.61463V25.3854H35.5833ZM12.1988 9.61462H35.9877V2.58489H12.1988V9.61462ZM38.5719 12.1988V0H9.61463V9.61463H0V35H38.1682V22.8012H12.1988V12.1988H38.5719Z"
       fill="#ffffff"
     />
